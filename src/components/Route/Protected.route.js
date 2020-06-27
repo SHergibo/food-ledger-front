@@ -20,7 +20,7 @@ class RouteRender extends Component {
       return <Component {...componentProps} />
     } else if(this.state.authorized === false) {
       return (<Redirect to={{
-               pathname: '/login',
+               pathname: '/',
                state: { from: this.props.location }
              }} />)
     }
