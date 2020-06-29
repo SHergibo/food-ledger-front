@@ -12,8 +12,11 @@ createStore({
     lastName: "",
     email:"",
     password:"",
-    age: "",
-    yearsOfExp: ""
+    householdCodeCheck: false,
+    householdCode:"",
+    householdNameCheck : false,
+    householdName: "",
+    otherMemberCheck: false,
   }
 });
 

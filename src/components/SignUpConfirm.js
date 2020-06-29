@@ -11,8 +11,11 @@ function SingUpConfirm({setForm, setFormTitle}) {
       email:"",
       password:"",
       confirmPassword: "",
-      age: "",
-      yearsOfExp: ""
+      householdCodeCheck: false,
+      householdCode:"",
+      householdNameCheck : false,
+      householdName: "",
+      otherMemberCheck: false,
     };
     action(data);
     setForm('login');
