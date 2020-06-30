@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import { StateMachineProvider, createStore } from "little-state-machine";
 import Login from "./Login";
 import Step1 from "./SignUpStep1";
@@ -17,6 +16,7 @@ createStore({
     householdNameCheck : false,
     householdName: "",
     otherMemberCheck: false,
+    otherMemberArray: [],
   }
 });
 
@@ -83,4 +83,4 @@ function SignInUp() {
   )
 }
 
-export default withRouter(SignInUp);
+export default SignInUp;

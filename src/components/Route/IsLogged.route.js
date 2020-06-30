@@ -17,7 +17,7 @@ class RouteRender extends Component {
   render() {
     if(this.state.authorized === true) {
       return (<Redirect to={{
-        pathname: '/admin',
+        pathname: '/app',
         state: { from: this.props.location }
       }} />)
     } else if(this.state.authorized === false) {

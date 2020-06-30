@@ -25,6 +25,20 @@ function SignUpStep2({ setForm }) {
     action(state.yourDetails);
   };
 
+  const addOtherMember = (e) => {
+    e.preventDefault();
+    let inputOtherMember = document.getElementById('otherMember');
+    state.yourDetails.otherMemberArray.push(inputOtherMember.value);
+    action(state.yourDetails);
+    inputOtherMember.value = "";
+  }
+
+  const deleteOtherMember = (e, index) => {
+    e.preventDefault();
+    state.yourDetails.otherMemberArray.splice(index, 1);
+    action(state.yourDetails);
+  }
+
   const onSubmit = (data) => {
     if (data.householdCode || data.householdName) {
       setErrorMessage(false);
@@ -36,6 +50,7 @@ function SignUpStep2({ setForm }) {
         newData.householdNameCheck = false;
         newData.householdName = "";
         newData.otherMemberCheck = false;
+        newData.otherMemberArray = [];
       }
       if (state.yourDetails.householdCode.length >= 1 && data.householdName) {
         newData = state.yourDetails;
@@ -109,14 +124,28 @@ function SignUpStep2({ setForm }) {
             />
           </label>
           {state.yourDetails.otherMemberCheck === true && (
-            <p>input othermember</p>
+            <Fragment>
+            <div>
+              <input type="text" name="otherMember" id="otherMember" />
+              <button onClick={addOtherMember}>+</button>
+            </div>
+            <ul>
+              {
+                state.yourDetails.otherMemberArray.map((item, index) => {
+                  return <li key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}>x</button></li> 
+                })
+              }
+            </ul>
+            </Fragment>
           )}
         </Fragment>
       )}
       {errorMessage === true && (
         <span>Vous devez repondre à une de ces deux questions et remplire le formulaire.</span>
       )}
-      <input type="submit" />
+      <button type="submit">
+        Submit
+      </button>
     </form>
   )
 }

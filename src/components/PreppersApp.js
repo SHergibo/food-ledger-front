@@ -1,16 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import { logout } from './../utils/Auth';
 
-function PreppersApp(props) {
-    return (
-        <div>
-            
-        </div>
-    )
-}
-
-PreppersApp.propTypes = {
-
+function PreppersApp({ history }) {
+  let logOut = async () => {
+    await logout();
+    history.push("/");
+  };
+  return (
+    <div>
+      BRAVO
+      <button onClick={logOut}>Logout</button>
+    </div>
+  )
 }
 
 export default PreppersApp
