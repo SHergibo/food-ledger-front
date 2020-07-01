@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useForm, ErrorMessage } from "react-hook-form";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../utils/updateAction";
@@ -7,6 +7,8 @@ import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
 
 function SingUpConfirm({ setForm, setFormTitle }) {
   const { state, action } = useStateMachine(updateAction);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorBool, setErrorBool] = useState(false);
   const { handleSubmit, errors, register } = useForm({
     defaultValues: state.yourDetails
   });
@@ -45,44 +47,63 @@ function SingUpConfirm({ setForm, setFormTitle }) {
 
   const finalData = (data) => {
     const baseObject = {
-      firstname : data.firstName,
-      lastname : data.lastName,
-      email : data.email,
-      password : data.password
+      firstname: data.firstName,
+      lastname: data.lastName,
+      email: data.email,
+      password: data.password
     };
 
-    if(data.householdNameCheck && data.householdName){
+    if (data.householdNameCheck && data.householdName) {
       baseObject.role = "admin";
       baseObject.householdname = data.householdName;
     }
 
-    if(data.otherMemberCheck && data.otherMemberArray.length >= 1 ){
+    if (data.otherMemberCheck && data.otherMemberArray.length >= 1) {
       baseObject.othermember = data.otherMemberArray;
     }
 
-    if(data.householdCodeCheck && data.householdCode){
+    if (data.householdCodeCheck && data.householdCode) {
       baseObject.role = "user";
     }
 
     return baseObject;
   };
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     action(data);
     const objectData = await finalData(state.yourDetails);
-    let createAccountEndPoint =`${apiDomain}/api/${apiVersion}/users`;
-    
-    if(state.yourDetails.householdCodeCheck && state.yourDetails.householdCode){
+    let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
+
+    if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
       createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdcode=${state.yourDetails.householdCode}`;
     }
-    await axios.post(createAccountEndPoint, objectData)
-    .then((response) => {
-      if(response.status === 200){
-        resetStore();
-      }else{
-      //TODO gérer erreur
+    await axios.post(createAccountEndPoint, objectData, {
+      validateStatus: function (status) {
+        return status < 500;
       }
-    });
+    }).then((response) => {
+        if (response.status === 200) {
+          resetStore();
+          setErrorBool(false);
+          setErrorMessage('');
+        } else if(response.status === 404 && response.data.data) {
+          let responseDataArray = response.data.data;
+          responseDataArray.forEach(element => {
+            let searchUserCode = document.getElementById(element);
+            searchUserCode.classList.add('bad-user-code');
+          });
+          setErrorBool(true);
+          if(response.data.data.length === 1){
+            setErrorMessage('Il y a un mauvais code utilisateur!');
+          } else {
+            setErrorMessage('Il y a plusieurs mauvais codes utilisateur!');
+          }
+        } else if(response.status === 400){
+          console.log('ici');
+          setErrorBool(true);
+          setErrorMessage('Code famille invalide!');
+        }
+      });
   };
   return (
     <form className="form-sign-in-up" onSubmit={handleSubmit(onSubmit)}>
@@ -162,23 +183,29 @@ function SingUpConfirm({ setForm, setFormTitle }) {
           </label>
           {state.yourDetails.otherMemberCheck === true && (
             <Fragment>
-            <label>
-              Code utilisateur:
+              <label>
+                Code utilisateur:
               <input type="text" name="otherMember" id="otherMember" />
-              <button onClick={addOtherMember}>+</button>
-            </label>
-            <ul>
-              {
-                state.yourDetails.otherMemberArray.map((item, index) => {
-                  return <li key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}>x</button></li> 
-                })
-              }
-            </ul>
+                <button onClick={addOtherMember}>+</button>
+              </label>
+              {state.yourDetails.otherMemberArray.length === 0 && (
+                <p>Aucun code utilisateur.</p>
+              )}
+              {state.yourDetails.otherMemberArray.length >= 1 && (
+                <ul>
+                  {
+                    state.yourDetails.otherMemberArray.map((item, index) => {
+                      return <li id={item} key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}>x</button></li>
+                    })
+                  }
+                </ul>
+              )}
+              
             </Fragment>
           )}
         </Fragment>
       )}
-
+      {errorBool && <span>{errorMessage}</span>}
       <input type="submit" />
     </form>
   )
