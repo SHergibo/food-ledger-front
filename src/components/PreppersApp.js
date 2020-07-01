@@ -1,7 +1,14 @@
-import React from 'react';
-import { logout } from './../utils/Auth';
+import React, { useEffect } from 'react';
+import { logout, refreshToken } from './../utils/Auth';
 
 function PreppersApp({ history }) {
+
+  useEffect(() => {
+    setInterval(() => {
+      refreshToken();
+    }, 900000);
+  }, []);
+
   let logOut = async () => {
     await logout();
     history.push("/");
