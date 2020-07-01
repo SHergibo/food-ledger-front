@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useForm, ErrorMessage } from 'react-hook-form';
 import { loginIn } from './../utils/Auth';
 
-function Login({history}) {
+function Login({history, successCreateAccount, setSuccessCreateAccount}) {
   const [errorMessage, setErrorMessage] = useState(false);
   const { register, handleSubmit, errors } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(successCreateAccount){
+      let spanSuccess = document.getElementsByClassName('success-message')[0];
+      setTimeout(() => {
+        spanSuccess.style.opacity = 0;
+        spanSuccess.style.height = 0;
+      }, 3000);
+      setTimeout(() => {
+        setSuccessCreateAccount(false);
+      }, 3500);
+    }
+  }, [successCreateAccount, setSuccessCreateAccount]);
 
 
   const onSubmit = async (data) => {
@@ -44,6 +57,7 @@ function Login({history}) {
       </label>
 
       {errorMessage && <span>Adresse mail ou mot de passe invalide !</span>}
+      {successCreateAccount && <span className="success-message">Votre compte a été créé avec succés !</span>}
       <input type="submit" />
     </form>
   )

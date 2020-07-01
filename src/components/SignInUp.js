@@ -9,11 +9,11 @@ createStore({
   yourDetails: {
     firstName: "",
     lastName: "",
-    email:"",
-    password:"",
+    email: "",
+    password: "",
     householdCodeCheck: false,
-    householdCode:"",
-    householdNameCheck : false,
+    householdCode: "",
+    householdNameCheck: false,
     householdName: "",
     otherMemberCheck: false,
     otherMemberArray: [],
@@ -22,6 +22,7 @@ createStore({
 
 function SignInUp() {
   const [formTitle, setFormTitle] = useState("Sign In");
+  const [successCreateAccount, setSuccessCreateAccount] = useState(false);
   const [form, setForm] = useState('login');
 
   const createUserForm = () => {
@@ -53,7 +54,10 @@ function SignInUp() {
 
           {form === "login" && (
             <Fragment>
-              <Login />
+              <Login
+                setSuccessCreateAccount={setSuccessCreateAccount}
+                successCreateAccount={successCreateAccount}
+              />
               <button onClick={() => createUserForm()}>
                 Créer un compte
               </button>
@@ -74,6 +78,7 @@ function SignInUp() {
               <Result
                 setForm={setForm}
                 setFormTitle={setFormTitle}
+                setSuccessCreateAccount={setSuccessCreateAccount}
               />
             </Fragment>
           )}

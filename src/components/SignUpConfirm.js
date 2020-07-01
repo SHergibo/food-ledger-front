@@ -5,7 +5,7 @@ import updateAction from "../utils/updateAction";
 import axios from 'axios';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
 
-function SingUpConfirm({ setForm, setFormTitle }) {
+function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorBool, setErrorBool] = useState(false);
@@ -13,20 +13,21 @@ function SingUpConfirm({ setForm, setFormTitle }) {
     defaultValues: state.yourDetails
   });
   const resetStore = () => {
-    const data = {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      householdCodeCheck: false,
-      householdCode: "",
-      householdNameCheck: false,
-      householdName: "",
-      otherMemberCheck: false,
-      otherMemberArray: [],
-    };
-    action(data);
+    // const data = {
+    //   firstName: "",
+    //   lastName: "",
+    //   email: "",
+    //   password: "",
+    //   confirmPassword: "",
+    //   householdCodeCheck: false,
+    //   householdCode: "",
+    //   householdNameCheck: false,
+    //   householdName: "",
+    //   otherMemberCheck: false,
+    //   otherMemberArray: [],
+    // };
+    // action(data);
+    setSuccessCreateAccount(true);
     setForm('login');
     setFormTitle('Sign In')
   };
@@ -71,39 +72,39 @@ function SingUpConfirm({ setForm, setFormTitle }) {
 
   const onSubmit = async (data) => {
     action(data);
-    const objectData = await finalData(state.yourDetails);
-    let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
+    resetStore();
+    // const objectData = await finalData(state.yourDetails);
+    // let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
 
-    if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
-      createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdcode=${state.yourDetails.householdCode}`;
-    }
-    await axios.post(createAccountEndPoint, objectData, {
-      validateStatus: function (status) {
-        return status < 500;
-      }
-    }).then((response) => {
-        if (response.status === 200) {
-          resetStore();
-          setErrorBool(false);
-          setErrorMessage('');
-        } else if(response.status === 404 && response.data.data) {
-          let responseDataArray = response.data.data;
-          responseDataArray.forEach(element => {
-            let searchUserCode = document.getElementById(element);
-            searchUserCode.classList.add('bad-user-code');
-          });
-          setErrorBool(true);
-          if(response.data.data.length === 1){
-            setErrorMessage('Il y a un mauvais code utilisateur!');
-          } else {
-            setErrorMessage('Il y a plusieurs mauvais codes utilisateur!');
-          }
-        } else if(response.status === 400){
-          console.log('ici');
-          setErrorBool(true);
-          setErrorMessage('Code famille invalide!');
-        }
-      });
+    // if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
+    //   createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdcode=${state.yourDetails.householdCode}`;
+    // }
+    // await axios.post(createAccountEndPoint, objectData, {
+    //   validateStatus: function (status) {
+    //     return status < 500;
+    //   }
+    // }).then((response) => {
+    //     if (response.status === 200) {
+    //       resetStore();
+    //       setErrorBool(false);
+    //       setErrorMessage('');
+    //     } else if(response.status === 404 && response.data.data) {
+    //       let responseDataArray = response.data.data;
+    //       responseDataArray.forEach(element => {
+    //         let searchUserCode = document.getElementById(element);
+    //         searchUserCode.classList.add('bad-user-code');
+    //       });
+    //       setErrorBool(true);
+    //       if(response.data.data.length === 1){
+    //         setErrorMessage('Il y a un mauvais code utilisateur!');
+    //       } else {
+    //         setErrorMessage('Il y a plusieurs mauvais codes utilisateur!');
+    //       }
+    //     } else if(response.status === 400){
+    //       setErrorBool(true);
+    //       setErrorMessage('Code famille invalide!');
+    //     }
+    //   });
   };
   return (
     <form className="form-sign-in-up" onSubmit={handleSubmit(onSubmit)}>

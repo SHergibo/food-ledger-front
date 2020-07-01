@@ -7,3 +7,12 @@
 .bad-user-code{
   color: red;
 }
+
+.success-message {
+  opacity: 1;
+  margin-left: 20px;
+  font-size: 20px;
+  height: 23px;
+  color: #008000;
+  transition: 0.5s ease-in-out;
+}
