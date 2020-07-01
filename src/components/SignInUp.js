@@ -30,6 +30,11 @@ function SignInUp() {
     setFormTitle('Sign up');
   }
 
+  const returnToLogin = () => {
+    setForm('login');
+    setFormTitle('Sign in');
+  }
+
   return (
     <Fragment>
 
@@ -64,14 +69,24 @@ function SignInUp() {
             </Fragment>
           )}
           {form === "step1" && (
-            <Step1
-              setForm={setForm}
-            />
+            <Fragment>
+              <Step1
+                setForm={setForm}
+              />
+              <button onClick={() => returnToLogin()}>
+                Login
+              </button>
+            </Fragment>
           )}
           {form === "step2" && (
-            <Step2
-              setForm={setForm}
-            />
+            <Fragment>
+              <Step2
+                setForm={setForm}
+              />
+              <button onClick={() => returnToLogin()}>
+                Login
+              </button>
+            </Fragment>
           )}
           {form === "result" && (
             <Fragment>
@@ -80,6 +95,9 @@ function SignInUp() {
                 setFormTitle={setFormTitle}
                 setSuccessCreateAccount={setSuccessCreateAccount}
               />
+              <button onClick={() => returnToLogin()}>
+                Login
+              </button>
             </Fragment>
           )}
         </div>
