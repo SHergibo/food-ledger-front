@@ -13,10 +13,12 @@ const loginIn = async (data) =>{
       response = res.status;
       let accessToken = res.data.token.accessToken;
       let refresh_token = res.data.token.refreshToken.token;
+      let user_id = res.data.user._id;
       let user_email = res.data.user.email;
   
       localStorage.setItem("access_token", accessToken);
       localStorage.setItem('refresh_token', refresh_token);
+      localStorage.setItem('user_id', user_id);
       localStorage.setItem('user_email', user_email);
     }
   })
@@ -35,6 +37,7 @@ const logout = async() =>{
     });
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem('user_id');
     localStorage.removeItem('user_email');
 
   } catch (error) {
