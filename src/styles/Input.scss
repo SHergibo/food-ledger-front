@@ -1,0 +1,64 @@
+.input-group {
+  position: relative;
+  padding: 13px 0 0;
+}
+
+.form-input {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid $white;
+  outline: 0;
+  font-size: 1.3rem;
+  color: $white;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:placeholder-shown ~ .form-label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+  }
+}
+
+.form-label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: $white;
+}
+
+.form-input:focus {
+  ~ .form-label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: $purple-light;
+  }
+  padding-bottom: 6px;  
+  border-width: 2px;
+  border-color: $purple-light;
+}
+
+.form-input{
+  &:required,&:invalid { box-shadow:none; }
+}
+
+.error-message{
+  height: 1rem;
+  span{
+    display: block;
+    padding: 3px 0;
+    font-size: .8rem;
+    color: red;
+  }
+}

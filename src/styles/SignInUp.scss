@@ -1,7 +1,68 @@
-.form-sign-in-up{
-  width: 500px;
+.container-sign-in{
   display: flex;
+  justify-content: center;
   flex-direction: column;
+  background-color: #fafafa;
+  width: inherit;
+  height: inherit;
+  .welcome-container{
+    display: flex;
+    align-items: center;
+    padding:0 1rem;
+    height: 40%;
+    h1{
+      color: $primary-color;
+      font-size: 3rem;
+    }
+  }
+  .form-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: $primary-color;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    height: 60%;
+    color: $white;
+    .switch-form-container{
+      margin: 0 3rem;
+      border-top: 1px solid $purple-light;
+      text-align: center;
+      .switch-form{
+        margin: .5rem 0 1.5rem 0;
+        cursor: pointer;
+        transition: .3s ease-in-out;
+        &:hover{
+          color: $purple-light;
+        }
+      }
+    }
+  }
+}
+
+.form-sign-in{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 3rem;
+  .btn-form-sign-in{
+    width: 50%;
+    margin: 2rem auto 0 auto;
+    padding: .8rem 0;
+    border: 1px solid $primary-color;
+    border-radius: 50px;
+    color: $primary-color;
+    font-weight: 700;
+    font-size: 1.2rem;
+    outline: none;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+    &:hover{
+      background-color: $primary-color;
+      border-color: $white;
+      color: $white;
+    }
+  }
 }
 
 .bad-user-code{

@@ -21,28 +21,30 @@ createStore({
 });
 
 function SignInUp() {
-  const [formTitle, setFormTitle] = useState("Sign In");
+  const [formTitle, setFormTitle] = useState("Bienvenue");
   const [successCreateAccount, setSuccessCreateAccount] = useState(false);
   const [form, setForm] = useState('login');
 
   const createUserForm = () => {
     setForm('step1');
-    setFormTitle('Sign up');
+    setFormTitle('Création de votre compte');
   }
 
   const returnToLogin = () => {
     setForm('login');
-    setFormTitle('Sign in');
+    setFormTitle('Bienvenue');
   }
 
   return (
     <Fragment>
 
       <StateMachineProvider>
-        <div className="container">
-          <h1>{formTitle}</h1>
+        <div className="container-sign-in">
+          <div className="welcome-container">
+            <h1>{formTitle}</h1>
+          </div>
           {form !== "login" && (
-            <nav className="container">
+            <nav>
               <ul className="steps">
                 <li className={form === "step1" ? "active" : ""}>
                   <span onClick={() => setForm("step1")}>Étape 1</span>
@@ -62,10 +64,8 @@ function SignInUp() {
               <Login
                 setSuccessCreateAccount={setSuccessCreateAccount}
                 successCreateAccount={successCreateAccount}
+                createUserForm={createUserForm}
               />
-              <button onClick={() => createUserForm()}>
-                Créer un compte
-              </button>
             </Fragment>
           )}
           {form === "step1" && (

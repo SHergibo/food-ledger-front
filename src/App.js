@@ -11,7 +11,7 @@ import Page404 from './components/Page404';
 
 function App() {
   return (
-    <div className="App">
+    <div className="app">
       <Switch>
         <IsLoggedRoute exact path="/" component={SignInUp} />
         <ProtectedRoute exact path="/app" component={PreppersApp} />
