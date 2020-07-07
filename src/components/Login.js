@@ -50,7 +50,6 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
           <div className="error-message">
             <ErrorMessage errors={errors} name="email" as="span" />
           </div>
-
         </div>
 
         <div className="input-group">
@@ -66,10 +65,9 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
           <div className="error-message">
             <ErrorMessage errors={errors} name="password" as="span" />
           </div>
-
         </div>
-
-        {errorMessage && <span>Adresse mail ou mot de passe invalide !</span>}
+        
+        {errorMessage && <span className="error-message">Adresse mail ou mot de passe invalide !</span>}
         {successCreateAccount && <span className="success-message">Votre compte a été créé avec succés !</span>}
         <button type="submit" className="btn-form-sign-in">
           Connexion

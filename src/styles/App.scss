@@ -10,10 +10,22 @@ body {
   background-color: #fafafa;
 }
 
+html, body, #root, .app {
+  height: 100%;
+}
+
 .app{
   display: flex;
   justify-content: center;
-  align-items: center;
   width: 100%;
-  height: 100vh;
+}
+
+
+/*Media queries*/
+
+/*Tablet*/
+@media screen and (min-width: 640px) {
+  .app{
+    align-items: center;
+  }
 }

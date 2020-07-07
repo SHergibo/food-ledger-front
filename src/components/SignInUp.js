@@ -43,7 +43,7 @@ function SignInUp() {
           <div className="welcome-container">
             <h1>{formTitle}</h1>
           </div>
-          {form !== "login" && (
+          {/* {form !== "login" && (
             <nav>
               <ul className="steps">
                 <li className={form === "step1" ? "active" : ""}>
@@ -57,7 +57,7 @@ function SignInUp() {
                 </li>
               </ul>
             </nav>
-          )}
+          )} */}
 
           {form === "login" && (
             <Fragment>
@@ -73,9 +73,9 @@ function SignInUp() {
               <Step1
                 setForm={setForm}
               />
-              <button onClick={() => returnToLogin()}>
+              {/* <button onClick={() => returnToLogin()}>
                 Login
-              </button>
+              </button> */}
             </Fragment>
           )}
           {form === "step2" && (

@@ -3,7 +3,7 @@ import { useForm, ErrorMessage } from "react-hook-form";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../utils/updateAction";
 
-function SignUpStep1({setForm}) {
+function SignUpStep1({ setForm }) {
   const { state, action } = useStateMachine(updateAction);
   const { handleSubmit, errors, register } = useForm({
     defaultValues: state.yourDetails
@@ -16,60 +16,92 @@ function SignUpStep1({setForm}) {
   };
 
   return (
-    <form className="form-sign-in-up" onSubmit={handleSubmit(onSubmit)}>
-      <h2>Création de compte : étape 1</h2>
-      <label>
-        Nom :
-        <input
-          name="firstName"
-          type="text"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="firstName" as="span" />
-      </label>
+    <div className="form-container">
 
-      <label>
-        Prénom :
-        <input
-          name="lastName"
-          type="text"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="lastName" as="span" />
-      </label>
 
-      <label>
-        Email :
-        <input
-          name="email"
-          type="email"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="email" as="span" />
-      </label>
+      <form className="form-sign-in" onSubmit={handleSubmit(onSubmit)}>
+        <h2>Création de compte : étape 1</h2>
 
-      <label>
-        Mot de passe :
-        <input
-          name="password"
-          type="password"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="password" as="span" />
-      </label>
+        <div className="input-group">
+          <input
+            name="firstName"
+            type="text"
+            id="fistName"
+            placeholder="Nom"
+            className="form-input"
+            ref={register({ required: "Ce champ est requis !" })}
+          />
+          <label htmlFor="fistName" className="form-label">Nom *</label>
+          <div className="error-message">
+            <ErrorMessage errors={errors} name="firstName" as="span" />
+          </div>
+        </div>
 
-      <label>
-        Confirmer mot de passe :
-        <input
-          name="confirmPassword"
-          type="password"
-          ref={register({ required: "Ce champ est requis." })} //TODO check si il n'y à pas un equal avec un autre champs dans la doc de react-hook-form
-        />
-        <ErrorMessage errors={errors} name="confirmPassword" as="span" />
-      </label>
+        <div className="input-group">
+          <input
+            name="lastName"
+            type="text"
+            id="lastName"
+            placeholder="Prénom"
+            className="form-input"
+            ref={register({ required: "Ce champ est requis !" })}
+          />
+          <label htmlFor="lastName" className="form-label">Prénom *</label>
+          <div className="error-message">
+            <ErrorMessage errors={errors} name="lastName" as="span" />
+          </div>
+        </div>
 
-      <input type="submit" />
-    </form>
+        <div className="input-group">
+          <input
+            name="email"
+            type="email"
+            id="email"
+            placeholder="email"
+            className="form-input"
+            ref={register({ required: "Ce champ est requis !" })}
+          />
+          <label htmlFor="email" className="form-label">Email *</label>
+          <div className="error-message">
+            <ErrorMessage errors={errors} name="email" as="span" />
+          </div>
+        </div>
+
+        <div className="input-group">
+          <input
+            name="password"
+            type="password"
+            id="password"
+            placeholder="Mot de passe"
+            className="form-input"
+            ref={register({ required: "Ce champ est requis !" })}
+          />
+          <label htmlFor="password" className="form-label">Mot de passe *</label>
+          <div className="error-message">
+            <ErrorMessage errors={errors} name="password" as="span" />
+          </div>
+        </div>
+
+        <div className="input-group">
+          <input
+            name="confirmPassword"
+            type="password"
+            id="confirmPassword"
+            placeholder="Confirmer mot de passe"
+            className="form-input"
+            ref={register({ required: "Ce champ est requis !" })}
+          />
+          <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
+          <div className="error-message">
+            <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+          </div>
+        </div>
+
+        <button type="submit" className="btn-form-sign-in">
+          Étape suivante
+        </button>
+      </form>
+    </div>
   )
 }
 
