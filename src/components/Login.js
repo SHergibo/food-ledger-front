@@ -35,50 +35,54 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
   return (
     <div className="form-container">
       <form className="form-sign-in" onSubmit={handleSubmit(onSubmit)}>
-        <h2>Login</h2>
+        <div>
+          <h2>Login</h2>
 
-        <div className="input-group">
-          <input
-            name="email"
-            type="email"
-            id="email"
-            placeholder="email"
-            className="form-input"
-            ref={register({ required: "Ce champ est requis !" })}
-          />
-          <label htmlFor="email" className="form-label">Email *</label>
-          <div className="error-message">
-            <ErrorMessage errors={errors} name="email" as="span" />
+          <div className="input-group">
+            <input
+              name="email"
+              type="email"
+              id="email"
+              placeholder="email"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
+            />
+            <label htmlFor="email" className="form-label">Email *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="email" as="span" />
+            </div>
           </div>
+
+          <div className="input-group">
+            <input
+              name="password"
+              type="password"
+              id="password"
+              placeholder="password"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
+            />
+            <label htmlFor="password" className="form-label">Mot de passe *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="password" as="span" />
+            </div>
+          </div>
+
+          {errorMessage && <span className="error-message">Adresse mail ou mot de passe invalide !</span>}
+          {successCreateAccount && <span className="success-message">Votre compte a été créé avec succés !</span>}
+          <button type="submit" className="btn-form-sign-in">
+            Connexion
+          </button>
         </div>
 
-        <div className="input-group">
-          <input
-            name="password"
-            type="password"
-            id="password"
-            placeholder="password"
-            className="form-input"
-            ref={register({ required: "Ce champ est requis !" })}
-          />
-          <label htmlFor="password" className="form-label">Mot de passe *</label>
-          <div className="error-message">
-            <ErrorMessage errors={errors} name="password" as="span" />
-          </div>
+        <div className="switch-form-container">
+          <p className="switch-form" onClick={() => createUserForm()}>
+            Créer un compte
+        </p>
         </div>
-        
-        {errorMessage && <span className="error-message">Adresse mail ou mot de passe invalide !</span>}
-        {successCreateAccount && <span className="success-message">Votre compte a été créé avec succés !</span>}
-        <button type="submit" className="btn-form-sign-in">
-          Connexion
-        </button>
       </form>
 
-      <div className="switch-form-container">
-        <p className="switch-form" onClick={() => createUserForm()}>
-          Créer un compte
-        </p>
-      </div>
+
 
     </div>
   )

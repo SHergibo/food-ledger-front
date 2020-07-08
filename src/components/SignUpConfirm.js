@@ -4,8 +4,10 @@ import { useStateMachine } from "little-state-machine";
 import updateAction from "../utils/updateAction";
 import axios from 'axios';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
+function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorBool, setErrorBool] = useState(false);
@@ -83,131 +85,189 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
         return status < 500;
       }
     }).then((response) => {
-        if (response.status === 200) {
-          resetStore();
-          setErrorBool(false);
-          setErrorMessage('');
-        } else if(response.status === 404 && response.data.data) {
-          let responseDataArray = response.data.data;
-          responseDataArray.forEach(element => {
-            let searchUserCode = document.getElementById(element);
-            searchUserCode.classList.add('bad-user-code');
-          });
-          setErrorBool(true);
-          if(response.data.data.length === 1){
-            setErrorMessage('Il y a un mauvais code utilisateur!');
-          } else {
-            setErrorMessage('Il y a plusieurs mauvais codes utilisateur!');
-          }
-        } else if(response.status === 400){
-          setErrorBool(true);
-          setErrorMessage('Code famille invalide!');
+      if (response.status === 200) {
+        resetStore();
+        setErrorBool(false);
+        setErrorMessage('');
+      } else if (response.status === 404 && response.data.data) {
+        let responseDataArray = response.data.data;
+        responseDataArray.forEach(element => {
+          let searchUserCode = document.getElementById(element);
+          searchUserCode.classList.add('bad-user-code');
+        });
+        setErrorBool(true);
+        if (response.data.data.length === 1) {
+          setErrorMessage('Il y a un mauvais code utilisateur!');
+        } else {
+          setErrorMessage('Il y a plusieurs mauvais codes utilisateur!');
         }
-      });
+      } else if (response.status === 400) {
+        setErrorBool(true);
+        setErrorMessage('Code famille invalide!');
+      }
+    });
   };
   return (
-    <form className="form-sign-in-up" onSubmit={handleSubmit(onSubmit)}>
-      <h2>Création de compte : Confirmation</h2>
-      <label>
-        Nom :
-        <input
-          name="firstName"
-          type="text"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="firstName" as="span" />
-      </label>
+    <div className="form-container">
+      <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <h2>Création de compte : Confirmation</h2>
 
-      <label>
-        Prénom :
-        <input
-          name="lastName"
-          type="text"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="lastName" as="span" />
-      </label>
-
-      <label>
-        Email :
-        <input
-          name="email"
-          type="email"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="email" as="span" />
-      </label>
-
-      <label>
-        Mot de passe :
-        <input
-          name="password"
-          type="password"
-          ref={register({ required: "Ce champ est requis." })}
-        />
-        <ErrorMessage errors={errors} name="password" as="span" />
-      </label>
-
-      <label>
-        Confirmer mot de passe :
-        <input
-          name="confirmPassword"
-          type="password"
-          ref={register({ required: "Ce champ est requis." })} //TODO check si il n'y à pas un equal avec un autre champs dans la doc de react-hook-form
-        />
-        <ErrorMessage errors={errors} name="confirmPassword" as="span" />
-      </label>
-
-      {state.yourDetails.householdCodeCheck === true && (
-        <label>
-          Code famille:
-          <input
-            name="householdCode"
-            type="text"
-            ref={register({ required: "Ce champ est requis." })}
-          />
-          <ErrorMessage errors={errors} name="householdCode" as="span" />
-        </label>
-      )}
-
-      {state.yourDetails.householdNameCheck === true && (
-        <Fragment>
-          <label>
-            Nom de la famille:
-          <input
-              name="householdName"
+          <div className="input-group">
+            <input
+              name="firstName"
               type="text"
-              ref={register({ required: "Ce champ est requis." })}
+              id="fistName"
+              placeholder="Nom"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
             />
-            <ErrorMessage errors={errors} name="householdName" as="span" />
-          </label>
-          {state.yourDetails.otherMemberCheck === true && (
+            <label htmlFor="fistName" className="form-label">Nom *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="firstName" as="span" />
+            </div>
+          </div>
+
+          <div className="input-group">
+            <input
+              name="lastName"
+              type="text"
+              id="lastName"
+              placeholder="Prénom"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
+            />
+            <label htmlFor="lastName" className="form-label">Prénom *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="lastName" as="span" />
+            </div>
+          </div>
+
+          <div className="input-group">
+            <input
+              name="email"
+              type="email"
+              id="email"
+              placeholder="email"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
+            />
+            <label htmlFor="email" className="form-label">Email *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="email" as="span" />
+            </div>
+          </div>
+
+          <div className="input-group">
+            <input
+              name="password"
+              type="password"
+              id="password"
+              placeholder="Mot de passe"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
+            />
+            <label htmlFor="password" className="form-label">Mot de passe *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="password" as="span" />
+            </div>
+          </div>
+
+          {/* TODO afficher champ si le password est changer */}
+          <div className="input-group">
+            <input
+              name="confirmPassword"
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirmer mot de passe"
+              className="form-input"
+              ref={register({ required: "Ce champ est requis !" })}
+            />
+            <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
+            <div className="error-message">
+              <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+            </div>
+          </div>
+
+          {state.yourDetails.householdCodeCheck === true && (
+            <div className="input-group">
+              <input
+                name="householdCode"
+                type="text"
+                id="householdCode"
+                placeholder="Code famille"
+                className="form-input"
+                ref={register({ required: "Ce champ est requis !" })}
+              />
+              <label htmlFor="householdCode" className="form-label">Code famille *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="householdCode" as="span" />
+              </div>
+            </div>
+          )}
+
+          {state.yourDetails.householdNameCheck === true && (
             <Fragment>
-              <label>
-                Code utilisateur:
-              <input type="text" name="otherMember" id="otherMember" />
-                <button onClick={addOtherMember}>+</button>
-              </label>
-              {state.yourDetails.otherMemberArray.length === 0 && (
-                <p>Aucun code utilisateur.</p>
+            <div className="input-group">
+                <input
+                  name="householdName"
+                  type="text"
+                  id="householdName"
+                  placeholder="Nom de la famille"
+                  className="form-input"
+                  ref={register({ required: "Ce champ est requis !" })}
+                />
+                <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
+                <div className="error-message">
+                  <ErrorMessage errors={errors} name="householdName" as="span" />
+                </div>
+              </div>
+              {state.yourDetails.otherMemberCheck === true && (
+                <Fragment>
+                <div className="div-usercode">
+                    <div className="input-group">
+                      <input
+                        name="otherMember"
+                        type="text"
+                        id="otherMember"
+                        placeholder="Code utilisateur"
+                        className="form-input"
+                      />
+                      <label htmlFor="otherMember" className="form-label">Code utilisateur *</label>
+                    </div>
+                    <button className="btn-add-usercode" onClick={addOtherMember}>+</button>
+                  </div>
+                  {state.yourDetails.otherMemberArray.length === 0 && (
+                    <p>Aucun code utilisateur.</p>
+                  )}
+                  {state.yourDetails.otherMemberArray.length >= 1 && (
+                    <ul className="list-usercode">
+                      {
+                        state.yourDetails.otherMemberArray.map((item, index) => {
+                          return <li key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                        })
+                      }
+                    </ul>
+                  )}
+
+                </Fragment>
               )}
-              {state.yourDetails.otherMemberArray.length >= 1 && (
-                <ul>
-                  {
-                    state.yourDetails.otherMemberArray.map((item, index) => {
-                      return <li id={item} key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}>x</button></li>
-                    })
-                  }
-                </ul>
-              )}
-              
             </Fragment>
           )}
-        </Fragment>
-      )}
-      {errorBool && <span>{errorMessage}</span>}
-      <input type="submit" />
-    </form>
+          {errorBool && <span>{errorMessage}</span>}
+          <button type="submit" className="btn-form-sign-in">
+            Créer son compte
+          </button>
+        </div>
+
+        <div className="switch-form-container">
+          <p className="switch-form" onClick={() => returnToLogin()}>
+            Connexion
+          </p>
+        </div>
+
+      </form>
+    </div>
   )
 }
 

@@ -5,27 +5,36 @@
   background-color: #fafafa;
   width: inherit;
   .welcome-container{
+    position: relative;
     display: flex;
     align-items: center;
     padding:0 1rem;
     height: 40%;
     min-height: 100px;
+    color: $primary-color;
     h1{
-      color: $primary-color;
       font-size: 3rem;
+    }
+    svg{
+      font-size: 1.5rem;
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      transition: .3s ease-in-out;
+      &:hover{
+        color: $blue;
+      }
     }
   }
   .form-container{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    background-color: $primary-color;
     min-height: 60%;
     color: $white;
     .switch-form-container{
-      margin: 0 2.5rem;
+      margin-top: 2rem;
+      padding: 0 2.5rem;
       border-top: 1px solid $white;
       text-align: center;
       .switch-form{
@@ -41,29 +50,85 @@
 }
 
 .form-sign-in{
+  @include form-sign-in($height: true);
+}
+
+.form-sign-up{
+  @include form-sign-in($height: false);
+}
+
+.btn-form-sign-in{
   display: flex;
   justify-content: center;
-  flex-direction: column;
-  padding: 2.5rem 2.5rem 0;
-  background-color: $primary-color;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-  .btn-form-sign-in{
-    width: 50%;
-    margin: .8rem auto 0 auto;
-    padding: .8rem 0;
-    border: 1px solid $primary-color;
-    border-radius: 50px;
+  margin: .8rem auto 0 auto;
+  padding: .8rem 1rem;
+  border: 1px solid $primary-color;
+  border-radius: 2.5rem;
+  color: $primary-color;
+  font-weight: 700;
+  font-size: 1.2rem;
+  outline: none;
+  cursor: pointer;
+  transition: .3s ease-in-out;
+  &:hover{
+    background-color: $blue;
+    color: $white;
+  }
+  svg{
+    margin-left: 1rem;
+  }
+}
+
+.div-usercode{
+  display: flex;
+  align-items: baseline;
+  .input-group{
+    width: 90%;
+    margin-bottom: 1rem;
+  }
+  .btn-add-usercode{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: .5rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    background-color: $white;
+    font-size: 2rem;
     color: $primary-color;
-    font-weight: 700;
-    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
     outline: none;
-    cursor: pointer;
-    transition: .3s ease-in-out;
+    transition: .2s ease-in-out;
     &:hover{
-      background-color: $primary-color;
-      border-color: $white;
-      color: $white;
+      background-color: $blue;
+      color: white;
+    }
+  }
+}
+
+.list-usercode{
+  list-style: none;
+  li{
+    display: flex;
+    align-items: center;
+    margin-bottom: .8rem;
+  }
+  button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-left: .8rem;
+    border: none;
+    border-radius: 100%;
+    font-size: 1.2rem;
+    color: $primary-color;
+    outline: none;
+    transition: .2s ease-in-out;
+    &:hover{
+      color: $red;
     }
   }
 }
@@ -90,10 +155,11 @@
 /*Tablet*/
 @media screen and (min-width: 640px) {
   .container-sign-in{
-    overflow: hidden;
     width: 350px;
     min-height: 800px;
-    border-radius: 30px;
+  }
+  .form-sign-in{
+    border-radius: 3rem;
   }
 }
 

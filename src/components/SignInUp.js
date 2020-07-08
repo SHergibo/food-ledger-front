@@ -4,6 +4,8 @@ import Login from "./Login";
 import Step1 from "./SignUpStep1";
 import Step2 from "./SignUpStep2";
 import Result from "./SignUpConfirm.js";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 createStore({
   yourDetails: {
@@ -41,23 +43,21 @@ function SignInUp() {
       <StateMachineProvider>
         <div className="container-sign-in">
           <div className="welcome-container">
+            {form !== "login" && (
+              <FontAwesomeIcon icon={faChevronLeft} onClick={
+                () => {
+                  if (form === "step1") {
+                    returnToLogin();
+                  } else if (form === "step2") {
+                    setForm("step1");
+                  } else if (form === "confirm") {
+                    setForm("step2")
+                  }
+                }
+              } />
+            )}
             <h1>{formTitle}</h1>
           </div>
-          {/* {form !== "login" && (
-            <nav>
-              <ul className="steps">
-                <li className={form === "step1" ? "active" : ""}>
-                  <span onClick={() => setForm("step1")}>Étape 1</span>
-                </li>
-                <li className={form === "step2" ? "active" : ""}>
-                  <span onClick={() => setForm("step2")}>Étape 2</span>
-                </li>
-                <li className={form === "result" ? "active" : ""}>
-                  <span onClick={() => setForm("result")}>Confirmation</span>
-                </li>
-              </ul>
-            </nav>
-          )} */}
 
           {form === "login" && (
             <Fragment>
@@ -72,32 +72,26 @@ function SignInUp() {
             <Fragment>
               <Step1
                 setForm={setForm}
+                returnToLogin={returnToLogin}
               />
-              {/* <button onClick={() => returnToLogin()}>
-                Login
-              </button> */}
             </Fragment>
           )}
           {form === "step2" && (
             <Fragment>
               <Step2
                 setForm={setForm}
+                returnToLogin={returnToLogin}
               />
-              <button onClick={() => returnToLogin()}>
-                Login
-              </button>
             </Fragment>
           )}
-          {form === "result" && (
+          {form === "confirm" && (
             <Fragment>
               <Result
                 setForm={setForm}
                 setFormTitle={setFormTitle}
                 setSuccessCreateAccount={setSuccessCreateAccount}
+                returnToLogin={returnToLogin}
               />
-              <button onClick={() => returnToLogin()}>
-                Login
-              </button>
             </Fragment>
           )}
         </div>
