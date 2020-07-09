@@ -7,12 +7,11 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 function SignUpStep1({ setForm, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
-  const { handleSubmit, errors, register } = useForm({
+  const { handleSubmit, errors, register, getValues } = useForm({
     defaultValues: state.yourDetails
   });
 
   const onSubmit = data => {
-    //TODO confirm password avant d'action data
     action(data);
     setForm('step2');
   };
@@ -76,11 +75,12 @@ function SignUpStep1({ setForm, returnToLogin }) {
               id="password"
               placeholder="Mot de passe"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              ref={register({ required: true, minLength: 7 })}
             />
             <label htmlFor="password" className="form-label">Mot de passe *</label>
             <div className="error-message">
-              <ErrorMessage errors={errors} name="password" as="span" />
+            {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
+            {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
             </div>
           </div>
 
@@ -91,7 +91,9 @@ function SignUpStep1({ setForm, returnToLogin }) {
               id="confirmPassword"
               placeholder="Confirmer mot de passe"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              ref={register({
+                    validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
+                  })}
             />
             <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
             <div className="error-message">

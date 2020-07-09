@@ -5,13 +5,14 @@ import updateAction from "../utils/updateAction";
 import axios from 'axios';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorBool, setErrorBool] = useState(false);
-  const { handleSubmit, errors, register } = useForm({
+  const [passwordChanged, setPasswordChanged] = useState(false);
+  const { handleSubmit, errors, register, getValues } = useForm({
     defaultValues: state.yourDetails
   });
   const resetStore = () => {
@@ -32,6 +33,15 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
     setSuccessCreateAccount(true);
     setForm('login');
     setFormTitle('Sign In')
+  };
+
+  const changePassword = (e) => {
+    console.log(e.target.value);
+    e.preventDefault();
+    setPasswordChanged(true);
+    if(e.target.value === state.yourDetails.password){
+      setPasswordChanged(false);
+    }
   };
 
   const addOtherMember = (e) => {
@@ -165,29 +175,34 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
               id="password"
               placeholder="Mot de passe"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              ref={register({ required: true, minLength: 7 })}
+              onChange={changePassword}
             />
             <label htmlFor="password" className="form-label">Mot de passe *</label>
             <div className="error-message">
-              <ErrorMessage errors={errors} name="password" as="span" />
+            {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
+            {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
             </div>
           </div>
 
-          {/* TODO afficher champ si le password est changer */}
-          <div className="input-group">
-            <input
-              name="confirmPassword"
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirmer mot de passe"
-              className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
-            />
-            <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
-            <div className="error-message">
-              <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+          {passwordChanged === true && (
+            <div className="input-group">
+              <input
+                name="confirmPassword"
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirmer mot de passe"
+                className="form-input"
+                ref={register({
+                      validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
+                    })}
+              />
+              <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+              </div>
             </div>
-          </div>
+          )}
 
           {state.yourDetails.householdCodeCheck === true && (
             <div className="input-group">
@@ -244,7 +259,9 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                     <ul className="list-usercode">
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
-                          return <li key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                          return (
+                          <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                          )
                         })
                       }
                     </ul>

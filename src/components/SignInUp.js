@@ -42,7 +42,7 @@ function SignInUp() {
 
       <StateMachineProvider>
         <div className="container-sign-in">
-          <div className="welcome-container">
+          <div className={`welcome-container ${form === "login" ? "welcome-container-login": ""}`}>
             {form !== "login" && (
               <FontAwesomeIcon icon={faChevronLeft} onClick={
                 () => {
@@ -56,7 +56,9 @@ function SignInUp() {
                 }
               } />
             )}
-            <h1>{formTitle}</h1>
+            <div className="welcome-title">
+              <h1>{formTitle}</h1>
+            </div>
           </div>
 
           {form === "login" && (

@@ -73,7 +73,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
 
   return (
     <div className="form-container">
-      <form className="form-sign-in" onSubmit={handleSubmit(onSubmit)}>
+      <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <h2>Création de compte : étape 2</h2>
           {state.yourDetails.householdNameCheck !== true && (
@@ -133,7 +133,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 </div>
               </div>
               <label className="container-checkbox">
-                Avez-vous un ou des code utilisateur ?
+                Autre code utilisateur ?
               <input
                   name="otherMemberCheck"
                   type="checkbox"
@@ -161,7 +161,9 @@ function SignUpStep2({ setForm, returnToLogin }) {
                     <ul className="list-usercode">
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
-                          return <li key={`userCode-${index}`}>{item} <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                          return (
+                          <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                          )
                         })
                       }
                     </ul>
@@ -171,7 +173,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
             </Fragment>
           )}
           {errorMessage === true && (
-            <span>Vous devez repondre à une de ces deux questions et remplire le formulaire.</span>
+            <span className="error-message">Vous devez repondre à une de ces deux questions et remplire le formulaire.</span>
           )}
           <button type="submit" className="btn-form-sign-in">
             Étape suivante <FontAwesomeIcon icon={faAngleRight} />
