@@ -23,33 +23,35 @@ function SignUpStep1({ setForm, returnToLogin }) {
         <div>
           <h2>Création de compte : étape 1</h2>
 
-          <div className="input-group">
-            <input
-              name="firstName"
-              type="text"
-              id="fistName"
-              placeholder="Nom"
-              className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
-            />
-            <label htmlFor="fistName" className="form-label">Nom *</label>
-            <div className="error-message">
-              <ErrorMessage errors={errors} name="firstName" as="span" />
+          <div className="input-flex-group">
+            <div className="input-group input-siblings">
+              <input
+                name="firstName"
+                type="text"
+                id="fistName"
+                placeholder="Nom"
+                className="form-input"
+                ref={register({ required: "Ce champ est requis !" })}
+              />
+              <label htmlFor="fistName" className="form-label">Nom *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="firstName" as="span" />
+              </div>
             </div>
-          </div>
 
-          <div className="input-group">
-            <input
-              name="lastName"
-              type="text"
-              id="lastName"
-              placeholder="Prénom"
-              className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
-            />
-            <label htmlFor="lastName" className="form-label">Prénom *</label>
-            <div className="error-message">
-              <ErrorMessage errors={errors} name="lastName" as="span" />
+            <div className="input-group">
+              <input
+                name="lastName"
+                type="text"
+                id="lastName"
+                placeholder="Prénom"
+                className="form-input"
+                ref={register({ required: "Ce champ est requis !" })}
+              />
+              <label htmlFor="lastName" className="form-label">Prénom *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="lastName" as="span" />
+              </div>
             </div>
           </div>
 
@@ -68,36 +70,38 @@ function SignUpStep1({ setForm, returnToLogin }) {
             </div>
           </div>
 
-          <div className="input-group">
-            <input
-              name="password"
-              type="password"
-              id="password"
-              placeholder="Mot de passe"
-              className="form-input"
-              ref={register({ required: true, minLength: 7 })}
-            />
-            <label htmlFor="password" className="form-label">Mot de passe *</label>
-            <div className="error-message">
-            {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
-            {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
+          <div className="input-flex-group">
+            <div className="input-group input-siblings">
+              <input
+                name="password"
+                type="password"
+                id="password"
+                placeholder="Mot de passe"
+                className="form-input"
+                ref={register({ required: true, minLength: 7 })}
+              />
+              <label htmlFor="password" className="form-label">Mot de passe *</label>
+              <div className="error-message">
+                {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
+                {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
+              </div>
             </div>
-          </div>
 
-          <div className="input-group">
-            <input
-              name="confirmPassword"
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirmer mot de passe"
-              className="form-input"
-              ref={register({
-                    validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
-                  })}
-            />
-            <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
-            <div className="error-message">
-              <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+            <div className="input-group">
+              <input
+                name="confirmPassword"
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirmer mot de passe"
+                className="form-input"
+                ref={register({
+                  validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
+                })}
+              />
+              <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+              </div>
             </div>
           </div>
 

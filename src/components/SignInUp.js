@@ -41,7 +41,7 @@ function SignInUp() {
     <Fragment>
 
       <StateMachineProvider>
-        <div className="container-sign-in">
+        <div className={`${form === "login" ? "container-sign-in": "container-sign-up"}`}>
           <div className={`welcome-container ${form === "login" ? "welcome-container-login": ""}`}>
             {form !== "login" && (
               <FontAwesomeIcon icon={faChevronLeft} onClick={

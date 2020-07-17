@@ -39,7 +39,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
     console.log(e.target.value);
     e.preventDefault();
     setPasswordChanged(true);
-    if(e.target.value === state.yourDetails.password){
+    if (e.target.value === state.yourDetails.password) {
       setPasswordChanged(false);
     }
   };
@@ -123,35 +123,38 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
         <div>
           <h2>Création de compte : Confirmation</h2>
 
-          <div className="input-group">
-            <input
-              name="firstName"
-              type="text"
-              id="fistName"
-              placeholder="Nom"
-              className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
-            />
-            <label htmlFor="fistName" className="form-label">Nom *</label>
-            <div className="error-message">
-              <ErrorMessage errors={errors} name="firstName" as="span" />
+          <div className="input-flex-group">
+            <div className="input-group input-siblings">
+              <input
+                name="firstName"
+                type="text"
+                id="fistName"
+                placeholder="Nom"
+                className="form-input"
+                ref={register({ required: "Ce champ est requis !" })}
+              />
+              <label htmlFor="fistName" className="form-label">Nom *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="firstName" as="span" />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <input
+                name="lastName"
+                type="text"
+                id="lastName"
+                placeholder="Prénom"
+                className="form-input"
+                ref={register({ required: "Ce champ est requis !" })}
+              />
+              <label htmlFor="lastName" className="form-label">Prénom *</label>
+              <div className="error-message">
+                <ErrorMessage errors={errors} name="lastName" as="span" />
+              </div>
             </div>
           </div>
 
-          <div className="input-group">
-            <input
-              name="lastName"
-              type="text"
-              id="lastName"
-              placeholder="Prénom"
-              className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
-            />
-            <label htmlFor="lastName" className="form-label">Prénom *</label>
-            <div className="error-message">
-              <ErrorMessage errors={errors} name="lastName" as="span" />
-            </div>
-          </div>
 
           <div className="input-group">
             <input
@@ -168,41 +171,44 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
             </div>
           </div>
 
-          <div className="input-group">
-            <input
-              name="password"
-              type="password"
-              id="password"
-              placeholder="Mot de passe"
-              className="form-input"
-              ref={register({ required: true, minLength: 7 })}
-              onChange={changePassword}
-            />
-            <label htmlFor="password" className="form-label">Mot de passe *</label>
-            <div className="error-message">
-            {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
-            {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
-            </div>
-          </div>
-
-          {passwordChanged === true && (
-            <div className="input-group">
+          <div className="input-flex-group">
+            <div className="input-group" className={`input-group ${passwordChanged ? "input-siblings": ""}`}>
               <input
-                name="confirmPassword"
+                name="password"
                 type="password"
-                id="confirmPassword"
-                placeholder="Confirmer mot de passe"
+                id="password"
+                placeholder="Mot de passe"
                 className="form-input"
-                ref={register({
-                      validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
-                    })}
+                ref={register({ required: true, minLength: 7 })}
+                onChange={changePassword}
               />
-              <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
+              <label htmlFor="password" className="form-label">Mot de passe *</label>
               <div className="error-message">
-                <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+                {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
+                {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
               </div>
             </div>
-          )}
+
+            {passwordChanged === true && (
+              <div className="input-group">
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  id="confirmPassword"
+                  placeholder="Confirmer mot de passe"
+                  className="form-input"
+                  ref={register({
+                    validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
+                  })}
+                />
+                <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
+                <div className="error-message">
+                  <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+                </div>
+              </div>
+            )}
+          </div>
+
 
           {state.yourDetails.householdCodeCheck === true && (
             <div className="input-group">
@@ -223,7 +229,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
 
           {state.yourDetails.householdNameCheck === true && (
             <Fragment>
-            <div className="input-group">
+              <div className="input-group">
                 <input
                   name="householdName"
                   type="text"
@@ -239,7 +245,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
               </div>
               {state.yourDetails.otherMemberCheck === true && (
                 <Fragment>
-                <div className="div-usercode">
+                  <div className="div-usercode">
                     <div className="input-group">
                       <input
                         name="otherMember"
@@ -260,7 +266,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
                           return (
-                          <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                            <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
                           )
                         })
                       }

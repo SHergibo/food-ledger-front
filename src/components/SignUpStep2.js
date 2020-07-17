@@ -78,7 +78,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
           <h2>Création de compte : étape 2</h2>
           {state.yourDetails.householdNameCheck !== true && (
             <label className="container-checkbox">
-              Voulez-vous rejoindre une famille ?
+              Avez-vous un code famille ?
               <input
                 name="householdCodeCheck"
                 type="checkbox"

@@ -1,4 +1,4 @@
-.container-sign-in{
+.container-sign-in, .container-sign-up{
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -22,6 +22,7 @@
     svg{
       margin-top: 1.5rem;
       font-size: 1.5rem;
+      cursor: pointer;
       transition: .3s ease-in-out;
       &:hover{
         color: $blue;
@@ -166,8 +167,43 @@
   .container-sign-in{
     width: 350px;
   }
+  .container-sign-up{
+    width: 60%;
+    min-width: 600px;
+    .input-group{
+      width: 50%;
+      padding-right: 1em;
+    }
+
+    .input-flex-group{
+      display: flex;
+      .input-group + .input-group{
+        margin-left: 2em;
+        padding-right: 0;
+      }
+
+      .input-siblings{
+        padding-right: 0;
+      }
+    }
+
+
+  }
   .form-sign-in, .form-sign-up{
     border-radius: 3rem;
+  }
+  .list-usercode{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    max-height: 200px;
+  }
+}
+
+/*Full-screen*/
+@media screen and (min-width: 960px) {
+  .container-sign-up{
+    max-width: 800px;
   }
 }
 
