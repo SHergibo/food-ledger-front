@@ -15,3 +15,18 @@
     font-size: 1.4rem;
   }
 }
+
+@mixin svgFill($height) {
+  svg {
+    height: $height;
+    path {
+      fill: $grey;
+      transition: 0.2s ease-in-out;
+    }
+    &:hover {
+      path {
+        fill: $white;
+      }
+    }
+  }
+}

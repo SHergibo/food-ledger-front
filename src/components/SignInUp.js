@@ -38,7 +38,7 @@ function SignInUp() {
   }
 
   return (
-    <Fragment>
+    <div className="wrapper-sign-in-up">
 
       <StateMachineProvider>
         <div className={`${form === "login" ? "container-sign-in": "container-sign-up"}`}>
@@ -98,7 +98,7 @@ function SignInUp() {
           )}
         </div>
       </StateMachineProvider>
-    </Fragment>
+    </div>
   )
 }
 

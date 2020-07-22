@@ -1,0 +1,21 @@
+.container-row{
+  display: block;
+}
+
+.container-column{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/*Media queries*/
+
+/*Full-screen*/
+@media screen and (min-width: 960px){
+  .container-row{
+    display: flex;
+  }
+  .container-prepper-app{
+    display: flex;
+  }
+}

@@ -14,7 +14,8 @@ function App() {
     <div className="app">
       <Switch>
         <IsLoggedRoute exact path="/" component={SignInUp} />
-        <ProtectedRoute exact path="/app" component={PreppersApp} />
+        {/* <ProtectedRoute exact path="/app" component={PreppersApp} /> */}
+        <Route exact path="/app" component={PreppersApp} />
         <Route path="*" component={Page404} />
       </Switch>
     </div>
