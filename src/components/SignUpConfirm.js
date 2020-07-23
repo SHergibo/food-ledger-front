@@ -172,7 +172,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
           </div>
 
           <div className="input-flex-group">
-            <div className="input-group" className={`input-group ${passwordChanged ? "input-siblings": ""}`}>
+            <div className={`input-group ${passwordChanged ? "input-siblings": ""}`}>
               <input
                 name="password"
                 type="password"

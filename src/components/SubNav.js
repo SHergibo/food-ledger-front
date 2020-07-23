@@ -1,17 +1,22 @@
 import React from 'react';
-import Logo from './Logo';
+import PropTypes from 'prop-types';
 
-function SubNav() {
+function SubNav({ logOut }) {
   return (
     <div className="container-subnav">
-      <Logo />
       <div className="interaction-sub-menu">
         <p>Notifications</p>
         <p>Img profil</p>
-        <p>Logout</p>
+        <p onClick={logOut}>Logout</p>
       </div>
     </div>
   )
 }
 
-export default SubNav;
+SubNav.propTypes = {
+  logOut : PropTypes.func.isRequired,
+}
+
+export default SubNav
+
+

@@ -16,7 +16,7 @@ function Page404({ history }) {
 }
 
 Page404.propTypes = {
-  history: PropTypes.object,
+  history: PropTypes.object.isRequired,
 }
 
 export default Page404

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { logout } from './../utils/Auth';
 import Logo from './Logo';
+import PropTypes from 'prop-types';
 
-function Nav({history}) {
+function Nav({ logOut }) {
 
   const burgerMenu = () => {
     let menuResp = document.getElementsByClassName('menu')[0];
@@ -20,33 +20,26 @@ function Nav({history}) {
     }
   };
 
-  let logOut = async () => {
-    await logout();
-    history.push("/");
-  };
-
   return (
     <div className="main-menu">
-      <div className="logo-main-menu">
-        <Logo />
-      </div>
+      <Logo />
       
       <nav className="menu">
-        <ul>
+        <ul onClick={burgerMenu}>
           <li>
-            <Link onClick={burgerMenu}>Accueil</Link>
+            <Link to="/app">Accueil</Link>
           </li>
           <li>
-            <Link onClick={burgerMenu}>Liste Produit</Link>
+            <Link to="/app/liste-produit">Liste Produit</Link>
           </li>
           <li>
-            <Link onClick={burgerMenu}>Historique</Link>
+            <Link to="/app/historique">Historique</Link>
           </li>
           <li>
-            <Link onClick={burgerMenu}>Option</Link>
+            <Link to="/app/options">Options</Link>
           </li>
           <li>
-            <Link onClick={burgerMenu}>Statistique</Link>
+            <Link to="/app/statistiques">Statistique</Link>
           </li>
           <li>
             <Link onClick={logOut}>Logout</Link>
@@ -70,6 +63,10 @@ function Nav({history}) {
       </div>
     </div>
   )
+}
+
+Nav.propTypes = {
+  logOut : PropTypes.func.isRequired,
 }
 
 export default Nav;

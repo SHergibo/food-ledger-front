@@ -1,16 +1,21 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import { Route } from "react-router-dom";
+import Home from './Home';
+import ProductList from './ProductList';
+import Historic from './Historic';
+import Options from './Options';
+import Statistics from './Statistics';
 
-function MainContainer(props) {
+function MainContainer() {
   return (
     <div>
-      MainContainer
+      <Route exact path="/app" component={Home} />
+      <Route path="/app/liste-produit" component={ProductList} />
+      <Route path="/app/historique" component={Historic} />
+      <Route path="/app/options" component={Options} />
+      <Route path="/app/statistiques" component={Statistics} />
     </div>
   )
-}
-
-MainContainer.propTypes = {
-
 }
 
 export default MainContainer

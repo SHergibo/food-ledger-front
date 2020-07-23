@@ -1,13 +1,6 @@
 .logo{
+  display: flex;
+  align-items: center;
+  height: 4rem;
   color: $white;
 }
-
-
-// /*Media queries*/
-
-// /*Full-screen*/
-// @media screen and (min-width: 960px){
-//   .logo{
-//     display: none;
-//   }
-// }

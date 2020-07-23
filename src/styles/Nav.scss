@@ -54,11 +54,9 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    height: calc(100vh - 4rem);
+    height: 100vh;
     width: 12rem;
-    .logo-main-menu{
-      display: none;
-    }
+    padding: 0;
   }
   .menu{
     position: unset;
