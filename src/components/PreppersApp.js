@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { logout, refreshToken } from './../utils/Auth';
 import axiosInstance from './../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
@@ -10,14 +10,27 @@ import SubContainer from './SubContainer';
 import PropTypes from 'prop-types';
 
 function PreppersApp({ history }) {
+  const [userData, setUserData] = useState();
+  const [notification, setNotification] = useState([]);
 
   useEffect(() => {
+
+    const getUserData = async() =>{
+      const getUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${localStorage.getItem('user_id')}`;
+      await axiosInstance.get(getUserDataEndPoint)
+        .then((response) => {
+          setUserData(response.data);
+        });
+    };
+    getUserData();
 
     const getNotification = setInterval(async () => {
       const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getNotificationEndPoint)
         .then((response) => {
-          console.log(response.data);
+          setNotification(response.data);
+          //TODO faire que le fetch notif se lance directement lors de la connexion
+          //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
         });
     }, 30000);
 
@@ -40,10 +53,12 @@ function PreppersApp({ history }) {
     <div className="container-prepper-app">
       <Router>
         <Nav
-        logOut={logOut}
+          logOut={logOut}
         />
         <div className="container-column">
           <SubNav
+          userData={userData}
+          notification={notification}
           logOut={logOut}
           />
           <div className="container-row">
@@ -57,7 +72,7 @@ function PreppersApp({ history }) {
 }
 
 PreppersApp.propTypes = {
-  history : PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
 export default PreppersApp;

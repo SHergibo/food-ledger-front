@@ -10,18 +10,22 @@
     padding: 0 0 1rem;
   }
   li{
-    a{
+    a, .div-logout{
       display: flex;
       justify-content: center;
+      align-items: center;
       padding: .7rem 1rem .7rem;
       font-size: 1.2rem;
       font-weight: 500;
       text-decoration: none;
       color: $white;
       transition: .2s ease-in-out;
-      &:hover{
-        color: $grey;
-      }
+    }
+    &:hover a{
+      color: $grey;
+    }
+    &:hover .div-logout{
+      color: $grey;
     }
   }
 }
@@ -34,8 +38,16 @@
   background-color: $primary-color;
 }
 
+.svg-icon{
+  display: none;
+}
+
+.svg-icon-responsive{
+  @include svgIcon();
+}
+
 .burger-menu-svg {
-  @include svgFill(30px)
+  @include svgFill(30px);
 }
 
 .display-block{
@@ -54,16 +66,57 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    align-items: flex-start;
     height: 100vh;
-    width: 12rem;
-    padding: 0;
+    width: 5rem;
+    padding: 0 0 0 1rem;
+    transition: width .2s ease-in-out;
+    ul{
+      padding: 0;
+    }
+    li{
+      a, .div-logout{
+        display: flex;
+        justify-content: flex-start;
+        padding: .35rem 0;
+        cursor: pointer;
+      }
+      &:hover{
+        #svg-home, #svg-list, #svg-history, #svg-user, #svg-stat, #svg-logout{
+          color: $primary-light;
+        }
+      }
+    }
   }
+
+  .interact-menu{
+    display: flex;
+    align-items: center;
+  }
+
   .menu{
     position: unset;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    overflow: hidden;
   }
+
+  .svg-icon{
+    @include svgIcon();
+  }
+
   .burger-menu-svg{
     display: none;
+  }
+
+  .svg-icon{
+    &:hover{
+      #svg-menu{
+        color: $primary-light;
+      }
+    }
+    #svg-menu, #svg-home, #svg-list, #svg-history, #svg-user, #svg-stat, #svg-logout{
+      @include fontAwesomeIcon();
+    }
   }
 }

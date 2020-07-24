@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Options() {
+function Profile() {
   return (
     <div>
-      Options
+      Profil
     </div>
   )
 }
 
-export default Options
+export default Profile
