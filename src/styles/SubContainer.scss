@@ -1,0 +1,16 @@
+.container-sub{
+  width: 100%;
+  background-color: $primary-color;
+  color: $white;
+}
+
+
+/*Media queries*/
+
+/*Full-screen*/
+@media screen and (min-width: 960px){
+  .container-sub{
+    width: 25rem;
+    height: calc(100vh - 4rem);
+  }
+}

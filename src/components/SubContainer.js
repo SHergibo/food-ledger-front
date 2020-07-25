@@ -2,7 +2,7 @@ import React from 'react'
 
 function SubContainer() {
   return (
-    <div>
+    <div className="container-sub">
       SubContainer
     </div>
   )

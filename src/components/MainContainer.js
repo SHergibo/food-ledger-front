@@ -10,7 +10,8 @@ function MainContainer() {
   return (
     <div>
       <Route exact path="/app" component={Home} />
-      <Route path="/app/liste-produit" component={ProductList} />
+      <Route path="/app/liste-produit" component={ProductList} /> 
+      {/* TODO trouver un autre moyen de passer userData */}
       <Route path="/app/historique" component={Historic} />
       <Route path="/app/profil" component={Profile} />
       <Route path="/app/statistiques" component={Statistics} />

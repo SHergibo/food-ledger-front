@@ -15,7 +15,7 @@ function PreppersApp({ history }) {
 
   useEffect(() => {
 
-    const getUserData = async() =>{
+    const getUserData = async () => {
       const getUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getUserDataEndPoint)
         .then((response) => {
@@ -24,15 +24,22 @@ function PreppersApp({ history }) {
     };
     getUserData();
 
-    const getNotification = setInterval(async () => {
+
+    const fetchNotification = async () => {
       const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getNotificationEndPoint)
         .then((response) => {
           setNotification(response.data);
-          //TODO faire que le fetch notif se lance directement lors de la connexion
           //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
         });
+
+    };
+    fetchNotification();
+
+    const getNotification = setInterval(() => {
+      fetchNotification();
     }, 30000);
+
 
     const refreshTokenInterval = setInterval(() => {
       refreshToken();
@@ -57,9 +64,9 @@ function PreppersApp({ history }) {
         />
         <div className="container-column">
           <SubNav
-          userData={userData}
-          notification={notification}
-          logOut={logOut}
+            userData={userData}
+            notification={notification}
+            logOut={logOut}
           />
           <div className="container-row">
             <MainContainer />

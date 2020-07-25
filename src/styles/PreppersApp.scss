@@ -1,5 +1,6 @@
 .container-row{
   display: block;
+
 }
 
 .container-column{
@@ -14,6 +15,7 @@
 @media screen and (min-width: 960px){
   .container-row{
     display: flex;
+    justify-content: space-between;
   }
   .container-prepper-app{
     display: flex;
