@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTable, usePagination } from 'react-table';
 import axiosInstance from './../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
+import PropTypes from 'prop-types';
 
 // Let's add a fetchData method to our Table component that will be used to fetch
 // new data when pagination state changes
@@ -163,21 +164,23 @@ function Table({
 
 
 
-function ProductList() {
+function ProductList({ userData }) {
+  //TODO proptype
   const [serverData, setServerData] = useState([]);
   // Let's simulate a large dataset on the server (outside of our component)
   // const serverData = makeData(10000)
-
   useEffect(() => {
-    const getProductList = async () => {
-      const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/jFyZzgetXv`;
-      await axiosInstance.get(getProductEndPoint)
-        .then((response) => {
-          setServerData(response.data);
-        });
-    };
-    getProductList();
-  }, [])
+    if(userData){
+      const getProductList = async () => {
+        const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/${userData.householdcode}`;
+        await axiosInstance.get(getProductEndPoint)
+          .then((response) => {
+            setServerData(response.data);
+          });
+      };
+      getProductList();
+    }
+  }, [userData])
 
 
 
@@ -267,6 +270,10 @@ function ProductList() {
       pageCount={pageCount}
     />
   )
+}
+
+ProductList.propTypes = {
+  userData: PropTypes.object,
 }
 
 export default ProductList

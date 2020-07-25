@@ -69,7 +69,9 @@ function PreppersApp({ history }) {
             logOut={logOut}
           />
           <div className="container-row">
-            <MainContainer />
+            <MainContainer
+              userData={userData}
+            />
             <SubContainer />
           </div>
         </div>

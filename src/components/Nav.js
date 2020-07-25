@@ -22,18 +22,18 @@ function Nav({ logOut }) {
       deleteSvg.classList.remove('display-svg-menu');
     }
   };
-
-  const interactMenu = () =>{
+  
+  const interactMenu = () => {
     //TODO enregistrer l'état du menu dans les options de l'utilisateur dans le back
     let menu = document.getElementsByClassName('main-menu')[0];
-    if(stateMainMenu === false){
+    if (stateMainMenu === false) {
       setStateMainMenu(true)
       menu.style.width = '15rem';
-    }else{
+    } else {
       setStateMainMenu(false)
       menu.style.removeProperty('width');
     }
-    
+
   };
 
   return (
