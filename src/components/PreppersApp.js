@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { logout, refreshToken } from './../utils/Auth';
 import axiosInstance from './../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
-import { BrowserRouter as Router } from "react-router-dom";
 import Nav from './Nav';
 import SubNav from './SubNav';
 import MainContainer from './MainContainer';
@@ -58,24 +57,22 @@ function PreppersApp({ history }) {
 
   return (
     <div className="container-prepper-app">
-      <Router>
-        <Nav
+      <Nav
+        logOut={logOut}
+      />
+      <div className="container-column">
+        <SubNav
+          userData={userData}
+          notification={notification}
           logOut={logOut}
         />
-        <div className="container-column">
-          <SubNav
+        <div className="container-row">
+          <MainContainer
             userData={userData}
-            notification={notification}
-            logOut={logOut}
           />
-          <div className="container-row">
-            <MainContainer
-              userData={userData}
-            />
-            <SubContainer />
-          </div>
+          <SubContainer />
         </div>
-      </Router>
+      </div>
     </div>
   )
 }

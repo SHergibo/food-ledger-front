@@ -165,31 +165,32 @@ function Table({
 
 
 function ProductList({ userData }) {
-  //TODO proptype
-  const [serverData, setServerData] = useState([]);
+  // const [serverData, setServerData] = useState([]);
+  // const [totalProduct, setTotalProduct] = useState([]);
   // Let's simulate a large dataset on the server (outside of our component)
   // const serverData = makeData(10000)
-  useEffect(() => {
-    if(userData){
-      const getProductList = async () => {
-        const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/${userData.householdcode}`;
-        await axiosInstance.get(getProductEndPoint)
-          .then((response) => {
-            setServerData(response.data);
-          });
-      };
-      getProductList();
-    }
-  }, [userData])
 
 
 
-
+  // useEffect(() => {
+  //   if (userData) {
+  //     const getProductList = async (page) => {
+  //       const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/${userData.householdcode}?page=${page}`;
+  //       await axiosInstance.get(getProductEndPoint)
+  //         .then((response) => {
+  //           console.log(response);
+  //           setServerData(response.data.arrayProduct);
+  //           setTotalProduct(response.data.totalProduct);
+  //         });
+  //     };
+  //     getProductList();
+  //   }
+  // }, [userData])
 
   const columns = React.useMemo(
     () => [
       {
-        Header: 'A delete',
+        Header: 'Liste des produits dans votre stock',
         columns: [
           {
             Header: 'Nom',
@@ -212,7 +213,7 @@ function ProductList({ userData }) {
             accessor: 'kcal',
           },
           {
-            Header: "Date d'éxpiraction",
+            Header: "Date d'expiration",
             accessor: 'expirationDate',
           },
           {
@@ -235,31 +236,35 @@ function ProductList({ userData }) {
   const [pageCount, setPageCount] = useState(0)
   const fetchIdRef = React.useRef(0)
 
+
+
   const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
     // even a server. But for this example, we'll just fake it.
 
     // Give this fetch an ID
     const fetchId = ++fetchIdRef.current
-
     // Set the loading state
     setLoading(true)
 
-    // We'll even set a delay to simulate a server here
-      // Only update the data if this is the latest fetch
-      if (fetchId === fetchIdRef.current) {
-        const startRow = pageSize * pageIndex
-        const endRow = startRow + pageSize
-        setData(serverData.slice(startRow, endRow))
+    // Only update the data if this is the latest fetch
+    if (fetchId === fetchIdRef.current) {
+      const getProductList = async () => {
+        const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/jFyZzgetXv?page=${pageIndex}`;
+        await axiosInstance.get(getProductEndPoint)
+          .then((response) => {
+            setData(response.data.arrayProduct)
+          
+            setPageCount(Math.ceil(response.data.totalProduct / pageSize))
 
-        // Your server could send back total page count.
-        // For now we'll just fake it, too
-        setPageCount(Math.ceil(serverData.length / pageSize))
-
-        setLoading(false)
-      }
-  }, [serverData])
+            setLoading(false)
+          });
+      };
+      getProductList();
+    }
+  }, [])
 
   return (
     <Table

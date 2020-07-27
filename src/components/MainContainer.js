@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Home from './Home';
 import ProductList from './ProductList';
 import Historic from './Historic';
@@ -7,14 +7,29 @@ import Profile from './Profile';
 import Statistics from './Statistics';
 import PropTypes from 'prop-types';
 
-function MainContainer({userData}) {
+function MainContainer({ userData }) {
+  const location = useLocation();
   return (
     <div>
-      <Route exact path="/app" component={Home} />
-      <Route path="/app/liste-produit" component={() => <ProductList userData={userData} />} /> 
-      <Route path="/app/historique" component={Historic} />
-      <Route path="/app/profil" component={() => <Profile userData={userData} />} />
-      <Route path="/app/statistiques" component={Statistics} />
+      {location.pathname === "/app" && (
+        <Home />
+      )}
+      {location.pathname === "/app/liste-produit" && (
+        <ProductList
+          userData={userData}
+        />
+      )}
+      {location.pathname === "/app/historique" && (
+        <Historic />
+      )}
+      {location.pathname === "/app/profil" && (
+        <Profile
+          userData={userData}
+        />
+      )}
+      {location.pathname === "/app/statistiques" && (
+        <Statistics />
+      )}
     </div>
   )
 }
