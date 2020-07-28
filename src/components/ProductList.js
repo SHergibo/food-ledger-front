@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTable, usePagination } from 'react-table';
 import axiosInstance from './../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
@@ -165,27 +166,12 @@ function Table({
 
 
 function ProductList({ userData }) {
-  // const [serverData, setServerData] = useState([]);
-  // const [totalProduct, setTotalProduct] = useState([]);
-  // Let's simulate a large dataset on the server (outside of our component)
-  // const serverData = makeData(10000)
-
-
-
-  // useEffect(() => {
-  //   if (userData) {
-  //     const getProductList = async (page) => {
-  //       const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/${userData.householdcode}?page=${page}`;
-  //       await axiosInstance.get(getProductEndPoint)
-  //         .then((response) => {
-  //           console.log(response);
-  //           setServerData(response.data.arrayProduct);
-  //           setTotalProduct(response.data.totalProduct);
-  //         });
-  //     };
-  //     getProductList();
-  //   }
-  // }, [userData])
+  const [data, setData] = useState([]);
+  const [pageS, setPageS] = useState();
+  const [pageI, setPageI] = useState();
+  const [loading, setLoading] = useState(false);
+  const [pageCount, setPageCount] = useState(0);
+  const fetchIdRef = React.useRef(0);
 
   const columns = React.useMemo(
     () => [
@@ -223,22 +209,52 @@ function ProductList({ userData }) {
           {
             Header: 'Nombre',
             accessor: 'number',
+            Cell: ({ cell }) => (
+              <div>
+                <span id={`number-${cell.row.original._id}`}>{cell.value}</span>
+                <button onClick={() => {
+                  data[0].number = cell.value++;
+                  console.log(data);
+                  setData(data);
+                }}>
+                  +
+                </button>
+
+
+              </div>
+
+            )
+          },
+          {
+            Header: 'Action',
+            Cell: ({ row }) => (
+              <div>
+                <Link to={`/app/edition-produit/${row.original._id}`}>Edit</Link>
+                <button onClick={async () => {
+                  setLoading(true)
+                  const getProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${row.original._id}?page=${pageI}`;
+                  await axiosInstance.delete(getProductDataEndPoint)
+                    .then((response) => {
+                      setData(response.data.arrayProduct)
+
+                      setPageCount(Math.ceil(response.data.totalProduct / pageS))
+
+                      setLoading(false)
+                    });
+                }}>Delete</button>
+                <button onClick={() => { console.log(pageS) }}>test</button>
+              </div>
+            )
           },
         ],
       }
     ],
-    []
+    [data, setData, pageS, pageI]
   )
 
-  // We'll start our table without any data
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [pageCount, setPageCount] = useState(0)
-  const fetchIdRef = React.useRef(0)
-
-
-
   const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    setPageS(pageSize);
+    setPageI(pageIndex);
 
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
@@ -252,19 +268,21 @@ function ProductList({ userData }) {
     // Only update the data if this is the latest fetch
     if (fetchId === fetchIdRef.current) {
       const getProductList = async () => {
-        const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/jFyZzgetXv?page=${pageIndex}`;
+        const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
         await axiosInstance.get(getProductEndPoint)
           .then((response) => {
             setData(response.data.arrayProduct)
-          
+
             setPageCount(Math.ceil(response.data.totalProduct / pageSize))
 
             setLoading(false)
           });
       };
-      getProductList();
+      if (userData) {
+        getProductList();
+      }
     }
-  }, [])
+  }, [userData])
 
   return (
     <Table
