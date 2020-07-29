@@ -1,17 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTable, usePagination } from 'react-table';
 import axiosInstance from './../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
 
-// Let's add a fetchData method to our Table component that will be used to fetch
-// new data when pagination state changes
-// We can also add a loading state to let our table know it's loading new data
+const EditableCell = ({
+  value: initialValue,
+  row: { index },
+  column: { id },
+  updateMyData,
+}) => {
+  const [value, setValue] = useState(initialValue)
+
+  const onChange = e => {
+    if(e.target.value >= 0){
+      setValue(e.target.value)
+    }
+  }
+
+  const newData = () => {
+    updateMyData(index, id, value);
+  }
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+  if (id === "number") {
+    return <input type="number" min="0" value={value} onChange={onChange} onClick={newData} onKeyUp={newData} />
+  } else {
+    return value;
+  }
+
+}
+
+const defaultColumn = {
+  Cell: EditableCell,
+}
+
+
 function Table({
   columns,
   data,
   fetchData,
+  updateMyData,
+  skipPageReset,
   loading,
   pageCount: controlledPageCount,
 }) {
@@ -35,22 +68,20 @@ function Table({
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }, // Pass our hoisted table state
-      manualPagination: true, // Tell the usePagination
-      // hook that we'll handle our own data fetching
-      // This means we'll also have to provide our own
-      // pageCount.
+      initialState: { pageIndex: 0 },
+      manualPagination: true,
       pageCount: controlledPageCount,
+      defaultColumn,
+      autoResetPage: !skipPageReset,
+      updateMyData
     },
     usePagination
   )
 
-  // Listen for changes in pagination and use the state to fetch our new data
   useEffect(() => {
     fetchData({ pageIndex, pageSize })
   }, [fetchData, pageIndex, pageSize])
 
-  // Render the UI for your table
   return (
     <>
       <pre>
@@ -100,7 +131,6 @@ function Table({
           })}
           <tr>
             {loading ? (
-              // Use our custom loading state to show a loading indicator
               <td colSpan="10000">Loading...</td>
             ) : (
                 <td colSpan="10000">
@@ -111,10 +141,6 @@ function Table({
           </tr>
         </tbody>
       </table>
-      {/* 
-        Pagination can be built however you'd like. 
-        This is just a very basic UI implementation:
-      */}
       <div className="pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
@@ -171,9 +197,36 @@ function ProductList({ userData }) {
   const [pageI, setPageI] = useState();
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(0);
-  const fetchIdRef = React.useRef(0);
+  const fetchIdRef = useRef(0);
+  const [skipPageReset, setSkipPageReset] = useState(false);
 
-  const columns = React.useMemo(
+  const updateMyData = async (rowIndex, columnId, value) => {
+    setSkipPageReset(true);
+    if (data[rowIndex].number !== value && value >= 0 && value) {
+      const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${data[rowIndex]._id}?page=${pageI}`;
+      await axiosInstance.patch(patchProductDataEndPoint, {number : value})
+        .then((response) => {
+          console.log(response);
+          //TODO si response.data.arrayProduct, remplacer data du tableau
+        });
+    }
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          }
+        }
+        return row
+      })
+    )
+  }
+  useEffect(() => {
+    setSkipPageReset(false)
+  }, [data])
+
+  const columns = useMemo(
     () => [
       {
         Header: 'Liste des produits dans votre stock',
@@ -208,22 +261,7 @@ function ProductList({ userData }) {
           },
           {
             Header: 'Nombre',
-            accessor: 'number',
-            Cell: ({ cell }) => (
-              <div>
-                <span id={`number-${cell.row.original._id}`}>{cell.value}</span>
-                <button onClick={() => {
-                  data[0].number = cell.value++;
-                  console.log(data);
-                  setData(data);
-                }}>
-                  +
-                </button>
-
-
-              </div>
-
-            )
+            accessor: 'number'
           },
           {
             Header: 'Action',
@@ -232,7 +270,7 @@ function ProductList({ userData }) {
                 <Link to={`/app/edition-produit/${row.original._id}`}>Edit</Link>
                 <button onClick={async () => {
                   setLoading(true)
-                  const getProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${row.original._id}?page=${pageI}`;
+                  const getProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/delete-pagination/${row.original._id}?page=${pageI}`;
                   await axiosInstance.delete(getProductDataEndPoint)
                     .then((response) => {
                       setData(response.data.arrayProduct)
@@ -249,23 +287,16 @@ function ProductList({ userData }) {
         ],
       }
     ],
-    [data, setData, pageS, pageI]
+    [pageS, pageI]
   )
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+  const fetchData = useCallback(({ pageSize, pageIndex }) => {
     setPageS(pageSize);
     setPageI(pageIndex);
 
-    // This will get called when the table needs new data
-    // You could fetch your data from literally anywhere,
-    // even a server. But for this example, we'll just fake it.
-
-    // Give this fetch an ID
     const fetchId = ++fetchIdRef.current
-    // Set the loading state
     setLoading(true)
 
-    // Only update the data if this is the latest fetch
     if (fetchId === fetchIdRef.current) {
       const getProductList = async () => {
         const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
@@ -291,6 +322,8 @@ function ProductList({ userData }) {
       fetchData={fetchData}
       loading={loading}
       pageCount={pageCount}
+      updateMyData={updateMyData}
+      skipPageReset={skipPageReset}
     />
   )
 }
@@ -300,3 +333,10 @@ ProductList.propTypes = {
 }
 
 export default ProductList
+
+
+//TODO champ de recherche en temp réel
+//TODO ordre décroissant/croissant/alphabétique des colonnes
+//TODO delete le header de la table si possible
+//TODO utiliser query url dans un sens comme dans l'autre
+//TODO champ ajout et update data si besoin

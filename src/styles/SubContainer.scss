@@ -11,6 +11,7 @@
 @media screen and (min-width: 960px){
   .container-sub{
     width: 25rem;
+    min-width: 25rem;
     height: calc(100vh - 4rem);
   }
 }
