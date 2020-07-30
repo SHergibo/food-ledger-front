@@ -1,330 +1,180 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { useTable, usePagination } from 'react-table';
-import axiosInstance from './../utils/axiosInstance';
-import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
+import axiosInstance from '../utils/axiosInstance';
+import { apiDomain, apiVersion } from '../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
-
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateMyData,
-}) => {
-  const [value, setValue] = useState(initialValue)
-
-  const onChange = e => {
-    if(e.target.value >= 0){
-      setValue(e.target.value)
-    }
-  }
-
-  const newData = () => {
-    updateMyData(index, id, value);
-  }
-
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-  if (id === "number") {
-    return <input type="number" min="0" value={value} onChange={onChange} onClick={newData} onKeyUp={newData} />
-  } else {
-    return value;
-  }
-
-}
-
-const defaultColumn = {
-  Cell: EditableCell,
-}
-
-
-function Table({
-  columns,
-  data,
-  fetchData,
-  updateMyData,
-  skipPageReset,
-  loading,
-  pageCount: controlledPageCount,
-}) {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    // Get the state from the instance
-    state: { pageIndex, pageSize },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0 },
-      manualPagination: true,
-      pageCount: controlledPageCount,
-      defaultColumn,
-      autoResetPage: !skipPageReset,
-      updateMyData
-    },
-    usePagination
-  )
-
-  useEffect(() => {
-    fetchData({ pageIndex, pageSize })
-  }, [fetchData, pageIndex, pageSize])
-
-  return (
-    <>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                })}
-              </tr>
-            )
-          })}
-          <tr>
-            {loading ? (
-              <td colSpan="10000">Loading...</td>
-            ) : (
-                <td colSpan="10000">
-                  Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
-                results
-                </td>
-              )}
-          </tr>
-        </tbody>
-      </table>
-      <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
-            }}
-            style={{ width: '100px' }}
-          />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-    </>
-  )
-}
-
-
 
 function ProductList({ userData }) {
   const [data, setData] = useState([]);
-  const [pageS, setPageS] = useState();
-  const [pageI, setPageI] = useState();
-  const [loading, setLoading] = useState(false);
+  const [pageIndex, setPageIndex] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const fetchIdRef = useRef(0);
-  const [skipPageReset, setSkipPageReset] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
 
-  const updateMyData = async (rowIndex, columnId, value) => {
-    setSkipPageReset(true);
-    if (data[rowIndex].number !== value && value >= 0 && value) {
-      const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${data[rowIndex]._id}?page=${pageI}`;
-      await axiosInstance.patch(patchProductDataEndPoint, {number : value})
-        .then((response) => {
-          console.log(response);
-          //TODO si response.data.arrayProduct, remplacer data du tableau
-        });
-    }
-    setData(old =>
-      old.map((row, index) => {
-        if (index === rowIndex) {
-          return {
-            ...old[rowIndex],
-            [columnId]: value,
-          }
-        }
-        return row
-      })
-    )
-  }
+  const getProductList = useCallback(async () => {
+    const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
+    await axiosInstance.get(getProductEndPoint)
+      .then((response) => {
+        setData(response.data.arrayProduct);
+
+        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+
+      });
+  }, [userData, pageIndex, pageSize]);
+
   useEffect(() => {
-    setSkipPageReset(false)
-  }, [data])
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'Liste des produits dans votre stock',
-        columns: [
-          {
-            Header: 'Nom',
-            accessor: 'name',
-          },
-          {
-            Header: 'Marque',
-            accessor: 'brand',
-          },
-          {
-            Header: 'Type',
-            accessor: 'type',
-          },
-          {
-            Header: 'Poids',
-            accessor: 'weight',
-          },
-          {
-            Header: 'Kcal',
-            accessor: 'kcal',
-          },
-          {
-            Header: "Date d'expiration",
-            accessor: 'expirationDate',
-          },
-          {
-            Header: 'Emplacement',
-            accessor: 'location',
-          },
-          {
-            Header: 'Nombre',
-            accessor: 'number'
-          },
-          {
-            Header: 'Action',
-            Cell: ({ row }) => (
-              <div>
-                <Link to={`/app/edition-produit/${row.original._id}`}>Edit</Link>
-                <button onClick={async () => {
-                  setLoading(true)
-                  const getProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/delete-pagination/${row.original._id}?page=${pageI}`;
-                  await axiosInstance.delete(getProductDataEndPoint)
-                    .then((response) => {
-                      setData(response.data.arrayProduct)
+    if (userData) {
+      getProductList();
+    }
+  }, [userData, getProductList]);
 
-                      setPageCount(Math.ceil(response.data.totalProduct / pageS))
 
-                      setLoading(false)
-                    });
-                }}>Delete</button>
-                <button onClick={() => { console.log(pageS) }}>test</button>
-              </div>
-            )
-          },
-        ],
-      }
-    ],
-    [pageS, pageI]
-  )
+  const columns = [
+    {
+      Header: 'Nom',
+    },
+    {
+      Header: 'Marque',
+    },
+    {
+      Header: 'Type',
+    },
+    {
+      Header: 'Poids',
+    },
+    {
+      Header: 'Kcal',
+    },
+    {
+      Header: "Date d'expiration",
+    },
+    {
+      Header: 'Emplacement',
+    },
+    {
+      Header: 'Nombre',
+    },
+    {
+      Header: "Actions"
+    }
+  ];
 
-  const fetchData = useCallback(({ pageSize, pageIndex }) => {
-    setPageS(pageSize);
-    setPageI(pageIndex);
+  const gotoPage = (page) => {
+    setPageIndex(page - 1);
+  };
 
-    const fetchId = ++fetchIdRef.current
-    setLoading(true)
+  const previousPage = () => {
+    if (pageIndex > 0) {
+      setPageIndex(pageIndex - 1);
+    }
+  };
 
-    if (fetchId === fetchIdRef.current) {
-      const getProductList = async () => {
-        const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
-        await axiosInstance.get(getProductEndPoint)
-          .then((response) => {
-            setData(response.data.arrayProduct)
+  const nextPage = async () => {
+    if (pageIndex < (pageCount - 1)) {
+      setPageIndex(pageIndex + 1);
+    }
+  };
 
-            setPageCount(Math.ceil(response.data.totalProduct / pageSize))
-
-            setLoading(false)
-          });
-      };
-      if (userData) {
-        getProductList();
+  const EditableCell = ({initialValue, row, indexRow}) => {
+    const [value, setValue] = useState(initialValue);
+  
+    const onChange = e => {
+      if (e.target.value >= 0) {
+        setValue(e.target.value)
       }
     }
-  }, [userData])
+  
+    const newData = async () => {
+      if (row.number !== value && value >= 0 && value) {
+        const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${row._id}?page=${pageIndex}`;
+        await axiosInstance.patch(patchProductDataEndPoint, { number: value })
+          .then((response) => {
+            let newData = data;
+            newData[indexRow] = response.data;
+            setData(newData);
+            //TODO si response.data.arrayProduct, remplacer data du tableau
+          });
+      }
+    }
+    return <input type="number" min="0" value={value} onChange={onChange} onClick={newData} onKeyUp={newData} />
+  }
+
 
   return (
-    <Table
-      columns={columns}
-      data={data}
-      fetchData={fetchData}
-      loading={loading}
-      pageCount={pageCount}
-      updateMyData={updateMyData}
-      skipPageReset={skipPageReset}
-    />
+    <Fragment>
+      <table>
+        <thead>
+          <tr>
+            {columns.map((column, index) => (
+              <th key={`${column.header}-${index}`}>
+                {column.Header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, indexRow) => {
+            return (
+              <tr key={`${row}-${indexRow}`}>
+                {Object.entries(row).map(([key, value], index) => {
+                  if (key !== "_id" && key !== "number") {
+                    return (
+                      <td key={`${key}-${index}`}>
+                        {value}
+                      </td>
+                    )
+                  }
+                  if (key === "number") {
+                    return (
+                      <td key={`${key}-${index}`}>
+                        <EditableCell 
+                          initialValue={value}
+                          row={row}
+                          indexRow={indexRow}
+                        />
+                      </td>
+                    )
+                  }
+                  return null;
+                })}
+                <td>
+                  <div>
+                    <Link to={`/app/edition-produit/${row._id}`}>Edit</Link>
+                    <button onClick={async () => {
+                      const getProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/delete-pagination/${row._id}?page=${pageIndex}`;
+                      await axiosInstance.delete(getProductDataEndPoint)
+                        .then((response) => {
+                          setData(response.data.arrayProduct)
+
+                          setPageCount(Math.ceil(response.data.totalProduct / pageSize))
+
+                        });
+                    }}>Delete</button>
+                  </div>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      <div className="pagination">
+        <button onClick={() => gotoPage(1)}>
+          {'<<'}
+        </button>
+        <button onClick={() => previousPage()}>
+          {'<'}
+        </button>
+        <button onClick={() => nextPage()}>
+          {'>'}
+        </button>
+        <button onClick={() => gotoPage(pageCount)}>
+          {'>>'}
+        </button>
+      </div>
+      <div>
+        Page {pageIndex + 1} of {pageCount}
+      </div>
+    </Fragment>
   )
 }
 
@@ -333,10 +183,3 @@ ProductList.propTypes = {
 }
 
 export default ProductList
-
-
-//TODO champ de recherche en temp réel
-//TODO ordre décroissant/croissant/alphabétique des colonnes
-//TODO delete le header de la table si possible
-//TODO utiliser query url dans un sens comme dans l'autre
-//TODO champ ajout et update data si besoin
