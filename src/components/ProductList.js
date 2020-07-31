@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../apiConfig/ApiConfig';
+import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
 function ProductList({ userData }) {
@@ -9,9 +10,24 @@ function ProductList({ userData }) {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [searchObject, setSearchObject] = useState({});
+  const { register, handleSubmit } = useForm({
+    mode: "onChange"
+  });
 
   const getProductList = useCallback(async () => {
-    const getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
+    let getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
+
+    if (Object.keys(searchObject).length > 0) {
+      let urlQuery = "";
+      for (const key in searchObject) {
+        if(searchObject[key] !== ""){
+          urlQuery += `&${key}=${searchObject[key]}`
+        }
+      }
+      getProductEndPoint += urlQuery;
+    }
+
     await axiosInstance.get(getProductEndPoint)
       .then((response) => {
         setData(response.data.arrayProduct);
@@ -19,7 +35,7 @@ function ProductList({ userData }) {
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
 
       });
-  }, [userData, pageIndex, pageSize]);
+  }, [userData, pageIndex, pageSize, searchObject]);
 
   useEffect(() => {
 
@@ -75,15 +91,15 @@ function ProductList({ userData }) {
     }
   };
 
-  const EditableCell = ({initialValue, row, indexRow}) => {
+  const EditableCell = ({ initialValue, row, indexRow }) => {
     const [value, setValue] = useState(initialValue);
-  
+
     const onChange = e => {
       if (e.target.value >= 0) {
         setValue(e.target.value)
       }
     }
-  
+
     const newData = async () => {
       if (row.number !== value && value >= 0 && value) {
         const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${row._id}?page=${pageIndex}`;
@@ -99,9 +115,37 @@ function ProductList({ userData }) {
     return <input type="number" min="0" value={value} onChange={onChange} onClick={newData} onKeyUp={newData} />
   }
 
+  const populateSearchObject = (data) =>{
+    for (const key in data) {
+      if(data[key] !== ""){
+        setSearchObject(data);
+        gotoPage(1);
+        return;
+      }
+    }
+  }
 
+  const resetSearchObject = () =>{
+    if(Object.keys(searchObject).length > 0){
+      setSearchObject({});
+      gotoPage(1);
+    }
+  }
   return (
     <Fragment>
+      <form onSubmit={handleSubmit(populateSearchObject)}>
+        <input name="name" type="text" id="product-name" placeholder="Nom" ref={register()} />
+        <input name="brand" type="text" id="product-brand" placeholder="Marque" ref={register()} />
+        <input name="type" type="text" id="product-type" placeholder="Type" ref={register()} />
+        <input name="weight" type="number" id="product-weight" placeholder="Poids" ref={register()} />
+        <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" ref={register()} />
+        <input name="expirationDate" type="text" id="product-expiration-date" placeholder="Date d'expiration" ref={register()} />
+        <input name="location" type="text" id="product-location" placeholder="Emplacement" ref={register()} />
+        <input name="number" type="number" id="product-number" placeholder="Nombre" ref={register()} />
+        <button type="submit">Search</button>
+        
+      </form>
+      <button onClick={resetSearchObject}>Reset search</button>
       <table>
         <thead>
           <tr>
@@ -127,7 +171,7 @@ function ProductList({ userData }) {
                   if (key === "number") {
                     return (
                       <td key={`${key}-${index}`}>
-                        <EditableCell 
+                        <EditableCell
                           initialValue={value}
                           row={row}
                           indexRow={indexRow}
@@ -172,7 +216,8 @@ function ProductList({ userData }) {
         </button>
       </div>
       <div>
-        Page {pageIndex + 1} of {pageCount}
+      {data.length === 0 && <span>Pas de produit</span>}
+      {data.length > 0 && <span>Page {pageIndex + 1} of {pageCount}</span>}
       </div>
     </Fragment>
   )
