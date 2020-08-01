@@ -11,6 +11,7 @@ function ProductList({ userData }) {
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [searchObject, setSearchObject] = useState({});
+  const [sortObject, setSortObject] = useState({});
   const { register, handleSubmit } = useForm({
     mode: "onChange"
   });
@@ -18,10 +19,20 @@ function ProductList({ userData }) {
   const getProductList = useCallback(async () => {
     let getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
 
+    if (Object.keys(sortObject).length > 0) {
+      let urlQuery = "";
+      for (const key in sortObject) {
+        if (sortObject[key] !== "") {
+          urlQuery += `&${key}=${sortObject[key]}`
+        }
+      }
+      getProductEndPoint += urlQuery;
+    }
+
     if (Object.keys(searchObject).length > 0) {
       let urlQuery = "";
       for (const key in searchObject) {
-        if(searchObject[key] !== ""){
+        if (searchObject[key] !== "") {
           urlQuery += `&${key}=${searchObject[key]}`
         }
       }
@@ -35,7 +46,7 @@ function ProductList({ userData }) {
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
 
       });
-  }, [userData, pageIndex, pageSize, searchObject]);
+  }, [userData, pageIndex, pageSize, searchObject, sortObject]);
 
   useEffect(() => {
 
@@ -48,30 +59,39 @@ function ProductList({ userData }) {
   const columns = [
     {
       Header: 'Nom',
+      id: 'name'
     },
     {
       Header: 'Marque',
+      id: 'brand'
     },
     {
       Header: 'Type',
+      id: 'type'
     },
     {
       Header: 'Poids',
+      id: 'weight'
     },
     {
       Header: 'Kcal',
+      id: 'kcal'
     },
     {
       Header: "Date d'expiration",
+      id: 'expirationDate'
     },
     {
       Header: 'Emplacement',
+      id: 'location'
     },
     {
       Header: 'Nombre',
+      id: 'number'
     },
     {
-      Header: "Actions"
+      Header: "Actions",
+      id: 'action'
     }
   ];
 
@@ -115,9 +135,9 @@ function ProductList({ userData }) {
     return <input type="number" min="0" value={value} onChange={onChange} onClick={newData} onKeyUp={newData} />
   }
 
-  const populateSearchObject = (data) =>{
+  const populateSearchObject = (data) => {
     for (const key in data) {
-      if(data[key] !== ""){
+      if (data[key] !== "") {
         setSearchObject(data);
         gotoPage(1);
         return;
@@ -125,12 +145,40 @@ function ProductList({ userData }) {
     }
   }
 
-  const resetSearchObject = () =>{
-    if(Object.keys(searchObject).length > 0){
+  const resetSearchObject = () => {
+    if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
       gotoPage(1);
     }
   }
+
+const populateSortObject = (btnId, dataToSort) =>{
+  const btnSort = document.getElementById(btnId);
+
+  if(btnSort.dataset.sort === 'none'){
+    btnSort.innerHTML = 'desc';
+    btnSort.dataset.sort = 'desc';
+  }else if(btnSort.dataset.sort === 'desc'){
+    btnSort.innerHTML = 'asc';
+    btnSort.dataset.sort = 'asc';
+  }else if(btnSort.dataset.sort === 'asc'){
+    btnSort.innerHTML = 'none';
+    btnSort.dataset.sort = 'none';
+  }
+
+  let newSortObject = sortObject
+
+  if(btnSort.dataset.sort !== 'none'){
+    newSortObject[`${dataToSort}-sort`] = btnSort.dataset.sort;
+  }else{
+    delete newSortObject[`${dataToSort}-sort`];
+  }
+
+  setSortObject(newSortObject);
+  getProductList();
+};
+
+
   return (
     <Fragment>
       <form onSubmit={handleSubmit(populateSearchObject)}>
@@ -143,17 +191,28 @@ function ProductList({ userData }) {
         <input name="location" type="text" id="product-location" placeholder="Emplacement" ref={register()} />
         <input name="number" type="number" id="product-number" placeholder="Nombre" ref={register()} />
         <button type="submit">Search</button>
-        
+
       </form>
       <button onClick={resetSearchObject}>Reset search</button>
       <table>
         <thead>
           <tr>
-            {columns.map((column, index) => (
-              <th key={`${column.header}-${index}`}>
-                {column.Header}
-              </th>
-            ))}
+            {columns.map((column, index) => {
+              if (column.id !== 'action') {
+                return (
+                  <th key={`${column.id}-${index}`}>
+                    {column.Header}
+                    <button id={`btn-${column.id}`} onClick={()=>populateSortObject(`btn-${column.id}`, column.id)} data-sort="none">none</button>
+                  </th>
+                )
+              } else {
+                return (
+                  <th key={`${column.id}-${index}`}>
+                    {column.Header}
+                  </th>
+                )
+              }
+            })}
           </tr>
         </thead>
         <tbody>
@@ -216,8 +275,8 @@ function ProductList({ userData }) {
         </button>
       </div>
       <div>
-      {data.length === 0 && <span>Pas de produit</span>}
-      {data.length > 0 && <span>Page {pageIndex + 1} of {pageCount}</span>}
+        {data.length === 0 && <span>Pas de produit</span>}
+        {data.length > 0 && <span>Page {pageIndex + 1} of {pageCount}</span>}
       </div>
     </Fragment>
   )
@@ -227,4 +286,9 @@ ProductList.propTypes = {
   userData: PropTypes.object,
 }
 
-export default ProductList
+export default ProductList;
+
+//TODO utiliser query url dans un sens comme dans l'autre
+//TODO champ ajout et update data si besoin
+//TODO historique (faire component pour réutiliser le tableau + recherche pour historique)
+//TODO design

@@ -361,10 +361,3 @@ ProductList.propTypes = {
 }
 
 export default ProductList
-
-
-//TODO champ de recherche en temp réel
-//TODO ordre décroissant/croissant/alphabétique des colonnes
-//TODO delete le header de la table si possible
-//TODO utiliser query url dans un sens comme dans l'autre
-//TODO champ ajout et update data si besoin
