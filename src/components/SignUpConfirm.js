@@ -36,7 +36,6 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
   };
 
   const changePassword = (e) => {
-    console.log(e.target.value);
     e.preventDefault();
     setPasswordChanged(true);
     if (e.target.value === state.yourDetails.password) {

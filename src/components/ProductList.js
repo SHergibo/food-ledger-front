@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, withRouter } from 'react-router-dom';
+import QueryString from 'query-string';
 import axiosInstance from '../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../apiConfig/ApiConfig';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
-function ProductList({ userData }) {
+function ProductList({ userData, history }) {
+  const location = useLocation();
   const [data, setData] = useState([]);
-  const [pageIndex, setPageIndex] = useState(0);
+  const queryPage = QueryString.parse(location.search);
+  const [pageIndex, setPageIndex] = useState(queryPage.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [searchObject, setSearchObject] = useState({});
@@ -17,7 +20,8 @@ function ProductList({ userData }) {
   });
 
   const getProductList = useCallback(async () => {
-    let getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex}`;
+
+    let getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex - 1}`;
 
     if (Object.keys(sortObject).length > 0) {
       let urlQuery = "";
@@ -46,10 +50,29 @@ function ProductList({ userData }) {
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
 
       });
-  }, [userData, pageIndex, pageSize, searchObject, sortObject]);
+  }, [userData, pageSize, pageIndex, searchObject, sortObject]);
+
 
   useEffect(() => {
+    console.log('ici');
+    const queryParsed = QueryString.parse(location.search);
 
+
+    if (Object.keys(queryParsed).length > 0) {
+      for (const key in queryParsed) {
+        if(key.split('-')[1] === "sort"){
+          sortObject[key] = queryParsed[key];
+          setSortObject(sortObject);
+        }else if(key !== "page"){
+          searchObject[key] = queryParsed[key];;
+          setSearchObject(searchObject);
+        }
+      }
+    }
+    
+  }, [location, sortObject, searchObject]);
+
+  useEffect(() => {
     if (userData) {
       getProductList();
     }
@@ -96,17 +119,17 @@ function ProductList({ userData }) {
   ];
 
   const gotoPage = (page) => {
-    setPageIndex(page - 1);
+    setPageIndex(page);
   };
 
   const previousPage = () => {
-    if (pageIndex > 0) {
+    if (pageIndex > 1) {
       setPageIndex(pageIndex - 1);
     }
   };
 
   const nextPage = async () => {
-    if (pageIndex < (pageCount - 1)) {
+    if (pageIndex < (pageCount)) {
       setPageIndex(pageIndex + 1);
     }
   };
@@ -175,6 +198,29 @@ const populateSortObject = (btnId, dataToSort) =>{
   }
 
   setSortObject(newSortObject);
+
+  // let urlQuery = location.search;
+  // const queryParsed = QueryString.parse(location.search);
+  // console.log(queryParsed);
+  // if (Object.keys(sortObject).length > 0) {
+    
+  //   for (const key in sortObject) {
+  //     if (sortObject[key] !== "") {
+  //       if(urlQuery === ""){
+  //         urlQuery += `${key}=${sortObject[key]}`
+  //       }else{
+  //         urlQuery += `&${key}=${sortObject[key]}`
+  //       }
+  //     }
+  //   }
+  // }
+
+  // console.log(location);
+
+  // history.push({
+  //   pathname: '/app/liste-produit',
+  //   search: `${urlQuery}`
+  // })
   getProductList();
 };
 
@@ -276,7 +322,7 @@ const populateSortObject = (btnId, dataToSort) =>{
       </div>
       <div>
         {data.length === 0 && <span>Pas de produit</span>}
-        {data.length > 0 && <span>Page {pageIndex + 1} of {pageCount}</span>}
+        {data.length > 0 && <span>Page {pageIndex} of {pageCount}</span>}
       </div>
     </Fragment>
   )
@@ -286,7 +332,7 @@ ProductList.propTypes = {
   userData: PropTypes.object,
 }
 
-export default ProductList;
+export default withRouter(ProductList);;
 
 //TODO utiliser query url dans un sens comme dans l'autre
 //TODO champ ajout et update data si besoin
