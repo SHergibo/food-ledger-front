@@ -9,13 +9,13 @@ import PropTypes from 'prop-types';
 function ProductList({ userData, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
-  const queryPage = QueryString.parse(location.search);
-  const [pageIndex, setPageIndex] = useState(queryPage.page || 1);
+  let queryParsed = QueryString.parse(location.search);
+  const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     mode: "onChange"
   });
 
@@ -54,29 +54,30 @@ function ProductList({ userData, history }) {
 
 
   useEffect(() => {
-    console.log('ici');
-    const queryParsed = QueryString.parse(location.search);
-
-
+    console.log(('ici'));
     if (Object.keys(queryParsed).length > 0) {
       for (const key in queryParsed) {
-        if(key.split('-')[1] === "sort"){
+        if (key.split('-')[1] === "sort") {
           sortObject[key] = queryParsed[key];
           setSortObject(sortObject);
-        }else if(key !== "page"){
-          searchObject[key] = queryParsed[key];;
+
+          let btnSort = document.getElementById(`btn-${key}`);
+          btnSort.innerHTML = `${queryParsed[key]}`;
+          btnSort.dataset.sort = `${queryParsed[key]}`;
+
+        } else if (key !== "page") {
+          searchObject[key] = queryParsed[key];
           setSearchObject(searchObject);
         }
       }
     }
-    
-  }, [location, sortObject, searchObject]);
+  }, [location, sortObject, searchObject, queryParsed]);
 
   useEffect(() => {
     if (userData) {
       getProductList();
     }
-  }, [userData, getProductList]);
+  }, [userData, getProductList, searchObject]);
 
 
   const columns = [
@@ -118,22 +119,6 @@ function ProductList({ userData, history }) {
     }
   ];
 
-  const gotoPage = (page) => {
-    setPageIndex(page);
-  };
-
-  const previousPage = () => {
-    if (pageIndex > 1) {
-      setPageIndex(pageIndex - 1);
-    }
-  };
-
-  const nextPage = async () => {
-    if (pageIndex < (pageCount)) {
-      setPageIndex(pageIndex + 1);
-    }
-  };
-
   const EditableCell = ({ initialValue, row, indexRow }) => {
     const [value, setValue] = useState(initialValue);
 
@@ -159,87 +144,143 @@ function ProductList({ userData, history }) {
   }
 
   const populateSearchObject = (data) => {
+
     for (const key in data) {
       if (data[key] !== "") {
-        setSearchObject(data);
-        gotoPage(1);
-        return;
+        searchObject[key] = data[key];
+        queryParsed[key] = data[key];
       }
     }
-  }
 
-  const resetSearchObject = () => {
-    if (Object.keys(searchObject).length > 0) {
-      setSearchObject({});
+    history.push({
+      pathname: '/app/liste-produit',
+      search: `${QueryString.stringify(queryParsed, { sort: false })}`
+    })
+
+    setSearchObject(searchObject);
+
+    if (pageIndex === 1) {
+      getProductList();
+    } else {
       gotoPage(1);
     }
   }
 
-const populateSortObject = (btnId, dataToSort) =>{
-  const btnSort = document.getElementById(btnId);
+  const resetAllSearch = () => {
+    if (Object.keys(queryParsed).length > 0) {
+      for (const key in queryParsed) {
+        if (key.split('-')[1] === "sort") {
+          let btnSort = document.getElementById(`btn-${key}`);
+          btnSort.innerHTML = "none";
+          btnSort.dataset.sort = "none";
+        }
+      }
+    }
 
-  if(btnSort.dataset.sort === 'none'){
-    btnSort.innerHTML = 'desc';
-    btnSort.dataset.sort = 'desc';
-  }else if(btnSort.dataset.sort === 'desc'){
-    btnSort.innerHTML = 'asc';
-    btnSort.dataset.sort = 'asc';
-  }else if(btnSort.dataset.sort === 'asc'){
-    btnSort.innerHTML = 'none';
-    btnSort.dataset.sort = 'none';
+    if (Object.keys(sortObject).length > 0) {
+      setSortObject({});
+    }
+
+    if (Object.keys(searchObject).length > 0) {
+      setSearchObject({});
+      reset();
+    }
+
+    if (pageIndex === 1) {
+      getProductList();
+    } else {
+      gotoPage(1);
+    }
+
+    history.push({
+      pathname: '/app/liste-produit'
+    })
   }
 
-  let newSortObject = sortObject
+  const populateSortObject = (e, dataToSort) => {
+    e.persist();
+    const btnSort = document.getElementById(e.target.id);
 
-  if(btnSort.dataset.sort !== 'none'){
-    newSortObject[`${dataToSort}-sort`] = btnSort.dataset.sort;
-  }else{
-    delete newSortObject[`${dataToSort}-sort`];
-  }
+    if (btnSort.dataset.sort === 'none') {
+      btnSort.innerHTML = 'desc';
+      btnSort.dataset.sort = 'desc';
+    } else if (btnSort.dataset.sort === 'desc') {
+      btnSort.innerHTML = 'asc';
+      btnSort.dataset.sort = 'asc';
+    } else if (btnSort.dataset.sort === 'asc') {
+      btnSort.innerHTML = 'none';
+      btnSort.dataset.sort = 'none';
+    }
 
-  setSortObject(newSortObject);
+    let newSortObject = sortObject;
 
-  // let urlQuery = location.search;
-  // const queryParsed = QueryString.parse(location.search);
-  // console.log(queryParsed);
-  // if (Object.keys(sortObject).length > 0) {
-    
-  //   for (const key in sortObject) {
-  //     if (sortObject[key] !== "") {
-  //       if(urlQuery === ""){
-  //         urlQuery += `${key}=${sortObject[key]}`
-  //       }else{
-  //         urlQuery += `&${key}=${sortObject[key]}`
-  //       }
-  //     }
-  //   }
-  // }
+    if (btnSort.dataset.sort !== 'none') {
+      newSortObject[`${dataToSort}-sort`] = btnSort.dataset.sort;
+      queryParsed[`${dataToSort}-sort`] = btnSort.dataset.sort;
+    } else {
+      delete newSortObject[`${dataToSort}-sort`];
+      delete queryParsed[`${dataToSort}-sort`];
+    }
 
-  // console.log(location);
+    history.push({
+      pathname: '/app/liste-produit',
+      search: `${QueryString.stringify(queryParsed, { sort: false })}`
+    })
 
-  // history.push({
-  //   pathname: '/app/liste-produit',
-  //   search: `${urlQuery}`
-  // })
-  getProductList();
-};
+    setSortObject(newSortObject);
+
+    getProductList();
+  };
+
+  const setUrlQueryParam = (page) => {
+    if (page !== 1) {
+      queryParsed["page"] = page;
+    } else {
+      delete queryParsed["page"];
+    }
+    history.push({
+      pathname: '/app/liste-produit',
+      search: `${QueryString.stringify(queryParsed, { sort: false })}`
+    });
+  };
+
+  const gotoPage = (page) => {
+    setPageIndex(page);
+    setUrlQueryParam(page);
+  };
+
+  const previousPage = () => {
+    if (pageIndex > 1) {
+      setPageIndex(pageIndex - 1);
+      setUrlQueryParam(pageIndex - 1);
+    }
+  };
+
+  const nextPage = async () => {
+    if (pageIndex < (pageCount)) {
+      setPageIndex(pageIndex + 1);
+      setUrlQueryParam(pageIndex + 1);
+    }
+  };
 
 
   return (
     <Fragment>
       <form onSubmit={handleSubmit(populateSearchObject)}>
-        <input name="name" type="text" id="product-name" placeholder="Nom" ref={register()} />
-        <input name="brand" type="text" id="product-brand" placeholder="Marque" ref={register()} />
-        <input name="type" type="text" id="product-type" placeholder="Type" ref={register()} />
-        <input name="weight" type="number" id="product-weight" placeholder="Poids" ref={register()} />
-        <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" ref={register()} />
-        <input name="expirationDate" type="text" id="product-expiration-date" placeholder="Date d'expiration" ref={register()} />
-        <input name="location" type="text" id="product-location" placeholder="Emplacement" ref={register()} />
-        <input name="number" type="number" id="product-number" placeholder="Nombre" ref={register()} />
+        <input name="name" type="text" id="product-name" placeholder="Nom" defaultValue={searchObject.name || ""} ref={register()} />
+        <input name="brand" type="text" id="product-brand" placeholder="Marque" defaultValue={searchObject.brand} ref={register()} />
+        <input name="type" type="text" id="product-type" placeholder="Type" defaultValue={searchObject.type} ref={register()} />
+        <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
+        <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
+        <input name="expirationDate" type="text" id="product-expiration-date" placeholder="Date d'expiration" defaultValue={searchObject.expirationDate} ref={register()} />
+        {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
+        <input name="location" type="text" id="product-location" placeholder="Emplacement" defaultValue={searchObject.location} ref={register()} />
+        <input name="number" type="number" id="product-number" placeholder="Nombre" defaultValue={searchObject.number} ref={register()} />
         <button type="submit">Search</button>
-
       </form>
-      <button onClick={resetSearchObject}>Reset search</button>
+
+      <button onClick={resetAllSearch}>Reset search</button>
+      
       <table>
         <thead>
           <tr>
@@ -248,7 +289,7 @@ const populateSortObject = (btnId, dataToSort) =>{
                 return (
                   <th key={`${column.id}-${index}`}>
                     {column.Header}
-                    <button id={`btn-${column.id}`} onClick={()=>populateSortObject(`btn-${column.id}`, column.id)} data-sort="none">none</button>
+                    <button id={`btn-${column.id}-sort`} onClick={(e) => populateSortObject(e, column.id)} data-sort="none">none</button>
                   </th>
                 )
               } else {
@@ -330,11 +371,11 @@ const populateSortObject = (btnId, dataToSort) =>{
 
 ProductList.propTypes = {
   userData: PropTypes.object,
+  history: PropTypes.object.isRequired,
 }
 
 export default withRouter(ProductList);;
 
-//TODO utiliser query url dans un sens comme dans l'autre
 //TODO champ ajout et update data si besoin
 //TODO historique (faire component pour réutiliser le tableau + recherche pour historique)
 //TODO design
