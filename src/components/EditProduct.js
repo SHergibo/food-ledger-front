@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from './../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
+import AddEditProductForm from './AddEditProductForm';
 
 function EditProduct() {
   const location = useLocation();
@@ -19,15 +20,25 @@ function EditProduct() {
     getProductData();
   }, [productId])
 
+
+  const EditProduct = async (data) => {
+    const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${productId}`;
+    await axiosInstance.patch(patchProductDataEndPoint, data)
+      .then((response) => {
+        console.log(response.data);
+      });
+  }
+
+    //TODO ajout btn pour revenir à la page suivante (utiliser history??)
+
   return (
-    <div>
-      Edit product
-      <pre>
-        <code>
-          {JSON.stringify(product)}
-        </code>
-      </pre>
-    </div>
+    <Fragment>
+      <AddEditProductForm
+        handleFunction={EditProduct}
+        formType="edit"
+        value={product}
+      />
+    </Fragment>
   )
 }
 

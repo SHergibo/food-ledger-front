@@ -17,6 +17,7 @@ function App() {
         <ProtectedRoute exact path="/app" component={PreppersApp} />
         <ProtectedRoute exact path="/app/liste-produit" component={PreppersApp} />
         <ProtectedRoute exact path="/app/edition-produit/:id" component={PreppersApp} />
+        <ProtectedRoute exact path="/app/ajout-produit" component={PreppersApp} />
         <ProtectedRoute exact path="/app/historique" component={PreppersApp} />
         <ProtectedRoute exact path="/app/profil" component={PreppersApp} />
         <ProtectedRoute exact path="/app/statistiques" component={PreppersApp} />
