@@ -25,7 +25,7 @@ function EditProduct() {
     const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${productId}`;
     await axiosInstance.patch(patchProductDataEndPoint, data)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
       });
   }
 

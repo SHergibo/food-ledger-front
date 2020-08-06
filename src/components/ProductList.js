@@ -8,7 +8,8 @@ function ProductList({ userData }) {
     <Fragment>
       <ComponentProductList
         userData={userData}
-        listType="product"
+        requestTo="products"
+        urlTo="produit"
       />
     </Fragment>
   )

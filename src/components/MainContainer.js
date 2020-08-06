@@ -4,7 +4,7 @@ import Home from './Home';
 import ProductList from './ProductList';
 import EditProduct from './EditProduct';
 import AddProduct from './AddProduct';
-import Historic from './Historic';
+import HistoricList from './HistoricList';
 import Profile from './Profile';
 import Statistics from './Statistics';
 import PropTypes from 'prop-types';
@@ -16,7 +16,9 @@ function MainContainer({ userData }) {
       <Route path="/app/liste-produit" component={() => <ProductList userData={userData} />} />
       <Route path="/app/edition-produit/:id" component={EditProduct} />
       <Route path="/app/ajout-produit" component={AddProduct} />
-      <Route path="/app/historique" component={() => <Historic userData={userData} />} />
+      <Route path="/app/liste-historique" component={() => <HistoricList userData={userData} />} />
+      {/* <Route path="/app/edition-historique/:id" component={EditProduct} />
+      <Route path="/app/ajout-historique" component={AddProduct} /> */}
       <Route path="/app/profil" component={Profile} />
       <Route path="/app/statistiques" component={Statistics} />
     </div>

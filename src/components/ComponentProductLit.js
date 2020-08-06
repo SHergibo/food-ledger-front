@@ -6,7 +6,7 @@ import { apiDomain, apiVersion } from '../apiConfig/ApiConfig';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
-function ComponentProductList({ userData, listType, history }) {
+function ComponentProductList({ userData, requestTo, urlTo, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
   let queryParsed = QueryString.parse(location.search);
@@ -19,10 +19,7 @@ function ComponentProductList({ userData, listType, history }) {
     mode: "onChange"
   });
 
-  const getProductList = useCallback(async () => {
-    //TODO faire la recherche avec historique quand listType = historic
-    let getProductEndPoint = `${apiDomain}/api/${apiVersion}/products/pagination/${userData.householdcode}?page=${pageIndex - 1}`;
-
+  const finalEndPoint = useCallback((endPoint) => {
     if (Object.keys(sortObject).length > 0) {
       let urlQuery = "";
       for (const key in sortObject) {
@@ -30,7 +27,7 @@ function ComponentProductList({ userData, listType, history }) {
           urlQuery += `&${key}=${sortObject[key]}`
         }
       }
-      getProductEndPoint += urlQuery;
+      endPoint += urlQuery;
     }
 
     if (Object.keys(searchObject).length > 0) {
@@ -40,17 +37,21 @@ function ComponentProductList({ userData, listType, history }) {
           urlQuery += `&${key}=${searchObject[key]}`
         }
       }
-      getProductEndPoint += urlQuery;
+      endPoint += urlQuery;
     }
+    return endPoint;
+  }, [sortObject, searchObject]);
 
-    await axiosInstance.get(getProductEndPoint)
+
+  const getDataList = useCallback(async () => {
+    let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdcode}?page=${pageIndex - 1}`;
+    const endPoint = finalEndPoint(getDataEndPoint);
+    await axiosInstance.get(endPoint)
       .then((response) => {
         setData(response.data.arrayProduct);
-
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-
       });
-  }, [userData, pageSize, pageIndex, searchObject, sortObject]);
+  }, [userData, requestTo, pageSize, pageIndex, finalEndPoint]);
 
 
   useEffect(() => {
@@ -74,9 +75,9 @@ function ComponentProductList({ userData, listType, history }) {
 
   useEffect(() => {
     if (userData) {
-      getProductList();
+      getDataList();
     }
-  }, [userData, getProductList, searchObject]);
+  }, [userData, getDataList, searchObject]);
 
 
   const columns = [
@@ -129,14 +130,18 @@ function ComponentProductList({ userData, listType, history }) {
 
     const newData = async () => {
       if (row.number !== value && value >= 0 && value) {
-        //TODO condition listType
-        const patchProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/${row._id}?page=${pageIndex}`;
-        await axiosInstance.patch(patchProductDataEndPoint, { number: value })
+        const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/${row._id}?page=${pageIndex - 1}`;
+        const endPoint = finalEndPoint(patchDataEndPoint);
+        await axiosInstance.patch(endPoint, { number: value })
           .then((response) => {
-            let newData = data;
-            newData[indexRow] = response.data;
-            setData(newData);
-            //TODO si response.data.arrayProduct, remplacer data du tableau voir avec historique
+            if(response.data.arrayProduct){
+              setData(response.data.arrayProduct);
+              setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+            } else {
+              let newData = data;
+              newData[indexRow] = response.data;
+              setData(newData);
+            }
           });
       }
     }
@@ -153,14 +158,14 @@ function ComponentProductList({ userData, listType, history }) {
     }
 
     history.push({
-      pathname: '/app/liste-produit',
+      pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     })
 
     setSearchObject(searchObject);
 
     if (pageIndex === 1) {
-      getProductList();
+      getDataList();
     } else {
       gotoPage(1);
     }
@@ -187,13 +192,13 @@ function ComponentProductList({ userData, listType, history }) {
     }
 
     if (pageIndex === 1) {
-      getProductList();
+      getDataList();
     } else {
       gotoPage(1);
     }
 
     history.push({
-      pathname: '/app/liste-produit'
+      pathname: `/app/liste-${urlTo}`
     })
   }
 
@@ -223,13 +228,13 @@ function ComponentProductList({ userData, listType, history }) {
     }
 
     history.push({
-      pathname: '/app/liste-produit',
+      pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     })
 
     setSortObject(newSortObject);
 
-    getProductList();
+    getDataList();
   };
 
   const setUrlPageQueryParam = (page) => {
@@ -239,7 +244,7 @@ function ComponentProductList({ userData, listType, history }) {
       delete queryParsed["page"];
     }
     history.push({
-      pathname: '/app/liste-produit',
+      pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     });
   };
@@ -263,6 +268,17 @@ function ComponentProductList({ userData, listType, history }) {
     }
   };
 
+  const deleteData = async (rowId) => {
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/delete-pagination/${rowId}?page=${pageIndex - 1}`;
+
+    const endPoint = finalEndPoint(deleteDataEndPoint);
+
+    await axiosInstance.delete(endPoint)
+      .then((response) => {
+        setData(response.data.arrayProduct)
+        setPageCount(Math.ceil(response.data.totalProduct / pageSize))
+      });
+  };
 
   return (
     <Fragment>
@@ -281,8 +297,8 @@ function ComponentProductList({ userData, listType, history }) {
 
       <button onClick={resetAllSearch}>Reset search</button>
 
-      <Link to={`/app/ajout-produit/`}>Ajouter un produit</Link>
-      
+      <Link to={`/app/ajout-${urlTo}`}>Ajouter un produit</Link>
+
       <table>
         <thead>
           <tr>
@@ -316,9 +332,11 @@ function ComponentProductList({ userData, listType, history }) {
                       </td>
                     )
                   }
+                  {/* TODO ne pas afficher la date d'expiration quand on est en historique */}
                   if (key === "number") {
                     return (
                       <td key={`${key}-${index}`}>
+                        {/* TODO si historic supprimer l'édition du nombre, la mise à jour ce fait obligatoiremend dans edit */}
                         <EditableCell
                           initialValue={value}
                           row={row}
@@ -331,18 +349,8 @@ function ComponentProductList({ userData, listType, history }) {
                 })}
                 <td>
                   <div>
-                    <Link to={`/app/edition-produit/${row._id}`}>Edit</Link>
-                    <button onClick={async () => {
-                      //TODO listType = historic et mettre la fonction en dehors??
-                      const getProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products/delete-pagination/${row._id}?page=${pageIndex}`;
-                      await axiosInstance.delete(getProductDataEndPoint)
-                        .then((response) => {
-                          setData(response.data.arrayProduct)
-
-                          setPageCount(Math.ceil(response.data.totalProduct / pageSize))
-
-                        });
-                    }}>Delete</button>
+                    <Link to={`/app/edition-${urlTo}/${row._id}`}>Edit</Link>
+                    <button onClick={() => deleteData(row._id)}>Delete</button>
                   </div>
                 </td>
               </tr>
@@ -374,11 +382,11 @@ function ComponentProductList({ userData, listType, history }) {
 
 ComponentProductList.propTypes = {
   userData: PropTypes.object,
-  listType: PropTypes.string.isRequired,
+  requestTo: PropTypes.string.isRequired,
+  urlTo: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
 }
 
 export default withRouter(ComponentProductList);
 
-//TODO faire toutes le conditions quand on utilise la liste avec l'historique (history.push par exemple)
 //TODO design

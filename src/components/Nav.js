@@ -65,7 +65,7 @@ function Nav({ logOut }) {
             </Link>
           </li>
           <li>
-            <Link to="/app/historique">
+            <Link to="/app/liste-historique">
               <div className="svg-icon">
                 <FontAwesomeIcon id="svg-history" icon={faHistory} />
               </div>

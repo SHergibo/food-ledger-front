@@ -2,20 +2,21 @@ import React, { Fragment } from 'react';
 import ComponentProductList from './ComponentProductLit';
 import PropTypes from 'prop-types';
 
-function Historic({ userData }) {
+function HistoricList({ userData }) {
 
   return (
     <Fragment>
       <ComponentProductList
         userData={userData}
-        listType="historic"
+        requestTo="historics"
+        urlTo="historique"
       />
     </Fragment>
   )
 }
 
-Historic.propTypes = {
+HistoricList.propTypes = {
   userData: PropTypes.object,
 }
 
-export default Historic;
+export default HistoricList;
