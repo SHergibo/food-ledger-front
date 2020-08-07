@@ -1,13 +1,16 @@
 import React, { Fragment } from 'react';
+import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 
 function AddProduct() {
+  const location = useLocation();
+  let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   const addProduct = async (data) =>{
-    const postProductDataEndPoint = `${apiDomain}/api/${apiVersion}/products`;
-    await axiosInstance.post(postProductDataEndPoint, data)
+    const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
+    await axiosInstance.post(postDataEndPoint, data)
       .then((response) => {
         console.log(response.data);
       });
@@ -25,4 +28,4 @@ function AddProduct() {
   )
 }
 
-export default AddProduct
+export default withRouter(AddProduct);
