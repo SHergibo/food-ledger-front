@@ -3,8 +3,8 @@ import './styles/Styles.scss';
 import { Route, Switch } from 'react-router-dom';
 import IsLoggedRoute from './components/Route/IsLogged.route';
 import ProtectedRoute from './components/Route/Protected.route';
-import SignInUp from './components/SignInUp';
-import PreppersApp from './components/PreppersApp';
+import SignInUp from './components/SignInSignUpComponent/SignInUp';
+import PreppersApp from './components/PreppersAppComponents/PreppersApp';
 import Page404 from './components/Page404';
 
 

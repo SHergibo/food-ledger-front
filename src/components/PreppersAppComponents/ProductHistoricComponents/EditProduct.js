@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
-import axiosInstance from './../utils/axiosInstance';
-import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
+import axiosInstance from '../../../utils/axiosInstance';
+import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 
 function EditProduct() {

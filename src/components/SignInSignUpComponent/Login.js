@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useForm, ErrorMessage } from 'react-hook-form';
-import { loginIn } from './../utils/Auth';
+import { loginIn } from './../../utils/Auth';
 
 function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
   const [errorMessage, setErrorMessage] = useState(false);

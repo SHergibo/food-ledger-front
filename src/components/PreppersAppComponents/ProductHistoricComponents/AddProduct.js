@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import axiosInstance from './../utils/axiosInstance';
-import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
+import axiosInstance from '../../../utils/axiosInstance';
+import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 
 function AddProduct() {

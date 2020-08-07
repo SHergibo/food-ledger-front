@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { logout, refreshToken } from './../utils/Auth';
-import axiosInstance from './../utils/axiosInstance';
-import { apiDomain, apiVersion } from './../apiConfig/ApiConfig';
-import Nav from './Nav';
-import SubNav from './SubNav';
-import MainContainer from './MainContainer';
-import SubContainer from './SubContainer';
+import { logout, refreshToken } from './../../utils/Auth';
+import axiosInstance from './../../utils/axiosInstance';
+import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
+import Nav from './PreppersAppUI/Nav';
+import SubNav from './PreppersAppUI/SubNav';
+import MainContainer from './PreppersAppUI/MainContainer';
+import SubContainer from './PreppersAppUI/SubContainer';
 import PropTypes from 'prop-types';
 
 function PreppersApp({ history }) {

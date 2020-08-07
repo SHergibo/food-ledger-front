@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import ComponentProductList from './ComponentProductLit';
+import ComponentProductList from '../ProductHistoricComponents/ComponentProductList';
 import PropTypes from 'prop-types';
 
 function HistoricList({ userData }) {

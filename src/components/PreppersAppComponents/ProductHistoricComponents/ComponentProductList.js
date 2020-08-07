@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
-import axiosInstance from '../utils/axiosInstance';
-import { apiDomain, apiVersion } from '../apiConfig/ApiConfig';
+import axiosInstance from '../../../utils/axiosInstance';
+import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
@@ -80,7 +80,7 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
   }, [userData, getDataList, searchObject]);
 
 
-  const columns = [
+  let columns = [
     {
       Header: 'Nom',
       id: 'name'
@@ -119,6 +119,43 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
     }
   ];
 
+  if (requestTo === "historics"){
+    columns = [
+      {
+        Header: 'Nom',
+        id: 'name'
+      },
+      {
+        Header: 'Marque',
+        id: 'brand'
+      },
+      {
+        Header: 'Type',
+        id: 'type'
+      },
+      {
+        Header: 'Poids',
+        id: 'weight'
+      },
+      {
+        Header: 'Kcal',
+        id: 'kcal'
+      },
+      {
+        Header: 'Emplacement',
+        id: 'location'
+      },
+      {
+        Header: 'Nombre',
+        id: 'number'
+      },
+      {
+        Header: "Actions",
+        id: 'action'
+      }
+    ];
+  }
+
   const EditableCell = ({ initialValue, row, indexRow }) => {
     const [value, setValue] = useState(initialValue);
 
@@ -134,7 +171,7 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
         const endPoint = finalEndPoint(patchDataEndPoint);
         await axiosInstance.patch(endPoint, { number: value })
           .then((response) => {
-            if(response.data.arrayProduct){
+            if (response.data.arrayProduct) {
               setData(response.data.arrayProduct);
               setPageCount(Math.ceil(response.data.totalProduct / pageSize));
             } else {
@@ -325,25 +362,33 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
             return (
               <tr key={`${row}-${indexRow}`}>
                 {Object.entries(row).map(([key, value], index) => {
-                  if (key !== "_id" && key !== "number") {
-                    return (
-                      <td key={`${key}-${index}`}>
-                        {value}
-                      </td>
-                    )
-                  }
-                  {/* TODO ne pas afficher la date d'expiration quand on est en historique */}
-                  if (key === "number") {
-                    return (
-                      <td key={`${key}-${index}`}>
-                        {/* TODO si historic supprimer l'édition du nombre, la mise à jour ce fait obligatoiremend dans edit */}
-                        <EditableCell
-                          initialValue={value}
-                          row={row}
-                          indexRow={indexRow}
-                        />
-                      </td>
-                    )
+                  if (requestTo === "products") {
+                    if (key !== "_id" && key !== "number") {
+                      return (
+                        <td key={`${key}-${index}`}>
+                          {value}
+                        </td>
+                      )
+                    }
+                    if (key === "number") {
+                      return (
+                        <td key={`${key}-${index}`}>
+                          <EditableCell
+                            initialValue={value}
+                            row={row}
+                            indexRow={indexRow}
+                          />
+                        </td>
+                      )
+                    }
+                  } else if (requestTo === "historics"){
+                    if (key !== "_id" && key !== "expirationDate") {
+                      return (
+                        <td key={`${key}-${index}`}>
+                          {value}
+                        </td>
+                      )
+                    }
                   }
                   return null;
                 })}

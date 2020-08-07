@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { Route } from "react-router-dom";
-import Home from './Home';
-import ProductList from './ProductList';
-import EditProduct from './EditProduct';
-import AddProduct from './AddProduct';
-import HistoricList from './HistoricList';
-import Profile from './Profile';
-import Statistics from './Statistics';
+import Home from './../SubComponent/Home';
+import ProductList from './../SubComponent/ProductList';
+import EditProduct from './../ProductHistoricComponents/EditProduct';
+import AddProduct from './../ProductHistoricComponents/AddProduct';
+import HistoricList from './../SubComponent/HistoricList';
+import Profile from './../SubComponent/Profile';
+import Statistics from './../SubComponent/Statistics';
 import PropTypes from 'prop-types';
 
 function MainContainer({ userData }) {

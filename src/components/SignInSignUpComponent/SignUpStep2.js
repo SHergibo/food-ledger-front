@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import { useForm, ErrorMessage } from "react-hook-form";
 import { useStateMachine } from "little-state-machine";
-import updateAction from "../utils/updateAction";
+import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 
