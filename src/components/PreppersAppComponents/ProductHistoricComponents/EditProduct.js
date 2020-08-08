@@ -7,6 +7,7 @@ import AddEditProductForm from './AddEditProductForm';
 function EditProduct() {
   const location = useLocation();
   const [product, setProduct] = useState({});
+  const [arrayExpDate, setArrayExpData] = useState([]);
   let productId = location.pathname.split('/')[3];
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
@@ -18,19 +19,21 @@ function EditProduct() {
       await axiosInstance.get(getDataEndPoint)
         .then((response) => {
           setProduct(response.data);
+          setArrayExpData(response.data.expirationDate);
         });
     };
     getProductData();
-  }, [productId, requestUrl])
+  }, [productId, requestUrl]);
 
 
   const EditProduct = async (data) => {
-    const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
-    await axiosInstance.patch(patchDataEndPoint, data)
-      .then((response) => {
-        // console.log(response.data);
-        //TODO Si produit switch entre produit et historique, mettre tout les champs en grisé avec un message stipulant que le produit ne peut plus être éditer ici et qu'il se trouve maintenant dans l'historique ou dans les produits
-      });
+    console.log(arrayExpDate);
+    // const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
+    // await axiosInstance.patch(patchDataEndPoint, data)
+    //   .then((response) => {
+    //     // console.log(response.data);
+    //     //TODO Si produit switch entre produit et historique, mettre tout les champs en grisé avec un message stipulant que le produit ne peut plus être éditer ici et qu'il se trouve maintenant dans l'historique ou dans les produits
+    //   });
   }
 
   //TODO ajout btn pour revenir à la page suivante (utiliser history??)
@@ -41,6 +44,8 @@ function EditProduct() {
         handleFunction={EditProduct}
         formType="edit"
         value={product}
+        arrayExpDate={arrayExpDate}
+        setArrayExpData={setArrayExpData}
       />
     </Fragment>
   )

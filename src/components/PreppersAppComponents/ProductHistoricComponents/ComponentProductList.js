@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 function ComponentProductList({ userData, requestTo, urlTo, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
-  let queryParsed = QueryString.parse(location.search);
+  let queryParsed = QueryString.parse(location.search); //TODO utilisation d'un useState??
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);

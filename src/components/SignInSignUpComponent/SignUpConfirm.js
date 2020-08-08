@@ -47,6 +47,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
     e.preventDefault();
     let inputOtherMember = document.getElementById('otherMember');
     state.yourDetails.otherMemberArray.push(inputOtherMember.value);
+    //TODO utilisation de spread pour push splice, ...
     action(state.yourDetails);
     inputOtherMember.value = "";
   }
