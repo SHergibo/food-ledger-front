@@ -28,9 +28,13 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 
   const addExpDate = () => {
     let inputExpDate = document.getElementById('expirationDate');
-    console.log(inputExpDate.value);
-    setArrayExpData([...arrayExpDate, inputExpDate.value])
-
+    let dateNow = new Date();
+    let dateExp = new Date(inputExpDate.value);
+    if(!isNaN(dateExp.getTime())){
+      if(dateExp > dateNow){
+        setArrayExpData([...arrayExpDate, inputExpDate.value])
+      }
+    }
   }
 
 
@@ -141,7 +145,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
           id="expirationDate"
           placeholder="Date d'expiration du produit"
         />
-
+        {/* TODO utiliser datePicker */}
         <button onClick={addExpDate}>+</button>
       </div>
 
