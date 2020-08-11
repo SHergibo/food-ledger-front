@@ -1,10 +1,13 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import DatePicker, { registerLocale } from "react-datepicker";
+import { fr } from 'date-fns/locale'
 import PropTypes from 'prop-types';
+registerLocale("fr", fr);
 
 function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData }) {
   const [number, setNumber] = useState();
-  const [test, setTest]= useState(["01/01/20"])
+  const [expDate, setExpDate] = useState(null);
 
   const { register, handleSubmit, errors } = useForm({
     mode: "onChange"
@@ -23,20 +26,71 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
   }, [value]);
 
   useEffect(() => {
-    console.log(test);
-  }, [test]);
+    console.log(arrayExpDate);
+  }, [arrayExpDate])
+
+  const transformDate = (date) => {
+    let day = date.getDate();
+    if (day <= 9) {
+      day = `0${day}`;
+    }
+    let month = date.getMonth() + 1;
+    if (month <= 9) {
+      month = `0${month}`;
+    }
+    return `${day}/${month}/${date.getFullYear()}`;
+  };
 
   const addExpDate = () => {
-    let inputExpDate = document.getElementById('expirationDate');
     let dateNow = new Date();
-    let dateExp = new Date(inputExpDate.value);
-    if(!isNaN(dateExp.getTime())){
-      if(dateExp > dateNow){
-        setArrayExpData([...arrayExpDate, inputExpDate.value])
+    let sameDate = false;
+    if(!expDate) return;
+    if (!isNaN(expDate.getTime())) {
+      if (expDate > dateNow) {
+
+        arrayExpDate.forEach((date, index) => {
+          if (date.expDate === transformDate(expDate)) {
+            sameDate = true;
+            let newArray = [...arrayExpDate];
+            newArray[index].productLinkedToExpDate++;
+            setArrayExpData(newArray);
+            return;
+          }
+        });
+
+        if (sameDate === false) {
+          let objectExpDate = {
+            expDate: transformDate(expDate),
+            productLinkedToExpDate: 1
+          }
+          setArrayExpData([...arrayExpDate, objectExpDate])
+        }
       }
     }
+    setNumber(number + 1);
   }
 
+  const updateExpDate = (e, index) => {
+    // console.log(e.target.value);
+    let newArray = [...arrayExpDate];
+    newArray[index].productLinkedToExpDate = parseInt(e.target.value);
+    setArrayExpData(newArray);
+    
+    let totalNumber = 1;
+    arrayExpDate.forEach(item => {
+      totalNumber = totalNumber + item.productLinkedToExpDate;
+    });
+
+    console.log(totalNumber);
+    console.log(number);
+
+    if(totalNumber >= (number-1)){
+      console.log('ici');
+      setNumber(number + 1);
+    }
+
+
+  };
 
   const form = <Fragment>
     <div>
@@ -78,9 +132,9 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         </div>
       </div>
       <div>
-        <label htmlFor="expirationDate">Date d'expiration du produit *</label>
+        {/* <label htmlFor="expirationDate">Date d'expiration du produit *</label> */}
         <div>
-          {formType === "add" && <input name="expirationDate" type="text" id="expirationDate" placeholder="Date d'expiration du produit" ref={register({ required: true })} />}
+          {/* {formType === "add" && <input name="expirationDate" type="text" id="expirationDate" placeholder="Date d'expiration du produit" ref={register({ required: true })} />} */}
           {/* {formType === "edit" &&
             <input
               name="expirationDate"
@@ -119,7 +173,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
               defaultValue={number}
               ref={register({ required: true })}
               onChange={(e) => {
-                setNumber(e.target.value)
+                setNumber(parseInt(e.target.value))
               }}
             />
           }
@@ -139,20 +193,27 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         {button}
       </button>
       <div>
-        <input
-          name="expirationDate"
-          type="date"
+        <label htmlFor="expirationDate">Date d'expiration du produit *</label>
+        <DatePicker
           id="expirationDate"
-          placeholder="Date d'expiration du produit"
+          isClearable
+          placeholderText="Date d'expiration"
+          dateFormat="dd/MM/yyyy"
+          locale="fr"
+          selected={expDate}
+          onChange={val => {
+            setExpDate(val);
+          }}
         />
-        {/* TODO utiliser datePicker */}
         <button onClick={addExpDate}>+</button>
       </div>
 
       {arrayExpDate &&
         <ul>
           {arrayExpDate.map((date, index) => {
-            return <li key={`expirationDate-${index}`}>{date}</li>
+            return <li key={`expirationDate-${index}`}>{date.expDate}
+                    <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                   </li>
           })}
         </ul>
       }
