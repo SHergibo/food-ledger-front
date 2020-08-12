@@ -79,7 +79,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
       setNumber(number + 1);
     }
     setExpDate(null)
-  }, [arrayExpDate, expDate, number, setArrayExpData]);
+  }, [arrayExpDate, expDate, number, setArrayExpData, totalExpDate]);
 
   const updateExpDate = useCallback((e, index) => {
     let newArray = [...arrayExpDate];
