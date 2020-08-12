@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale'
@@ -6,8 +6,9 @@ import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
 function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData }) {
-  const [number, setNumber] = useState();
+  const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
+  const [totalExpDate, setTotalExpDate] = useState(0);
 
   const { register, handleSubmit, errors } = useForm({
     mode: "onChange"
@@ -22,12 +23,19 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
   }
 
   useEffect(() => {
-    setNumber(value.number);
+    if (value.number) {
+      setNumber(value.number);
+    }
   }, [value]);
 
   useEffect(() => {
-    console.log(arrayExpDate);
-  }, [arrayExpDate])
+    let totalNumber = 0;
+    arrayExpDate.forEach(item => {
+      totalNumber = totalNumber + item.productLinkedToExpDate;
+    });
+    setTotalExpDate(totalNumber);
+    
+  }, [arrayExpDate, setTotalExpDate]);
 
   const transformDate = (date) => {
     let day = date.getDate();
@@ -41,10 +49,10 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
     return `${day}/${month}/${date.getFullYear()}`;
   };
 
-  const addExpDate = () => {
+  const addExpDate = useCallback(() => {
     let dateNow = new Date();
     let sameDate = false;
-    if(!expDate) return;
+    if (!expDate) return;
     if (!isNaN(expDate.getTime())) {
       if (expDate > dateNow) {
 
@@ -67,30 +75,53 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         }
       }
     }
-    setNumber(number + 1);
-  }
+    if(number === totalExpDate){
+      setNumber(number + 1);
+    }
+    setExpDate(null)
+  }, [arrayExpDate, expDate, number, setArrayExpData]);
 
-  const updateExpDate = (e, index) => {
-    // console.log(e.target.value);
+  const updateExpDate = useCallback((e, index) => {
     let newArray = [...arrayExpDate];
     newArray[index].productLinkedToExpDate = parseInt(e.target.value);
     setArrayExpData(newArray);
-    
-    let totalNumber = 1;
+
+    let totalNumber = 0;
     arrayExpDate.forEach(item => {
       totalNumber = totalNumber + item.productLinkedToExpDate;
     });
 
-    console.log(totalNumber);
-    console.log(number);
 
-    if(totalNumber >= (number-1)){
-      console.log('ici');
+    if (totalNumber > number) {
       setNumber(number + 1);
     }
 
+  }, [arrayExpDate, number, setArrayExpData]);
 
-  };
+  const updateNumber = useCallback((inputValue) => {
+    if (isNaN(inputValue)) return;
+    let newArray = [...arrayExpDate];
+
+    if(arrayExpDate.length === 1){
+      newArray[0].productLinkedToExpDate = parseInt(inputValue);
+      setArrayExpData(newArray);
+    }
+
+    if (inputValue === 0 && arrayExpDate.length === 1) {
+      newArray = [];
+      setArrayExpData(newArray);
+    }
+
+    setNumber(inputValue);
+
+  }, [arrayExpDate, setArrayExpData]);
+
+  const deleteExpDate = useCallback((id) => {
+    let newArray = [...arrayExpDate];
+    let numberSubstract = newArray[id].productLinkedToExpDate;
+    setNumber(number - numberSubstract);
+    setArrayExpData(newArray.filter((item, index) => index !== id));
+  }, [arrayExpDate, number, setArrayExpData]);
 
   const form = <Fragment>
     <div>
@@ -169,11 +200,12 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
               name="number"
               type="number"
               id="number"
+              min={0}
               placeholder="Nomber de produit"
-              defaultValue={number}
+              value={number}
               ref={register({ required: true })}
               onChange={(e) => {
-                setNumber(parseInt(e.target.value))
+                updateNumber(parseInt(e.target.value));
               }}
             />
           }
@@ -189,9 +221,18 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
       <form >
         {form}
       </form>
-      <button onClick={handleSubmit(handleFunction)}>
-        {button}
-      </button>
+      {number === totalExpDate &&
+        <button onClick={handleSubmit(handleFunction)}>
+          {button}
+        </button>
+      }
+
+      {number !== totalExpDate &&
+        <button>
+          {button} NOPE
+        </button>
+      }
+      
       <div>
         <label htmlFor="expirationDate">Date d'expiration du produit *</label>
         <DatePicker
@@ -211,9 +252,13 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
       {arrayExpDate &&
         <ul>
           {arrayExpDate.map((date, index) => {
-            return <li key={`expirationDate-${index}`}>{date.expDate}
-                    <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                   </li>
+            return <li key={`expirationDate-${index}`}>
+              <div>
+                {date.expDate}
+                <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                <button onClick={() => { deleteExpDate(index) }}>X</button>
+              </div>
+            </li>
           })}
         </ul>
       }
