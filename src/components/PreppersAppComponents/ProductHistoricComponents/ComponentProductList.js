@@ -4,6 +4,7 @@ import QueryString from 'query-string';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { useForm } from 'react-hook-form';
+import { transformDate } from '../../../helpers/transformDate.helper';
 import PropTypes from 'prop-types';
 
 function ComponentProductList({ userData, requestTo, urlTo, history }) {
@@ -44,10 +45,11 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
 
 
   const getDataList = useCallback(async () => {
-    let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdcode}?page=${pageIndex - 1}`;
+    let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
     const endPoint = finalEndPoint(getDataEndPoint);
     await axiosInstance.get(endPoint)
       .then((response) => {
+        console.log(response.data);
         setData(response.data.arrayProduct);
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
       });
@@ -119,7 +121,7 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
     }
   ];
 
-  if (requestTo === "historics"){
+  if (requestTo === "historics") {
     columns = [
       {
         Header: 'Nom',
@@ -154,35 +156,6 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
         id: 'action'
       }
     ];
-  }
-
-  const EditableCell = ({ initialValue, row, indexRow }) => {
-    const [value, setValue] = useState(initialValue);
-
-    const onChange = e => {
-      if (e.target.value >= 0) {
-        setValue(e.target.value)
-      }
-    }
-
-    const newData = async () => {
-      if (row.number !== value && value >= 0 && value) {
-        const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/${row._id}?page=${pageIndex - 1}`;
-        const endPoint = finalEndPoint(patchDataEndPoint);
-        await axiosInstance.patch(endPoint, { number: value })
-          .then((response) => {
-            if (response.data.arrayProduct) {
-              setData(response.data.arrayProduct);
-              setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-            } else {
-              let newData = data;
-              newData[indexRow] = response.data;
-              setData(newData);
-            }
-          });
-      }
-    }
-    return <input type="number" min="0" value={value} onChange={onChange} onClick={newData} onKeyUp={newData} />
   }
 
   const populateSearchObject = (data) => {
@@ -362,33 +335,19 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
             return (
               <tr key={`${row}-${indexRow}`}>
                 {Object.entries(row).map(([key, value], index) => {
-                  if (requestTo === "products") {
-                    if (key !== "_id" && key !== "number") {
-                      return (
-                        <td key={`${key}-${index}`}>
-                          {value}
-                        </td>
-                      )
-                    }
-                    if (key === "number") {
-                      return (
-                        <td key={`${key}-${index}`}>
-                          <EditableCell
-                            initialValue={value}
-                            row={row}
-                            indexRow={indexRow}
-                          />
-                        </td>
-                      )
-                    }
-                  } else if (requestTo === "historics"){
-                    if (key !== "_id" && key !== "expirationDate") {
-                      return (
-                        <td key={`${key}-${index}`}>
-                          {value}
-                        </td>
-                      )
-                    }
+                  if (key !== "_id" && key !== "expirationDate") {
+                    return (
+                      <td key={`${key}-${index}`}>
+                        {value}
+                      </td>
+                    )
+                  }
+                  if (requestTo === "products" && key === "expirationDate") {
+                    return (
+                      <td key={`${key}-${index}`}>
+                        {transformDate(value[0].expDate)}
+                      </td>
+                    )
                   }
                   return null;
                 })}

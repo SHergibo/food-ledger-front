@@ -1,7 +1,8 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import DatePicker, { registerLocale } from "react-datepicker";
-import { fr } from 'date-fns/locale'
+import { fr } from 'date-fns/locale';
+import { transformDate } from '../../../helpers/transformDate.helper';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -36,18 +37,6 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
     setTotalExpDate(totalNumber);
     
   }, [arrayExpDate, setTotalExpDate]);
-
-  const transformDate = (date) => {
-    let day = date.getDate();
-    if (day <= 9) {
-      day = `0${day}`;
-    }
-    let month = date.getMonth() + 1;
-    if (month <= 9) {
-      month = `0${month}`;
-    }
-    return `${day}/${month}/${date.getFullYear()}`;
-  };
 
   const addExpDate = useCallback(() => {
     let dateNow = new Date();

@@ -68,7 +68,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
 
     if (data.householdNameCheck && data.householdName) {
       baseObject.role = "admin";
-      baseObject.householdname = data.householdName;
+      baseObject.householdName = data.householdName;
     }
 
     if (data.otherMemberCheck && data.otherMemberArray.length >= 1) {
@@ -88,7 +88,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
     let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
 
     if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
-      createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdcode=${state.yourDetails.householdCode}`;
+      createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdCode=${state.yourDetails.householdCode}`;
     }
     await axios.post(createAccountEndPoint, objectData, {
       validateStatus: function (status) {
