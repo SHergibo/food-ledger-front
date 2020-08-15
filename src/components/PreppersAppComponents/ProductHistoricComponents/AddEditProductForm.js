@@ -6,9 +6,10 @@ import { transformDate } from '../../../helpers/transformDate.helper';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData }) {
+function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData, requestUrl }) {
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
+  const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
 
   const { register, handleSubmit, errors } = useForm({
@@ -24,10 +25,17 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
   }
 
   useEffect(() => {
-    if (value.number) {
-      setNumber(value.number);
+
+    if(formType === "add" && requestUrl === "historics"){
+      setShowDateList(false);
     }
-  }, [value]);
+
+    if(formType === "edit"){
+      if (value.number) {
+        setNumber(value.number);
+      }
+    }
+  }, [formType, requestUrl, value]);
 
   useEffect(() => {
     let totalNumber = 0;
@@ -57,7 +65,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 
         if (sameDate === false) {
           let objectExpDate = {
-            expDate: transformDate(expDate),
+            expDate: expDate.toISOString(),
             productLinkedToExpDate: 1
           }
           setArrayExpData([...arrayExpDate, objectExpDate])
@@ -108,7 +116,9 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
   const deleteExpDate = useCallback((id) => {
     let newArray = [...arrayExpDate];
     let numberSubstract = newArray[id].productLinkedToExpDate;
-    setNumber(number - numberSubstract);
+    if(number !== 0 && newArray.length <= number){
+      setNumber(number - numberSubstract);
+    }
     setArrayExpData(newArray.filter((item, index) => index !== id));
   }, [arrayExpDate, number, setArrayExpData]);
 
@@ -151,28 +161,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
           {formType === "edit" && <input name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" defaultValue={value.kcal} ref={register()} />}
         </div>
       </div>
-      <div>
-        {/* <label htmlFor="expirationDate">Date d'expiration du produit *</label> */}
-        <div>
-          {/* {formType === "add" && <input name="expirationDate" type="text" id="expirationDate" placeholder="Date d'expiration du produit" ref={register({ required: true })} />} */}
-          {/* {formType === "edit" &&
-            <input
-              name="expirationDate"
-              type="date"
-              id="expirationDate"
-              placeholder="Date d'expiration du produit"
-            />
-          } */}
-          {errors.expirationDate && <span className="error-message">Ce champ est requis</span>}
-        </div>
-      </div>
-      {/* {arrayExpDate &&
-        <ul>
-          {arrayExpDate.map((date, index) => {
-            return <li key={`expirationDate-${index}`}>{date}</li>
-          })}
-        </ul>
-      } */}
+
       <div>
         <label htmlFor="location">Emplacement du produit</label>
         <div>
@@ -181,24 +170,27 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         </div>
       </div>
       <div>
-        <label htmlFor="number">Nombre de produit *</label>
+      {formType === "add" && requestUrl !== "historics" && <label htmlFor="number">Nombre de produit *</label> }
+      {formType !== "add" && requestUrl !== "products" && <label htmlFor="number">Nombre de produit *</label> }
         <div>
-          {formType === "add" && <input name="number" type="number" id="number" placeholder="Nomber de produit" ref={register({ required: true })} />}
-          {formType === "edit" &&
-            <input
-              name="number"
-              type="number"
-              id="number"
-              min={0}
-              placeholder="Nomber de produit"
-              value={number}
-              ref={register({ required: true })}
-              onChange={(e) => {
-                updateNumber(parseInt(e.target.value));
-              }}
-            />
+          {showDateList &&
+            <>
+              <input
+                name="number"
+                type="number"
+                id="number"
+                min={0}
+                placeholder="Nombre de produit"
+                value={number}
+                ref={register({ required: true })}
+                onChange={(e) => {
+                  updateNumber(parseInt(e.target.value));
+                }}
+              />
+              {errors.number && <span className="error-message">Ce champ est requis</span>}
+            </>
           }
-          {errors.number && <span className="error-message">Ce champ est requis</span>}
+        
         </div>
       </div>
     </div>
@@ -222,35 +214,40 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         </button>
       }
       
-      <div>
-        <label htmlFor="expirationDate">Date d'expiration du produit *</label>
-        <DatePicker
-          id="expirationDate"
-          isClearable
-          placeholderText="Date d'expiration"
-          dateFormat="dd/MM/yyyy"
-          locale="fr"
-          selected={expDate}
-          onChange={val => {
-            setExpDate(val);
-          }}
-        />
-        <button onClick={addExpDate}>+</button>
-      </div>
+      {showDateList &&
+        <>
+          <div>
+            <label htmlFor="expirationDate">Date d'expiration du produit *</label>
+            <DatePicker
+              id="expirationDate"
+              isClearable
+              placeholderText="Date d'expiration"
+              dateFormat="dd/MM/yyyy"
+              locale="fr"
+              selected={expDate}
+              onChange={val => {
+                setExpDate(val);
+              }}
+            />
+            <button onClick={addExpDate}>+</button>
+          </div>
 
-      {arrayExpDate &&
-        <ul>
-          {arrayExpDate.map((date, index) => {
-            return <li key={`expirationDate-${index}`}>
-              <div>
-                {date.expDate}
-                <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                <button onClick={() => { deleteExpDate(index) }}>X</button>
-              </div>
-            </li>
-          })}
-        </ul>
+          {arrayExpDate &&
+            <ul>
+              {arrayExpDate.map((date, index) => {
+                return <li key={`expirationDate-${index}`}>
+                  <div>
+                    {transformDate(date.expDate)}
+                    <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                    <button onClick={() => { deleteExpDate(index) }}>X</button>
+                  </div>
+                </li>
+              })}
+            </ul>
+          }
+        </>
       }
+
     </Fragment>
   )
 }
@@ -260,18 +257,8 @@ AddEditProductForm.propTypes = {
   formType: PropTypes.string.isRequired,
   value: PropTypes.object,
   arrayExpDate: PropTypes.array.isRequired,
-  setArrayExpData: PropTypes.func.isRequired
+  setArrayExpData: PropTypes.func.isRequired,
+  requestUrl: PropTypes.string
 }
 
 export default AddEditProductForm
-
-
-//Pour historique
-//Si number > 1 date expi doit être au minimum 1
-// Si 5 produit et un seul date (nbre de date automatique à 5) => btn edit pas en griser
-// Si 5 produit mais 2 date => btn edit en grisé, obligation de choisir le nombre de date selon le nombre de produit
-//exemple
-// 5 produit
-// 01/01/21 [x4]
-// 05/10/23 [x1]
-// Des que nombre de date === nbr produit btn edit non grisé

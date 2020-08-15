@@ -49,7 +49,6 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
     const endPoint = finalEndPoint(getDataEndPoint);
     await axiosInstance.get(endPoint)
       .then((response) => {
-        console.log(response.data);
         setData(response.data.arrayProduct);
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
       });

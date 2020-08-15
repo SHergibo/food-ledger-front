@@ -27,14 +27,21 @@ function EditProduct() {
 
 
   const EditProduct = async (data) => {
-    console.log(data);
-    console.log(arrayExpDate);
-    // const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
-    // await axiosInstance.patch(patchDataEndPoint, data)
-    //   .then((response) => {
-    //     // console.log(response.data);
-    //     //TODO Si produit switch entre produit et historique, mettre tout les champs en grisé avec un message stipulant que le produit ne peut plus être éditer ici et qu'il se trouve maintenant dans l'historique ou dans les produits
-    //   });
+    let newData = {
+      brand: data.brand,
+      kcal: data.kcal,
+      location: data.location,
+      name: data.name,
+      number: data.number,
+      expirationDate: arrayExpDate,
+      type: data.type,
+      weight: data.weight,
+    }
+    const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
+    await axiosInstance.patch(patchDataEndPoint, newData)
+      .then((response) => {
+        //TODO Si produit switch entre produit et historique, mettre tout les champs en grisé avec un message stipulant que le produit ne peut plus être éditer ici et qu'il se trouve maintenant dans l'historique ou dans les produits
+      });
   }
 
   //TODO ajout btn pour revenir à la page suivante (utiliser history??)
