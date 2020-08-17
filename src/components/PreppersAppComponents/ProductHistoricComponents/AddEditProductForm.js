@@ -1,10 +1,25 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale';
 import { transformDate } from '../../../helpers/transformDate.helper';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
+
+const loadOptions = (inputValue) =>
+new Promise((resolve) => {
+  let array = [
+    { value: "strawberry", label: "Strawberry" },
+    { value: "test", label: "Test" },
+    { value: "vanilla", label: "Vanilla" }
+  ]
+  setTimeout(() => {
+    resolve(array.filter((i) =>
+    i.label.toLowerCase().includes(inputValue.toLowerCase())
+  ));
+  }, 1000);
+});
 
 function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData, requestUrl }) {
   const [number, setNumber] = useState(0);
@@ -12,7 +27,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
 
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, control } = useForm({
     mode: "onChange"
   });
 
@@ -26,11 +41,11 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 
   useEffect(() => {
 
-    if(formType === "add" && requestUrl === "historics"){
+    if (formType === "add" && requestUrl === "historics") {
       setShowDateList(false);
     }
 
-    if(formType === "edit"){
+    if (formType === "edit") {
       if (value.number) {
         setNumber(value.number);
       }
@@ -43,7 +58,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
       totalNumber = totalNumber + item.productLinkedToExpDate;
     });
     setTotalExpDate(totalNumber);
-    
+
   }, [arrayExpDate, setTotalExpDate]);
 
   const addExpDate = useCallback(() => {
@@ -72,7 +87,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         }
       }
     }
-    if(number === totalExpDate){
+    if (number === totalExpDate) {
       setNumber(number + 1);
     }
     setExpDate(null)
@@ -99,7 +114,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
     if (isNaN(inputValue)) return;
     let newArray = [...arrayExpDate];
 
-    if(arrayExpDate.length === 1){
+    if (arrayExpDate.length === 1) {
       newArray[0].productLinkedToExpDate = parseInt(inputValue);
       setArrayExpData(newArray);
     }
@@ -116,7 +131,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
   const deleteExpDate = useCallback((id) => {
     let newArray = [...arrayExpDate];
     let numberSubstract = newArray[id].productLinkedToExpDate;
-    if(number !== 0 && newArray.length <= number){
+    if (number !== 0 && newArray.length <= number) {
       setNumber(number - numberSubstract);
     }
     setArrayExpData(newArray.filter((item, index) => index !== id));
@@ -135,8 +150,36 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
       <div>
         <label htmlFor="brand">Marque du produit *</label>
         <div>
-          {formType === "add" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" ref={register({ required: true })} />}
-          {formType === "edit" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" defaultValue={value.brand} ref={register({ required: true })} />}
+          {value && value.brand && 
+            <Controller
+              name="brand"
+              id="brand"
+              as={AsyncCreatableSelect}
+              defaultValue={{ value: value.brand, label: value.brand }}
+              isClearable
+              cacheOptions
+              defaultOptions
+              loadOptions={loadOptions}
+              control={control}
+              rules={{ required: true }}
+            />
+          }
+
+          {!value && 
+            <Controller
+              name="brand"
+              id="brand"
+              as={AsyncCreatableSelect}
+              isClearable
+              cacheOptions
+              defaultOptions
+              loadOptions={loadOptions}
+              control={control}
+              rules={{ required: true }}
+            />
+          }
+          
+          {/* {formType === "edit" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" defaultValue={value.brand} ref={register({ required: true })} />} */}
         </div>
         {errors.brand && <span className="error-message">Ce champ est requis</span>}
       </div>
@@ -170,8 +213,8 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
         </div>
       </div>
       <div>
-      {formType === "add" && requestUrl !== "historics" && <label htmlFor="number">Nombre de produit *</label> }
-      {formType !== "add" && requestUrl !== "products" && <label htmlFor="number">Nombre de produit *</label> }
+        {formType === "add" && requestUrl !== "historics" && <label htmlFor="number">Nombre de produit *</label>}
+        {formType !== "add" && requestUrl !== "products" && <label htmlFor="number">Nombre de produit *</label>}
         <div>
           {showDateList &&
             <>
@@ -190,7 +233,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
               {errors.number && <span className="error-message">Ce champ est requis</span>}
             </>
           }
-        
+
         </div>
       </div>
     </div>

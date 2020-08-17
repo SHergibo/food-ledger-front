@@ -10,18 +10,19 @@ function AddProduct() {
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   const addProduct = async (data) =>{
-    if(!data.number){
-      data.number = 0;
-    }
-    if(arrayExpDate.length >= 1){
-      data.expirationDate = arrayExpDate
-    }
+    console.log(data);
+    // if(!data.number){
+    //   data.number = 0;
+    // }
+    // if(arrayExpDate.length >= 1){
+    //   data.expirationDate = arrayExpDate
+    // }
 
-    const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
-    await axiosInstance.post(postDataEndPoint, data)
-      .then((response) => {
-        console.log(response.data);
-      });
+    // const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
+    // await axiosInstance.post(postDataEndPoint, data)
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   });
   }
 
   //TODO ajout btn pour revenir à la page suivante (utiliser history??)
