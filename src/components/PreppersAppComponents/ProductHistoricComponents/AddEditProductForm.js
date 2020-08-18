@@ -4,28 +4,17 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale';
 import { transformDate } from '../../../helpers/transformDate.helper';
 import AsyncCreatableSelect from 'react-select/async-creatable';
+import axiosInstance from '../../../utils/axiosInstance';
+import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
-
-const loadOptions = (inputValue) =>
-new Promise((resolve) => {
-  let array = [
-    { value: "strawberry", label: "Strawberry" },
-    { value: "test", label: "Test" },
-    { value: "vanilla", label: "Vanilla" }
-  ]
-  setTimeout(() => {
-    resolve(array.filter((i) =>
-    i.label.toLowerCase().includes(inputValue.toLowerCase())
-  ));
-  }, 1000);
-});
 
 function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData, requestUrl }) {
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
+  const [arrayOptions, setArrayOptions] = useState([]);
 
   const { register, handleSubmit, errors, control } = useForm({
     mode: "onChange"
@@ -110,6 +99,26 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 
   }, [arrayExpDate, number, setArrayExpData]);
 
+  const loadOptions = (inputValue) =>
+  new Promise(async (resolve) => {
+    const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/5f368a7d05126824976d0e0d`; //TODO recherche housholdCode
+    await axiosInstance.get(getBrandListEndPoint)
+      .then((response) => {
+        setArrayOptions(arrayOptions.splice(0,arrayOptions.length));
+        response.data.forEach(element => {
+          arrayOptions.push({ value: element.brandName, label: element.brandName })
+        });
+      });
+    setArrayOptions(arrayOptions);
+    resolve(arrayOptions.filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
+  });
+
+  const onCreateOption = (inputValue) =>{
+    console.log(inputValue);
+    setArrayOptions(arrayOptions.push({value : inputValue, label : inputValue})); 
+    console.log(arrayOptions);
+  }
+
   const updateNumber = useCallback((inputValue) => {
     if (isNaN(inputValue)) return;
     let newArray = [...arrayExpDate];
@@ -150,22 +159,21 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
       <div>
         <label htmlFor="brand">Marque du produit *</label>
         <div>
-          {value && value.brand && 
+          {value && value.brand &&
             <Controller
               name="brand"
               id="brand"
               as={AsyncCreatableSelect}
               defaultValue={{ value: value.brand, label: value.brand }}
               isClearable
-              cacheOptions
-              defaultOptions
               loadOptions={loadOptions}
+              onCreateOption={onCreateOption}
               control={control}
               rules={{ required: true }}
             />
           }
 
-          {!value && 
+          {!value &&
             <Controller
               name="brand"
               id="brand"
@@ -174,11 +182,12 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
               cacheOptions
               defaultOptions
               loadOptions={loadOptions}
+              onCreateOption={onCreateOption}
               control={control}
               rules={{ required: true }}
             />
           }
-          
+
           {/* {formType === "edit" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" defaultValue={value.brand} ref={register({ required: true })} />} */}
         </div>
         {errors.brand && <span className="error-message">Ce champ est requis</span>}
@@ -256,7 +265,7 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
           {button} NOPE
         </button>
       }
-      
+
       {showDateList &&
         <>
           <div>
