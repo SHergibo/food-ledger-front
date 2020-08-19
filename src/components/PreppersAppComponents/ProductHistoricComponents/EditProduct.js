@@ -3,8 +3,9 @@ import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
+import PropTypes from 'prop-types';
 
-function EditProduct() {
+function EditProduct({ userData, history }) {
   const location = useLocation();
   const [product, setProduct] = useState({});
   const [arrayExpDate, setArrayExpData] = useState([]);
@@ -37,7 +38,7 @@ function EditProduct() {
       weight: data.weight,
     }
 
-    if(product.brand !== data.brand.value){
+    if (product.brand !== data.brand.value) {
       newData.brand = data.brand.value;
     }
 
@@ -53,6 +54,8 @@ function EditProduct() {
   return (
     <Fragment>
       <AddEditProductForm
+        userData={userData}
+        history={history}
         handleFunction={EditProduct}
         formType="edit"
         value={product}
@@ -61,6 +64,11 @@ function EditProduct() {
       />
     </Fragment>
   )
+}
+
+EditProduct.propTypes = {
+  userData: PropTypes.object,
+  history: PropTypes.object.isRequired
 }
 
 export default withRouter(EditProduct);

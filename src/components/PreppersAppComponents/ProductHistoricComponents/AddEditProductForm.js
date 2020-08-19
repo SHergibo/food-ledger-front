@@ -3,13 +3,13 @@ import { useForm, Controller } from 'react-hook-form';
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale';
 import { transformDate } from '../../../helpers/transformDate.helper';
-import AsyncCreatableSelect from 'react-select/async-creatable';
+import CreatableSelect from 'react-select/creatable';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, setArrayExpData, requestUrl }) {
+function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpData, requestUrl }) {
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
   const [showDateList, setShowDateList] = useState(true);
@@ -99,24 +99,29 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 
   }, [arrayExpDate, number, setArrayExpData]);
 
-  const loadOptions = (inputValue) =>
-  new Promise(async (resolve) => {
-    const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/5f368a7d05126824976d0e0d`; //TODO recherche housholdCode
-    await axiosInstance.get(getBrandListEndPoint)
-      .then((response) => {
-        setArrayOptions(arrayOptions.splice(0,arrayOptions.length));
-        response.data.forEach(element => {
-          arrayOptions.push({ value: element.brandName, label: element.brandName })
+  useEffect(() => {
+    const loadOptions = async () => {
+      let newArray = arrayOptions;
+      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
+      await axiosInstance.get(getBrandListEndPoint)
+        .then((response) => {
+          response.data.forEach(element => {
+            newArray.push({ value: element.brandName, label: element.brandName })
+          });
         });
-      });
-    setArrayOptions(arrayOptions);
-    resolve(arrayOptions.filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
-  });
+      setArrayOptions(newArray);
+    }
+    if(userData){
+      loadOptions(); 
+    }
+    
+  }, [arrayOptions, userData])
 
-  const onCreateOption = (inputValue) =>{
-    console.log(inputValue);
-    setArrayOptions(arrayOptions.push({value : inputValue, label : inputValue})); 
-    console.log(arrayOptions);
+  const onCreateOption = async (inputValue) => {
+    let newOption = { value: inputValue, label: inputValue };
+    let newArray = arrayOptions
+    newArray.push(newOption)
+    setArrayOptions(newArray);
   }
 
   const updateNumber = useCallback((inputValue) => {
@@ -163,10 +168,10 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
             <Controller
               name="brand"
               id="brand"
-              as={AsyncCreatableSelect}
+              as={CreatableSelect}
               defaultValue={{ value: value.brand, label: value.brand }}
               isClearable
-              loadOptions={loadOptions}
+              options={arrayOptions}
               onCreateOption={onCreateOption}
               control={control}
               rules={{ required: true }}
@@ -177,15 +182,14 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
             <Controller
               name="brand"
               id="brand"
-              as={AsyncCreatableSelect}
+              as={CreatableSelect}
               isClearable
-              cacheOptions
-              defaultOptions
-              loadOptions={loadOptions}
+              options={arrayOptions}
               onCreateOption={onCreateOption}
               control={control}
               rules={{ required: true }}
             />
+
           }
 
           {/* {formType === "edit" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" defaultValue={value.brand} ref={register({ required: true })} />} */}
@@ -250,8 +254,14 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 
   return (
     <Fragment>
+      <button 
+      onClick={()=> {
+        history.goBack()
+      }}>
+        Retour
+      </button>
       <h3>{titleForm}</h3>
-      <form >
+      <form>
         {form}
       </form>
       {number === totalExpDate &&
@@ -305,6 +315,8 @@ function AddEditProductForm({ handleFunction, formType, value, arrayExpDate, set
 }
 
 AddEditProductForm.propTypes = {
+  userData: PropTypes.object,
+  history: PropTypes.object.isRequired,
   handleFunction: PropTypes.func.isRequired,
   formType: PropTypes.string.isRequired,
   value: PropTypes.object,

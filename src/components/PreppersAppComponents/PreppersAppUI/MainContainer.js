@@ -14,11 +14,11 @@ function MainContainer({ userData }) {
     <div>
       <Route exact path="/app" component={Home} />
       <Route path="/app/liste-produit" component={() => <ProductList userData={userData} />} />
-      <Route path="/app/edition-produit/:id" component={EditProduct} />
-      <Route path="/app/ajout-produit" component={AddProduct} />
+      <Route path="/app/edition-produit/:id" component={() => <EditProduct userData={userData} />} />
+      <Route path="/app/ajout-produit" component={() => <AddProduct userData={userData} />} />
       <Route path="/app/liste-historique" component={() => <HistoricList userData={userData} />} />
-      <Route path="/app/edition-historique/:id" component={EditProduct} />
-      <Route path="/app/ajout-historique" component={AddProduct} />
+      <Route path="/app/edition-historique/:id" component={() => <EditProduct userData={userData} />} />
+      <Route path="/app/ajout-historique" component={() => <AddProduct userData={userData} />} />
       <Route path="/app/profil" component={Profile} />
       <Route path="/app/statistiques" component={Statistics} />
     </div>
