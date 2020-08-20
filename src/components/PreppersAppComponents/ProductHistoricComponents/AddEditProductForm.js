@@ -9,7 +9,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpData, requestUrl }) {
+function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl }) {
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
   const [showDateList, setShowDateList] = useState(true);
@@ -62,7 +62,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
             sameDate = true;
             let newArray = [...arrayExpDate];
             newArray[index].productLinkedToExpDate++;
-            setArrayExpData(newArray);
+            setArrayExpDate(newArray);
             return;
           }
         });
@@ -72,7 +72,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
             expDate: expDate.toISOString(),
             productLinkedToExpDate: 1
           }
-          setArrayExpData([...arrayExpDate, objectExpDate])
+          setArrayExpDate([...arrayExpDate, objectExpDate])
         }
       }
     }
@@ -80,12 +80,12 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       setNumber(number + 1);
     }
     setExpDate(null)
-  }, [arrayExpDate, expDate, number, setArrayExpData, totalExpDate]);
+  }, [arrayExpDate, expDate, number, setArrayExpDate, totalExpDate]);
 
   const updateExpDate = useCallback((e, index) => {
     let newArray = [...arrayExpDate];
     newArray[index].productLinkedToExpDate = parseInt(e.target.value);
-    setArrayExpData(newArray);
+    setArrayExpDate(newArray);
 
     let totalNumber = 0;
     arrayExpDate.forEach(item => {
@@ -97,7 +97,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       setNumber(number + 1);
     }
 
-  }, [arrayExpDate, number, setArrayExpData]);
+  }, [arrayExpDate, number, setArrayExpDate]);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -114,8 +114,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     if(userData){
       loadOptions(); 
     }
-    
-  }, [arrayOptions, userData])
+  }, [arrayOptions, userData]);
 
   const onCreateOption = async (inputValue) => {
     let newOption = { value: inputValue, label: inputValue };
@@ -130,17 +129,17 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 
     if (arrayExpDate.length === 1) {
       newArray[0].productLinkedToExpDate = parseInt(inputValue);
-      setArrayExpData(newArray);
+      setArrayExpDate(newArray);
     }
 
     if (inputValue === 0 && arrayExpDate.length === 1) {
       newArray = [];
-      setArrayExpData(newArray);
+      setArrayExpDate(newArray);
     }
 
     setNumber(inputValue);
 
-  }, [arrayExpDate, setArrayExpData]);
+  }, [arrayExpDate, setArrayExpDate]);
 
   const deleteExpDate = useCallback((id) => {
     let newArray = [...arrayExpDate];
@@ -148,8 +147,8 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     if (number !== 0 && newArray.length <= number) {
       setNumber(number - numberSubstract);
     }
-    setArrayExpData(newArray.filter((item, index) => index !== id));
-  }, [arrayExpDate, number, setArrayExpData]);
+    setArrayExpDate(newArray.filter((item, index) => index !== id));
+  }, [arrayExpDate, number, setArrayExpDate]);
 
   const form = <Fragment>
     <div>
@@ -189,7 +188,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               control={control}
               rules={{ required: true }}
             />
-
           }
 
           {/* {formType === "edit" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" defaultValue={value.brand} ref={register({ required: true })} />} */}
@@ -321,7 +319,7 @@ AddEditProductForm.propTypes = {
   formType: PropTypes.string.isRequired,
   value: PropTypes.object,
   arrayExpDate: PropTypes.array.isRequired,
-  setArrayExpData: PropTypes.func.isRequired,
+  setArrayExpDate: PropTypes.func.isRequired,
   requestUrl: PropTypes.string
 }
 

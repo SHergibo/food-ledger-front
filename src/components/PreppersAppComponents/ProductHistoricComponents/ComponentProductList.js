@@ -1,22 +1,30 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
+import Select from 'react-select';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { transformDate } from '../../../helpers/transformDate.helper';
+import DatePicker, { registerLocale } from "react-datepicker";
+import { parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale'
 import PropTypes from 'prop-types';
+registerLocale("fr", fr);
 
 function ComponentProductList({ userData, requestTo, urlTo, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
   let queryParsed = QueryString.parse(location.search); //TODO utilisation d'un useState??
+  const [showFilter, setShowFilter] = useState(false);
+  const [arrayOptions, setArrayOptions] = useState([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
-  const { register, handleSubmit, reset } = useForm({
+  const [dateDatePicker, setDateDatePicker] = useState(null);
+  const { register, handleSubmit, reset, control, setValue } = useForm({
     mode: "onChange"
   });
 
@@ -56,8 +64,17 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
 
 
   useEffect(() => {
+    if(queryParsed.expirationDate){
+      setDateDatePicker(parseISO(queryParsed.expirationDate));
+      setValue("expirationDate", parseISO(queryParsed.expirationDate));
+    }
+  }, [queryParsed.expirationDate, setValue])
+
+
+  useEffect(() => {
     if (Object.keys(queryParsed).length > 0) {
       for (const key in queryParsed) {
+
         if (key.split('-')[1] === "sort") {
           sortObject[key] = queryParsed[key];
           setSortObject(sortObject);
@@ -75,10 +92,11 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
   }, [location, sortObject, searchObject, queryParsed]);
 
   useEffect(() => {
+    register({ name: "expirationDate" });
     if (userData) {
       getDataList();
     }
-  }, [userData, getDataList, searchObject]);
+  }, [register, userData, getDataList, searchObject]);
 
 
   let columns = [
@@ -157,10 +175,35 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
     ];
   }
 
+  useEffect(() => {
+    const loadOptions = async () => {
+      let newArray = arrayOptions;
+      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
+      await axiosInstance.get(getBrandListEndPoint)
+        .then((response) => {
+          response.data.forEach(element => {
+            newArray.push({ value: element.brandName, label: element.brandName })
+          });
+        });
+      setArrayOptions(newArray);
+    }
+    if (userData) {
+      loadOptions();
+    }
+  }, [arrayOptions, userData]);
+
   const populateSearchObject = (data) => {
 
+    if (data.brand) {
+      data.brand = data.brand.value
+    }
+
+    if(data.expirationDate){
+      data.expirationDate = data.expirationDate.toISOString();
+    }
+
     for (const key in data) {
-      if (data[key] !== "") {
+      if (data[key] !== "" && data[key] !== undefined) {
         searchObject[key] = data[key];
         queryParsed[key] = data[key];
       }
@@ -291,20 +334,63 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
 
   return (
     <Fragment>
-      <form onSubmit={handleSubmit(populateSearchObject)}>
-        <input name="name" type="text" id="product-name" placeholder="Nom" defaultValue={searchObject.name || ""} ref={register()} />
-        <input name="brand" type="text" id="product-brand" placeholder="Marque" defaultValue={searchObject.brand} ref={register()} />
-        <input name="type" type="text" id="product-type" placeholder="Type" defaultValue={searchObject.type} ref={register()} />
-        <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
-        <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
-        <input name="expirationDate" type="text" id="product-expiration-date" placeholder="Date d'expiration" defaultValue={searchObject.expirationDate} ref={register()} />
-        {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
-        <input name="location" type="text" id="product-location" placeholder="Emplacement" defaultValue={searchObject.location} ref={register()} />
-        <input name="number" type="number" id="product-number" placeholder="Nombre" defaultValue={searchObject.number} ref={register()} />
-        <button type="submit">Search</button>
-      </form>
+      {showFilter &&
+        <>
+          <form onSubmit={handleSubmit(populateSearchObject)}>
+            <input name="name" type="text" id="product-name" placeholder="Nom" defaultValue={searchObject.name || ""} ref={register()} />
+            {searchObject && searchObject.brand &&
+              <Controller
+                name="brand"
+                id="product-brand"
+                as={Select}
+                defaultValue={{ value: searchObject.brand, label: searchObject.brand }}
+                options={arrayOptions}
+                control={control}
+              />
+            }
 
-      <button onClick={resetAllSearch}>Reset search</button>
+            {!searchObject.brand &&
+              <Controller
+                name="brand"
+                id="product-brand"
+                as={Select}
+                options={arrayOptions}
+                control={control}
+              />
+            }
+            <input name="type" type="text" id="product-type" placeholder="Type" defaultValue={searchObject.type} ref={register()} />
+            <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
+            <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
+            
+              <DatePicker
+                id="product-expiration-date"
+                name="expirationDate"
+                isClearable
+                placeholderText="Date d'expiration"
+                dateFormat="dd/MM/yyyy"
+                locale="fr"
+                selected={dateDatePicker}
+                onChange={val => {
+                  setDateDatePicker(val);
+                  setValue("expirationDate", val);
+                }} 
+              />
+            
+            {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
+            <input name="location" type="text" id="product-location" placeholder="Emplacement" defaultValue={searchObject.location} ref={register()} />
+            <input name="number" type="number" id="product-number" placeholder="Nombre" defaultValue={searchObject.number} ref={register()} />
+            <button type="submit">Search</button>
+          </form>
+
+          <button onClick={resetAllSearch}>Reset search</button>
+        </>
+      }
+
+      <button onClick={() => {
+        showFilter ? setShowFilter(false) : setShowFilter(true);
+      }}>
+        Show filter
+      </button>
 
       <Link to={`/app/ajout-${urlTo}`}>Ajouter un produit</Link>
 

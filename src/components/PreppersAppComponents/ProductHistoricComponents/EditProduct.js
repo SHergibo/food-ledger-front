@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 function EditProduct({ userData, history }) {
   const location = useLocation();
   const [product, setProduct] = useState({});
-  const [arrayExpDate, setArrayExpData] = useState([]);
+  const [arrayExpDate, setArrayExpDate] = useState([]);
   let productId = location.pathname.split('/')[3];
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
@@ -20,7 +20,7 @@ function EditProduct({ userData, history }) {
       await axiosInstance.get(getDataEndPoint)
         .then((response) => {
           setProduct(response.data);
-          setArrayExpData(response.data.expirationDate);
+          setArrayExpDate(response.data.expirationDate);
         });
     };
     getProductData();
@@ -60,7 +60,7 @@ function EditProduct({ userData, history }) {
         formType="edit"
         value={product}
         arrayExpDate={arrayExpDate}
-        setArrayExpData={setArrayExpData}
+        setArrayExpDate={setArrayExpDate}
       />
     </Fragment>
   )

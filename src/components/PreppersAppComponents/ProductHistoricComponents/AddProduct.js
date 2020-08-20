@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 function AddProduct({ userData, history }) {
   const location = useLocation();
-  const [arrayExpDate, setArrayExpData] = useState([]);
+  const [arrayExpDate, setArrayExpDate] = useState([]);
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   const addProduct = async (data) => {
@@ -37,7 +37,7 @@ function AddProduct({ userData, history }) {
         handleFunction={addProduct}
         formType="add"
         arrayExpDate={arrayExpDate}
-        setArrayExpData={setArrayExpData}
+        setArrayExpDate={setArrayExpDate}
         requestUrl={requestUrl}
       />
     </Fragment>
