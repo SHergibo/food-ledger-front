@@ -12,7 +12,7 @@ import { fr } from 'date-fns/locale'
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function ComponentProductList({ userData, requestTo, urlTo, history }) {
+function ComponentProductList({ userData, requestTo, urlTo, columns, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
   let queryParsed = QueryString.parse(location.search); //TODO utilisation d'un useState??
@@ -64,7 +64,7 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
 
 
   useEffect(() => {
-    if(queryParsed.expirationDate){
+    if (queryParsed.expirationDate) {
       setDateDatePicker(parseISO(queryParsed.expirationDate));
       setValue("expirationDate", parseISO(queryParsed.expirationDate));
     }
@@ -98,83 +98,6 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
     }
   }, [register, userData, getDataList, searchObject]);
 
-
-  let columns = [
-    {
-      Header: 'Nom',
-      id: 'name'
-    },
-    {
-      Header: 'Marque',
-      id: 'brand'
-    },
-    {
-      Header: 'Type',
-      id: 'type'
-    },
-    {
-      Header: 'Poids',
-      id: 'weight'
-    },
-    {
-      Header: 'Kcal',
-      id: 'kcal'
-    },
-    {
-      Header: "Date d'expiration",
-      id: 'expirationDate'
-    },
-    {
-      Header: 'Emplacement',
-      id: 'location'
-    },
-    {
-      Header: 'Nombre',
-      id: 'number'
-    },
-    {
-      Header: "Actions",
-      id: 'action'
-    }
-  ];
-
-  if (requestTo === "historics") {
-    columns = [
-      {
-        Header: 'Nom',
-        id: 'name'
-      },
-      {
-        Header: 'Marque',
-        id: 'brand'
-      },
-      {
-        Header: 'Type',
-        id: 'type'
-      },
-      {
-        Header: 'Poids',
-        id: 'weight'
-      },
-      {
-        Header: 'Kcal',
-        id: 'kcal'
-      },
-      {
-        Header: 'Emplacement',
-        id: 'location'
-      },
-      {
-        Header: 'Nombre',
-        id: 'number'
-      },
-      {
-        Header: "Actions",
-        id: 'action'
-      }
-    ];
-  }
-
   useEffect(() => {
     const loadOptions = async () => {
       let newArray = arrayOptions;
@@ -198,7 +121,7 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
       data.brand = data.brand.value
     }
 
-    if(data.expirationDate){
+    if (data.expirationDate) {
       data.expirationDate = data.expirationDate.toISOString();
     }
 
@@ -361,21 +284,21 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
             <input name="type" type="text" id="product-type" placeholder="Type" defaultValue={searchObject.type} ref={register()} />
             <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
             <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
-            
-              <DatePicker
-                id="product-expiration-date"
-                name="expirationDate"
-                isClearable
-                placeholderText="Date d'expiration"
-                dateFormat="dd/MM/yyyy"
-                locale="fr"
-                selected={dateDatePicker}
-                onChange={val => {
-                  setDateDatePicker(val);
-                  setValue("expirationDate", val);
-                }} 
-              />
-            
+
+            <DatePicker
+              id="product-expiration-date"
+              name="expirationDate"
+              isClearable
+              placeholderText="Date d'expiration"
+              dateFormat="dd/MM/yyyy"
+              locale="fr"
+              selected={dateDatePicker}
+              onChange={val => {
+                setDateDatePicker(val);
+                setValue("expirationDate", val);
+              }}
+            />
+
             {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
             <input name="location" type="text" id="product-location" placeholder="Emplacement" defaultValue={searchObject.location} ref={register()} />
             <input name="number" type="number" id="product-number" placeholder="Nombre" defaultValue={searchObject.number} ref={register()} />
@@ -398,7 +321,7 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
         <thead>
           <tr>
             {columns.map((column, index) => {
-              if (column.id !== 'action') {
+              if (column.id !== 'action' && column.id !== 'more') {
                 return (
                   <th key={`${column.id}-${index}`}>
                     {column.Header}
@@ -419,29 +342,33 @@ function ComponentProductList({ userData, requestTo, urlTo, history }) {
           {data.map((row, indexRow) => {
             return (
               <tr key={`${row}-${indexRow}`}>
-                {Object.entries(row).map(([key, value], index) => {
-                  if (key !== "_id" && key !== "expirationDate") {
+                {columns.map((column, index) => {
+                  if (column.id === 'action') {
                     return (
-                      <td key={`${key}-${index}`}>
-                        {value}
+                      <td key={`${column.id}-${index}`}>
+                        <div>
+                          <Link to={`/app/edition-${urlTo}/${row._id}`}>Edit</Link>
+                          <button onClick={() => deleteData(row._id)}>Delete</button>
+                        </div>
                       </td>
                     )
                   }
-                  if (requestTo === "products" && key === "expirationDate") {
+                  if (column.id !== "expirationDate") {
                     return (
-                      <td key={`${key}-${index}`}>
-                        {transformDate(value[0].expDate)}
+                      <td key={`${column.id}-${index}`}>
+                        {row[column.id]}
+                      </td>
+                    )
+                  }
+                  if (column.id === "expirationDate") {
+                    return (
+                      <td key={`${column.id}-${index}`}>
+                        {transformDate(row[column.id][0].expDate)}
                       </td>
                     )
                   }
                   return null;
                 })}
-                <td>
-                  <div>
-                    <Link to={`/app/edition-${urlTo}/${row._id}`}>Edit</Link>
-                    <button onClick={() => deleteData(row._id)}>Delete</button>
-                  </div>
-                </td>
               </tr>
             )
           })}
@@ -473,9 +400,8 @@ ComponentProductList.propTypes = {
   userData: PropTypes.object,
   requestTo: PropTypes.string.isRequired,
   urlTo: PropTypes.string.isRequired,
+  Colums: PropTypes.array,
   history: PropTypes.object.isRequired,
 }
 
 export default withRouter(ComponentProductList);
-
-//TODO design
