@@ -122,24 +122,24 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
     }
   }, [arrayOptions, userData]);
 
-  const populateSearchObject = (data) => {
+  const populateSearchObject = (dataInput) => {
 
-    if (data.brand) {
-      data.brand = data.brand.value
+    if (dataInput.brand) {
+      dataInput.brand = dataInput.brand.value
     }
 
-    if (data.type) {
-      data.type = data.type.value
+    if (dataInput.type) {
+      dataInput.type = dataInput.type.value
     }
 
-    if (data.expirationDate) {
-      data.expirationDate = data.expirationDate.toISOString();
+    if (dataInput.expirationDate) {
+      dataInput.expirationDate = dataInput.expirationDate.toISOString();
     }
 
-    for (const key in data) {
-      if (data[key] !== "" && data[key] !== undefined) {
-        searchObject[key] = data[key];
-        queryParsed[key] = data[key];
+    for (const key in dataInput) {
+      if (dataInput[key] !== "" && dataInput[key] !== undefined) {
+        searchObject[key] = dataInput[key];
+        queryParsed[key] = dataInput[key];
       }
     }
 
