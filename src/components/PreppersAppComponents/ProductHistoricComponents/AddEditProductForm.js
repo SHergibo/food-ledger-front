@@ -1,9 +1,11 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { productType } from "../../../utils/localData";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale';
 import { transformDate } from '../../../helpers/transformDate.helper';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
@@ -111,8 +113,8 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
         });
       setArrayOptions(newArray);
     }
-    if(userData){
-      loadOptions(); 
+    if (userData) {
+      loadOptions();
     }
   }, [arrayOptions, userData]);
 
@@ -190,13 +192,36 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
             />
           }
 
-          {/* {formType === "edit" && <input name="brand" type="text" id="brand" placeholder="Marque du produit" defaultValue={value.brand} ref={register({ required: true })} />} */}
         </div>
         {errors.brand && <span className="error-message">Ce champ est requis</span>}
       </div>
       <div>
         <label htmlFor="type">Type de produit</label>
         <div>
+
+          {value && value.type &&
+            <Controller
+              name="type"
+              id="type"
+              as={Select}
+              defaultValue={{ value: value.type, label: value.type }}
+              options={productType}
+              control={control}
+            />
+          }
+
+          {!value &&
+            <Controller
+              name="type"
+              id="type"
+              as={Select}
+              placeholder="Type"
+              options={productType}
+              control={control}
+            />
+          }
+
+
           {formType === "add" && <input name="type" type="text" id="type" placeholder="Type de produit" ref={register()} />}
           {formType === "edit" && <input name="type" type="text" id="type" placeholder="Type de produit" defaultValue={value.type} ref={register()} />}
         </div>
@@ -252,10 +277,10 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 
   return (
     <Fragment>
-      <button 
-      onClick={()=> {
-        history.goBack()
-      }}>
+      <button
+        onClick={() => {
+          history.goBack()
+        }}>
         Retour
       </button>
       <h3>{titleForm}</h3>

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback, Fragment } from 'react';
+import React, { useState, useEffect, useCallback, Fragment, useRef } from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
 import Select from 'react-select';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { useForm, Controller } from 'react-hook-form';
+import { productType } from "../../../utils/localData";
 import { transformDate } from '../../../helpers/transformDate.helper';
 import DatePicker, { registerLocale } from "react-datepicker";
 import { parseISO } from 'date-fns';
@@ -15,9 +16,10 @@ registerLocale("fr", fr);
 function ComponentProductList({ userData, requestTo, urlTo, columns, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
-  let queryParsed = QueryString.parse(location.search); //TODO utilisation d'un useState??
+  let queryParsed = QueryString.parse(location.search);
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
+  let btnSortRef = useRef([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -79,9 +81,14 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
           sortObject[key] = queryParsed[key];
           setSortObject(sortObject);
 
-          let btnSort = document.getElementById(`btn-${key}`);
-          btnSort.innerHTML = `${queryParsed[key]}`;
-          btnSort.dataset.sort = `${queryParsed[key]}`;
+          if (btnSortRef.current.length >= 1) {
+            btnSortRef.current.forEach(element => {
+              if (element.id === `btn-${key}`) {
+                element.innerHTML = `${queryParsed[key]}`;
+                element.dataset.sort = `${queryParsed[key]}`;
+              }
+            });
+          }
 
         } else if (key !== "page") {
           searchObject[key] = queryParsed[key];
@@ -121,6 +128,10 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
       data.brand = data.brand.value
     }
 
+    if (data.type) {
+      data.type = data.type.value
+    }
+
     if (data.expirationDate) {
       data.expirationDate = data.expirationDate.toISOString();
     }
@@ -150,9 +161,12 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
     if (Object.keys(queryParsed).length > 0) {
       for (const key in queryParsed) {
         if (key.split('-')[1] === "sort") {
-          let btnSort = document.getElementById(`btn-${key}`);
-          btnSort.innerHTML = "none";
-          btnSort.dataset.sort = "none";
+          btnSortRef.current.forEach(element => {
+            if (element.id === `btn-${key}`) {
+              element.innerHTML = "none";
+              element.dataset.sort = "none";
+            }
+          });
         }
       }
     }
@@ -177,9 +191,8 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
     })
   }
 
-  const populateSortObject = (e, dataToSort) => {
-    e.persist();
-    const btnSort = document.getElementById(e.target.id);
+  const populateSortObject = (dataToSort, index) => {
+    const btnSort = btnSortRef.current[index];
 
     if (btnSort.dataset.sort === 'none') {
       btnSort.innerHTML = 'desc';
@@ -257,6 +270,14 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
 
   return (
     <Fragment>
+      <button onClick={() => {
+        showFilter ? setShowFilter(false) : setShowFilter(true);
+      }}>
+        Show filter
+      </button>
+
+      <Link to={`/app/ajout-${urlTo}`}>Ajouter un produit</Link>
+
       {showFilter &&
         <>
           <form onSubmit={handleSubmit(populateSearchObject)}>
@@ -267,6 +288,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
                 id="product-brand"
                 as={Select}
                 defaultValue={{ value: searchObject.brand, label: searchObject.brand }}
+                placeholder="Marque"
                 options={arrayOptions}
                 control={control}
               />
@@ -277,11 +299,35 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
                 name="brand"
                 id="product-brand"
                 as={Select}
+                placeholder="Marque"
                 options={arrayOptions}
                 control={control}
               />
             }
-            <input name="type" type="text" id="product-type" placeholder="Type" defaultValue={searchObject.type} ref={register()} />
+
+            {searchObject && searchObject.type &&
+              <Controller
+                name="type"
+                id="product-type"
+                as={Select}
+                defaultValue={{ value: searchObject.type, label: searchObject.type }}
+                placeholder="Type"
+                options={productType}
+                control={control}
+              />
+            }
+
+            {!searchObject.type &&
+              <Controller
+                name="type"
+                id="product-type"
+                as={Select}
+                placeholder="Type"
+                options={productType}
+                control={control}
+              />
+            }
+
             <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
             <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
 
@@ -309,14 +355,6 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
         </>
       }
 
-      <button onClick={() => {
-        showFilter ? setShowFilter(false) : setShowFilter(true);
-      }}>
-        Show filter
-      </button>
-
-      <Link to={`/app/ajout-${urlTo}`}>Ajouter un produit</Link>
-
       <table>
         <thead>
           <tr>
@@ -325,7 +363,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, history }) 
                 return (
                   <th key={`${column.id}-${index}`}>
                     {column.Header}
-                    <button id={`btn-${column.id}-sort`} onClick={(e) => populateSortObject(e, column.id)} data-sort="none">none</button>
+                    <button id={`btn-${column.id}-sort`} ref={(el) => (btnSortRef.current[index] = el)} onClick={(e) => populateSortObject(column.id, index)} data-sort="none">none</button>
                   </th>
                 )
               } else {

@@ -148,3 +148,16 @@ export const columnsHistoricFullScreen = [
   }
 ];
 
+export const productType = [
+  { value: 'Boisson', label: 'Boisson' },
+  { value: 'Produit sucré', label: 'Produit sucré' },
+  { value: 'Produit laitier', label: 'Produit laitier' },
+  { value: 'Farineux', label: 'Farineux' },
+  { value: 'Céréale', label: 'Céréale' },
+  { value: 'Légumineuse', label: 'Légumineuse' },
+  { value: 'Légume', label: 'Légume' },
+  { value: 'Fruit', label: 'Fruit' },
+  { value: 'Viande', label: 'Viande' },
+  { value: 'Poisson', label: 'Poisson' },
+]
+

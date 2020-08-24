@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useCallback, useState } from 'react';
 import ComponentProductList from '../ProductHistoricComponents/ComponentProductList';
-import {columnsHistoricMobile, columnsHistoricTablet, columnsHistoricFullScreen} from "./../../../utils/columnData";
+import {columnsHistoricMobile, columnsHistoricTablet, columnsHistoricFullScreen} from "./../../../utils/localData";
 import PropTypes from 'prop-types';
 
 function HistoricList({ userData }) {
