@@ -37,6 +37,7 @@ function ProductList({ userData }) {
         requestTo="products"
         urlTo="produit"
         columns={columns}
+        title="Liste des produits"
       />
     </Fragment>
   )

@@ -10,12 +10,52 @@ body {
   background-color: #fafafa;
 }
 
-html, body, #root, .app {
+html,
+body,
+#root,
+.app {
   height: 100%;
 }
 
-ul{
+ul {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.default-h {
+  color: $primary-color;
+  margin-bottom: 1rem;
+}
+
+.default-btn-blue {
+  @include default-btn();
+  background-color: $primary-color;
+  color: $white;
+  border: 2px solid $primary-color;
+  &:hover {
+    background-color: $white;
+    color: $primary-color;
+  }
+}
+
+.default-btn-white {
+  @include default-btn();
+  background-color: $white;
+  color: $primary-color;
+  border: 2px solid $primary-color;
+  &:hover {
+    background-color: $primary-color;
+    color: $white;
+  }
+}
+
+/*Tablet*/
+@media screen and (min-width: 745px) {
+  .default-btn-blue,
+  .default-btn-white {
+    width: auto;
+    padding: 0 1.2rem;
+    margin-right: .8rem;
+  }
 }

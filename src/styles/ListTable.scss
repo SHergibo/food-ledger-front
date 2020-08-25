@@ -1,0 +1,35 @@
+.wrapper-list-table{
+  margin: 1rem .8rem;
+}
+
+.header-list-table{
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-list-sort{
+  border: none;
+  background-color: $white;
+  margin-left: .5rem;
+  outline: none;
+  svg{
+    width: 0.625em;
+  }
+}
+
+/*Media queries*/
+
+/*Tablet*/
+@media screen and (min-width: 745px) {
+  .header-list-table{
+    div{
+      display: flex;
+      flex-direction: row;
+    }
+  }
+}
+
+/*Full-screen*/
+@media screen and (min-width: 960px){
+
+}

@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 
 function MainContainer({ userData }) {
   return (
-    <div>
+    <>
       <Route exact path="/app" component={Home} />
       <Route path="/app/liste-produit" component={() => <ProductList userData={userData} />} />
       <Route path="/app/edition-produit/:id" component={() => <EditProduct userData={userData} />} />
@@ -21,7 +21,7 @@ function MainContainer({ userData }) {
       <Route path="/app/ajout-historique" component={() => <AddProduct userData={userData} />} />
       <Route path="/app/profil" component={Profile} />
       <Route path="/app/statistiques" component={Statistics} />
-    </div>
+    </>
   )
 }
 

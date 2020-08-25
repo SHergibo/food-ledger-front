@@ -37,6 +37,7 @@ function HistoricList({ userData }) {
         requestTo="historics"
         urlTo="historique"
         columns={columns}
+        title="Historique des produits"
       />
     </Fragment>
   )
