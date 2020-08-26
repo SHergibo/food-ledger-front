@@ -220,10 +220,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               control={control}
             />
           }
-
-
-          {formType === "add" && <input name="type" type="text" id="type" placeholder="Type de produit" ref={register()} />}
-          {formType === "edit" && <input name="type" type="text" id="type" placeholder="Type de produit" defaultValue={value.type} ref={register()} />}
         </div>
       </div>
       <div>

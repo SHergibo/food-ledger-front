@@ -18,7 +18,7 @@ registerLocale("fr", fr);
 function ComponentProductList({ userData, requestTo, urlTo, columns, title, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
-  let queryParsed = QueryString.parse(location.search);
+  const [queryParsed, setQueryParsed] = useState(QueryString.parse(location.search) || {});
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
   let btnSortRef = useRef([]);
@@ -72,8 +72,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       setDateDatePicker(parseISO(queryParsed.expirationDate));
       setValue("expirationDate", parseISO(queryParsed.expirationDate));
     }
-  }, [queryParsed.expirationDate, setValue])
-
+  }, [queryParsed.expirationDate, setValue]);
 
   useEffect(() => {
     if (Object.keys(queryParsed).length > 0) {
@@ -84,10 +83,8 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           setSortObject(sortObject);
 
           if (btnSortRef.current.length >= 1) {
-            
             btnSortRef.current.forEach(element => {
               if (element && element.id === `btn-${key}`) {
-                console.log(queryParsed[key]);
                 element.innerHTML = "";
                 if(queryParsed[key] === "desc"){
                   element.insertAdjacentHTML('afterbegin', '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-amount-down" class="svg-inline--fa fa-sort-amount-down fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-128-64h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.37 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm256-192H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>');
@@ -106,7 +103,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         }
       }
     }
-  }, [location, sortObject, searchObject, queryParsed]);
+  }, [location, sortObject, searchObject, queryParsed, columns]);
 
   useEffect(() => {
     register({ name: "expirationDate" });
@@ -147,9 +144,13 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     }
 
     for (const key in dataInput) {
-      if (dataInput[key] !== "" && dataInput[key] !== undefined) {
+      if (dataInput[key] !== "" && dataInput[key] !== undefined && dataInput[key] !== null) {
         searchObject[key] = dataInput[key];
         queryParsed[key] = dataInput[key];
+      }
+      if(dataInput[key] === null){
+        delete queryParsed[key];
+        delete searchObject[key];
       }
     }
 
@@ -159,6 +160,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     })
 
     setSearchObject(searchObject);
+    setQueryParsed(queryParsed);
 
     if (pageIndex === 1) {
       getDataList();
@@ -173,7 +175,8 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         if (key.split('-')[1] === "sort") {
           btnSortRef.current.forEach(element => {
             if (element.id === `btn-${key}`) {
-              element.innerHTML = "none";
+              element.innerHTML = '';
+              element.insertAdjacentHTML('beforeend', '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>');
               element.dataset.sort = "none";
             }
           });
@@ -187,8 +190,9 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
 
     if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
-      reset();
     }
+    reset();
+    setQueryParsed({});
 
     if (pageIndex === 1) {
       getDataList();
@@ -205,10 +209,8 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     const btnSort = btnSortRef.current[index];
 
     if (btnSort.dataset.sort === 'none') {
-      // btnSort.innerHTML = 'desc';
       btnSort.dataset.sort = 'desc';
     } else if (btnSort.dataset.sort === 'desc') {
-      // btnSort.innerHTML = 'asc';
       btnSort.dataset.sort = 'asc';
     } else if (btnSort.dataset.sort === 'asc') {
       btnSort.innerHTML = '';
@@ -231,6 +233,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     })
 
+    setQueryParsed(queryParsed);
     setSortObject(newSortObject);
 
     getDataList();
@@ -246,6 +249,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     });
+    setQueryParsed(queryParsed);
   };
 
   const gotoPage = (page) => {
@@ -324,6 +328,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                 name="brand"
                 id="product-brand"
                 as={Select}
+                isClearable
                 defaultValue={{ value: searchObject.brand, label: searchObject.brand }}
                 placeholder="Marque"
                 options={arrayOptions}
@@ -336,6 +341,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                 name="brand"
                 id="product-brand"
                 as={Select}
+                isClearable
                 placeholder="Marque"
                 options={arrayOptions}
                 control={control}
@@ -347,6 +353,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                 name="type"
                 id="product-type"
                 as={Select}
+                isClearable
                 defaultValue={{ value: searchObject.type, label: searchObject.type }}
                 placeholder="Type"
                 options={productType}
@@ -359,6 +366,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                 name="type"
                 id="product-type"
                 as={Select}
+                isClearable
                 placeholder="Type"
                 options={productType}
                 control={control}

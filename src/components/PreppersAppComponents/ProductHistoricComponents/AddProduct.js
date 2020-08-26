@@ -19,6 +19,7 @@ function AddProduct({ userData, history }) {
     }
 
     data.brand = data.brand.value;
+    data.type = data.type.value;
 
     const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
     await axiosInstance.post(postDataEndPoint, data)

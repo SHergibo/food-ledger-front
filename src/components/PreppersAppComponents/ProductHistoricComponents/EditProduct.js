@@ -42,6 +42,10 @@ function EditProduct({ userData, history }) {
       newData.brand = data.brand.value;
     }
 
+    if (product.type !== data.type.value) {
+      newData.type = data.type.value;
+    }
+
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
     await axiosInstance.patch(patchDataEndPoint, newData)
       .then((response) => {
