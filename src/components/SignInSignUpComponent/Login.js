@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { useForm, ErrorMessage } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
 import { loginIn } from './../../utils/Auth';
 
 function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
   const [errorMessage, setErrorMessage] = useState(false);
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors} = useForm({
     mode: "onChange"
   });
 

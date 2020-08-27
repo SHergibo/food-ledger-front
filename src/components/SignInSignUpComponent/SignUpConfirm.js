@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
-import { useForm, ErrorMessage } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
 import axios from 'axios';

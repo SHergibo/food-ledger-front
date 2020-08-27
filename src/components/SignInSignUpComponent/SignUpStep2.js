@@ -1,5 +1,6 @@
 import React, { useState, Fragment } from "react";
-import { useForm, ErrorMessage } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

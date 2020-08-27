@@ -27,8 +27,58 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   const [pageSize, setPageSize] = useState(10);
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
-  const [dateDatePicker, setDateDatePicker] = useState(null);
-  const { register, handleSubmit, reset, control, setValue } = useForm({
+
+  useEffect(() => {
+    if (Object.keys(queryParsed).length > 0) {
+      for (const key in queryParsed) {
+
+        if (key.split('-')[1] === "sort") {
+          sortObject[key] = queryParsed[key];
+          setSortObject(sortObject);
+
+          if (btnSortRef.current.length >= 1) {
+            btnSortRef.current.forEach(element => {
+              if (element && element.id === `btn-${key}`) {
+                element.innerHTML = "";
+                if(queryParsed[key] === "desc"){
+                  element.insertAdjacentHTML('afterbegin', '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-amount-down" class="svg-inline--fa fa-sort-amount-down fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-128-64h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.37 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm256-192H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>');
+                }else if(queryParsed[key] === "asc"){
+                  element.insertAdjacentHTML('afterbegin', '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-amount-up" class="svg-inline--fa fa-sort-amount-up fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM16 160h48v304a16 16 0 0 0 16 16h32a16 16 0 0 0 16-16V160h48c14.21 0 21.38-17.24 11.31-27.31l-80-96a16 16 0 0 0-22.62 0l-80 96C-5.35 142.74 1.77 160 16 160zm416 0H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>');
+                }
+                
+                element.dataset.sort = `${queryParsed[key]}`;
+              }
+            });
+          }
+
+        } else if (key !== "page") {
+          searchObject[key] = queryParsed[key];
+          setSearchObject(searchObject);
+        }
+      }
+    }
+  }, [location, sortObject, searchObject, queryParsed, columns]);
+
+  const defaultValues = {
+    expirationDate: "",
+    brand: null,
+    type:  null
+  };
+
+  useEffect(() => {
+    if (queryParsed.expirationDate) {
+      defaultValues.expirationDate = parseISO(queryParsed.expirationDate);
+    }
+    if (queryParsed.brand) {
+      defaultValues.brand = { value: searchObject.brand, label: searchObject.brand };
+    }
+    if (queryParsed.type) {
+      defaultValues.type = { value: searchObject.type, label: searchObject.type };
+    }
+  }, [defaultValues, queryParsed, searchObject]);
+
+  const { register, handleSubmit, reset, control } = useForm({
+    defaultValues,
     mode: "onChange"
   });
 
@@ -66,51 +116,11 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       });
   }, [userData, requestTo, pageSize, pageIndex, finalEndPoint]);
 
-
   useEffect(() => {
-    if (queryParsed.expirationDate) {
-      setDateDatePicker(parseISO(queryParsed.expirationDate));
-      setValue("expirationDate", parseISO(queryParsed.expirationDate));
-    }
-  }, [queryParsed.expirationDate, setValue]);
-
-  useEffect(() => {
-    if (Object.keys(queryParsed).length > 0) {
-      for (const key in queryParsed) {
-
-        if (key.split('-')[1] === "sort") {
-          sortObject[key] = queryParsed[key];
-          setSortObject(sortObject);
-
-          if (btnSortRef.current.length >= 1) {
-            btnSortRef.current.forEach(element => {
-              if (element && element.id === `btn-${key}`) {
-                element.innerHTML = "";
-                if(queryParsed[key] === "desc"){
-                  element.insertAdjacentHTML('afterbegin', '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-amount-down" class="svg-inline--fa fa-sort-amount-down fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-128-64h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.37 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm256-192H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>');
-                }else if(queryParsed[key] === "asc"){
-                  element.insertAdjacentHTML('afterbegin', '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-amount-up" class="svg-inline--fa fa-sort-amount-up fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM16 160h48v304a16 16 0 0 0 16 16h32a16 16 0 0 0 16-16V160h48c14.21 0 21.38-17.24 11.31-27.31l-80-96a16 16 0 0 0-22.62 0l-80 96C-5.35 142.74 1.77 160 16 160zm416 0H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>');
-                }
-                
-                element.dataset.sort = `${queryParsed[key]}`;
-              }
-            });
-          }
-
-        } else if (key !== "page") {
-          searchObject[key] = queryParsed[key];
-          setSearchObject(searchObject);
-        }
-      }
-    }
-  }, [location, sortObject, searchObject, queryParsed, columns]);
-
-  useEffect(() => {
-    register({ name: "expirationDate" });
     if (userData) {
       getDataList();
     }
-  }, [register, userData, getDataList, searchObject]);
+  }, [userData, getDataList, searchObject]);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -192,6 +202,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       setSearchObject({});
     }
     reset();
+    reset({type: "", brand: "", expirationDate: ""});
     setQueryParsed({});
 
     if (pageIndex === 1) {
@@ -323,74 +334,43 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         <>
           <form onSubmit={handleSubmit(populateSearchObject)}>
             <input name="name" type="text" id="product-name" placeholder="Nom" defaultValue={searchObject.name || ""} ref={register()} />
-            {searchObject && searchObject.brand &&
-              <Controller
-                name="brand"
-                id="product-brand"
-                as={Select}
-                isClearable
-                defaultValue={{ value: searchObject.brand, label: searchObject.brand }}
-                placeholder="Marque"
-                options={arrayOptions}
-                control={control}
-              />
-            }
+            <Controller
+              name="brand"
+              id="product-brand"
+              as={Select}
+              isClearable
+              placeholder="Marque"
+              options={arrayOptions}
+              control={control}
+            />
 
-            {!searchObject.brand &&
-              <Controller
-                name="brand"
-                id="product-brand"
-                as={Select}
-                isClearable
-                placeholder="Marque"
-                options={arrayOptions}
-                control={control}
-              />
-            }
-
-            {searchObject && searchObject.type &&
-              <Controller
-                name="type"
-                id="product-type"
-                as={Select}
-                isClearable
-                defaultValue={{ value: searchObject.type, label: searchObject.type }}
-                placeholder="Type"
-                options={productType}
-                control={control}
-              />
-            }
-
-            {!searchObject.type &&
-              <Controller
-                name="type"
-                id="product-type"
-                as={Select}
-                isClearable
-                placeholder="Type"
-                options={productType}
-                control={control}
-              />
-            }
-
+            <Controller
+              name="type"
+              id="product-type"
+              as={Select}
+              isClearable
+              placeholder="Type"
+              options={productType}
+              control={control}
+            />
+            
             <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
             <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
 
-            <DatePicker
-              id="product-expiration-date"
+            <Controller
+              control={control}
               name="expirationDate"
-              isClearable
-              placeholderText="Date d'expiration"
-              dateFormat="dd/MM/yyyy"
-              locale="fr"
-              selected={dateDatePicker}
-              onChange={val => {
-                setDateDatePicker(val);
-                setValue("expirationDate", val);
-              }}
+              render={(props) => (
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Date d'expiration"
+                  onChange={(e) => props.onChange(e)}
+                  selected={props.value}
+                />
+              )}
             />
-
             {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
+
             <input name="location" type="text" id="product-location" placeholder="Emplacement" defaultValue={searchObject.location} ref={register()} />
             <input name="number" type="number" id="product-number" placeholder="Nombre" defaultValue={searchObject.number} ref={register()} />
             <button type="submit">Search</button>
