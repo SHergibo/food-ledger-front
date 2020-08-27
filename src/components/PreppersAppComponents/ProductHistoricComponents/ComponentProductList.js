@@ -204,12 +204,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     reset();
     reset({type: "", brand: "", expirationDate: ""});
     setQueryParsed({});
-
-    if (pageIndex === 1) {
-      getDataList();
-    } else {
-      gotoPage(1);
-    }
+    setPageIndex(1);
 
     history.push({
       pathname: `/app/liste-${urlTo}`
