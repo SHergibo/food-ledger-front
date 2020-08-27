@@ -18,9 +18,20 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
 
-  const { register, handleSubmit, errors, control } = useForm({
+  const { register, handleSubmit, errors, control, setValue } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(value){
+      if (value.brand) {
+        setValue("brand", { value: value.brand, label: value.brand });
+      }
+      if (value.type) {
+        setValue("type", { value: value.type, label: value.type });
+      }
+    }
+  }, [value, setValue]);
 
   let titleForm = "Ajout";
   let button = "Ajouter";
@@ -170,12 +181,12 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               name="brand"
               id="brand"
               as={CreatableSelect}
-              defaultValue={{ value: value.brand, label: value.brand }}
+              placeholder="Marque..."
               isClearable
               options={arrayOptions}
               onCreateOption={onCreateOption}
               control={control}
-              rules={{ required: true }}
+              defaultValue={""}
             />
           }
 
@@ -184,13 +195,14 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               name="brand"
               id="brand"
               as={CreatableSelect}
+              placeholder="Marque..."
               isClearable
               options={arrayOptions}
               onCreateOption={onCreateOption}
               control={control}
-              rules={{ required: true }}
             />
           }
+            
 
         </div>
         {errors.brand && <span className="error-message">Ce champ est requis</span>}
@@ -204,9 +216,10 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               name="type"
               id="type"
               as={Select}
-              defaultValue={{ value: value.type, label: value.type }}
+              placeholder="Type..."
               options={productType}
               control={control}
+              defaultValue={""}
             />
           }
 
@@ -215,7 +228,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               name="type"
               id="type"
               as={Select}
-              placeholder="Type"
+              placeholder="Type..."
               options={productType}
               control={control}
             />

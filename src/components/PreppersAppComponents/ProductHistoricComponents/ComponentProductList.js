@@ -334,7 +334,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
               id="product-brand"
               as={Select}
               isClearable
-              placeholder="Marque"
+              placeholder="Marque..."
               options={arrayOptions}
               control={control}
             />
@@ -344,7 +344,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
               id="product-type"
               as={Select}
               isClearable
-              placeholder="Type"
+              placeholder="Type..."
               options={productType}
               control={control}
             />

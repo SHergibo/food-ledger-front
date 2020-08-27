@@ -12,19 +12,24 @@ function EditProduct({ userData, history }) {
   let productId = location.pathname.split('/')[3];
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
-
   useEffect(() => {
-
+    let isRendered = false;
     const getProductData = async () => {
       const getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
       await axiosInstance.get(getDataEndPoint)
         .then((response) => {
-          setProduct(response.data);
-          setArrayExpDate(response.data.expirationDate);
+          if(!isRendered){
+            setProduct(response.data);
+            setArrayExpDate(response.data.expirationDate);
+          }
         });
     };
     getProductData();
+    return () => {
+      isRendered = true;
+    }
   }, [productId, requestUrl]);
+
 
 
   const EditProduct = async (data) => {
@@ -34,16 +39,9 @@ function EditProduct({ userData, history }) {
       name: data.name,
       number: data.number,
       expirationDate: arrayExpDate,
-      type: data.type,
       weight: data.weight,
-    }
-
-    if (product.brand !== data.brand.value) {
-      newData.brand = data.brand.value;
-    }
-
-    if (product.type !== data.type.value) {
-      newData.type = data.type.value;
+      brand: data.brand.value,
+      type: data.type.value
     }
 
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;

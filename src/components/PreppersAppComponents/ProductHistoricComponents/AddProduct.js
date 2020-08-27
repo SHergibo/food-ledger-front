@@ -11,6 +11,7 @@ function AddProduct({ userData, history }) {
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   const addProduct = async (data) => {
+    
     if (!data.number) {
       data.number = 0;
     }
