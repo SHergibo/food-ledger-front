@@ -200,6 +200,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               options={arrayOptions}
               onCreateOption={onCreateOption}
               control={control}
+              defaultValue={""}
             />
           }
             
@@ -231,6 +232,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               placeholder="Type..."
               options={productType}
               control={control}
+              defaultValue={""}
             />
           }
         </div>
