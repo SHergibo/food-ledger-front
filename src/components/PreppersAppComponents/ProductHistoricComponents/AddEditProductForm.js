@@ -11,16 +11,24 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl }) {
+function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success }) {
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
 
-  const { register, handleSubmit, errors, control, setValue } = useForm({
+  const { register, handleSubmit, errors, control, setValue, reset } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(success && formType === "add"){
+      reset();
+      setNumber(0);
+      setArrayExpDate([]);
+    }
+  }, [success, reset, setArrayExpDate, formType]);
 
   useEffect(() => {
     if(value){
@@ -176,65 +184,32 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       <div>
         <label htmlFor="brand">Marque du produit *</label>
         <div>
-          {value && value.brand &&
-            <Controller
-              name="brand"
-              id="brand"
-              as={CreatableSelect}
-              placeholder="Marque..."
-              isClearable
-              options={arrayOptions}
-              onCreateOption={onCreateOption}
-              control={control}
-              defaultValue={""}
-            />
-          }
-
-          {!value &&
-            <Controller
-              name="brand"
-              id="brand"
-              as={CreatableSelect}
-              placeholder="Marque..."
-              isClearable
-              options={arrayOptions}
-              onCreateOption={onCreateOption}
-              control={control}
-              defaultValue={""}
-            />
-          }
-            
-
+          <Controller
+            name="brand"
+            id="brand"
+            as={CreatableSelect}
+            placeholder="Marque..."
+            isClearable
+            options={arrayOptions}
+            onCreateOption={onCreateOption}
+            control={control}
+            defaultValue={""}
+          />
         </div>
         {errors.brand && <span className="error-message">Ce champ est requis</span>}
       </div>
       <div>
         <label htmlFor="type">Type de produit</label>
         <div>
-
-          {value && value.type &&
-            <Controller
-              name="type"
-              id="type"
-              as={Select}
-              placeholder="Type..."
-              options={productType}
-              control={control}
-              defaultValue={""}
-            />
-          }
-
-          {!value &&
-            <Controller
-              name="type"
-              id="type"
-              as={Select}
-              placeholder="Type..."
-              options={productType}
-              control={control}
-              defaultValue={""}
-            />
-          }
+          <Controller
+            name="type"
+            id="type"
+            as={Select}
+            placeholder="Type..."
+            options={productType}
+            control={control}
+            defaultValue={""}
+          />
         </div>
       </div>
       <div>
@@ -299,9 +274,14 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
         {form}
       </form>
       {number === totalExpDate &&
-        <button onClick={handleSubmit(handleFunction)}>
-          {button}
-        </button>
+        <>
+          <button onClick={handleSubmit(handleFunction)}>
+            {button}
+          </button>
+          {success && 
+            <span>Success</span>
+          }
+        </>
       }
 
       {number !== totalExpDate &&
@@ -356,7 +336,8 @@ AddEditProductForm.propTypes = {
   value: PropTypes.object,
   arrayExpDate: PropTypes.array.isRequired,
   setArrayExpDate: PropTypes.func.isRequired,
-  requestUrl: PropTypes.string
+  requestUrl: PropTypes.string,
+  success: PropTypes.bool.isRequired,
 }
 
 export default AddEditProductForm

@@ -8,10 +8,12 @@ import PropTypes from 'prop-types';
 function AddProduct({ userData, history }) {
   const location = useLocation();
   const [arrayExpDate, setArrayExpDate] = useState([]);
+  const [success, setSuccess] = useState(false);
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
+
   const addProduct = async (data) => {
-    
+    console.log(data);
     if (!data.number) {
       data.number = 0;
     }
@@ -25,7 +27,12 @@ function AddProduct({ userData, history }) {
     const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
     await axiosInstance.post(postDataEndPoint, data)
       .then((response) => {
-        //TODO faire un message de succes + refresh form
+        if(response.status === 200){
+          setSuccess(true);
+          setTimeout(() => {
+            setSuccess(false);
+          }, 4000);
+        }
       });
   }
 
@@ -41,6 +48,7 @@ function AddProduct({ userData, history }) {
         arrayExpDate={arrayExpDate}
         setArrayExpDate={setArrayExpDate}
         requestUrl={requestUrl}
+        success={success}
       />
     </Fragment>
   )

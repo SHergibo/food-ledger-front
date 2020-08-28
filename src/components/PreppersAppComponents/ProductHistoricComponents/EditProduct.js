@@ -9,6 +9,7 @@ function EditProduct({ userData, history }) {
   const location = useLocation();
   const [product, setProduct] = useState({});
   const [arrayExpDate, setArrayExpDate] = useState([]);
+  const [success, setSuccess] = useState(false);
   let productId = location.pathname.split('/')[3];
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
@@ -47,11 +48,14 @@ function EditProduct({ userData, history }) {
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
     await axiosInstance.patch(patchDataEndPoint, newData)
       .then((response) => {
-        //TODO Si produit switch entre produit et historique, mettre tout les champs en grisé avec un message stipulant que le produit ne peut plus être éditer ici et qu'il se trouve maintenant dans l'historique ou dans les produits
+        if(response.status === 200){
+          setSuccess(true);
+          setTimeout(() => {
+            setSuccess(false);
+          }, 4000);
+        }
       });
   }
-
-  //TODO ajout btn pour revenir à la page suivante (utiliser history??)
 
   return (
     <Fragment>
@@ -63,6 +67,7 @@ function EditProduct({ userData, history }) {
         value={product}
         arrayExpDate={arrayExpDate}
         setArrayExpDate={setArrayExpDate}
+        success={success}
       />
     </Fragment>
   )
