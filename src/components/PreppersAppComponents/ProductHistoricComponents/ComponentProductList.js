@@ -179,6 +179,47 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     }
   }
 
+  const debounced = (delay, fn) => {
+    let timerId;
+    return function (...args) {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+      timerId = setTimeout(() => {
+        fn(...args);
+        timerId = null;
+      }, delay);
+    }
+  }
+
+  const populateSearchObjectQuickSearch = (dataInput) => {
+
+    if(dataInput.name !== ""){
+      searchObject.name = dataInput.name;
+      queryParsed.name = dataInput.name;
+    }else{
+      delete queryParsed.name;
+      delete searchObject.name;
+    }
+
+    history.push({
+      pathname: `/app/liste-${urlTo}`,
+      search: `${QueryString.stringify(queryParsed, { sort: false })}`
+    })
+
+    setSearchObject(searchObject);
+    setQueryParsed(queryParsed);
+
+    if (pageIndex === 1) {
+      getDataList();
+    } else {
+      gotoPage(1);
+    }
+  }
+
+  const debounceQuickSearch = useCallback(debounced(200, populateSearchObjectQuickSearch), []);
+
+
   const resetAllSearch = () => {
     if (Object.keys(queryParsed).length > 0) {
       for (const key in queryParsed) {
@@ -318,7 +359,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           </button>
 
           {!showFilter &&
-            <form onSubmit={handleSubmit(populateSearchObject)}>
+            <form onChange={handleSubmit(debounceQuickSearch)}>
               <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} ref={register()} />
             </form>
           }
