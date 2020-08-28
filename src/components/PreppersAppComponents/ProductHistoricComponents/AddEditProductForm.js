@@ -171,6 +171,10 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     setArrayExpDate(newArray.filter((item, index) => index !== id));
   }, [arrayExpDate, number, setArrayExpDate]);
 
+  let formatCreateLabel = inputValue => (
+    <span>Ajouter {inputValue}</span>
+  );
+
   const form = <Fragment>
     <div>
       <div>
@@ -188,6 +192,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
             name="brand"
             id="brand"
             as={CreatableSelect}
+            formatCreateLabel={formatCreateLabel}
             placeholder="Marque..."
             isClearable
             options={arrayOptions}
