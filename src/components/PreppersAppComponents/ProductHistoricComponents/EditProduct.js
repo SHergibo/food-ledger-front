@@ -23,13 +23,20 @@ function EditProduct({ userData, history }) {
             setProduct(response.data);
             setArrayExpDate(response.data.expirationDate);
           }
+        })
+        .catch(error => {
+          if(!isRendered){
+            if(error.response.status === 404 ){
+              history.goBack();
+            }
+          }
         });
     };
     getProductData();
     return () => {
       isRendered = true;
     }
-  }, [productId, requestUrl]);
+  }, [productId, requestUrl, history]);
 
 
 
@@ -45,14 +52,27 @@ function EditProduct({ userData, history }) {
       type: data.type.value
     }
 
+
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
     await axiosInstance.patch(patchDataEndPoint, newData)
       .then((response) => {
         if(response.status === 200){
-          setSuccess(true);
-          setTimeout(() => {
-            setSuccess(false);
-          }, 4000);
+          if(productId === response.data._id){
+            setSuccess(true);
+            setTimeout(() => {
+              setSuccess(false);
+            }, 4000);
+          }
+          if(parseInt(newData.number) === 0 && newData.expirationDate.length === 0 && requestUrl === "products"){
+            history.push({
+              pathname: `/app/edition-historique/${response.data._id}`,
+            })
+          }
+          if (newData.number >= 1 && newData.expirationDate.length >= 1 && requestUrl === "historics"){
+            history.push({
+              pathname: `/app/edition-produit/${response.data._id}`,
+            })
+          }
         }
       });
   }
@@ -67,6 +87,7 @@ function EditProduct({ userData, history }) {
         value={product}
         arrayExpDate={arrayExpDate}
         setArrayExpDate={setArrayExpDate}
+        requestUrl={requestUrl}
         success={success}
       />
     </Fragment>

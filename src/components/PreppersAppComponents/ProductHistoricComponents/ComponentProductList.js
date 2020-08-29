@@ -11,7 +11,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -24,7 +24,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   let btnSortRef = useRef([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
 
@@ -415,89 +415,96 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           <button onClick={resetAllSearch}>Reset search</button>
         </>
       }
-
-      <table>
-        <thead>
-          <tr>
-            {columns.map((column, index) => {
-              if (column.id !== 'action' && column.id !== 'more') {
-                return (
-                  <th key={`${column.id}-${index}`}>
-                    {column.Header}
-                    <button 
-                    className="btn-list-sort"
-                    id={`btn-${column.id}-sort`} 
-                    ref={(el) => (btnSortRef.current[index] = el)} 
-                    onClick={(e) => populateSortObject(column.id, index)} 
-                    data-sort="none">
-                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
-                    </button>
-                  </th>
-                )
-              } else {
-                return (
-                  <th key={`${column.id}-${index}`}>
-                    {column.Header}
-                  </th>
-                )
-              }
+      <div className="container-list-table">
+        <table className="list-table">
+          <thead>
+            <tr>
+              {columns.map((column, index) => {
+                if (column.id !== 'action' && column.id !== 'more') {
+                  return (
+                    <th key={`${column.id}-${index}`}>
+                      <span>
+                        {column.Header}
+                        <button 
+                        className="btn-list-sort"
+                        id={`btn-${column.id}-sort`} 
+                        ref={(el) => (btnSortRef.current[index] = el)} 
+                        onClick={(e) => populateSortObject(column.id, index)} 
+                        data-sort="none">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
+                        </button>
+                      </span>
+                    </th>
+                  )
+                } else {
+                  return (
+                    <th key={`${column.id}-${index}`}>
+                      {column.Header}
+                    </th>
+                  )
+                }
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, indexRow) => {
+              return (
+                <tr key={`${row}-${indexRow}`}>
+                  {columns.map((column, index) => {
+                    if (column.id === 'action') {
+                      return (
+                        <td key={`${column.id}-${index}`}>
+                          <div className="div-list-table-action">
+                            <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon={faEdit} /></Link>
+                            <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                          </div>
+                        </td>
+                      )
+                    }
+                    if (column.id !== "expirationDate") {
+                      return (
+                        <td key={`${column.id}-${index}`}>
+                          {row[column.id]}
+                        </td>
+                      )
+                    }
+                    if (column.id === "expirationDate") {
+                      return (
+                        <td key={`${column.id}-${index}`}>
+                          {transformDate(row[column.id][0].expDate)}
+                        </td>
+                      )
+                    }
+                    return null;
+                  })}
+                </tr>
+              )
             })}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, indexRow) => {
-            return (
-              <tr key={`${row}-${indexRow}`}>
-                {columns.map((column, index) => {
-                  if (column.id === 'action') {
-                    return (
-                      <td key={`${column.id}-${index}`}>
-                        <div>
-                          <Link to={`/app/edition-${urlTo}/${row._id}`}>Edit</Link>
-                          <button onClick={() => deleteData(row._id)}>Delete</button>
-                        </div>
-                      </td>
-                    )
-                  }
-                  if (column.id !== "expirationDate") {
-                    return (
-                      <td key={`${column.id}-${index}`}>
-                        {row[column.id]}
-                      </td>
-                    )
-                  }
-                  if (column.id === "expirationDate") {
-                    return (
-                      <td key={`${column.id}-${index}`}>
-                        {transformDate(row[column.id][0].expDate)}
-                      </td>
-                    )
-                  }
-                  return null;
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <div className="pagination">
-        <button onClick={() => gotoPage(1)}>
-          {'<<'}
-        </button>
-        <button onClick={() => previousPage()}>
-          {'<'}
-        </button>
-        <button onClick={() => nextPage()}>
-          {'>'}
-        </button>
-        <button onClick={() => gotoPage(pageCount)}>
-          {'>>'}
-        </button>
+          </tbody>
+        </table>
+        <div className="pagination">
+          <div>
+            <button onClick={() => gotoPage(1)}>
+              {'<<'}
+            </button>
+            <button onClick={() => previousPage()}>
+              {'<'}
+            </button>
+            <button onClick={() => nextPage()}>
+              {'>'}
+            </button>
+            <button onClick={() => gotoPage(pageCount)}>
+              {'>>'}
+            </button>
+          </div>
+          <div>
+            {data.length === 0 && <span>Pas de produit</span>}
+            {data.length > 0 && <span>Page {pageIndex} of {pageCount}</span>}
+          </div>
+        </div>
       </div>
-      <div>
-        {data.length === 0 && <span>Pas de produit</span>}
-        {data.length > 0 && <span>Page {pageIndex} of {pageCount}</span>}
-      </div>
+      
+      
     </section>
   )
 }

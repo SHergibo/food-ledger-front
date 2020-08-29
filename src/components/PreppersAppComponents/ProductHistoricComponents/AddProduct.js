@@ -13,7 +13,6 @@ function AddProduct({ userData, history }) {
 
 
   const addProduct = async (data) => {
-    console.log(data);
     if (!data.number) {
       data.number = 0;
     }

@@ -77,7 +77,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     if (!expDate) return;
     if (!isNaN(expDate.getTime())) {
       if (expDate > dateNow) {
-
         arrayExpDate.forEach((date, index) => {
           if (date.expDate === transformDate(expDate)) {
             sameDate = true;
@@ -95,12 +94,14 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
           }
           setArrayExpDate([...arrayExpDate, objectExpDate])
         }
+
+        if (number === totalExpDate) {
+          setNumber(number + 1);
+        }
       }
     }
-    if (number === totalExpDate) {
-      setNumber(number + 1);
-    }
-    setExpDate(null)
+
+    setExpDate(null);
   }, [arrayExpDate, expDate, number, setArrayExpDate, totalExpDate]);
 
   const updateExpDate = useCallback((e, index) => {
@@ -267,10 +268,10 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   </Fragment>;
 
   return (
-    <Fragment>
+    <div>
       <button
         onClick={() => {
-          history.goBack()
+          history.goBack();
         }}>
         Retour
       </button>
@@ -285,6 +286,12 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
           </button>
           {success && 
             <span>Success</span>
+          }
+          {formType === "edit" && number === 0 && requestUrl === "products" &&
+            <span>Attention Product to historic</span>
+          }
+          {formType === "edit" && number >= 1 && requestUrl === "historics" &&
+            <span>Attention Historic to product</span>
           }
         </>
       }
@@ -328,8 +335,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
           }
         </>
       }
-
-    </Fragment>
+    </div>
   )
 }
 
@@ -341,7 +347,7 @@ AddEditProductForm.propTypes = {
   value: PropTypes.object,
   arrayExpDate: PropTypes.array.isRequired,
   setArrayExpDate: PropTypes.func.isRequired,
-  requestUrl: PropTypes.string,
+  requestUrl: PropTypes.string.isRequired,
   success: PropTypes.bool.isRequired,
 }
 
