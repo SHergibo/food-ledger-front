@@ -11,7 +11,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -24,7 +24,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   let btnSortRef = useRef([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
-  const [pageSize, setPageSize] = useState(20);
+  const pageSize = 20;
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
 
@@ -114,7 +114,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         setData(response.data.arrayProduct);
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
       });
-  }, [userData, requestTo, pageSize, pageIndex, finalEndPoint]);
+  }, [userData, requestTo, pageIndex, finalEndPoint]);
 
   useEffect(() => {
     if (userData) {
@@ -483,23 +483,35 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           </tbody>
         </table>
         <div className="pagination">
-          <div>
+          <div className="action-pagination">
             <button onClick={() => gotoPage(1)}>
-              {'<<'}
+              <FontAwesomeIcon icon={faAngleDoubleLeft} />
             </button>
             <button onClick={() => previousPage()}>
-              {'<'}
+              <FontAwesomeIcon icon={faAngleLeft} />
             </button>
+            {data.length === 0 && <span>Pas de produit</span>}
+            {data.length > 0 && 
+              <span>Page
+                <input 
+                type="number" 
+                value={pageIndex}
+                min={1}
+                max={pageCount}
+                onChange={(e) => {
+                  setPageIndex(e.target.value);
+                  setUrlPageQueryParam(e.target.value);
+                }}
+                />
+                sur {pageCount}
+              </span>
+            }
             <button onClick={() => nextPage()}>
-              {'>'}
+              <FontAwesomeIcon icon={faAngleRight} />
             </button>
             <button onClick={() => gotoPage(pageCount)}>
-              {'>>'}
+              <FontAwesomeIcon icon={faAngleDoubleRight} />
             </button>
-          </div>
-          <div>
-            {data.length === 0 && <span>Pas de produit</span>}
-            {data.length > 0 && <span>Page {pageIndex} of {pageCount}</span>}
           </div>
         </div>
       </div>

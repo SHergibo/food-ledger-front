@@ -49,6 +49,11 @@
         button{
           display: flex;
           color: $primary-color;
+          cursor: pointer;
+          transition: .2s ease-in-out;
+          &:hover{
+            color: $blue;
+          }
         }
       }
     }
@@ -91,8 +96,8 @@
   transition: .2s ease-in-out;
   cursor: pointer;
   &:hover{
-    color: $primary-color;
-    background-color: $white;
+    background-color: $blue;
+    border-color:$blue;
   }
   &:first-child{
     margin-right: .5rem;
@@ -103,8 +108,58 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 2.5rem;
+  height: 3.5rem;
   border-bottom: 2px solid $grey;
+}
+
+.action-pagination{
+  display: flex;
+  button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: $primary-color;
+    border: none;
+    padding: 0 .3rem;
+    font-size: 1.7rem;
+    cursor: pointer;
+    outline: none;
+    transition: .2s ease-in-out;
+    &:hover{
+      color: $blue;
+    }
+  }
+  span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 .3rem;
+    color: $primary-color;
+
+    input{
+      width: 1.8rem;
+      height: 1.9rem;
+      margin: 0 .3rem;
+      border: 2px solid $grey;
+      border-radius: .2rem;
+      background-color: $grey-darker;
+      color: $primary-color;
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+      transition: .2s ease-in-out;
+      -moz-appearance: textfield;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      &:hover{
+        border-color: $primary-color;
+      }
+    }
+  }
 }
 
 /*Media queries*/
