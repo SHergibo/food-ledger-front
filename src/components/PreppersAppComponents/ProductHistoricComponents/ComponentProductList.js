@@ -11,7 +11,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -330,6 +330,36 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       });
   };
 
+  const customStyles = {
+    control: styles => (
+      { ...styles, 
+        width: '230px',
+        marginRight: '0.5rem',
+        transition: '.2s ease-in-out',
+        outline: 'none',
+        boxShadow: 'none',
+        color: '#002651',
+        '&:hover': {
+          borderColor: '#002651'
+        }
+      }),
+    option: styles => (
+      { ...styles, 
+        color: '#002651',
+        '&:hover': {
+          backgroundColor: '#e1e7ee'
+        }
+      }),
+    singleValue: styles => (
+      { ...styles, 
+        color: '#002651',
+      }),
+    menu: styles => (
+      { ...styles, 
+        marginTop: '1px',
+      }),
+  };
+
   return (
     <section className="wrapper-list-table">
 
@@ -346,7 +376,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           }}>
             {!showFilter &&
               <>
-                Recherche avancée
+                Filtre avancée
               </>
             }
 
@@ -368,51 +398,114 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
 
       {showFilter &&
         <>
-          <form onSubmit={handleSubmit(populateSearchObject)}>
-            <input name="name" type="text" id="product-name" placeholder="Nom" defaultValue={searchObject.name || ""} ref={register()} />
-            <Controller
-              name="brand"
-              id="product-brand"
-              as={Select}
-              isClearable
-              placeholder="Marque..."
-              options={arrayOptions}
-              control={control}
-            />
-
-            <Controller
-              name="type"
-              id="product-type"
-              as={Select}
-              isClearable
-              placeholder="Type..."
-              options={productType}
-              control={control}
-            />
+          <form className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
+            <div className="input-form-container">
+              <label htmlFor="product-name">Nom du produit</label>
+              <input className="input-form" name="name" type="text" id="product-name" placeholder="Nom..." defaultValue={searchObject.name || ""} ref={register()} />
+            </div>
             
-            <input name="weight" type="number" id="product-weight" placeholder="Poids" defaultValue={searchObject.weight} ref={register()} />
-            <input name="kcal" type="text" id="product-kcal" placeholder="Kcal" defaultValue={searchObject.kcal} ref={register()} />
+            <div className="input-form-container">
+              <label 
+                htmlFor="product-brand" 
+                onMouseOver={() =>{
+                  document.getElementsByClassName('select-brand__control')[0].style.borderColor = "#002651";
+                }}
+                onMouseLeave={() =>{
+                  document.getElementsByClassName('select-brand__control')[0].style.borderColor = null;
+                }}
+                onClick={() =>{
+                  document.getElementsByClassName('select-brand__control')[0].style.borderColor = null;
+                }}
+              >
+                Marque du produit
+              </label>
+              <Controller
+                name="brand"
+                inputId="product-brand"
+                classNamePrefix="select-brand"
+                as={Select}
+                isClearable
+                styles={customStyles}
+                placeholder="Marque..."
+                options={arrayOptions}
+                control={control}
+              />
+            </div>
 
-            <Controller
-              control={control}
-              name="expirationDate"
-              render={(props) => (
-                <DatePicker
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Date d'expiration"
-                  onChange={(e) => props.onChange(e)}
-                  selected={props.value}
-                />
-              )}
-            />
+            <div className="input-form-container">
+              <label 
+              htmlFor="product-type"
+              onMouseOver={() =>{
+                document.getElementsByClassName('select-type__control')[0].style.borderColor = "#002651";
+              }}
+              onMouseLeave={() =>{
+                document.getElementsByClassName('select-type__control')[0].style.borderColor = null;
+              }}
+              onClick={() =>{
+                document.getElementsByClassName('select-type__control')[0].style.borderColor = null;
+              }}
+              >
+                Type de produit
+              </label>
+              <Controller
+                name="type"
+                inputId="product-type"
+                classNamePrefix="select-type"
+                as={Select}
+                isClearable
+                styles={customStyles}
+                placeholder="Type..."
+                options={productType}
+                control={control}
+              />
+            </div>
+
+            <div className="input-form-container">
+              <label htmlFor="product-weight">Poids du produit</label>
+              <input className="input-form" name="weight" type="number" id="product-weight" placeholder="Poids..." defaultValue={searchObject.weight} ref={register()} />
+            </div>
+
+            <div className="input-form-container">
+              <label htmlFor="product-kcal">Valeur energétique du produit</label>
+              <input className="input-form" name="kcal" type="text" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} ref={register()} />
+            </div>
+
+            <div className="input-form-container">
+              <label htmlFor="product-expirationDate">Date d'expiration du produit</label>
+              <Controller
+                control={control}
+                name="expirationDate"
+                id="product-expirationDate"
+                render={(props) => (
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Date d'expiration..."
+                    onChange={(e) => props.onChange(e)}
+                    selected={props.value}
+                  />
+                )}
+              />
             {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
+            </div>
+            
+            <div className="input-form-container">
+              <label htmlFor="product-location">Emplacement du produit</label>
+              <input className="input-form" name="location" type="text" id="product-location" placeholder="Emplacement..." defaultValue={searchObject.location} ref={register()} />
+            </div>
 
-            <input name="location" type="text" id="product-location" placeholder="Emplacement" defaultValue={searchObject.location} ref={register()} />
-            <input name="number" type="number" id="product-number" placeholder="Nombre" defaultValue={searchObject.number} ref={register()} />
-            <button type="submit">Search</button>
+            <div className="input-form-container">
+              <label htmlFor="product-number">Nombre de produit</label>
+              <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} ref={register()} />
+            </div>
+
+            <div className="action-form-filter">
+              <button className="btn-action-form-filter" type="submit"><FontAwesomeIcon icon={faFilter} /> Filtrer</button>
+              <button className="btn-action-form-filter" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} /> Réinitialiser filtre</button>
+            </div>
+            
           </form>
 
-          <button onClick={resetAllSearch}>Reset search</button>
+          
         </>
       }
       <div className="container-list-table">

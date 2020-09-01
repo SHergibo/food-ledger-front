@@ -2,6 +2,46 @@
   margin: 1rem .8rem;
 }
 
+.form-filter-table{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  .react-datepicker-wrapper{
+    width: unset;
+  }
+  .action-form-filter{
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+  .btn-action-form-filter{
+    height: calculRem(36px);
+    margin-right: .5rem;
+    padding: 0 .8rem;
+    background-color: $primary-color;
+    border: 2px solid $primary-color;
+    border-radius: 10px;
+    color: $white;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: .2s ease-in-out;
+    outline: none;
+    cursor: pointer;
+    &:hover{
+      background-color: $white;
+      color: $primary-color;
+    }
+    svg{
+      margin-right: .3rem;
+    }
+  }
+  .input-form-container, .action-form-filter{
+    min-height: calculRem(60px);
+  }
+}
+
+
+
 .header-list-table{
   display: flex;
   flex-direction: column;
@@ -80,7 +120,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .list-table-action{
