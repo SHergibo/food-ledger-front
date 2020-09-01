@@ -12,6 +12,7 @@
   .container-sub{
     width: 25rem;
     min-width: 25rem;
-    height: calc(100vh - 4rem);
+    height: inherit;
+    min-height: calc(100vh - 4rem);
   }
 }
