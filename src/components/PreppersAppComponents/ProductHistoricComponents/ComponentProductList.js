@@ -509,7 +509,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                     if (column.id === "expirationDate") {
                       return (
                         <td key={`${column.id}-${index}`}>
-                          {transformDate(row[column.id][0].expDate)}
+                          {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
                         </td>
                       )
                     }
