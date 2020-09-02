@@ -8,6 +8,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
 import { transformDate } from '../../../helpers/transformDate.helper';
 import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -60,7 +61,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   }, [location, sortObject, searchObject, queryParsed, columns]);
 
   const defaultValues = {
-    expirationDate: "",
+    expirationDate: null,
     brand: null,
     type:  null
   };
@@ -107,13 +108,15 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
 
 
   const getDataList = useCallback(async () => {
-    let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
-    const endPoint = finalEndPoint(getDataEndPoint);
-    await axiosInstance.get(endPoint)
-      .then((response) => {
-        setData(response.data.arrayProduct);
-        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-      });
+    if(pageIndex >= 1){
+      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
+      const endPoint = finalEndPoint(getDataEndPoint);
+      await axiosInstance.get(endPoint)
+        .then((response) => {
+          setData(response.data.arrayProduct);
+          setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+        });
+    }
   }, [userData, requestTo, pageIndex, finalEndPoint]);
 
   useEffect(() => {
@@ -243,7 +246,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       setSearchObject({});
     }
     reset();
-    reset({type: "", brand: "", expirationDate: ""});
+    reset({type: null, brand: null, expirationDate: null});
     setQueryParsed({});
     setPageIndex(1);
 
@@ -287,7 +290,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   };
 
   const setUrlPageQueryParam = (page) => {
-    if (page !== 1) {
+    if (page > 1 && page !== null) {
       queryParsed["page"] = page;
     } else {
       delete queryParsed["page"];
@@ -414,10 +417,13 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
               <Controller
                 control={control}
                 name="expirationDate"
-                id="product-expirationDate"
                 render={(props) => (
                   <DatePicker
+                    className="input-form"
+                    id="product-expirationDate"
                     dateFormat="dd/MM/yyyy"
+                    locale="fr"
+                    isClearable
                     placeholderText="Date d'expiration..."
                     onChange={(e) => props.onChange(e)}
                     selected={props.value}
@@ -522,8 +528,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
             <button onClick={() => previousPage()}>
               <FontAwesomeIcon icon={faAngleLeft} />
             </button>
-            {data.length === 0 && <span>Pas de produit</span>}
-            {data.length > 0 && 
+
               <span>Page
                 <input 
                 type="number" 
@@ -531,13 +536,21 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                 min={1}
                 max={pageCount}
                 onChange={(e) => {
-                  setPageIndex(e.target.value);
-                  setUrlPageQueryParam(e.target.value);
+                  if(e.target.value > pageCount){
+                    setPageIndex(pageCount);
+                    setUrlPageQueryParam(pageCount);
+                  } else if (e.target.value <= 0 || e.target.value === ""){
+                    setPageIndex("");
+                    setUrlPageQueryParam(null);
+                  } else {
+                    setPageIndex(e.target.value);
+                    setUrlPageQueryParam(e.target.value);
+                  }
                 }}
                 />
                 sur {pageCount}
               </span>
-            }
+
             <button onClick={() => nextPage()}>
               <FontAwesomeIcon icon={faAngleRight} />
             </button>
