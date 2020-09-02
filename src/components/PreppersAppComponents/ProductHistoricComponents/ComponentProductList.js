@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
-import Select from 'react-select';
+import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { useForm, Controller } from 'react-hook-form';
@@ -329,37 +329,6 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         setPageCount(Math.ceil(response.data.totalProduct / pageSize))
       });
   };
-
-  const customStyles = {
-    control: styles => (
-      { ...styles, 
-        width: '230px',
-        marginRight: '0.5rem',
-        transition: '.2s ease-in-out',
-        outline: 'none',
-        boxShadow: 'none',
-        color: '#002651',
-        '&:hover': {
-          borderColor: '#002651'
-        }
-      }),
-    option: styles => (
-      { ...styles, 
-        color: '#002651',
-        '&:hover': {
-          backgroundColor: '#e1e7ee'
-        }
-      }),
-    singleValue: styles => (
-      { ...styles, 
-        color: '#002651',
-      }),
-    menu: styles => (
-      { ...styles, 
-        marginTop: '1px',
-      }),
-  };
-
   return (
     <section className="wrapper-list-table">
 
@@ -405,57 +374,27 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
             </div>
             
             <div className="input-form-container">
-              <label 
-                htmlFor="product-brand" 
-                onMouseOver={() =>{
-                  document.getElementsByClassName('select-brand__control')[0].style.borderColor = "#002651";
-                }}
-                onMouseLeave={() =>{
-                  document.getElementsByClassName('select-brand__control')[0].style.borderColor = null;
-                }}
-                onClick={() =>{
-                  document.getElementsByClassName('select-brand__control')[0].style.borderColor = null;
-                }}
-              >
-                Marque du produit
-              </label>
-              <Controller
+              <ReactSelect
+                label="Marque du produit"
+                Controller={Controller}
                 name="brand"
                 inputId="product-brand"
                 classNamePrefix="select-brand"
-                as={Select}
-                isClearable
-                styles={customStyles}
                 placeholder="Marque..."
-                options={arrayOptions}
+                arrayOptions={arrayOptions}
                 control={control}
               />
             </div>
 
             <div className="input-form-container">
-              <label 
-              htmlFor="product-type"
-              onMouseOver={() =>{
-                document.getElementsByClassName('select-type__control')[0].style.borderColor = "#002651";
-              }}
-              onMouseLeave={() =>{
-                document.getElementsByClassName('select-type__control')[0].style.borderColor = null;
-              }}
-              onClick={() =>{
-                document.getElementsByClassName('select-type__control')[0].style.borderColor = null;
-              }}
-              >
-                Type de produit
-              </label>
-              <Controller
+              <ReactSelect
+                label="Type de produit"
+                Controller={Controller}
                 name="type"
                 inputId="product-type"
                 classNamePrefix="select-type"
-                as={Select}
-                isClearable
-                styles={customStyles}
                 placeholder="Type..."
-                options={productType}
+                arrayOptions={productType}
                 control={control}
               />
             </div>
