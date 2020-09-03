@@ -14,18 +14,18 @@ function EditProduct({ userData, history }) {
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   useEffect(() => {
-    let isRendered = false;
+    let isRendered = true;
     const getProductData = async () => {
       const getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
       await axiosInstance.get(getDataEndPoint)
         .then((response) => {
-          if (!isRendered) {
+          if (isRendered) {
             setProduct(response.data);
             setArrayExpDate(response.data.expirationDate);
           }
         })
         .catch(error => {
-          if (!isRendered) {
+          if (isRendered) {
             if (error.response.status === 404) {
               history.goBack();
             }
@@ -34,9 +34,22 @@ function EditProduct({ userData, history }) {
     };
     getProductData();
     return () => {
-      isRendered = true;
+      isRendered = false;
     }
   }, [productId, requestUrl, history]);
+
+  useEffect(() => {
+    let timerSuccess;
+    if(success){
+      timerSuccess = setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(timerSuccess);
+    }
+  }, [success])
 
 
 
@@ -59,9 +72,6 @@ function EditProduct({ userData, history }) {
         if (response.status === 200) {
           if (productId === response.data._id) {
             setSuccess(true);
-            setTimeout(() => {
-              setSuccess(false);
-            }, 4000);
           }
           if (parseInt(newData.number) === 0 && newData.expirationDate.length === 0 && requestUrl === "products") {
             history.push({

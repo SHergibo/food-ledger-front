@@ -4,14 +4,17 @@ import { productType } from "../../../utils/localData";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale';
 import { transformDate } from '../../../helpers/transformDate.helper';
-import CreatableSelect from 'react-select/creatable';
-import Select from 'react-select';
+import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
 function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success }) {
+  const [titleForm, setTitleForm] = useState("");
+  const [button, setButton] = useState("");
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
   const [showDateList, setShowDateList] = useState(true);
@@ -21,6 +24,17 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   const { register, handleSubmit, errors, control, setValue, reset } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(formType === "add"){
+      setTitleForm("Ajouter produit");
+      setButton("Ajouter");
+    }
+    if(formType === "edit"){
+      setTitleForm("Édition produit");
+      setButton("Éditer");
+    }
+  }, [formType, requestUrl])
 
   useEffect(() => {
     if(success && formType === "add"){
@@ -41,13 +55,9 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     }
   }, [value, setValue]);
 
-  let titleForm = "Ajout";
-  let button = "Ajouter";
-
-  if (formType === "edit") {
-    titleForm = "Édition";
-    button = "Éditer";
-  }
+  useEffect(() => {
+    register({ name: "brand" }, {required : true});
+  }, [register]);
 
   useEffect(() => {
 
@@ -138,13 +148,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     }
   }, [arrayOptions, userData]);
 
-  const onCreateOption = async (inputValue) => {
-    let newOption = { value: inputValue, label: inputValue };
-    let newArray = arrayOptions
-    newArray.push(newOption)
-    setArrayOptions(newArray);
-  }
-
   const updateNumber = useCallback((inputValue) => {
     if (isNaN(inputValue)) return;
     let newArray = [...arrayExpDate];
@@ -172,127 +175,156 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     setArrayExpDate(newArray.filter((item, index) => index !== id));
   }, [arrayExpDate, number, setArrayExpDate]);
 
-  let formatCreateLabel = inputValue => (
-    <span>Ajouter {inputValue}</span>
-  );
-
   const form = <Fragment>
-    <div>
-      <div>
-        <label htmlFor="name">Nom du produit *</label>
-        <div>
-          {formType === "add" && <input name="name" type="text" id="name" placeholder="Nom du produit" ref={register({ required: true })} />}
-          {formType === "edit" && <input name="name" type="text" id="name" placeholder="Nom du produit" defaultValue={value.name} ref={register({ required: true })} />}
-        </div>
-        {errors.name && <span className="error-message">Ce champ est requis</span>}
-      </div>
-      <div>
-        <label htmlFor="brand">Marque du produit *</label>
-        <div>
-          <Controller
-            name="brand"
-            id="brand"
-            as={CreatableSelect}
-            formatCreateLabel={formatCreateLabel}
-            placeholder="Marque..."
-            isClearable
-            options={arrayOptions}
-            onCreateOption={onCreateOption}
-            control={control}
-            defaultValue={""}
-          />
-        </div>
-        {errors.brand && <span className="error-message">Ce champ est requis</span>}
-      </div>
-      <div>
-        <label htmlFor="type">Type de produit</label>
-        <div>
-          <Controller
-            name="type"
-            id="type"
-            as={Select}
-            placeholder="Type..."
-            options={productType}
-            control={control}
-            defaultValue={""}
-          />
-        </div>
-      </div>
-      <div>
-        <label htmlFor="weight">Poids du produit</label>
-        <div>
-          {formType === "add" && <input name="weight" type="text" id="weight" placeholder="Poids du produit" ref={register()} />}
-          {formType === "edit" && <input name="weight" type="text" id="weight" placeholder="Poids du produit" defaultValue={value.weight} ref={register()} />}
-        </div>
-      </div>
-      <div>
-        <label htmlFor="kcal">Valeur énergetique du produit</label>
-        <div>
-          {formType === "add" && <input name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" ref={register()} />}
-          {formType === "edit" && <input name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" defaultValue={value.kcal} ref={register()} />}
-        </div>
-      </div>
+    <div className="input-form-container">
+      <label htmlFor="name">Nom du produit *</label>
+      {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom du produit..." ref={register({ required: true })} />}
+      {formType === "edit" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom du produit..." defaultValue={value.name} ref={register({ required: true })} />}
+      {errors.name && <span className="error-message">Ce champ est requis</span>}
+    </div>
 
-      <div>
-        <label htmlFor="location">Emplacement du produit</label>
-        <div>
-          {formType === "add" && <input name="location" type="text" id="location" placeholder="Emplacement du produit" ref={register()} />}
-          {formType === "edit" && <input name="location" type="text" id="location" placeholder="Emplacement du produit" defaultValue={value.location} ref={register()} />}
-        </div>
-      </div>
-      <div>
-        {formType === "add" && requestUrl !== "historics" && <label htmlFor="number">Nombre de produit *</label>}
-        {formType !== "add" && requestUrl !== "products" && <label htmlFor="number">Nombre de produit *</label>}
-        <div>
-          {showDateList &&
-            <>
-              <input
-                name="number"
-                type="number"
-                id="number"
-                min={0}
-                placeholder="Nombre de produit"
-                value={number}
-                ref={register({ required: true })}
-                onChange={(e) => {
-                  updateNumber(parseInt(e.target.value));
-                }}
-              />
-              {errors.number && <span className="error-message">Ce champ est requis</span>}
-            </>
-          }
+    <div className="input-form-container">
+      <ReactSelect
+        format="creatable"
+        label="Marque de produit *"
+        Controller={Controller}
+        name="brand"
+        inputId="product-brand"
+        classNamePrefix="select-brand"
+        placeholder="Marque..."
+        arrayOptions={arrayOptions}
+        setArrayOptions={setArrayOptions}
+        control={control}
+        defaultValue={""}
+      />
+      {errors.brand && <span className="error-message">Ce champ est requis</span>}
+    </div>
 
-        </div>
-      </div>
+    <div className="input-form-container">
+      <ReactSelect
+        format="select"
+        label="Type de produit"
+        Controller={Controller}
+        name="type"
+        inputId="product-type"
+        classNamePrefix="select-type"
+        placeholder="Type..."
+        arrayOptions={productType}
+        control={control}
+        defaultValue={""}
+      />
+    </div>
+
+    <div className="input-form-container">
+      <label htmlFor="weight">Poids du produit</label>
+      {formType === "add" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids du produit" ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids du produit" defaultValue={value.weight} ref={register()} />}
+    </div>
+    <div className="input-form-container">
+      <label htmlFor="kcal">Valeur énergetique du produit</label>
+      {formType === "add" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" defaultValue={value.kcal} ref={register()} />}
+    </div>
+
+    <div className="input-form-container">
+      <label htmlFor="location">Emplacement du produit</label>
+      {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement du produit" ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement du produit" defaultValue={value.location} ref={register()} />}
+    </div>
+    <div className="input-form-container">
+      {formType === "edit" && requestUrl === "historics" && <label htmlFor="number">Nombre de produit *</label>}
+      {requestUrl === "products" && <label htmlFor="number">Nombre de produit *</label>}
+      {showDateList &&
+        <>
+          <input
+            className="input-form"
+            name="number"
+            type="number"
+            id="number"
+            min={0}
+            placeholder="Nombre de produit"
+            value={number}
+            ref={register({ required: true })}
+            onChange={(e) => {
+              updateNumber(parseInt(e.target.value));
+            }}
+          />
+          {errors.number && <span className="error-message">Ce champ est requis</span>}
+        </>
+      }
     </div>
   </Fragment>;
 
   return (
-    <div>
-      <button
-        onClick={() => {
-          history.goBack();
-        }}>
-        Retour
-      </button>
-      <h3>{titleForm}</h3>
-      <form>
-        {form}
-      </form>
+    <div className="form-add-edit-product-wrapper">
+      <div className="default-title-container">
+        <button
+          onClick={() => {
+            history.goBack();
+          }}>
+          <FontAwesomeIcon icon={faArrowLeft} />
+        </button>
+        <h1 className="default-h">{titleForm}</h1>
+      </div>
+      
+      <div className="form-add-edit-product-container">
+        <form>
+          {form}
+        </form>
+        <div>
+          {showDateList &&
+            <>
+              <div>
+                <label htmlFor="expirationDate">Date d'expiration du produit *</label>
+                <DatePicker
+                  id="expirationDate"
+                  isClearable
+                  placeholderText="Date d'expiration"
+                  dateFormat="dd/MM/yyyy"
+                  locale="fr"
+                  selected={expDate}
+                  onChange={val => {
+                    setExpDate(val);
+                  }}
+                />
+                <button onClick={addExpDate}>+</button>
+              </div>
+
+              {arrayExpDate &&
+                <ul>
+                  {arrayExpDate.map((date, index) => {
+                    return <li key={`expirationDate-${index}`}>
+                      <div>
+                        {transformDate(date.expDate)}
+                        <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                        <button onClick={() => { deleteExpDate(index) }}>X</button>
+                      </div>
+                    </li>
+                  })}
+                </ul>
+              }
+            </>
+          }
+        </div>
+      </div>
+
       {number === totalExpDate &&
         <>
-          <button onClick={handleSubmit(handleFunction)}>
-            {button}
-          </button>
-          {success && 
-            <span>Success</span>
-          }
-          {formType === "edit" && number === 0 && requestUrl === "products" &&
-            <span>Attention Product to historic</span>
-          }
-          {formType === "edit" && number >= 1 && requestUrl === "historics" &&
-            <span>Attention Historic to product</span>
-          }
+          <div className="default-action-form-container">
+            <button className="default-btn-action-form" onClick={handleSubmit(handleFunction)}>
+              {button}
+            </button>
+            
+            {success && 
+              <span className="success-svg"><FontAwesomeIcon icon={faCheck} /></span>
+            }
+            {Object.keys(value).length > 1 && formType === "edit" && number === 0 && requestUrl === "products" &&
+              <span className="warning-svg"><FontAwesomeIcon icon={faExclamation} /></span>
+            }
+            {Object.keys(value).length > 1 && formType === "edit" && number >= 1 && requestUrl === "historics" &&
+              <span className="warning-svg"><FontAwesomeIcon icon={faExclamation} /></span>
+            }
+          </div>
         </>
       }
 
@@ -300,40 +332,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
         <button>
           {button} NOPE
         </button>
-      }
-
-      {showDateList &&
-        <>
-          <div>
-            <label htmlFor="expirationDate">Date d'expiration du produit *</label>
-            <DatePicker
-              id="expirationDate"
-              isClearable
-              placeholderText="Date d'expiration"
-              dateFormat="dd/MM/yyyy"
-              locale="fr"
-              selected={expDate}
-              onChange={val => {
-                setExpDate(val);
-              }}
-            />
-            <button onClick={addExpDate}>+</button>
-          </div>
-
-          {arrayExpDate &&
-            <ul>
-              {arrayExpDate.map((date, index) => {
-                return <li key={`expirationDate-${index}`}>
-                  <div>
-                    {transformDate(date.expDate)}
-                    <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                    <button onClick={() => { deleteExpDate(index) }}>X</button>
-                  </div>
-                </li>
-              })}
-            </ul>
-          }
-        </>
       }
     </div>
   )

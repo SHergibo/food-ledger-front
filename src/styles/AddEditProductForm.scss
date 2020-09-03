@@ -1,0 +1,18 @@
+.form-add-edit-product-wrapper{
+  margin: 1rem .8rem ;
+}
+
+.form-add-edit-product-container{
+  display: flex;
+  flex-direction: column;
+}
+
+/*Tablet*/
+@media screen and (min-width: 640px) {
+  .form-add-edit-product-container{
+    flex-direction: row;
+  }
+  .form-add-edit-product-wrapper{
+    width: 100%;
+  }
+}

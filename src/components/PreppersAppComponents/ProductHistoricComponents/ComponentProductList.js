@@ -336,7 +336,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     <section className="wrapper-list-table">
 
       <div className="header-list-table">
-        <div>
+        <div className="default-title-container">
           <h1 className="default-h">{title}</h1>
         </div>
 
@@ -378,6 +378,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
             
             <div className="input-form-container">
               <ReactSelect
+                format="select"
                 label="Marque du produit"
                 Controller={Controller}
                 name="brand"
@@ -391,6 +392,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
 
             <div className="input-form-container">
               <ReactSelect
+                format="select"
                 label="Type de produit"
                 Controller={Controller}
                 name="type"
@@ -419,7 +421,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                 name="expirationDate"
                 render={(props) => (
                   <DatePicker
-                    className="input-form"
+                    className="input-form input-form-date-picker"
                     id="product-expirationDate"
                     dateFormat="dd/MM/yyyy"
                     locale="fr"
@@ -443,14 +445,12 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
               <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} ref={register()} />
             </div>
 
-            <div className="action-form-filter">
-              <button className="btn-action-form-filter" type="submit"><FontAwesomeIcon icon={faFilter} /> Filtrer</button>
-              <button className="btn-action-form-filter" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} /> Réinitialiser filtre</button>
+            <div className="default-action-form-container">
+              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faFilter} />Filtrer</button>
+              <button className="default-btn-action-form" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} />Réinitialiser filtre</button>
             </div>
             
           </form>
-
-          
         </>
       }
       <div className="container-list-table">
