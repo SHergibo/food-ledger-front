@@ -1,0 +1,48 @@
+.info-icon-container{
+  position: relative;
+}
+
+.success-icon{
+  @include info-icon($primary-light);
+}
+
+.warning-icon{
+  @include info-icon($orange);
+  cursor: pointer;
+}
+
+.error-icon{
+  @include info-icon($red);
+  cursor: pointer;
+}
+
+.hide-icon-pulse{
+  &:after{
+    display: none;
+  }
+}
+
+.message-box-info-warning{
+  @include message-box-info-warning($orange);
+}
+
+.message-box-info-error{
+  @include message-box-info-warning($red);
+}
+
+.close-message-box-info{
+  position: absolute;
+  top: .15rem;
+  right: .5rem;
+  color: $primary-color;
+  cursor: pointer;
+}
+
+/*Tablet*/
+@media screen and (min-width: 640px) {
+  .message-box-info-warning,
+  .message-box-info-error{
+    bottom: 1.5rem;
+    left: 1.5rem;
+  }
+}

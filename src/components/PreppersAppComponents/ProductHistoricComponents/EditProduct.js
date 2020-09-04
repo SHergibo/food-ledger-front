@@ -49,7 +49,7 @@ function EditProduct({ userData, history }) {
     return () => {
       clearTimeout(timerSuccess);
     }
-  }, [success])
+  }, [success]);
 
 
 

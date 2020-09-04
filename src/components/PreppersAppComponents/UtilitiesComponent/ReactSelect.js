@@ -53,7 +53,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
   }, [responsiveColumns]);
 
   useEffect(() => {
-    let responsibeStyles
+    let responsibeStyles;
     if (windowWidth < 640) {
       responsibeStyles = customStyles;
       responsibeStyles.control = styles => (

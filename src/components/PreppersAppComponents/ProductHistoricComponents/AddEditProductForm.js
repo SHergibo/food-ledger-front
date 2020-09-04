@@ -8,7 +8,8 @@ import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheck, faExclamation, faTimes } from '@fortawesome/free-solid-svg-icons';
+import InformationIcon from './../UtilitiesComponent/InformationIcons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -178,8 +179,8 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   const form = <Fragment>
     <div className="input-form-container">
       <label htmlFor="name">Nom du produit *</label>
-      {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom du produit..." ref={register({ required: true })} />}
-      {formType === "edit" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom du produit..." defaultValue={value.name} ref={register({ required: true })} />}
+      {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." ref={register({ required: true })} />}
+      {formType === "edit" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." defaultValue={value.name} ref={register({ required: true })} />}
       {errors.name && <span className="error-message">Ce champ est requis</span>}
     </div>
 
@@ -217,19 +218,19 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 
     <div className="input-form-container">
       <label htmlFor="weight">Poids du produit</label>
-      {formType === "add" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids du produit" ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids du produit" defaultValue={value.weight} ref={register()} />}
+      {formType === "add" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids..." ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids..." defaultValue={value.weight} ref={register()} />}
     </div>
     <div className="input-form-container">
       <label htmlFor="kcal">Valeur énergetique du produit</label>
-      {formType === "add" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique du produit" defaultValue={value.kcal} ref={register()} />}
+      {formType === "add" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique..." ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique..." defaultValue={value.kcal} ref={register()} />}
     </div>
 
     <div className="input-form-container">
       <label htmlFor="location">Emplacement du produit</label>
-      {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement du produit" ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement du produit" defaultValue={value.location} ref={register()} />}
+      {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} ref={register()} />}
     </div>
     <div className="input-form-container">
       {formType === "edit" && requestUrl === "historics" && <label htmlFor="number">Nombre de produit *</label>}
@@ -309,29 +310,43 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       </div>
 
       {number === totalExpDate &&
-        <>
-          <div className="default-action-form-container">
-            <button className="default-btn-action-form" onClick={handleSubmit(handleFunction)}>
-              {button}
-            </button>
-            
-            {success && 
-              <span className="success-svg"><FontAwesomeIcon icon={faCheck} /></span>
-            }
-            {Object.keys(value).length > 1 && formType === "edit" && number === 0 && requestUrl === "products" &&
-              <span className="warning-svg"><FontAwesomeIcon icon={faExclamation} /></span>
-            }
-            {Object.keys(value).length > 1 && formType === "edit" && number >= 1 && requestUrl === "historics" &&
-              <span className="warning-svg"><FontAwesomeIcon icon={faExclamation} /></span>
-            }
-          </div>
-        </>
+        <div className="default-action-form-container">
+          <button className="default-btn-action-form" onClick={handleSubmit(handleFunction)}>
+            {button}
+          </button>
+          {success && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon={faCheck} />}
+            />
+          }
+          {formType === "edit" && number === 0 && requestUrl === "products" &&
+            <InformationIcon 
+              className="warning-icon"
+              icon={<FontAwesomeIcon icon={faExclamation} />}
+              message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre de produits est égal à 0 !"
+            />
+          }
+          {formType === "edit" && number >= 1 && requestUrl === "historics" &&
+            <InformationIcon 
+              className="warning-icon"
+              icon={<FontAwesomeIcon icon={faExclamation} />}
+              message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre de produits est supérieur à 0 !"
+            />
+          }
+        </div>
       }
-
       {number !== totalExpDate &&
-        <button>
-          {button} NOPE
-        </button>
+        <div className="default-action-form-container">
+          <button className="default-btn-disabled-form" disabled>
+            {button}
+          </button>
+          <InformationIcon 
+            className="error-icon"
+            icon={<FontAwesomeIcon icon={faTimes} />}
+            message="Attention, il n'est pas possible d'ajouter/éditer un produit si le nombre de produits est différent du nombre de dates de péremption liée à ce produit !"
+          />
+        </div>
       }
     </div>
   )

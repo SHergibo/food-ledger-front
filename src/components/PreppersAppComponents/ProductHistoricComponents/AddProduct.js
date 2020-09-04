@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -10,6 +10,19 @@ function AddProduct({ userData, history }) {
   const [arrayExpDate, setArrayExpDate] = useState([]);
   const [success, setSuccess] = useState(false);
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
+
+  useEffect(() => {
+    let timerSuccess;
+    if(success){
+      timerSuccess = setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(timerSuccess);
+    }
+  }, [success]);
 
 
   const addProduct = async (data) => {
@@ -28,9 +41,6 @@ function AddProduct({ userData, history }) {
       .then((response) => {
         if(response.status === 200){
           setSuccess(true);
-          setTimeout(() => {
-            setSuccess(false);
-          }, 4000);
         }
       });
   }
