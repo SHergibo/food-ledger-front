@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix, placeholder, arrayOptions, setArrayOptions, control, defaultValue }) {
   const [customStyles, setCustomStyles] = useState(
     {
-      control: styles => (
+      control: (styles, { isFocused }) => (
         {
           ...styles,
           width: '100%',
@@ -15,7 +15,8 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
           outline: 'none',
           boxShadow: 'none',
           color: '#002651',
-          '&:hover': {
+          borderColor: isFocused ? '#28c7fa' : styles.borderColor,
+          ':hover': {
             borderColor: '#002651'
           }
         }),
@@ -56,7 +57,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
     let responsibeStyles;
     if (windowWidth < 640) {
       responsibeStyles = customStyles;
-      responsibeStyles.control = styles => (
+      responsibeStyles.control = (styles, {isFocused}) => (
       {
         ...styles,
         width: '100%',
@@ -65,6 +66,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
         outline: 'none',
         boxShadow: 'none',
         color: '#002651',
+        borderColor: isFocused ? '#28c7fa' : styles.borderColor,
         '&:hover': {
           borderColor: '#002651'
         }
@@ -73,7 +75,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
     }
     if (windowWidth >= 640) {
       responsibeStyles = customStyles;
-      responsibeStyles.control = styles => (
+      responsibeStyles.control = (styles, {isFocused}) => (
       {
         ...styles,
         width: '230px',
@@ -82,6 +84,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
         outline: 'none',
         boxShadow: 'none',
         color: '#002651',
+        borderColor: isFocused ? '#28c7fa' : styles.borderColor,
         '&:hover': {
           borderColor: '#002651'
         }

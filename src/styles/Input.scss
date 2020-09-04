@@ -172,10 +172,15 @@
   outline: none;
   transition: 0.2s ease-in-out;
   &:hover {
-    color: $blue;
+    color: $primary-color;
     background-color: $grey !important;
   }
 }
+
+.react-datepicker__day--keyboard-selected{
+  background-color: $blue !important;
+}
+
 .react-datepicker__close-icon {
   right: 5px !important;
   &:after {
