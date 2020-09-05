@@ -229,7 +229,19 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       <div className="default-title-container">
         <button
           onClick={() => {
-            history.goBack();
+            if(requestUrl === "products"){
+              history.push({
+                pathname: '/app/liste-produit',
+              })
+            }else if(requestUrl === "historics"){
+              history.push({
+                pathname: '/app/liste-historique',
+              })
+            }else{
+              history.push({
+                pathname: '/app',
+              })
+            }
           }}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
