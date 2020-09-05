@@ -26,15 +26,19 @@ function AddProduct({ userData, history }) {
 
 
   const addProduct = async (data) => {
-    if (!data.number) {
-      data.number = 0;
-    }
     if (arrayExpDate.length >= 1) {
       data.expirationDate = arrayExpDate
     }
 
     data.brand = data.brand.value;
     data.type = data.type.value;
+
+    let totalNumber = 0;
+    arrayExpDate.forEach(item => {
+      totalNumber = totalNumber + item.productLinkedToExpDate;
+    });
+
+    data.number = totalNumber;
 
     const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
     await axiosInstance.post(postDataEndPoint, data)

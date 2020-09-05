@@ -89,7 +89,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     if (!isNaN(expDate.getTime())) {
       if (expDate > dateNow) {
         arrayExpDate.forEach((date, index) => {
-          if (date.expDate === transformDate(expDate)) {
+          if (transformDate(date.expDate) === transformDate(expDate)) {
             sameDate = true;
             let newArray = [...arrayExpDate];
             newArray[index].productLinkedToExpDate++;
@@ -125,12 +125,9 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       totalNumber = totalNumber + item.productLinkedToExpDate;
     });
 
+    setNumber(totalNumber);
 
-    if (totalNumber > number) {
-      setNumber(number + 1);
-    }
-
-  }, [arrayExpDate, number, setArrayExpDate]);
+  }, [arrayExpDate, setArrayExpDate]);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -148,24 +145,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       loadOptions();
     }
   }, [arrayOptions, userData]);
-
-  const updateNumber = useCallback((inputValue) => {
-    if (isNaN(inputValue)) return;
-    let newArray = [...arrayExpDate];
-
-    if (arrayExpDate.length === 1) {
-      newArray[0].productLinkedToExpDate = parseInt(inputValue);
-      setArrayExpDate(newArray);
-    }
-
-    if (inputValue === 0 && arrayExpDate.length === 1) {
-      newArray = [];
-      setArrayExpDate(newArray);
-    }
-
-    setNumber(inputValue);
-
-  }, [arrayExpDate, setArrayExpDate]);
 
   const deleteExpDate = useCallback((id) => {
     let newArray = [...arrayExpDate];
@@ -232,28 +211,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." ref={register()} />}
       {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} ref={register()} />}
     </div>
-    <div className="input-form-container">
-      {formType === "edit" && requestUrl === "historics" && <label htmlFor="number">Nombre de produit *</label>}
-      {requestUrl === "products" && <label htmlFor="number">Nombre de produit *</label>}
-      {showDateList &&
-        <>
-          <input
-            className="input-form"
-            name="number"
-            type="number"
-            id="number"
-            min={0}
-            placeholder="Nombre de produit"
-            value={number}
-            ref={register({ required: true })}
-            onChange={(e) => {
-              updateNumber(parseInt(e.target.value));
-            }}
-          />
-          {errors.number && <span className="error-message">Ce champ est requis</span>}
-        </>
-      }
-    </div>
   </Fragment>;
 
   return (
@@ -292,17 +249,20 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
               </div>
 
               {arrayExpDate &&
-                <ul>
-                  {arrayExpDate.map((date, index) => {
-                    return <li key={`expirationDate-${index}`}>
-                      <div>
-                        {transformDate(date.expDate)}
-                        <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                        <button onClick={() => { deleteExpDate(index) }}>X</button>
-                      </div>
-                    </li>
-                  })}
-                </ul>
+                <>
+                  <p>Nombre total de produit : {number}</p>
+                  <ul>
+                    {arrayExpDate.map((date, index) => {
+                      return <li key={`expirationDate-${index}`}>
+                        <div>
+                          {transformDate(date.expDate)}
+                          <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                          <button onClick={() => { deleteExpDate(index) }}>X</button>
+                        </div>
+                      </li>
+                    })}
+                  </ul>
+                </>
               }
             </>
           }

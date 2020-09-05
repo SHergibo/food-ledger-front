@@ -58,12 +58,18 @@ function EditProduct({ userData, history }) {
       kcal: data.kcal,
       location: data.location,
       name: data.name,
-      number: data.number,
       expirationDate: arrayExpDate,
       weight: data.weight,
       brand: data.brand.value,
       type: data.type.value
     }
+
+    let totalNumber = 0;
+    arrayExpDate.forEach(item => {
+      totalNumber = totalNumber + item.productLinkedToExpDate;
+    });
+
+    newData.number = totalNumber;
 
 
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
