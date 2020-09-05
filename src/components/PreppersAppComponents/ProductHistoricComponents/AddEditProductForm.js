@@ -244,7 +244,8 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
           {showDateList &&
             <>
               <div>
-                <label htmlFor="expirationDate">Date d'expiration du produit *</label>
+                {formType === "add" && <label htmlFor="expirationDate">Date d'expiration du produit *</label>}
+                {formType === "edit" && <label htmlFor="expirationDate">Date d'expiration du produit</label>}
                 <DatePicker
                   id="expirationDate"
                   isClearable
