@@ -18,6 +18,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   const [button, setButton] = useState("");
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
+  const [errorExpDate, setErrorExpDate] = useState(false);
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
@@ -109,11 +110,15 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
         if (number === totalExpDate) {
           setNumber(number + 1);
         }
+
+        if(errorExpDate){
+          setErrorExpDate(false);
+        }
       }
     }
 
     setExpDate(null);
-  }, [arrayExpDate, expDate, number, setArrayExpDate, totalExpDate]);
+  }, [arrayExpDate, expDate, number, setArrayExpDate, totalExpDate, errorExpDate]);
 
   const updateExpDate = useCallback((e, index) => {
     let newArray = [...arrayExpDate];
@@ -154,6 +159,12 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
     }
     setArrayExpDate(newArray.filter((item, index) => index !== id));
   }, [arrayExpDate, number, setArrayExpDate]);
+
+  const expErrorMessageLogic = () => {
+    if(arrayExpDate.length === 0 && formType === "add" && requestUrl === "products"){
+      setErrorExpDate(true);
+    }
+  }
 
   const form = <Fragment>
     <div className="input-form-container">
@@ -246,6 +257,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
                   }}
                 />
                 <button onClick={addExpDate}>+</button>
+                {errorExpDate && <span className="error-message">Minimum une date d'expiration est requise !</span>}
               </div>
 
               {arrayExpDate &&
@@ -271,7 +283,10 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 
       {number === totalExpDate &&
         <div className="default-action-form-container">
-          <button className="default-btn-action-form" onClick={handleSubmit(handleFunction)}>
+          <button className="default-btn-action-form" onClick={(e) => {
+            handleSubmit(handleFunction)();
+            expErrorMessageLogic();
+            }}>
             {button}
           </button>
           {success && 

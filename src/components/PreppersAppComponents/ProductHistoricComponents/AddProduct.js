@@ -26,6 +26,8 @@ function AddProduct({ userData, history }) {
 
 
   const addProduct = async (data) => {
+    if(requestUrl === "products" && arrayExpDate.length === 0) return;
+
     if (arrayExpDate.length >= 1) {
       data.expirationDate = arrayExpDate
     }
@@ -48,8 +50,6 @@ function AddProduct({ userData, history }) {
         }
       });
   }
-
-  //TODO ajout btn pour revenir à la page suivante (utiliser history??)
 
   return (
     <Fragment>
