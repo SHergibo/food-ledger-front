@@ -139,10 +139,6 @@ export const columnsHistoricFullScreen = [
     id: 'location'
   },
   {
-    Header: 'Nombre',
-    id: 'number'
-  },
-  {
     Header: "Actions",
     id: 'action'
   }
