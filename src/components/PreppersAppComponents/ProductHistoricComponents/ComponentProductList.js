@@ -25,7 +25,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   let btnSortRef = useRef([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 20;
+  const pageSize = 14;
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
 
@@ -114,6 +114,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       await axiosInstance.get(endPoint)
         .then((response) => {
           setData(response.data.arrayProduct);
+          console.log(Math.ceil(response.data.totalProduct / pageSize));
           setPageCount(Math.ceil(response.data.totalProduct / pageSize));
         });
     }
