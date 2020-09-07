@@ -99,6 +99,7 @@
   border: 2px solid $primary-color;
   border-radius: 50%;
   transition: .2s ease-in-out;
+  outline: none;
   cursor: pointer;
   &:hover{
     background-color: $blue;

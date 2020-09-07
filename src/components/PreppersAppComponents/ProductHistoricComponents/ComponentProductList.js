@@ -114,7 +114,6 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       await axiosInstance.get(endPoint)
         .then((response) => {
           setData(response.data.arrayProduct);
-          console.log(Math.ceil(response.data.totalProduct / pageSize));
           setPageCount(Math.ceil(response.data.totalProduct / pageSize));
         });
     }

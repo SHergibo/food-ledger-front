@@ -61,7 +61,7 @@ function EditProduct({ userData, history }) {
       expirationDate: arrayExpDate,
       weight: data.weight,
       brand: data.brand.value,
-      type: data.type.value
+      type: data.type.value,
     }
 
     let totalNumber = 0;
@@ -70,6 +70,12 @@ function EditProduct({ userData, history }) {
     });
 
     newData.number = totalNumber;
+
+    if(data.minimumInStock === ""){
+      newData.minimumInStock = { minInStock : 0 };
+    }else{
+      newData.minimumInStock = { minInStock : parseInt(data.minimumInStock), updatedBy: "user" };
+    }
 
 
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;

@@ -42,6 +42,14 @@ function AddProduct({ userData, history }) {
 
     data.number = totalNumber;
 
+    if(requestUrl === "products"){
+      if(data.minimumInStock === ""){
+        data.minimumInStock = { minInStock : 0, updatedBy: "user" };
+      }else{
+        data.minimumInStock = { minInStock : parseInt(data.minimumInStock), updatedBy: "user" };
+      }
+    }
+
     const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
     await axiosInstance.post(postDataEndPoint, data)
       .then((response) => {

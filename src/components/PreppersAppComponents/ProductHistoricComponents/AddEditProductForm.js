@@ -222,6 +222,17 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." ref={register()} />}
       {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} ref={register()} />}
     </div>
+
+    {requestUrl === "products" && 
+      <>
+        <div className="input-form-container">
+          <label htmlFor="minimumInStock">Stock minimum {formType === "edit" && " *"} </label>
+          {formType === "add" && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." ref={register()} />}
+          {formType === "edit" && value.minimumInStock && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." defaultValue={value.minimumInStock.minInStock} ref={register({ required: true })} />}
+          {errors.minimumInStock && <span className="error-message">Ce champ est requis</span>}
+        </div>
+      </>
+    }
   </Fragment>;
 
   return (
