@@ -1,6 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
 
 function InformationIcons({className, icon, message}) {
   const iconRef = useRef(null);
@@ -73,6 +74,12 @@ function InformationIcons({className, icon, message}) {
       }
     </div>
   )
+}
+
+InformationIcons.propTypes = {
+  className: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
+  message: PropTypes.string,
 }
 
 export default InformationIcons;

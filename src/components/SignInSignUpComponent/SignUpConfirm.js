@@ -7,6 +7,7 @@ import axios from 'axios';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
 
 function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
@@ -293,6 +294,13 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
       </form>
     </div>
   )
+}
+
+SingUpConfirm.propTypes = {
+  setForm : PropTypes.func.isRequired,
+  setFormTitle : PropTypes.func.isRequired,
+  setSuccessCreateAccount : PropTypes.func.isRequired,
+  returnToLogin : PropTypes.func.isRequired,
 }
 
 export default SingUpConfirm

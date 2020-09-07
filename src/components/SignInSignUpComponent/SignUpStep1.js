@@ -5,6 +5,7 @@ import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
 
 function SignUpStep1({ setForm, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
@@ -120,6 +121,11 @@ function SignUpStep1({ setForm, returnToLogin }) {
       </form>
     </div>
   )
+}
+
+SignUpStep1.propTypes = {
+  setForm : PropTypes.func.isRequired,
+  returnToLogin : PropTypes.func.isRequired,
 }
 
 export default SignUpStep1

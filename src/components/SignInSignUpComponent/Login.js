@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { loginIn } from './../../utils/Auth';
+import PropTypes from 'prop-types';
 
 function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
   const [errorMessage, setErrorMessage] = useState(false);
@@ -82,11 +83,15 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
         </p>
         </div>
       </form>
-
-
-
     </div>
   )
+}
+
+Login.propTypes = {
+  history : PropTypes.object.isRequired,
+  successCreateAccount : PropTypes.bool.isRequired,
+  setSuccessCreateAccount : PropTypes.func.isRequired,
+  createUserForm : PropTypes.func.isRequired,
 }
 
 export default withRouter(Login);

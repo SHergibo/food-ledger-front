@@ -4,6 +4,7 @@ import QueryString from 'query-string';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
+import Loading from '../UtilitiesComponent/Loading';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
 import { transformDate } from '../../../helpers/transformDate.helper';
@@ -19,6 +20,7 @@ registerLocale("fr", fr);
 function ComponentProductList({ userData, requestTo, urlTo, columns, title, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [queryParsed, setQueryParsed] = useState(QueryString.parse(location.search) || {});
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
@@ -115,6 +117,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         .then((response) => {
           setData(response.data.arrayProduct);
           setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+          setLoading(false);
         });
     }
   }, [userData, requestTo, pageIndex, finalEndPoint]);
@@ -453,115 +456,118 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           </form>
         </>
       }
-      <div className="container-list-table">
-        <table className="list-table">
-          <thead>
-            <tr>
-              {columns.map((column, index) => {
-                if (column.id !== 'action' && column.id !== 'more') {
-                  return (
-                    <th key={`${column.id}-${index}`}>
-                      <span>
-                        {column.Header}
-                        <button 
-                        className="btn-list-sort"
-                        id={`btn-${column.id}-sort`} 
-                        ref={(el) => (btnSortRef.current[index] = el)} 
-                        onClick={(e) => populateSortObject(column.id, index)} 
-                        data-sort="none">
-                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
-                        </button>
-                      </span>
-                    </th>
-                  )
-                } else {
-                  return (
-                    <th key={`${column.id}-${index}`}>
-                      {column.Header}
-                    </th>
-                  )
-                }
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, indexRow) => {
-              return (
-                <tr key={`${row}-${indexRow}`}>
-                  {columns.map((column, index) => {
-                    if (column.id === 'action') {
-                      return (
-                        <td key={`${column.id}-${index}`}>
-                          <div className="div-list-table-action">
-                            <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon={faEdit} /></Link>
-                            <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon={faTrash} /></button>
-                          </div>
-                        </td>
-                      )
-                    }
-                    if (column.id !== "expirationDate") {
-                      return (
-                        <td key={`${column.id}-${index}`}>
-                          {row[column.id]}
-                        </td>
-                      )
-                    }
-                    if (column.id === "expirationDate") {
-                      return (
-                        <td key={`${column.id}-${index}`}>
-                          {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
-                        </td>
-                      )
-                    }
-                    return null;
-                  })}
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        <div className="pagination">
-          <div className="action-pagination">
-            <button onClick={() => gotoPage(1)}>
-              <FontAwesomeIcon icon={faAngleDoubleLeft} />
-            </button>
-            <button onClick={() => previousPage()}>
-              <FontAwesomeIcon icon={faAngleLeft} />
-            </button>
-
-              <span>Page
-                <input 
-                type="number" 
-                value={pageIndex}
-                min={1}
-                max={pageCount}
-                onChange={(e) => {
-                  if(e.target.value > pageCount){
-                    setPageIndex(pageCount);
-                    setUrlPageQueryParam(pageCount);
-                  } else if (e.target.value <= 0 || e.target.value === ""){
-                    setPageIndex("");
-                    setUrlPageQueryParam(null);
+      <div className="container-list-table-loading">
+        <Loading
+          loading={loading}
+        />
+        <div className="container-list-table">
+          <table className="list-table">
+            <thead>
+              <tr>
+                {columns.map((column, index) => {
+                  if (column.id !== 'action' && column.id !== 'more') {
+                    return (
+                      <th key={`${column.id}-${index}`}>
+                        <span>
+                          {column.Header}
+                          <button 
+                          className="btn-list-sort"
+                          id={`btn-${column.id}-sort`} 
+                          ref={(el) => (btnSortRef.current[index] = el)} 
+                          onClick={(e) => populateSortObject(column.id, index)} 
+                          data-sort="none">
+                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
+                          </button>
+                        </span>
+                      </th>
+                    )
                   } else {
-                    setPageIndex(e.target.value);
-                    setUrlPageQueryParam(e.target.value);
+                    return (
+                      <th key={`${column.id}-${index}`}>
+                        {column.Header}
+                      </th>
+                    )
                   }
-                }}
-                />
-                sur {pageCount}
-              </span>
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, indexRow) => {
+                return (
+                  <tr key={`${row}-${indexRow}`}>
+                    {columns.map((column, index) => {
+                      if (column.id === 'action') {
+                        return (
+                          <td key={`${column.id}-${index}`}>
+                            <div className="div-list-table-action">
+                              <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon={faEdit} /></Link>
+                              <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                            </div>
+                          </td>
+                        )
+                      }
+                      if (column.id !== "expirationDate") {
+                        return (
+                          <td key={`${column.id}-${index}`}>
+                            {row[column.id]}
+                          </td>
+                        )
+                      }
+                      if (column.id === "expirationDate") {
+                        return (
+                          <td key={`${column.id}-${index}`}>
+                            {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
+                          </td>
+                        )
+                      }
+                      return null;
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+          <div className="pagination">
+            <div className="action-pagination">
+              <button onClick={() => gotoPage(1)}>
+                <FontAwesomeIcon icon={faAngleDoubleLeft} />
+              </button>
+              <button onClick={() => previousPage()}>
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </button>
 
-            <button onClick={() => nextPage()}>
-              <FontAwesomeIcon icon={faAngleRight} />
-            </button>
-            <button onClick={() => gotoPage(pageCount)}>
-              <FontAwesomeIcon icon={faAngleDoubleRight} />
-            </button>
+                <span>Page
+                  <input 
+                  type="number" 
+                  value={pageIndex}
+                  min={1}
+                  max={pageCount}
+                  onChange={(e) => {
+                    if(e.target.value > pageCount){
+                      setPageIndex(pageCount);
+                      setUrlPageQueryParam(pageCount);
+                    } else if (e.target.value <= 0 || e.target.value === ""){
+                      setPageIndex("");
+                      setUrlPageQueryParam(null);
+                    } else {
+                      setPageIndex(e.target.value);
+                      setUrlPageQueryParam(e.target.value);
+                    }
+                  }}
+                  />
+                  sur {pageCount}
+                </span>
+
+              <button onClick={() => nextPage()}>
+                <FontAwesomeIcon icon={faAngleRight} />
+              </button>
+              <button onClick={() => gotoPage(pageCount)}>
+                <FontAwesomeIcon icon={faAngleDoubleRight} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      
-      
     </section>
   )
 }
