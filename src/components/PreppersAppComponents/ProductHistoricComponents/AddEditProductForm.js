@@ -333,14 +333,14 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
                 <InformationIcon 
                   className="warning-icon"
                   icon={<FontAwesomeIcon icon={faExclamation} />}
-                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre de produits est égal à 0 !"
+                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre total de produits est égal à 0 !"
                 />
               }
               {formType === "edit" && number >= 1 && requestUrl === "historics" &&
                 <InformationIcon 
                   className="warning-icon"
                   icon={<FontAwesomeIcon icon={faExclamation} />}
-                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre de produits est supérieur à 0 !"
+                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
                 />
               }
             </div>
