@@ -29,7 +29,7 @@ function EditProduct({ userData, history }) {
       })
       .catch(error => {
         if(isMounted){
-          if (error.response.status === 404) {
+          if (error.response.status === 404 || error.response.status === 500) {
             history.goBack();
           }
           if(error.code === "ECONNABORTED"){
