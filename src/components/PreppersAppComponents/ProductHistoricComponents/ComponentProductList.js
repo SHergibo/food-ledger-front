@@ -21,6 +21,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   const location = useLocation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
   const [queryParsed, setQueryParsed] = useState(QueryString.parse(location.search) || {});
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
@@ -110,6 +111,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
 
 
   const getDataList = useCallback(async () => {
+    setErrorFetch(false);
     if(pageIndex >= 1){
       let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
       const endPoint = finalEndPoint(getDataEndPoint);
@@ -118,6 +120,11 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           setData(response.data.arrayProduct);
           setPageCount(Math.ceil(response.data.totalProduct / pageSize));
           setLoading(false);
+        })
+        .catch((error)=> {
+          if(error.code === "ECONNABORTED"){
+            setErrorFetch(true);
+          }
         });
     }
   }, [userData, requestTo, pageIndex, finalEndPoint]);
@@ -459,6 +466,8 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       <div className="container-list-table-loading">
         <Loading
           loading={loading}
+          errorFetch={errorFetch}
+          retryFetch={getDataList}
         />
         <div className="container-list-table">
           <table className="list-table">

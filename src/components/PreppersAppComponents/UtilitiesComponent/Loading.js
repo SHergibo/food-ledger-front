@@ -1,12 +1,52 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
+import ScaleLoader from "react-spinners/ScaleLoader";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
 
-function Loading({ loading }) {
+function Loading({ loading, errorFetch, retryFetch }) {
+  const [animLoading, setAnimLoading] = useState(true);
+  const loadingRef = useRef(null);
+
+  useEffect(() => {
+    let animationLoading;
+    let deleteContainerLoading;
+    if(!loading){
+      animationLoading = setTimeout(() => {
+        loadingRef.current.style.opacity = 0; 
+      }, 1000);
+
+      deleteContainerLoading = setTimeout(() => {
+        setAnimLoading(false);
+      }, 1500);
+    }
+    
+    return () => {
+      clearInterval(animationLoading);
+      clearInterval(deleteContainerLoading);
+    }
+
+  }, [loading])
+
   return (
     <>
-      {loading && 
-        <div className="loading-container">
-          <p>Loading</p>
+      {animLoading && 
+        <div ref={loadingRef} className="loading-container">
+          {!errorFetch &&
+            <div className="loader">
+              <ScaleLoader
+                color={"#002651"}
+                loading={animLoading}
+              />
+              <p>Chargement des données</p>
+            </div>
+          }
+          {errorFetch &&
+            <div className="loader">
+              <p>Une erreur est survenue !</p>
+              <button className="default-btn-action-form" onClick={retryFetch}><FontAwesomeIcon icon={faUndo} />Réessayer</button>
+            </div>
+          }
         </div>
       }
     </>
@@ -14,7 +54,9 @@ function Loading({ loading }) {
 }
 
 Loading.propTypes = {
-  loading : PropTypes.bool.isRequired
+  loading : PropTypes.bool.isRequired,
+  errorFetch : PropTypes.bool.isRequired,
+  retryFetch : PropTypes.func.isRequired,
 }
 
 export default Loading
