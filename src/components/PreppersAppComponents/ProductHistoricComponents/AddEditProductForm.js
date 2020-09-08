@@ -261,7 +261,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       </div>
       
       <div className="container-loading">
-        {requestUrl === "edit" && 
+        {formType === "edit" && 
           <Loading
             loading={loading}
             errorFetch={errorFetch}
