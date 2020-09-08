@@ -20,6 +20,7 @@ registerLocale("fr", fr);
 function ComponentProductList({ userData, requestTo, urlTo, columns, title, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
+  const [hasProduct, setHasProduct] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
   const [queryParsed, setQueryParsed] = useState(QueryString.parse(location.search) || {});
@@ -119,6 +120,11 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         .then((response) => {
           setData(response.data.arrayProduct);
           setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+          if(response.data.totalProduct >= 1){
+            setHasProduct(true);
+          }else{
+            setHasProduct(false);
+          }
           setLoading(false);
         })
         .catch((error)=> {
@@ -339,7 +345,12 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     await axiosInstance.delete(endPoint)
       .then((response) => {
         setData(response.data.arrayProduct)
-        setPageCount(Math.ceil(response.data.totalProduct / pageSize))
+        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+        if(response.data.totalProduct >= 1){
+          setHasProduct(true);
+        }else{
+          setHasProduct(false);
+        }
       });
   };
   return (
@@ -351,29 +362,32 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
         </div>
 
         <div>
-          <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>+ Ajouter un produit</Link>
+          {hasProduct && 
+            <>
+              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>+ Ajouter un produit</Link>
+              <button className="default-btn-white" onClick={() => {
+                showFilter ? setShowFilter(false) : setShowFilter(true);
+              }}>
+                {!showFilter &&
+                  <>
+                    Filtre avancée
+                  </>
+                }
 
-          <button className="default-btn-white" onClick={() => {
-            showFilter ? setShowFilter(false) : setShowFilter(true);
-          }}>
-            {!showFilter &&
-              <>
-                Filtre avancée
-              </>
-            }
+                {showFilter &&
+                  <>
+                    Fermer
+                  </>
+                }
+                <FontAwesomeIcon icon={faFilter} />
+              </button>
 
-            {showFilter &&
-              <>
-                Fermer
-              </>
-            }
-            <FontAwesomeIcon icon={faFilter} />
-          </button>
-
-          {!showFilter &&
-            <form onChange={handleSubmit(debounceQuickSearch)}>
-              <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} ref={register()} />
-            </form>
+              {!showFilter &&
+                <form onChange={handleSubmit(debounceQuickSearch)}>
+                  <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} ref={register()} />
+                </form>
+              }
+            </>
           }
         </div>
       </div>
@@ -463,119 +477,128 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
           </form>
         </>
       }
-      <div className="container-list-table-loading">
+      <div className="container-loading">
         <Loading
           loading={loading}
           errorFetch={errorFetch}
           retryFetch={getDataList}
         />
-        <div className="container-list-table">
-          <table className="list-table">
-            <thead>
-              <tr>
-                {columns.map((column, index) => {
-                  if (column.id !== 'action' && column.id !== 'more') {
-                    return (
-                      <th key={`${column.id}-${index}`}>
-                        <span>
-                          {column.Header}
-                          <button 
-                          className="btn-list-sort"
-                          id={`btn-${column.id}-sort`} 
-                          ref={(el) => (btnSortRef.current[index] = el)} 
-                          onClick={(e) => populateSortObject(column.id, index)} 
-                          data-sort="none">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
-                          </button>
-                        </span>
-                      </th>
-                    )
-                  } else {
-                    return (
-                      <th key={`${column.id}-${index}`}>
-                        {column.Header}
-                      </th>
-                    )
-                  }
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, indexRow) => {
-                return (
-                  <tr key={`${row}-${indexRow}`}>
-                    {columns.map((column, index) => {
-                      if (column.id === 'action') {
-                        return (
-                          <td key={`${column.id}-${index}`}>
-                            <div className="div-list-table-action">
-                              <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon={faEdit} /></Link>
-                              <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon={faTrash} /></button>
-                            </div>
-                          </td>
-                        )
-                      }
-                      if (column.id !== "expirationDate") {
-                        return (
-                          <td key={`${column.id}-${index}`}>
-                            {row[column.id]}
-                          </td>
-                        )
-                      }
-                      if (column.id === "expirationDate") {
-                        return (
-                          <td key={`${column.id}-${index}`}>
-                            {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
-                          </td>
-                        )
-                      }
-                      return null;
-                    })}
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-          <div className="pagination">
-            <div className="action-pagination">
-              <button onClick={() => gotoPage(1)}>
-                <FontAwesomeIcon icon={faAngleDoubleLeft} />
-              </button>
-              <button onClick={() => previousPage()}>
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </button>
-
-                <span>Page
-                  <input 
-                  type="number" 
-                  value={pageIndex}
-                  min={1}
-                  max={pageCount}
-                  onChange={(e) => {
-                    if(e.target.value > pageCount){
-                      setPageIndex(pageCount);
-                      setUrlPageQueryParam(pageCount);
-                    } else if (e.target.value <= 0 || e.target.value === ""){
-                      setPageIndex("");
-                      setUrlPageQueryParam(null);
+        {!hasProduct &&
+          <div className="no-data">
+            <p>Pas de produit !</p>
+            <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>+ Ajouter un produit</Link>
+          </div>
+        }
+        {hasProduct &&
+          <div className="container-list-table">
+            <table className="list-table">
+              <thead>
+                <tr>
+                  {columns.map((column, index) => {
+                    if (column.id !== 'action' && column.id !== 'more') {
+                      return (
+                        <th key={`${column.id}-${index}`}>
+                          <span>
+                            {column.Header}
+                            <button 
+                            className="btn-list-sort"
+                            id={`btn-${column.id}-sort`} 
+                            ref={(el) => (btnSortRef.current[index] = el)} 
+                            onClick={(e) => populateSortObject(column.id, index)} 
+                            data-sort="none">
+                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
+                            </button>
+                          </span>
+                        </th>
+                      )
                     } else {
-                      setPageIndex(e.target.value);
-                      setUrlPageQueryParam(e.target.value);
+                      return (
+                        <th key={`${column.id}-${index}`}>
+                          {column.Header}
+                        </th>
+                      )
                     }
-                  }}
-                  />
-                  sur {pageCount}
-                </span>
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row, indexRow) => {
+                  return (
+                    <tr key={`${row}-${indexRow}`}>
+                      {columns.map((column, index) => {
+                        if (column.id === 'action') {
+                          return (
+                            <td key={`${column.id}-${index}`}>
+                              <div className="div-list-table-action">
+                                <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon={faEdit} /></Link>
+                                <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                              </div>
+                            </td>
+                          )
+                        }
+                        if (column.id !== "expirationDate") {
+                          return (
+                            <td key={`${column.id}-${index}`}>
+                              {row[column.id]}
+                            </td>
+                          )
+                        }
+                        if (column.id === "expirationDate") {
+                          return (
+                            <td key={`${column.id}-${index}`}>
+                              {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
+                            </td>
+                          )
+                        }
+                        return null;
+                      })}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <div className="action-pagination">
+                <button onClick={() => gotoPage(1)}>
+                  <FontAwesomeIcon icon={faAngleDoubleLeft} />
+                </button>
+                <button onClick={() => previousPage()}>
+                  <FontAwesomeIcon icon={faAngleLeft} />
+                </button>
 
-              <button onClick={() => nextPage()}>
-                <FontAwesomeIcon icon={faAngleRight} />
-              </button>
-              <button onClick={() => gotoPage(pageCount)}>
-                <FontAwesomeIcon icon={faAngleDoubleRight} />
-              </button>
+                  <span>Page
+                    <input 
+                    type="number" 
+                    value={pageIndex}
+                    min={1}
+                    max={pageCount}
+                    onChange={(e) => {
+                      if(e.target.value > pageCount){
+                        setPageIndex(pageCount);
+                        setUrlPageQueryParam(pageCount);
+                      } else if (e.target.value <= 0 || e.target.value === ""){
+                        setPageIndex("");
+                        setUrlPageQueryParam(null);
+                      } else {
+                        setPageIndex(e.target.value);
+                        setUrlPageQueryParam(e.target.value);
+                      }
+                    }}
+                    />
+                    sur {pageCount}
+                  </span>
+
+                <button onClick={() => nextPage()}>
+                  <FontAwesomeIcon icon={faAngleRight} />
+                </button>
+                <button onClick={() => gotoPage(pageCount)}>
+                  <FontAwesomeIcon icon={faAngleDoubleRight} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        }
+        
       </div>
     </section>
   )

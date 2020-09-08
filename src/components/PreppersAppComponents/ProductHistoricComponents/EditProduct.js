@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useCallback, useState, Fragment, useRef } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -6,37 +6,45 @@ import AddEditProductForm from './AddEditProductForm';
 import PropTypes from 'prop-types';
 
 function EditProduct({ userData, history }) {
+  const isMounted = useRef(true);
   const location = useLocation();
   const [product, setProduct] = useState({});
   const [arrayExpDate, setArrayExpDate] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
   const [success, setSuccess] = useState(false);
   let productId = location.pathname.split('/')[3];
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
+  const getProductData = useCallback(async () => {
+    setErrorFetch(false);
+    const getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
+    await axiosInstance.get(getDataEndPoint)
+      .then((response) => {
+        if(isMounted){
+          setProduct(response.data);
+          setArrayExpDate(response.data.expirationDate);
+          setLoading(false);
+        }
+      })
+      .catch(error => {
+        if(isMounted){
+          if (error.response.status === 404) {
+            history.goBack();
+          }
+          if(error.code === "ECONNABORTED"){
+            setErrorFetch(true);
+          }
+        }
+      });
+  }, [history, productId, requestUrl]);
+
   useEffect(() => {
-    let isRendered = true;
-    const getProductData = async () => {
-      const getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
-      await axiosInstance.get(getDataEndPoint)
-        .then((response) => {
-          if (isRendered) {
-            setProduct(response.data);
-            setArrayExpDate(response.data.expirationDate);
-          }
-        })
-        .catch(error => {
-          if (isRendered) {
-            if (error.response.status === 404) {
-              history.goBack();
-            }
-          }
-        });
-    };
     getProductData();
     return () => {
-      isRendered = false;
+      isMounted.current = false;
     }
-  }, [productId, requestUrl, history]);
+  }, [getProductData]);
 
   useEffect(() => {
     let timerSuccess;
@@ -111,6 +119,9 @@ function EditProduct({ userData, history }) {
         setArrayExpDate={setArrayExpDate}
         requestUrl={requestUrl}
         success={success}
+        loading={loading}
+        errorFetch={errorFetch}
+        getProductData={getProductData}
       />
     </Fragment>
   )

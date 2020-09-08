@@ -8,12 +8,13 @@ import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCheck, faExclamation, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
+import Loading from '../UtilitiesComponent/Loading';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success }) {
+function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
   const [titleForm, setTitleForm] = useState("");
   const [button, setButton] = useState("");
   const [number, setNumber] = useState(0);
@@ -259,94 +260,95 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
         <h1 className="default-h">{titleForm}</h1>
       </div>
       
-      <div className="form-add-edit-product-container">
-        <form>
-          {form}
-        </form>
+      <div className="container-loading">
+        {requestUrl === "edit" && 
+          <Loading
+            loading={loading}
+            errorFetch={errorFetch}
+            retryFetch={getProductData}
+          />
+        }
         <div>
-          {showDateList &&
-            <>
-              <div>
-                {formType === "add" && <label htmlFor="expirationDate">Date d'expiration du produit *</label>}
-                {formType === "edit" && <label htmlFor="expirationDate">Date d'expiration du produit</label>}
-                <DatePicker
-                  id="expirationDate"
-                  isClearable
-                  placeholderText="Date d'expiration"
-                  dateFormat="dd/MM/yyyy"
-                  locale="fr"
-                  selected={expDate}
-                  onChange={val => {
-                    setExpDate(val);
-                  }}
-                />
-                <button onClick={addExpDate}>+</button>
-                {errorExpDate && <span className="error-message">Minimum une date d'expiration est requise !</span>}
-              </div>
-
-              {arrayExpDate &&
+          <div className="form-add-edit-product-container">
+            <form>
+              {form}
+            </form>
+            <div>
+              {showDateList &&
                 <>
-                  <p>Nombre total de produit : {number}</p>
-                  <ul>
-                    {arrayExpDate.map((date, index) => {
-                      return <li key={`expirationDate-${index}`}>
-                        <div>
-                          {transformDate(date.expDate)}
-                          <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                          <button onClick={() => { deleteExpDate(index) }}>X</button>
-                        </div>
-                      </li>
-                    })}
-                  </ul>
+                  <div>
+                    {formType === "add" && <label htmlFor="expirationDate">Date d'expiration du produit *</label>}
+                    {formType === "edit" && <label htmlFor="expirationDate">Date d'expiration du produit</label>}
+                    <DatePicker
+                      id="expirationDate"
+                      isClearable
+                      placeholderText="Date d'expiration"
+                      dateFormat="dd/MM/yyyy"
+                      locale="fr"
+                      selected={expDate}
+                      onChange={val => {
+                        setExpDate(val);
+                      }}
+                    />
+                    <button onClick={addExpDate}>+</button>
+                    {errorExpDate && <span className="error-message">Minimum une date d'expiration est requise !</span>}
+                  </div>
+
+                  {arrayExpDate &&
+                    <>
+                      <p>Nombre total de produit : {number}</p>
+                      <ul>
+                        {arrayExpDate.map((date, index) => {
+                          return <li key={`expirationDate-${index}`}>
+                            <div>
+                              {transformDate(date.expDate)}
+                              <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                              <button onClick={() => { deleteExpDate(index) }}>X</button>
+                            </div>
+                          </li>
+                        })}
+                      </ul>
+                    </>
+                  }
                 </>
               }
-            </>
+            </div>
+          </div>
+
+          {number === totalExpDate &&
+            <div className="default-action-form-container">
+              <button className="default-btn-action-form" onClick={(e) => {
+                handleSubmit(handleFunction)();
+                expErrorMessageLogic();
+                }}>
+                {button}
+              </button>
+              {success && 
+                <InformationIcon 
+                  className="success-icon"
+                  icon={<FontAwesomeIcon icon={faCheck} />}
+                />
+              }
+              {formType === "edit" && number === 0 && requestUrl === "products" &&
+                <InformationIcon 
+                  className="warning-icon"
+                  icon={<FontAwesomeIcon icon={faExclamation} />}
+                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre de produits est égal à 0 !"
+                />
+              }
+              {formType === "edit" && number >= 1 && requestUrl === "historics" &&
+                <InformationIcon 
+                  className="warning-icon"
+                  icon={<FontAwesomeIcon icon={faExclamation} />}
+                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre de produits est supérieur à 0 !"
+                />
+              }
+            </div>
           }
         </div>
       </div>
-
-      {number === totalExpDate &&
-        <div className="default-action-form-container">
-          <button className="default-btn-action-form" onClick={(e) => {
-            handleSubmit(handleFunction)();
-            expErrorMessageLogic();
-            }}>
-            {button}
-          </button>
-          {success && 
-            <InformationIcon 
-              className="success-icon"
-              icon={<FontAwesomeIcon icon={faCheck} />}
-            />
-          }
-          {formType === "edit" && number === 0 && requestUrl === "products" &&
-            <InformationIcon 
-              className="warning-icon"
-              icon={<FontAwesomeIcon icon={faExclamation} />}
-              message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre de produits est égal à 0 !"
-            />
-          }
-          {formType === "edit" && number >= 1 && requestUrl === "historics" &&
-            <InformationIcon 
-              className="warning-icon"
-              icon={<FontAwesomeIcon icon={faExclamation} />}
-              message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre de produits est supérieur à 0 !"
-            />
-          }
-        </div>
-      }
-      {number !== totalExpDate &&
-        <div className="default-action-form-container">
-          <button className="default-btn-disabled-form" disabled>
-            {button}
-          </button>
-          <InformationIcon 
-            className="error-icon"
-            icon={<FontAwesomeIcon icon={faTimes} />}
-            message="Attention, il n'est pas possible d'ajouter/éditer un produit si le nombre de produits est différent du nombre de dates de péremption liée à ce produit !"
-          />
-        </div>
-      }
+      
+      
     </div>
   )
 }
@@ -361,6 +363,9 @@ AddEditProductForm.propTypes = {
   setArrayExpDate: PropTypes.func.isRequired,
   requestUrl: PropTypes.string.isRequired,
   success: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
+  errorFetch: PropTypes.bool,
+  getProductData: PropTypes.func,
 }
 
 export default AddEditProductForm

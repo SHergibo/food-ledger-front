@@ -14,11 +14,11 @@ function Loading({ loading, errorFetch, retryFetch }) {
     if(!loading){
       animationLoading = setTimeout(() => {
         loadingRef.current.style.opacity = 0; 
-      }, 1000);
+      }, 300);
 
       deleteContainerLoading = setTimeout(() => {
         setAnimLoading(false);
-      }, 1500);
+      }, 800);
     }
     
     return () => {
