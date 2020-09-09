@@ -73,9 +73,16 @@ function EditProduct({ userData, history }) {
     }
 
     let totalNumber = 0;
+    let emptyProductLinkedToExpDate = false;
     arrayExpDate.forEach(item => {
+      if(item.productLinkedToExpDate === ""){
+        emptyProductLinkedToExpDate = true;
+        return;
+      }
       totalNumber = totalNumber + item.productLinkedToExpDate;
     });
+
+    if(emptyProductLinkedToExpDate) return;
 
     newData.number = totalNumber;
 

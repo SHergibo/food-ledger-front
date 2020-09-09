@@ -9,12 +9,58 @@
   flex-direction: column;
 }
 
+.total-product-count-container{
+  color: $primary-color;
+  margin-bottom: .5rem;
+  .total-product-count{
+    display: flex;
+    align-items: center;
+    height: 2.25rem;
+    margin-left: .5rem;
+  }
+}
+
+.list-exp-date{
+  margin-bottom: .5rem;
+}
+
+.expiration-date{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  color: $primary-color;
+  input{
+    width: 3rem;
+  }
+  .input-add {
+    justify-content: flex-end;
+  }
+  &:not(:last-child){
+    margin-bottom: .5rem;
+  }
+}
+
 /*Tablet*/
 @media screen and (min-width: 640px) {
   .form-add-edit-product-container{
     flex-direction: row;
   }
+
   .form-add-edit-product-wrapper{
     width: 100%;
+  }
+
+  .expiration-date{
+    width: calculRem(230px);
+    margin-right: .8rem;
+  }
+
+  .list-exp-date{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: calculRem(490px);
   }
 }

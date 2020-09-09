@@ -156,6 +156,13 @@
   }
 }
 
+.react-datepicker__navigation--previous--disabled{
+  border-right-color: $grey-dark !important;
+  &:hover{
+    border-right-color: $grey-dark !important;
+  }
+}
+
 .react-datepicker__navigation--next{
   border-left-color: $primary-color !important;
   transition: .2s ease-in-out;
@@ -174,6 +181,13 @@
   &:hover {
     color: $primary-color;
     background-color: $grey !important;
+  }
+}
+
+.react-datepicker__day--disabled{
+  &:hover {
+    color: #ccc;
+    background-color: transparent !important;
   }
 }
 

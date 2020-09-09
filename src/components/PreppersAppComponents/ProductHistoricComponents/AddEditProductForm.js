@@ -8,7 +8,7 @@ import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheck, faExclamation, faPlus, faTimes, faPen } from '@fortawesome/free-solid-svg-icons';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
 import Loading from '../UtilitiesComponent/Loading';
 import PropTypes from 'prop-types';
@@ -20,6 +20,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   const [number, setNumber] = useState(0);
   const [expDate, setExpDate] = useState(null);
   const [errorExpDate, setErrorExpDate] = useState(false);
+  const [errorExpDateEmpty, setErrorExpDateEmpty] = useState(false);
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
@@ -78,9 +79,19 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   useEffect(() => {
     let totalNumber = 0;
     arrayExpDate.forEach(item => {
-      totalNumber = totalNumber + item.productLinkedToExpDate;
+      let value = item.productLinkedToExpDate;
+      if(value === ""){
+        value = 0;
+      }
+      totalNumber = totalNumber + parseInt(value);
     });
     setTotalExpDate(totalNumber);
+
+    if(arrayExpDate.filter(item => item.productLinkedToExpDate === "").length >= 1){
+      setErrorExpDateEmpty(true);
+    }else{
+      setErrorExpDateEmpty(false);
+    }
 
   }, [arrayExpDate, setTotalExpDate]);
 
@@ -123,12 +134,16 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 
   const updateExpDate = useCallback((e, index) => {
     let newArray = [...arrayExpDate];
-    newArray[index].productLinkedToExpDate = parseInt(e.target.value);
+    newArray[index].productLinkedToExpDate = e.target.value;
     setArrayExpDate(newArray);
 
     let totalNumber = 0;
     arrayExpDate.forEach(item => {
-      totalNumber = totalNumber + item.productLinkedToExpDate;
+      let value = item.productLinkedToExpDate;
+      if(value === ""){
+        value = 0;
+      }
+      totalNumber = totalNumber + parseInt(value);
     });
 
     setNumber(totalNumber);
@@ -168,14 +183,14 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   }
 
   const form = <Fragment>
-    <div className="input-form-container">
+    <div className="input-form-container-with-error">
       <label htmlFor="name">Nom du produit *</label>
       {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." ref={register({ required: true })} />}
       {formType === "edit" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." defaultValue={value.name} ref={register({ required: true })} />}
-      {errors.name && <span className="error-message">Ce champ est requis</span>}
+      {errors.name && <span className="error-message-form">Ce champ est requis</span>}
     </div>
 
-    <div className="input-form-container">
+    <div className="input-form-container-with-error">
       <ReactSelect
         format="creatable"
         label="Marque de produit *"
@@ -189,10 +204,10 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
         control={control}
         defaultValue={""}
       />
-      {errors.brand && <span className="error-message">Ce champ est requis</span>}
+      {errors.brand && <span className="error-message-form">Ce champ est requis</span>}
     </div>
 
-    <div className="input-form-container">
+    <div className="input-form-container-with-error">
       <ReactSelect
         format="select"
         label="Type de produit"
@@ -207,18 +222,18 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       />
     </div>
 
-    <div className="input-form-container">
+    <div className="input-form-container-with-error">
       <label htmlFor="weight">Poids du produit</label>
       {formType === "add" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids..." ref={register()} />}
       {formType === "edit" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids..." defaultValue={value.weight} ref={register()} />}
     </div>
-    <div className="input-form-container">
+    <div className="input-form-container-with-error">
       <label htmlFor="kcal">Valeur énergetique du produit</label>
       {formType === "add" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique..." ref={register()} />}
       {formType === "edit" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique..." defaultValue={value.kcal} ref={register()} />}
     </div>
 
-    <div className="input-form-container">
+    <div className="input-form-container-with-error">
       <label htmlFor="location">Emplacement du produit</label>
       {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." ref={register()} />}
       {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} ref={register()} />}
@@ -226,11 +241,15 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 
     {requestUrl === "products" && 
       <>
-        <div className="input-form-container">
+        <div className="input-form-container-with-error">
           <label htmlFor="minimumInStock">Stock minimum {formType === "edit" && " *"} </label>
           {formType === "add" && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." ref={register()} />}
           {formType === "edit" && value.minimumInStock && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." defaultValue={value.minimumInStock.minInStock} ref={register({ required: true })} />}
-          {errors.minimumInStock && <span className="error-message">Ce champ est requis</span>}
+          {errors.minimumInStock && <span className="error-message-form">Ce champ est requis</span>}
+        </div>
+        <div className="total-product-count-container">
+          <p>Nombre total de produit :</p>
+          <p className="total-product-count">{number}</p>
         </div>
       </>
     }
@@ -276,34 +295,42 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
             <div>
               {showDateList &&
                 <>
-                  <div>
-                    {formType === "add" && <label htmlFor="expirationDate">Date d'expiration du produit *</label>}
-                    {formType === "edit" && <label htmlFor="expirationDate">Date d'expiration du produit</label>}
-                    <DatePicker
-                      id="expirationDate"
-                      isClearable
-                      placeholderText="Date d'expiration"
-                      dateFormat="dd/MM/yyyy"
-                      locale="fr"
-                      selected={expDate}
-                      onChange={val => {
-                        setExpDate(val);
-                      }}
-                    />
-                    <button onClick={addExpDate}>+</button>
-                    {errorExpDate && <span className="error-message">Minimum une date d'expiration est requise !</span>}
+                  <div className="input-form-container-with-error">
+                    {formType === "add" && <label htmlFor="expirationDate">Date(s) d'expiration du produit *</label>}
+                    {formType === "edit" && <label htmlFor="expirationDate">Date(s) d'expiration du produit</label>}
+                    <div className="input-add">
+                      <DatePicker
+                        className="input-form input-form-date-picker"
+                        id="expirationDate"
+                        isClearable
+                        placeholderText="Date d'expiration"
+                        dateFormat="dd/MM/yyyy"
+                        locale="fr"
+                        autoComplete="off"
+                        minDate={new Date()}
+                        showDisabledMonthNavigation
+                        selected={expDate}
+                        onChange={val => {
+                          setExpDate(val);
+                        }}
+                      />
+                      <button className="action-input-add" onClick={addExpDate}><FontAwesomeIcon icon={faPlus} /></button>
+                    </div>
+                    {errorExpDate && <span className="error-message-form">Minimum une date d'expiration requise !</span>}
+                    {errorExpDateEmpty && <span className="error-message-form">Minimum un produit lié à une date !</span>}
                   </div>
 
-                  {arrayExpDate &&
+                  {arrayExpDate.length >= 1 &&
                     <>
-                      <p>Nombre total de produit : {number}</p>
-                      <ul>
+                      <ul className="list-exp-date">
                         {arrayExpDate.map((date, index) => {
-                          return <li key={`expirationDate-${index}`}>
-                            <div>
-                              {transformDate(date.expDate)}
-                              <input type="number" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                              <button onClick={() => { deleteExpDate(index) }}>X</button>
+                          return <li className="expiration-date" key={`expirationDate-${index}`}>
+                            {`${index+1}) ${transformDate(date.expDate)}`}
+                            <div className="small-input-form-container">
+                              <div className="input-add">
+                                <input type="number" className="input-form" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                                <button className="action-input-add" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon={faTimes} /></button>
+                              </div>
                             </div>
                           </li>
                         })}
@@ -321,6 +348,12 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
                 handleSubmit(handleFunction)();
                 expErrorMessageLogic();
                 }}>
+                {formType === "add" &&
+                  <FontAwesomeIcon icon={faPlus} /> 
+                }
+                {formType === "edit" &&
+                  <FontAwesomeIcon icon={faPen} /> 
+                }
                 {button}
               </button>
               {success && 
@@ -343,6 +376,18 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
                   message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
                 />
               }
+            </div>
+          }
+          {number !== totalExpDate &&
+            <div className="default-action-form-container">
+              <button className="default-btn-disabled-form" disabled>
+                {button}
+              </button>
+              <InformationIcon 
+                className="error-icon"
+                icon={<FontAwesomeIcon icon={faTimes} />}
+                message="Attention, il n'est pas possible d'ajouter/éditer un produit si le nombre de produits est différent du nombre de dates de péremption liée à ce produit !"
+              />
             </div>
           }
         </div>

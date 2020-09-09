@@ -450,6 +450,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                     dateFormat="dd/MM/yyyy"
                     locale="fr"
                     isClearable
+                    autoComplete="off"
                     placeholderText="Date d'expiration..."
                     onChange={(e) => props.onChange(e)}
                     selected={props.value}
