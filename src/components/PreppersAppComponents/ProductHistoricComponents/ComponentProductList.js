@@ -20,6 +20,7 @@ registerLocale("fr", fr);
 function ComponentProductList({ userData, requestTo, urlTo, columns, title, history }) {
   const location = useLocation();
   const [data, setData] = useState([]);
+  const isMounted = useRef(true);
   const [hasProduct, setHasProduct] = useState(false);
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
@@ -118,28 +119,35 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       const endPoint = finalEndPoint(getDataEndPoint);
       await axiosInstance.get(endPoint)
         .then((response) => {
-          setData(response.data.arrayProduct);
-          setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-          if(response.data.totalProduct >= 1){
-            setHasProduct(true);
-          }else{
-            setHasProduct(false);
+          if(isMounted.current){
+            setData(response.data.arrayProduct);
+            setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+            if(response.data.totalProduct >= 1){
+              setHasProduct(true);
+            }else{
+              setHasProduct(false);
+            }
+            setLoading(false);
           }
-          setLoading(false);
         })
         .catch((error)=> {
-          if(error.code === "ECONNABORTED"){
-            setErrorFetch(true);
+          if(isMounted.current){
+            if(error.code === "ECONNABORTED"){
+              setErrorFetch(true);
+            }
           }
         });
     }
-  }, [userData, requestTo, pageIndex, finalEndPoint]);
+  }, [userData, requestTo, pageIndex, finalEndPoint, isMounted]);
 
   useEffect(() => {
     if (userData) {
       getDataList();
     }
-  }, [userData, getDataList, searchObject]);
+    return () => {
+      isMounted.current = false;
+    }
+  }, [userData, getDataList, searchObject, isMounted]);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -147,14 +155,20 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
       const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
       await axiosInstance.get(getBrandListEndPoint)
         .then((response) => {
-          response.data.forEach(element => {
-            newArray.push({ value: element.brandName, label: element.brandName })
-          });
+          if(isMounted.current){
+            response.data.forEach(element => {
+              newArray.push({ value: element.brandName, label: element.brandName })
+            });
+          }
         });
       setArrayOptions(newArray);
     }
     if (userData) {
       loadOptions();
+    }
+
+    return () => {
+      isMounted.current = false;
     }
   }, [arrayOptions, userData]);
 
