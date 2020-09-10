@@ -28,6 +28,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
   let btnSortRef = useRef([]);
+  let tdExpirationDate = useRef([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 14;
@@ -570,7 +571,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                         }
                         if (column.id === "expirationDate") {
                           return (
-                            <td key={`${column.id}-${index}`}>
+                            <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
                               {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
                             </td>
                           )
