@@ -512,14 +512,13 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                   {columns.map((column, index) => {
                     if (column.id !== 'action' && column.id !== 'more') {
                       return (
-                        <th key={`${column.id}-${index}`}>
+                        <th key={`${column.id}-${index}`} onClick={() => populateSortObject(column.id, index)}>
                           <span>
                             {column.Header}
                             <button 
                             className="btn-list-sort"
                             id={`btn-${column.id}-sort`} 
-                            ref={(el) => (btnSortRef.current[index] = el)} 
-                            onClick={(e) => populateSortObject(column.id, index)} 
+                            ref={(el) => (btnSortRef.current[index] = el)}
                             data-sort="none">
                               <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>
                             </button>
@@ -551,9 +550,20 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                             </td>
                           )
                         }
-                        if (column.id !== "expirationDate" && column.id !== "minimumInStock") {
+                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name") {
                           return (
                             <td key={`${column.id}-${index}`}>
+                              {row[column.id]}
+                            </td>
+                          )
+                        }
+                        if (column.id === "name") {
+                          let title = {}
+                          if(row[column.id].length >= 24){
+                            title = {title : `${row[column.id]}`}
+                          }
+                          return (
+                            <td key={`${column.id}-${index}`} {...title}>
                               {row[column.id]}
                             </td>
                           )

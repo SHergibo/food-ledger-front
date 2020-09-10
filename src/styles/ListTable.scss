@@ -65,6 +65,8 @@
     padding: 1rem 0;
     th{
       color: $primary-color;
+      cursor: pointer;
+      transition: .2s ease-in-out;
       span{
         display: flex;
         justify-content: left;
@@ -72,13 +74,14 @@
         margin-left: 1rem;
         button{
           display: flex;
+          width: calculRem(13.33px);
           color: $primary-color;
+          background-color: transparent;
           cursor: pointer;
-          transition: .2s ease-in-out;
-          &:hover{
-            color: $blue;
-          }
         }
+      }
+      &:hover{
+        background-color: $grey-lighter;
       }
     }
   }
@@ -87,6 +90,12 @@
       border-bottom: 2px solid $grey;
       color: $primary-color;
       transition: .2s ease-in-out;
+      td:first-child{
+        max-width: 10rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
       td:not(:last-child){
         padding-left: 1rem;
       }
