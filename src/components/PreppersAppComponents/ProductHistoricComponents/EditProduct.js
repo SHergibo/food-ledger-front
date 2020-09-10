@@ -79,7 +79,7 @@ function EditProduct({ userData, history }) {
         emptyProductLinkedToExpDate = true;
         return;
       }
-      totalNumber = totalNumber + item.productLinkedToExpDate;
+      totalNumber = totalNumber + parseInt(item.productLinkedToExpDate);
     });
 
     if(emptyProductLinkedToExpDate) return;

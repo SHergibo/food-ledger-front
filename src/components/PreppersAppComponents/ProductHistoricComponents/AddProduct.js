@@ -37,7 +37,7 @@ function AddProduct({ userData, history }) {
 
     let totalNumber = 0;
     arrayExpDate.forEach(item => {
-      totalNumber = totalNumber + item.productLinkedToExpDate;
+      totalNumber = totalNumber + parseInt(item.productLinkedToExpDate);
     });
 
     data.number = totalNumber;
