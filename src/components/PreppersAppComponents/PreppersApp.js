@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { logout, refreshToken } from './../../utils/Auth';
 import axiosInstance from './../../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 function PreppersApp({ history }) {
   const [userData, setUserData] = useState();
   const [notification, setNotification] = useState([]);
+  const isMounted = useRef(true);
 
   useEffect(() => {
 
@@ -18,7 +19,9 @@ function PreppersApp({ history }) {
       const getUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getUserDataEndPoint)
         .then((response) => {
-          setUserData(response.data);
+          if(isMounted.current){
+            setUserData(response.data);
+          }
         });
     };
     getUserData();
@@ -28,7 +31,9 @@ function PreppersApp({ history }) {
       const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getNotificationEndPoint)
         .then((response) => {
-          setNotification(response.data);
+          if(isMounted.current){
+            setNotification(response.data);
+          }
           //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
         });
 
@@ -45,6 +50,7 @@ function PreppersApp({ history }) {
     }, 900000);
 
     return () => {
+      isMounted.current = false;
       clearInterval(getNotification);
       clearInterval(refreshTokenInterval);
     };
