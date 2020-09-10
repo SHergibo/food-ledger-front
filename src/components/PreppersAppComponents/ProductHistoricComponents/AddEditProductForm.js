@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, { Fragment, useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -24,6 +24,7 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
+  const isMounted = useRef(true);
 
   const { register, handleSubmit, errors, control, setValue, reset } = useForm({
     mode: "onChange"
@@ -156,14 +157,21 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
       const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
       await axiosInstance.get(getBrandListEndPoint)
         .then((response) => {
-          response.data.forEach(element => {
-            newArray.push({ value: element.brandName, label: element.brandName })
-          });
+          if(isMounted.current){
+            response.data.forEach(element => {
+              newArray.push({ value: element.brandName, label: element.brandName })
+            });
+          }
         });
       setArrayOptions(newArray);
     }
+    
     if (userData) {
       loadOptions();
+    }
+
+    return () => {
+      isMounted.current = false;
     }
   }, [arrayOptions, userData]);
 
