@@ -21,14 +21,14 @@ function EditProduct({ userData, history }) {
     const getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
     await axiosInstance.get(getDataEndPoint)
       .then((response) => {
-        if(isMounted){
+        if(isMounted.current){
           setProduct(response.data);
           setArrayExpDate(response.data.expirationDate);
           setLoading(false);
         }
       })
       .catch(error => {
-        if(isMounted){
+        if(isMounted.current){
           if (error.response.status === 404 || error.response.status === 500) {
             history.goBack();
           }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
@@ -7,22 +7,29 @@ import PropTypes from 'prop-types';
 
 function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
   const [errorMessage, setErrorMessage] = useState(false);
+  const successMessage = useRef(null);
   const { register, handleSubmit, errors} = useForm({
     mode: "onChange"
   });
 
   useEffect(() => {
+    let timeOutStyle;
+    let timeOutSetSuccess
     if (successCreateAccount) {
-      let spanSuccess = document.getElementsByClassName('success-message')[0];
-      setTimeout(() => {
-        spanSuccess.style.opacity = 0;
-        spanSuccess.style.height = 0;
+      timeOutStyle = setTimeout(() => {
+        successMessage.current.style.opacity = 0;
+        successMessage.current.style.height = 0;
       }, 3000);
-      setTimeout(() => {
+      timeOutSetSuccess = setTimeout(() => {
         setSuccessCreateAccount(false);
       }, 3500);
     }
-  }, [successCreateAccount, setSuccessCreateAccount]);
+
+    return () => {
+      clearTimeout(timeOutStyle);
+      clearTimeout(timeOutSetSuccess);
+    }
+  }, [successCreateAccount, setSuccessCreateAccount, successMessage]);
 
 
   const onSubmit = async (data) => {
@@ -71,7 +78,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
           </div>
 
           {errorMessage && <span className="error-message">Adresse mail ou mot de passe invalide !</span>}
-          {successCreateAccount && <span className="success-message">Votre compte a été créé avec succés !</span>}
+          {successCreateAccount && <span ref={successMessage} className="success-message">Votre compte a été créé avec succés !</span>}
           <button type="submit" className="btn-form-sign-in">
             Connexion
           </button>
