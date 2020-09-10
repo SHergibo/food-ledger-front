@@ -551,7 +551,7 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                             </td>
                           )
                         }
-                        if (column.id !== "expirationDate") {
+                        if (column.id !== "expirationDate" && column.id !== "minimumInStock") {
                           return (
                             <td key={`${column.id}-${index}`}>
                               {row[column.id]}
@@ -562,6 +562,13 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                           return (
                             <td key={`${column.id}-${index}`}>
                               {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
+                            </td>
+                          )
+                        }
+                        if (column.id === "minimumInStock") {
+                          return (
+                            <td key={`${column.id}-${index}`}>
+                              {row[column.id].minInStock}
                             </td>
                           )
                         }

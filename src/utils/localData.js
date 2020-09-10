@@ -74,6 +74,10 @@ export const columnsProductFullScreen = [
     id: 'number'
   },
   {
+    Header: 'Min. Stock',
+    id: 'minimumInStock'
+  },
+  {
     Header: "Actions",
     id: 'action'
   }
