@@ -1,9 +1,8 @@
 import React, { Fragment, useEffect, useCallback, useState } from 'react';
 import ComponentProductList from '../ProductHistoricComponents/ComponentProductList';
 import {columnsHistoricMobile, columnsHistoricTablet, columnsHistoricFullScreen} from "./../../../utils/localData";
-import PropTypes from 'prop-types';
 
-function HistoricList({ userData }) {
+function HistoricList() {
   const [columns, setColumns] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -33,7 +32,6 @@ function HistoricList({ userData }) {
   return (
     <Fragment>
       <ComponentProductList
-        userData={userData}
         requestTo="historics"
         urlTo="historique"
         columns={columns}
@@ -41,10 +39,6 @@ function HistoricList({ userData }) {
       />
     </Fragment>
   )
-}
-
-HistoricList.propTypes = {
-  userData: PropTypes.object,
 }
 
 export default HistoricList;

@@ -5,7 +5,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 import PropTypes from 'prop-types';
 
-function EditProduct({ userData, history }) {
+function EditProduct({ history }) {
   const isMounted = useRef(true);
   const location = useLocation();
   const [product, setProduct] = useState({});
@@ -42,6 +42,7 @@ function EditProduct({ userData, history }) {
   useEffect(() => {
     getProductData();
     return () => {
+      console.log('ici')
       isMounted.current = false;
     }
   }, [getProductData]);
@@ -117,7 +118,6 @@ function EditProduct({ userData, history }) {
   return (
     <Fragment>
       <AddEditProductForm
-        userData={userData}
         history={history}
         handleFunction={EditProduct}
         formType="edit"
@@ -135,7 +135,6 @@ function EditProduct({ userData, history }) {
 }
 
 EditProduct.propTypes = {
-  userData: PropTypes.object,
   history: PropTypes.object.isRequired
 }
 

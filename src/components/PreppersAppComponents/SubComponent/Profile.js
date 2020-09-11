@@ -1,16 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import { useUserData } from './../DataContext';
 
-function Profile({ userData }) {
+function Profile() {
+  // const userData = useUserData();
   return (
     <div>
       profil
     </div>
   )
-}
-
-Profile.propTypes = {
-  userData: PropTypes.object,
 }
 
 export default Profile

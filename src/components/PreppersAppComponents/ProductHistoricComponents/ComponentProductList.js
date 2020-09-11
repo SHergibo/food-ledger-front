@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useUserData } from './../DataContext';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
@@ -17,7 +18,8 @@ import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function ComponentProductList({ userData, requestTo, urlTo, columns, title, history }) {
+function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
+  const userData = useUserData();
   const location = useLocation();
   const [data, setData] = useState([]);
   const isMounted = useRef(true);
@@ -145,10 +147,13 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     if (userData) {
       getDataList();
     }
+  }, [userData, getDataList, searchObject]);
+
+  useEffect(() => {
     return () => {
       isMounted.current = false;
     }
-  }, [userData, getDataList, searchObject, isMounted]);
+  }, [isMounted])
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -166,10 +171,6 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
     }
     if (userData) {
       loadOptions();
-    }
-
-    return () => {
-      isMounted.current = false;
     }
   }, [arrayOptions, userData]);
 
@@ -570,6 +571,9 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
                           )
                         }
                         if (column.id === "expirationDate") {
+                          // la classe code couleur sera toujours la, c'est la classe hide-warning qui sera utilisée pour cacher ou non le code couleur.
+                          //si on change l'option afficher code couleur, filtrer le useRef en cherchant les td avec les classes high et low-warning et boucler dans se nouveau tableau 
+                          //pour ajouter ou supprimer une classe hide-warning qui cachera le code couleur
                           return (
                             <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
                               {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
@@ -638,7 +642,6 @@ function ComponentProductList({ userData, requestTo, urlTo, columns, title, hist
 }
 
 ComponentProductList.propTypes = {
-  userData: PropTypes.object,
   requestTo: PropTypes.string.isRequired,
   urlTo: PropTypes.string.isRequired,
   columns: PropTypes.array,

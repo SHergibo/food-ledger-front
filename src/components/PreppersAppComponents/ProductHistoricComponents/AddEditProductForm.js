@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect, useCallback, useRef } from 'react';
+import { useUserData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -14,7 +15,8 @@ import Loading from '../UtilitiesComponent/Loading';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
-function AddEditProductForm({ userData, history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
+function AddEditProductForm({ history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
+  const userData = useUserData();
   const [titleForm, setTitleForm] = useState("");
   const [button, setButton] = useState("");
   const [number, setNumber] = useState(0);
@@ -407,7 +409,6 @@ function AddEditProductForm({ userData, history, handleFunction, formType, value
 }
 
 AddEditProductForm.propTypes = {
-  userData: PropTypes.object,
   history: PropTypes.object.isRequired,
   handleFunction: PropTypes.func.isRequired,
   formType: PropTypes.string.isRequired,

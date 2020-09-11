@@ -5,7 +5,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 import PropTypes from 'prop-types';
 
-function AddProduct({ userData, history }) {
+function AddProduct({ history }) {
   const location = useLocation();
   const [arrayExpDate, setArrayExpDate] = useState([]);
   const [success, setSuccess] = useState(false);
@@ -62,7 +62,6 @@ function AddProduct({ userData, history }) {
   return (
     <Fragment>
       <AddEditProductForm
-        userData={userData}
         history={history}
         handleFunction={addProduct}
         formType="add"
@@ -76,7 +75,6 @@ function AddProduct({ userData, history }) {
 }
 
 AddProduct.propTypes = {
-  userData: PropTypes.object,
   history: PropTypes.object.isRequired
 }
 
