@@ -2,11 +2,16 @@ import React, { useContext, useState, createContext, useEffect, useRef } from 'r
 import axiosInstance from './../../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 
-const DataContext = createContext();
+const UserDataContext = createContext();
+const UserOptionContext = createContext();
 const NotificationContext = createContext();
 
 export function useUserData(){
-  return useContext(DataContext);
+  return useContext(UserDataContext);
+}
+
+export function useUserOptionData(){
+  return useContext(UserOptionContext);
 }
 
 export function useNotificationData(){
@@ -15,6 +20,7 @@ export function useNotificationData(){
 
 export function DataProvider({children}) {
   const [userData, setUserData] = useState();
+  const [userOptionData, setUserOptionData] = useState();
   const [notification, setNotification] = useState([]);
   const isMounted = useRef(true);
 
@@ -50,16 +56,38 @@ export function DataProvider({children}) {
 
 
     return () => {
-      isMounted.current = false;
       clearInterval(getNotification);
     };
   }, []);
 
+  useEffect(() => {
+    const getUserOptionData = async () => {
+      const getUserOptionDataEndPoint = `${apiDomain}/api/${apiVersion}/options/${userData._id}`;
+      await axiosInstance.get(getUserOptionDataEndPoint)
+        .then((response) => {
+          if(isMounted.current){
+            setUserOptionData(response.data);
+          }
+        });
+    };
+    if(userData){
+      getUserOptionData();
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    }
+  }, []);
+
   return(
-    <DataContext.Provider value={userData}>
-      <NotificationContext.Provider value={notification}>
-        {children}
-      </NotificationContext.Provider>
-    </DataContext.Provider>
+    <UserDataContext.Provider value={{ userData, setUserData }}>
+      <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
+        <NotificationContext.Provider value={{ notification, setNotification }}>
+          {children}
+        </NotificationContext.Provider>
+      </UserOptionContext.Provider>
+    </UserDataContext.Provider>
   )
 }

@@ -1,9 +1,3 @@
-.wrapper-list-table{
-  display: flex;
-  flex-direction: column;
-  margin: 1rem .8rem;
-}
-
 .form-filter-table{
   display: flex;
   align-items: center;
@@ -199,9 +193,6 @@
 
 /*Tablet*/
 @media screen and (min-width: 745px) {
-  .wrapper-list-table{
-    width: 100%;
-  }
   .header-list-table{
     div{
       display: flex;

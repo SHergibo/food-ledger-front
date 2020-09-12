@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
 function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
-  const userData = useUserData();
+  const { userData } = useUserData();
   const location = useLocation();
   const [data, setData] = useState([]);
   const isMounted = useRef(true);
@@ -370,7 +370,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       });
   };
   return (
-    <section className="wrapper-list-table">
+    <div className="default-wrapper">
 
       <div className="header-list-table">
         <div className="default-title-container">
@@ -637,7 +637,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         }
         
       </div>
-    </section>
+    </div>
   )
 }
 

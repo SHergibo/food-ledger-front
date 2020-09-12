@@ -6,8 +6,8 @@ import { faSignOutAlt, faBell } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function SubNav({ logOut }) {
-  const userData = useUserData();
-  const notification = useNotificationData();
+  const { userData } = useUserData();
+  const { notification } = useNotificationData();
   const [firstChar, setFirstChar] = useState("P"); //TODO download l'image si l'user a une image de profil???
   const [hasNotif, setHasNotif] = useState(false);
   const [arrayNotifLength, setArrayNotifLength] = useState(0);

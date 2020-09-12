@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
 function AddEditProductForm({ history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
-  const userData = useUserData();
+  const { userData } = useUserData();
   const [titleForm, setTitleForm] = useState("");
   const [button, setButton] = useState("");
   const [number, setNumber] = useState(0);
@@ -266,7 +266,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   </Fragment>;
 
   return (
-    <div className="form-add-edit-product-wrapper">
+    <div className="default-wrapper">
       <div className="default-title-container">
         <button
           onClick={() => {
