@@ -68,6 +68,14 @@
   @include form-sign-in($height: false);
 }
 
+.container-checkbox-sign-form + .container-checkbox-sign-form{
+  margin-top: 1rem;
+}
+
+.container-checkbox-sign-form {
+  @include container-checkbox($white, $white, $primary-color, $blue);
+}
+
 .btn-form-sign-in{
   display: flex;
   justify-content: center;

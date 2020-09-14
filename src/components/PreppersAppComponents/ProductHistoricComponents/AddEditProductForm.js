@@ -208,6 +208,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         name="brand"
         inputId="product-brand"
         classNamePrefix="select-brand"
+        isClearable={true}
         placeholder="Marque..."
         arrayOptions={arrayOptions}
         setArrayOptions={setArrayOptions}
@@ -225,6 +226,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         name="type"
         inputId="product-type"
         classNamePrefix="select-type"
+        isClearable={false}
         placeholder="Type..."
         arrayOptions={productType}
         control={control}

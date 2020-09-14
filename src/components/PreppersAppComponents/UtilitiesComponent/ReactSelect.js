@@ -3,7 +3,7 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
-function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix, placeholder, arrayOptions, setArrayOptions, control, defaultValue }) {
+function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix, isClearable, placeholder, arrayOptions, setArrayOptions, control, defaultValue }) {
   const [customStyles, setCustomStyles] = useState(
     {
       control: (styles, { isFocused }) => (
@@ -120,36 +120,57 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
       >
         {label}
       </label>
-      {format === "select" && 
-        <Controller
-          name={name}
-          inputId={inputId}
-          classNamePrefix={classNamePrefix}
-          as={Select}
-          isClearable
-          styles={customStyles}
-          placeholder={placeholder}
-          options={arrayOptions}
-          control={control}
-          defaultValue={defaultValue}
-        />
-      }
+      {isClearable &&
+        <>
+          {format === "select" && 
+            <Controller
+              name={name}
+              inputId={inputId}
+              classNamePrefix={classNamePrefix}
+              as={Select}
+              isClearable
+              styles={customStyles}
+              placeholder={placeholder}
+              options={arrayOptions}
+              control={control}
+              defaultValue={defaultValue}
+            />
+          }
 
-      {format === "creatable" &&
-        <Controller
-          name={name}
-          inputId={inputId}
-          classNamePrefix={classNamePrefix}
-          as={CreatableSelect}
-          formatCreateLabel={formatCreateLabel}
-          isClearable
-          styles={customStyles}
-          placeholder={placeholder}
-          options={arrayOptions}
-          onCreateOption={onCreateOption}
-          control={control}
-          defaultValue={""}
-        />
+          {format === "creatable" &&
+            <Controller
+              name={name}
+              inputId={inputId}
+              classNamePrefix={classNamePrefix}
+              as={CreatableSelect}
+              formatCreateLabel={formatCreateLabel}
+              isClearable
+              styles={customStyles}
+              placeholder={placeholder}
+              options={arrayOptions}
+              onCreateOption={onCreateOption}
+              control={control}
+              defaultValue={""}
+            />
+          }
+        </>
+      }
+      {!isClearable &&
+        <>
+          {format === "select" && 
+              <Controller
+                name={name}
+                inputId={inputId}
+                classNamePrefix={classNamePrefix}
+                as={Select}
+                styles={customStyles}
+                placeholder={placeholder}
+                options={arrayOptions}
+                control={control}
+                defaultValue={defaultValue}
+              />
+            }
+        </>
       }
     </>
   )
@@ -162,6 +183,7 @@ ReactSelect.propTypes = {
   name: PropTypes.string.isRequired,
   inputId: PropTypes.string.isRequired,
   classNamePrefix: PropTypes.string.isRequired,
+  isClearable: PropTypes.bool.isRequired,
   placeholder: PropTypes.string.isRequired,
   arrayOptions: PropTypes.array.isRequired,
   setArrayOptions: PropTypes.func,

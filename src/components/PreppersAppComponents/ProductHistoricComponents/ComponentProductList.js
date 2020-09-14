@@ -424,6 +424,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 name="brand"
                 inputId="product-brand"
                 classNamePrefix="select-brand"
+                isClearable={true}
                 placeholder="Marque..."
                 arrayOptions={arrayOptions}
                 control={control}
@@ -438,6 +439,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 name="type"
                 inputId="product-type"
                 classNamePrefix="select-type"
+                isClearable={true}
                 placeholder="Type..."
                 arrayOptions={productType}
                 control={control}

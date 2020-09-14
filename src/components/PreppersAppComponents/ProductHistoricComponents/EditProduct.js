@@ -42,7 +42,6 @@ function EditProduct({ history }) {
   useEffect(() => {
     getProductData();
     return () => {
-      console.log('ici')
       isMounted.current = false;
     }
   }, [getProductData]);

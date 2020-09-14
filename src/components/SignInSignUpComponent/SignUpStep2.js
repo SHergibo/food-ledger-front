@@ -79,7 +79,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
         <div>
           <h2>Création de compte : étape 2</h2>
           {state.yourDetails.householdNameCheck !== true && (
-            <label className="container-checkbox">
+            <label className="container-checkbox-sign-form">
               Avez-vous un code famille ?
               <input
                 name="householdCodeCheck"
@@ -107,7 +107,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
             </div>
           )}
           {state.yourDetails.householdCodeCheck !== true && (
-            <label className="container-checkbox">
+            <label className="container-checkbox-sign-form">
               Voulez-vous créer une famille ?
               <input
                 name="householdNameCheck"
@@ -134,7 +134,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                   <ErrorMessage errors={errors} name="householdName" as="span" />
                 </div>
               </div>
-              <label className="container-checkbox">
+              <label className="container-checkbox-sign-form">
                 Autre code utilisateur ?
               <input
                   name="otherMemberCheck"

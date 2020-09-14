@@ -12,7 +12,57 @@
   }
 
   h2 {
+    margin-bottom: 1rem;
     font-size: 1.4rem;
+  }
+}
+
+@mixin container-checkbox($color, $border-checkmark, $border-check, $bg-color){
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  color: $color;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  .checkmark-checkbox {
+    position: relative;
+    margin: 0 0.5rem;
+    min-height: 25px;
+    min-width: 25px;
+    border: 2px solid $border-checkmark;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+    &:after{
+      content: "";
+      position: absolute;
+      display: none;
+      left: 7px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid $border-check;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+  input{
+    height: 0;
+    width: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    &:checked ~ .checkmark-checkbox {
+      background-color: $bg-color;
+    }
+    &:checked ~ .checkmark-checkbox:after {
+      display: block;
+    }
   }
 }
 
