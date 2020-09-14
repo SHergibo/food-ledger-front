@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useUserData, useUserOptionData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
@@ -6,11 +6,16 @@ import { dateSendMailGlobal, dateSendMailShoppingList, warningExpirationDate } f
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
+import InformationIcon from './../UtilitiesComponent/InformationIcons';
 
 function Profile() {
   const { userData, setUserData } = useUserData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
+  const [ successFormOne, setSuccessFormOne ] = useState(false);
+  const [ successFormTwo, setSuccessFormTwo ] = useState(false);
+  const [ successFormThree, setSuccessFormThree ] = useState(false);
+  const [ successFormFour, setSuccessFormFour ] = useState(false);
   const isMounted = useRef(true);
 
   const { register : registerFormOne, handleSubmit : handleSubmitFormOne, errors : errorsFormOne } = useForm({
@@ -28,6 +33,55 @@ function Profile() {
   const { register : registerFormFour, handleSubmit : handleSubmitFormFour } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    let timerSuccessOne;
+    if(successFormOne){
+      timerSuccessOne = setTimeout(() => {
+        setSuccessFormOne(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessOne);
+    }
+  }, [successFormOne]);
+
+  useEffect(() => {
+    let timerSuccessTwo;
+    if(successFormTwo){
+      timerSuccessTwo = setTimeout(() => {
+        setSuccessFormTwo(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessTwo);
+    }
+  }, [successFormTwo]);
+
+  useEffect(() => {
+    let timerSuccessThree;
+    if(successFormThree){
+      timerSuccessThree = setTimeout(() => {
+        setSuccessFormThree(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessThree);
+    }
+  }, [successFormThree]);
+
+  useEffect(() => {
+    let timerSuccessFour;
+    if(successFormFour){
+      timerSuccessFour = setTimeout(() => {
+        setSuccessFormFour(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessFour);
+    }
+  }, [successFormFour]);
+
 
   useEffect(() => {
     return () => {
@@ -70,7 +124,15 @@ function Profile() {
           {errorsFormOne.firstname && <span className="error-message-form">Ce champ est requis</span>}
         </div>
 
-        <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+        <div className="default-action-form-container">
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          {successFormOne && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon={faCheck} />}
+            />
+          }
+        </div>
       </>
     }
   </>;
@@ -81,6 +143,7 @@ function Profile() {
       .then((response) => {
         if(isMounted.current){
           setUserData(response.data);
+          setSuccessFormOne(true);
         }
       });
   };
@@ -131,7 +194,15 @@ function Profile() {
           />
         </div>
 
-        <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+        <div className="default-action-form-container">
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          {successFormTwo && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon={faCheck} />}
+            />
+          }
+        </div>
       </>
     }
   </>;
@@ -165,8 +236,15 @@ function Profile() {
           <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} ref={registerFormThree()}/>
           <span className="checkmark-checkbox"></span>
         </label>
-
-        <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+        <div className="default-action-form-container">
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          {successFormThree && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon={faCheck} />}
+            />
+          }
+        </div>
       </>
     }
   </>;
@@ -186,7 +264,15 @@ function Profile() {
           <span className="checkmark-checkbox"></span>
         </label>
 
-        <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+        <div className="default-action-form-container">
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          {successFormFour && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon={faCheck} />}
+            />
+          }
+        </div>
       </>
     }
   </>;
@@ -197,20 +283,30 @@ function Profile() {
       .then((response) => {
         if(isMounted.current){
           setUserOptionData(response.data);
+          return true;
         }
       });
   }
 
   const updateUserOptionMailingData = async (data) => {
-    patchOptionData(data);
+    let success = patchOptionData(data);
+    if(success){
+      setSuccessFormTwo(true);
+    }
   };
 
   const updateUserOptionProductData = async (data) => {
-    patchOptionData(data);
+    let success = patchOptionData(data);
+    if(success){
+      setSuccessFormThree(true);
+    }
   };
 
   const updateUserOptionProductTableData = async (data) => {
-    patchOptionData(data);
+    let success = patchOptionData(data);
+    if(success){
+      setSuccessFormFour(true);
+    }
   };
 
   return (
