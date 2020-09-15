@@ -374,7 +374,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
       <div className="header-list-table">
         <div className="default-title-container">
-          <h1 className="default-h">{title}</h1>
+          <h1 className="default-h1">{title}</h1>
         </div>
 
         <div>

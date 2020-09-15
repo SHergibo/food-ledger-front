@@ -30,34 +30,95 @@ ul {
 }
 
 .default-title-container{
+  position: relative;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  button{
+  .title-and-return{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1.8rem;
-    margin-right: .5rem;
-    color: $primary-color;
-    background-color: transparent;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    outline: none;
-    transition: .2s ease-in-out;
-    &:hover{
-      background-color: $primary-color;
+  }
+  .return-to{
+    @include btn-action-title(1.8rem);
+  }
+  .btn-action-title{
+    @include btn-action-title(1.5rem);
+  }
+  .title-warning-message{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 30;
+    width: 100%;
+    min-height: 10rem;
+    background-color: $grey-dark;
+    border-radius: 5px;
+    padding: 2.8rem .5rem 2rem .5rem;
+    p{
+      color: $primary-color;
+      text-align: center;
+    }
+    .btn-delete-action-container{
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .btn-delete-action-yes, .btn-delete-action-no{
+      font-size: 1.5rem;
+      padding: .2rem 1rem;
+      border: none;
+      border-radius: 5px;
       color: $white;
+      outline: none;
+      cursor: pointer;
+      transition: .5s ease-in-out;
+    }
+    .btn-delete-action-yes{
+      background-color: $red;
+      margin-right: 1rem;
+      &:hover{
+        background-color: $red-hover;
+      }
+    }
+    .btn-delete-action-no{
+      background-color: $primary-color;
+      &:hover{
+        background-color: $primary-color-hover;
+      }
     }
   }
+  .btn-close-title-message{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    height: 1rem;
+    width: 1rem;
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: $primary-color;
+    transition: .5s ease-in-out;
+    outline: none;
+    cursor: pointer;
+    &:hover{
+      color: $primary-color-hover;
+    }
+  }
+
 }
 
-.default-h {
+.default-h1, .default-h2 {
   color: $primary-color;
+}
+
+.default-h1 {
   font-size: 2rem;
+}
+
+.default-h2 {
+  font-size: 1rem;
 }
 
 .delimiter-title{
@@ -114,6 +175,12 @@ ul {
 @media screen and (min-width: 745px) {
   .default-wrapper{
     width: 100%;
+  }
+
+  .default-title-container{
+    .title-warning-message{
+      width: 30rem;
+    }
   }
   
   .default-btn-blue,

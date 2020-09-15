@@ -3,11 +3,16 @@ import axiosInstance from './../../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 
 const UserDataContext = createContext();
+const UserHouseholdDataContext = createContext();
 const UserOptionContext = createContext();
 const NotificationContext = createContext();
 
 export function useUserData(){
   return useContext(UserDataContext);
+}
+
+export function useUserHouseHoldData(){
+  return useContext(UserHouseholdDataContext);
 }
 
 export function useUserOptionData(){
@@ -20,6 +25,7 @@ export function useNotificationData(){
 
 export function DataProvider({children}) {
   const [userData, setUserData] = useState();
+  const [userHouseholdData, setUserHouseholdData] = useState();
   const [userOptionData, setUserOptionData] = useState();
   const [notification, setNotification] = useState([]);
   const isMounted = useRef(true);
@@ -61,6 +67,16 @@ export function DataProvider({children}) {
   }, []);
 
   useEffect(() => {
+    const getUserHouseHoldData = async () => {
+      const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userData.householdCode}`;
+      await axiosInstance.get(getUserHouseholdDataEndPoint)
+        .then((response) => {
+          if(isMounted.current){
+            setUserHouseholdData(response.data);
+          }
+        });
+    };
+
     const getUserOptionData = async () => {
       const getUserOptionDataEndPoint = `${apiDomain}/api/${apiVersion}/options/${userData._id}`;
       await axiosInstance.get(getUserOptionDataEndPoint)
@@ -71,6 +87,7 @@ export function DataProvider({children}) {
         });
     };
     if(userData){
+      getUserHouseHoldData();
       getUserOptionData();
     }
   }, [userData]);
@@ -83,11 +100,13 @@ export function DataProvider({children}) {
 
   return(
     <UserDataContext.Provider value={{ userData, setUserData }}>
-      <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
-        <NotificationContext.Provider value={{ notification, setNotification }}>
-          {children}
-        </NotificationContext.Provider>
-      </UserOptionContext.Provider>
+      <UserHouseholdDataContext.Provider value={{ userHouseholdData, setUserHouseholdData }}>
+        <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
+          <NotificationContext.Provider value={{ notification, setNotification }}>
+            {children}
+          </NotificationContext.Provider>
+        </UserOptionContext.Provider>
+      </UserHouseholdDataContext.Provider>
     </UserDataContext.Provider>
   )
 }

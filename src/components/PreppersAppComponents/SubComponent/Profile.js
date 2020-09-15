@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useUserData, useUserOptionData } from './../DataContext';
+import { useUserData, useUserOptionData, useUserHouseHoldData, useNotificationData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import { dateSendMailGlobal, dateSendMailShoppingList, warningExpirationDate } from "../../../utils/localData";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faCheck, faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
 
 function Profile() {
   const { userData, setUserData } = useUserData();
+  const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
+  const { notification, setNotification } = useNotificationData();
+  const [ openDeleteUser, setOpenDeleteUser ] = useState(false);
   const [ successFormOne, setSuccessFormOne ] = useState(false);
   const [ successFormTwo, setSuccessFormTwo ] = useState(false);
   const [ successFormThree, setSuccessFormThree ] = useState(false);
@@ -147,6 +150,36 @@ function Profile() {
         }
       });
   };
+
+  let userAdminOption = 
+  <div>
+    {notification.length >= 1 &&
+      <div>
+        <h2 className="default-h2">Notifications</h2>
+        <ul>
+          {notification.map(item => {
+            return (
+              <li key={item._id}>
+                {item.fullName} {item.senderUserCode}
+                <button onClick={()=> {notificatioRequest(item._id, "yes")}}>Accepter</button>
+                <button onClick={()=> {notificatioRequest(item._id, "no")}}>Refuser</button>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    }
+  </div>;
+
+const notificatioRequest = async (id, isAccepted) => {
+  const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${id}?acceptedRequest=${isAccepted}`;
+  await axiosInstance.get(requestNotificationEndpoint)
+    .then((response) => {
+      if(isMounted.current){
+        setNotification(response.data);
+      }
+    });
+};
 
   let userOptionMailingForm = 
   <>
@@ -309,21 +342,81 @@ function Profile() {
     }
   };
 
+  const deleteUser = (delegate) => {
+
+  }
+
   return (
     
     <div className="default-wrapper">
       {userData && 
         <>
           <div className="default-title-container">
-            <h1 className="default-h">Profil de {userData.firstname} {userData.lastname}</h1>
+            <h1 className="default-h1">Profil de {userData.firstname} {userData.lastname}</h1>
+            <button 
+            className="btn-action-title" 
+            onClick={() => {setOpenDeleteUser(!openDeleteUser)}}>
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+            {openDeleteUser && 
+              <div className="title-warning-message">
+                <button 
+                className="btn-close-title-message" 
+                onClick={() => {setOpenDeleteUser(!openDeleteUser)}}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+                {userHouseholdData.member.length === 1 &&
+                  <div>
+                    <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
+                    <div className="btn-delete-action-container">
+                      <button 
+                      className="btn-delete-action-yes"
+                      onClick={()=>{deleteUser()}}>
+                        Oui
+                      </button>
+                      <button 
+                      className="btn-delete-action-no" 
+                      onClick={() => {setOpenDeleteUser(!openDeleteUser)}}>
+                        Non
+                      </button>
+                    </div>
+                  </div>
+                }
+                {userHouseholdData.member.length > 1 &&
+                  <ul>
+                    {userHouseholdData.member.map((item, index) => {
+                      if(userData._id !== item.userId && item.isFlagged === false){
+                        return (
+                          <li key={index}>
+                            {item.firstname} {item.lastname}
+                          </li>
+                        )
+                      }else{
+                        return null;
+                      }
+                    })}
+                  </ul>
+                }
+              </div>
+            }
           </div>
 
           <form onSubmit={handleSubmitFormOne(updateUserData)}>
             {userForm}
           </form>
 
+          {userData.role === "admin" &&
+            <>
+              <div className="default-title-container delimiter-title">
+                <h1 className="default-h1">Options administrateur</h1>
+              </div>
+
+              {userAdminOption}
+            </>
+          }
+
           <div className="default-title-container delimiter-title">
-            <h1 className="default-h">Options e-mailing</h1>
+            <h1 className="default-h1">Options e-mailing</h1>
           </div>
           
           <form onSubmit={handleSubmitFormTwo(updateUserOptionMailingData)}>
@@ -331,7 +424,7 @@ function Profile() {
           </form>
 
           <div className="default-title-container delimiter-title">
-            <h1 className="default-h">Options produit</h1>
+            <h1 className="default-h1">Options produit</h1>
           </div>
 
           <form onSubmit={handleSubmitFormThree(updateUserOptionProductData)}>
@@ -339,7 +432,7 @@ function Profile() {
           </form>
 
           <div className="default-title-container delimiter-title">
-            <h1 className="default-h">Options tableau de produits</h1>
+            <h1 className="default-h1">Options tableau de produits</h1>
           </div>
 
           <form onSubmit={handleSubmitFormFour(updateUserOptionProductTableData)}>

@@ -270,25 +270,27 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   return (
     <div className="default-wrapper">
       <div className="default-title-container">
-        <button
-          onClick={() => {
-            if(requestUrl === "products"){
-              history.push({
-                pathname: '/app/liste-produit',
-              })
-            }else if(requestUrl === "historics"){
-              history.push({
-                pathname: '/app/liste-historique',
-              })
-            }else{
-              history.push({
-                pathname: '/app',
-              })
-            }
-          }}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <h1 className="default-h">{titleForm}</h1>
+        <div className="title-and-return">
+          <button className="return-to"
+            onClick={() => {
+              if(requestUrl === "products"){
+                history.push({
+                  pathname: '/app/liste-produit',
+                })
+              }else if(requestUrl === "historics"){
+                history.push({
+                  pathname: '/app/liste-historique',
+                })
+              }else{
+                history.push({
+                  pathname: '/app',
+                })
+              }
+            }}>
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </button>
+          <h1 className="default-h1">{titleForm}</h1>
+        </div>
       </div>
       
       <div className="container-loading">
