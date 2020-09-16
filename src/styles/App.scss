@@ -44,19 +44,26 @@ ul {
   .btn-action-title{
     @include btn-action-title(1.5rem);
   }
-  .title-warning-message{
+  .title-message{
     position: absolute;
     top: 0;
     right: 0;
     z-index: 30;
     width: 100%;
     min-height: 10rem;
-    background-color: $grey-dark;
+    background-color: $primary-color;
     border-radius: 5px;
-    padding: 2.8rem .5rem 2rem .5rem;
+    padding: 2.8rem 1rem 2rem 1rem;
     p{
-      color: $primary-color;
+      color: $white;
       text-align: center;
+      margin-bottom: .5rem;
+    }
+    .form-delegate{
+      margin-top: 2rem;
+      button{
+        margin-top: 1.5rem;
+      }
     }
     .btn-delete-action-container{
       display: flex;
@@ -75,15 +82,16 @@ ul {
     }
     .btn-delete-action-yes{
       background-color: $red;
-      margin-right: 1rem;
+      margin: 0 .5rem;
       &:hover{
         background-color: $red-hover;
       }
     }
     .btn-delete-action-no{
-      background-color: $primary-color;
+      background-color: $primary-light;
+      margin: 0 .5rem;
       &:hover{
-        background-color: $primary-color-hover;
+        background-color: $primary-light-hover;
       }
     }
   }
@@ -95,15 +103,16 @@ ul {
     right: 1rem;
     height: 1rem;
     width: 1rem;
+    z-index: 31;
     background-color: transparent;
     border: none;
     font-size: 1.5rem;
-    color: $primary-color;
+    color: $white;
     transition: .5s ease-in-out;
     outline: none;
     cursor: pointer;
     &:hover{
-      color: $primary-color-hover;
+      color: $grey;
     }
   }
 
@@ -178,7 +187,7 @@ ul {
   }
 
   .default-title-container{
-    .title-warning-message{
+    .title-message{
       width: 30rem;
     }
   }

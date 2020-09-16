@@ -6,20 +6,28 @@ import { dateSendMailGlobal, dateSendMailShoppingList, warningExpirationDate } f
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faCheck, faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
+import { logout } from './../../../utils/Auth';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
 
-function Profile() {
+function Profile({ history }) {
   const { userData, setUserData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const { notification, setNotification } = useNotificationData();
-  const [ openDeleteUser, setOpenDeleteUser ] = useState(false);
+  const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
+  const [ delegate, setDelegate ] = useState(false);
+  const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
   const [ successFormOne, setSuccessFormOne ] = useState(false);
   const [ successFormTwo, setSuccessFormTwo ] = useState(false);
   const [ successFormThree, setSuccessFormThree ] = useState(false);
   const [ successFormFour, setSuccessFormFour ] = useState(false);
   const isMounted = useRef(true);
+
+  const { register : registerFormDelegate, handleSubmit : handleSubmitFormDelegate } = useForm({
+    mode: "onChange"
+  });
 
   const { register : registerFormOne, handleSubmit : handleSubmitFormOne, errors : errorsFormOne } = useForm({
     mode: "onChange"
@@ -36,6 +44,13 @@ function Profile() {
   const { register : registerFormFour, handleSubmit : handleSubmitFormFour } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(!openTitleMessage){
+      setDelegate(false);
+      setdidNoTAcceptDelegate(false);
+    }
+  }, [openTitleMessage])
 
   useEffect(() => {
     let timerSuccessOne;
@@ -105,6 +120,117 @@ function Profile() {
       }
     }
   }, [userOptionData, setValueFormTwo, setValueFormThree]);
+
+
+  const deleteUser = async (data) => {
+
+    let logOut = async () => {
+      await logout();
+      history.push("/");
+    };
+
+    let deleteUserDataEndPoint;
+    if(data){
+      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserCode=${data.delegateRadioInput}`;
+    }else{
+      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
+    }
+    await axiosInstance.delete(deleteUserDataEndPoint)
+    .then((response) => {
+      if(isMounted.current){
+        if(response.status === 200){
+          logOut();
+        }
+      }
+    });
+  }
+
+  let contentTitleInteraction = <>
+    {openTitleMessage && 
+      <div className="title-message">
+        {userHouseholdData.member.length === 1 &&
+          <div>
+            <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
+            <div className="btn-delete-action-container">
+              <button 
+              className="btn-delete-action-yes"
+              onClick={()=>{deleteUser()}}>
+                Oui
+              </button>
+              <button 
+              className="btn-delete-action-no" 
+              onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
+                Non
+              </button>
+            </div>
+          </div>
+        }
+        {userHouseholdData.member.length > 1 && !didNoTAcceptDelegate &&
+          <div>
+            {!delegate &&
+              <>
+                <p>Voulez-vous déléguer vos droits d'administrations à un membre de votre famille avant de supprimer votre compte ?</p>
+                <p>Si vous ne déléguez pas vos droits d'administrations, la famille sera supprimée définitivement !</p>
+                <div className="btn-delete-action-container">
+                  <button 
+                  className="btn-delete-action-no"
+                  onClick={()=>{setDelegate(true)}}>
+                    Oui
+                  </button>
+                  <button 
+                  className="btn-delete-action-yes" 
+                  onClick={() => {setdidNoTAcceptDelegate(true)}}>
+                    Non
+                  </button>
+                </div>
+              </>
+            }
+            {delegate &&
+              <>
+                <p>Choississez le membre à qui vous voulez déléguer les droits administrations de cette famille !</p>
+                <form className="form-delegate" onSubmit={handleSubmitFormDelegate(deleteUser)}>
+                  {userHouseholdData.member.map((item, index) => {
+                    if(userData._id !== item.userId && item.isFlagged === false){
+                      let defaultChecked = false;
+                      if(index === 1){
+                        defaultChecked = true;
+                      }
+                      return (
+                        <label key={index} className="container-radio-input-form" htmlFor={`delegateMember${index}`}>{item.firstname} {item.lastname} : 
+                          <input type="radio" name="delegateRadioInput" id={`delegateMember${index}`} value={item.usercode} defaultChecked={defaultChecked} ref={registerFormDelegate()}/>
+                          <span className="radio-checkmark"></span>
+                        </label>
+                      )
+                    }else{
+                      return null
+                    }
+                  })}
+                  <button className="btn-delete-action-yes" type="submit">Déléguer les droits et supprimer son compte !</button>
+                </form>
+              </>
+            }
+          </div>
+        }
+        {userHouseholdData.member.length > 1 && didNoTAcceptDelegate &&
+          <div>
+            <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
+            <div className="btn-delete-action-container">
+              <button 
+              className="btn-delete-action-yes"
+              onClick={()=>{deleteUser()}}>
+                Oui
+              </button>
+              <button 
+              className="btn-delete-action-no" 
+              onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
+                Non
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </>
 
   let userForm = <>
     {userData && 
@@ -342,10 +468,6 @@ const notificatioRequest = async (id, isAccepted) => {
     }
   };
 
-  const deleteUser = (delegate) => {
-
-  }
-
   return (
     
     <div className="default-wrapper">
@@ -353,52 +475,12 @@ const notificatioRequest = async (id, isAccepted) => {
         <>
           <div className="default-title-container">
             <h1 className="default-h1">Profil de {userData.firstname} {userData.lastname}</h1>
-            <button 
-            className="btn-action-title" 
-            onClick={() => {setOpenDeleteUser(!openDeleteUser)}}>
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
-            {openDeleteUser && 
-              <div className="title-warning-message">
-                <button 
-                className="btn-close-title-message" 
-                onClick={() => {setOpenDeleteUser(!openDeleteUser)}}>
-                  <FontAwesomeIcon icon={faTimes} />
-                </button>
-                {userHouseholdData.member.length === 1 &&
-                  <div>
-                    <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
-                    <div className="btn-delete-action-container">
-                      <button 
-                      className="btn-delete-action-yes"
-                      onClick={()=>{deleteUser()}}>
-                        Oui
-                      </button>
-                      <button 
-                      className="btn-delete-action-no" 
-                      onClick={() => {setOpenDeleteUser(!openDeleteUser)}}>
-                        Non
-                      </button>
-                    </div>
-                  </div>
-                }
-                {userHouseholdData.member.length > 1 &&
-                  <ul>
-                    {userHouseholdData.member.map((item, index) => {
-                      if(userData._id !== item.userId && item.isFlagged === false){
-                        return (
-                          <li key={index}>
-                            {item.firstname} {item.lastname}
-                          </li>
-                        )
-                      }else{
-                        return null;
-                      }
-                    })}
-                  </ul>
-                }
-              </div>
-            }
+            <TitleButtonInteraction 
+              openTitleMessage={openTitleMessage}
+              setOpenTitleMessage={setOpenTitleMessage}
+              icon={<FontAwesomeIcon icon={faTrash} />}
+              contentDiv={contentTitleInteraction}
+            />
           </div>
 
           <form onSubmit={handleSubmitFormOne(updateUserData)}>
