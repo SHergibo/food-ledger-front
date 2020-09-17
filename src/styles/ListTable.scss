@@ -109,6 +109,33 @@
   align-items: center;
 }
 
+.color-code-red,
+.color-code-orange,
+.no-color-code{
+  padding: .2rem .3rem;
+}
+
+.color-code-red,
+.color-code-orange{
+  color: $white;
+  padding: .2rem .3rem;
+  border-radius: 5px;
+}
+
+
+.color-code-red{
+  background-color: $red;
+}
+
+.color-code-orange{
+  background-color: $orange;
+}
+
+.hide-color-code{
+  background-color: transparent;
+  color: $primary-color;
+}
+
 .list-table-action{
   display: inline-flex;
   justify-content: center;

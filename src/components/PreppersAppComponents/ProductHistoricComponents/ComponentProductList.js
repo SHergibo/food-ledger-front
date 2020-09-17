@@ -1,26 +1,29 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useUserData } from './../DataContext';
+import { useUserData, useUserOptionData } from './../DataContext';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import Loading from '../UtilitiesComponent/Loading';
+import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
-import { transformDate } from '../../../helpers/transformDate.helper';
+import { transformDate, addMonths } from '../../../helpers/transformDate.helper';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo, faCog } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
 function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userData } = useUserData();
+  const { userOptionData } = useUserOptionData();
   const location = useLocation();
+  const [openTitleMessage, setOpenTitleMessage] = useState(false);
   const [data, setData] = useState([]);
   const isMounted = useRef(true);
   const [hasProduct, setHasProduct] = useState(false);
@@ -369,12 +372,20 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         }
       });
   };
+
+  let contentTitleInteraction = <div></div>
   return (
     <div className="default-wrapper">
 
       <div className="header-list-table">
         <div className="default-title-container">
           <h1 className="default-h1">{title}</h1>
+          <TitleButtonInteraction 
+            openTitleMessage={openTitleMessage}
+            setOpenTitleMessage={setOpenTitleMessage}
+            icon={<FontAwesomeIcon icon={faCog} />}
+            contentDiv={contentTitleInteraction}
+          />
         </div>
 
         <div>
@@ -554,7 +565,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                             </td>
                           )
                         }
-                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name") {
+                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name" && column.id !== "number") {
                           return (
                             <td key={`${column.id}-${index}`}>
                               {row[column.id]}
@@ -576,11 +587,48 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                           // la classe code couleur sera toujours la, c'est la classe hide-warning qui sera utilisée pour cacher ou non le code couleur.
                           //si on change l'option afficher code couleur, filtrer le useRef en cherchant les td avec les classes high et low-warning et boucler dans se nouveau tableau 
                           //pour ajouter ou supprimer une classe hide-warning qui cachera le code couleur
-                          return (
-                            <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
-                              {transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})
-                            </td>
-                          )
+                          if(userOptionData){
+                            if(row[column.id][0].expDate <= addMonths(userOptionData.warningExpirationDate.value)){
+                              return (
+                                <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
+                                  <span className="color-code-red">{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
+                                </td>
+                              )
+                            }else if(row[column.id][0].expDate > addMonths(userOptionData.warningExpirationDate.value) && row[column.id][0].expDate <= addMonths(userOptionData.warningExpirationDate.value + 1)){
+                              return (
+                                <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
+                                  <span className="color-code-orange">{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
+                                </td>
+                              )
+                            }else{
+                              return (
+                                <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
+                                  <span className="no-color-code">{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
+                                </td>
+                              )
+                            }
+                          }
+                        }
+                        if (column.id === "number") {
+                          if(row[column.id] < row["minimumInStock"].minInStock){
+                            return (
+                              <td key={`${column.id}-${index}`}>
+                                <span className="color-code-red">{row[column.id]}</span>
+                              </td>
+                            )
+                          }else if(row["minimumInStock"].minInStock !== 0 && row[column.id] >= row["minimumInStock"].minInStock && row[column.id] < row["minimumInStock"].minInStock + 5){
+                            return (
+                              <td key={`${column.id}-${index}`}>
+                                <span className="color-code-orange">{row[column.id]}</span>
+                              </td>
+                            )
+                          }else{
+                            return (
+                              <td key={`${column.id}-${index}`}>
+                              <span className="no-color-code">{row[column.id]}</span>
+                              </td>
+                            )
+                          }
                         }
                         if (column.id === "minimumInStock") {
                           return (

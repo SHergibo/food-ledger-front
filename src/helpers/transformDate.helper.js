@@ -10,3 +10,13 @@ exports.transformDate = (date) => {
   }
   return `${day}/${month}/${date.getFullYear()}`;
 };
+
+exports.addMonths = (months) => {
+  let today = new Date()
+  let d = today.getDate();
+  today.setMonth(today.getMonth() + +months);
+  if (today.getDate() !== d) {
+    today.setDate(0);
+  }
+  return today.toISOString();
+}

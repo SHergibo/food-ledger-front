@@ -189,6 +189,7 @@
   @if $hoverable {
     &:hover {
       background-color: $primary-color-hover;
+      border-color: $primary-color-hover;
     }
   }
   svg {
@@ -325,6 +326,7 @@
 }
 
 @mixin btn-action-title($font-size){
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -332,15 +334,30 @@
   height: 2.5rem;
   font-size: $font-size;
   margin-right: .5rem;
-  color: $primary-color;
-  background-color: transparent;
+  color: $white;
+  background-color: $primary-color;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   outline: none;
-  transition: .5s ease-in-out;
-  &:hover{
-    background-color: $primary-color;
-    color: $white;
+  svg{
+    z-index: 1;
+  }
+  
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border-radius: 50%;
+    background-color: $primary-color-hover;
+    opacity: 0.4;
+    z-index: 0;
+    transition: .2s ease-in-out;
+  }
+  &:hover::after{
+    transform: scale(1.15);
   }
 }
