@@ -196,7 +196,7 @@ function Profile({ history }) {
                         defaultChecked = true;
                       }
                       return (
-                        <label key={index} className="container-radio-input-form" htmlFor={`delegateMember${index}`}>{item.firstname} {item.lastname} : 
+                        <label key={index} className="container-radio-input" htmlFor={`delegateMember${index}`}>{item.firstname} {item.lastname} : 
                           <input type="radio" name="delegateRadioInput" id={`delegateMember${index}`} value={item.usercode} defaultChecked={defaultChecked} ref={registerFormDelegate()}/>
                           <span className="radio-checkmark"></span>
                         </label>
@@ -311,7 +311,7 @@ const notificatioRequest = async (id, isAccepted) => {
   <>
     {userOptionData && 
       <>
-        <label className="container-checkbox-input-form" htmlFor="sendMailGlobal">Recevoir le mail d'information sur vos stocks : 
+        <label className="container-checkbox-input" htmlFor="sendMailGlobal">Recevoir le mail d'information sur vos stocks : 
           <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} ref={registerFormTwo()}/>
           <span className="checkmark-checkbox"></span>
         </label>
@@ -332,7 +332,7 @@ const notificatioRequest = async (id, isAccepted) => {
           />
         </div>
 
-        <label className="container-checkbox-input-form" htmlFor="sendMailShoppingList">Recevoir le mail liste de course : 
+        <label className="container-checkbox-input" htmlFor="sendMailShoppingList">Recevoir le mail liste de course : 
           <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" defaultChecked={userOptionData.sendMailShoppingList} ref={registerFormTwo()}/>
           <span className="checkmark-checkbox"></span>
         </label>
@@ -391,7 +391,7 @@ const notificatioRequest = async (id, isAccepted) => {
           {errorsFormThree.minimalProductStockGlobal && <span className="error-message-form">Ce champ est requis</span>}
         </div>
 
-        <label className="container-checkbox-input-form" htmlFor="updateAllMinimalProductStock">Utiliser le stock global pour les stocks entrées manuellement : 
+        <label className="container-checkbox-input" htmlFor="updateAllMinimalProductStock">Utiliser le stock global pour les stocks entrées manuellement : 
           <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} ref={registerFormThree()}/>
           <span className="checkmark-checkbox"></span>
         </label>
@@ -412,12 +412,12 @@ const notificatioRequest = async (id, isAccepted) => {
   <>
     {userOptionData && 
       <>
-        <label className="container-checkbox-input-form" htmlFor="colorCodeDate">Afficher le code couleur pour les dates de péremption : 
+        <label className="container-checkbox-input" htmlFor="colorCodeDate">Afficher le code couleur pour les dates de péremption : 
           <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormFour()}/>
           <span className="checkmark-checkbox"></span>
         </label>
 
-        <label className="container-checkbox-input-form" htmlFor="colorCodeStock">
+        <label className="container-checkbox-input" htmlFor="colorCodeStock">
           Afficher le code couleur pour les stock minimum de produits : 
           <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} ref={registerFormFour()}/>
           <span className="checkmark-checkbox"></span>
@@ -526,4 +526,4 @@ const notificatioRequest = async (id, isAccepted) => {
   )
 }
 
-export default Profile
+export default Profile;

@@ -163,7 +163,6 @@
   font-weight: 700;
   border-radius: 10px;
   transition: 0.2s ease-in-out;
-  outline: none;
   svg {
     margin-left: 0.3rem;
     height: 1rem;
@@ -184,7 +183,6 @@
   font-size: 1rem;
   font-weight: 700;
   transition: 0.2s ease-in-out;
-  outline: none;
   cursor: pointer;
   @if $hoverable {
     &:hover {
@@ -270,7 +268,6 @@
     border-radius: 4px;
     border: 1px solid #cccccc;
     transition: 0.2s ease-in-out;
-    outline: none;
     &:hover {
       border-color: $primary-color;
     }
@@ -309,7 +306,6 @@
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
       cursor: pointer;
-      outline: none;
       transition: .2s ease-in-out;
       &:hover{
         background-color: $blue;
@@ -325,7 +321,7 @@
   }
 }
 
-@mixin btn-action-title($font-size){
+@mixin btn-action-title($font-size, $margin-right : true){
   position: relative;
   display: flex;
   justify-content: center;
@@ -333,13 +329,14 @@
   min-width: 2.5rem;
   height: 2.5rem;
   font-size: $font-size;
-  margin-right: .5rem;
+  @if $margin-right {
+    margin-right: .5rem;
+  }
   color: $white;
   background-color: $primary-color;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  outline: none;
   svg{
     z-index: 1;
   }

@@ -86,7 +86,6 @@
   color: $primary-color;
   font-weight: 700;
   font-size: 1.2rem;
-  outline: none;
   cursor: pointer;
   transition: .3s ease-in-out;
   &:hover{
@@ -117,7 +116,6 @@
     color: $primary-color;
     border: none;
     border-radius: 5px;
-    outline: none;
     transition: .2s ease-in-out;
     &:hover{
       background-color: $blue;
@@ -147,7 +145,6 @@
     border-radius: 100%;
     font-size: 1.2rem;
     color: $primary-color;
-    outline: none;
     transition: .2s ease-in-out;
     &:hover{
       color: $red;

@@ -12,7 +12,6 @@
 .btn-list-sort{
   border: none;
   margin-left: .5rem;
-  outline: none;
   svg{
     width: 0.625em;
   }
@@ -147,7 +146,6 @@
   border: 2px solid $primary-color;
   border-radius: 50%;
   transition: .2s ease-in-out;
-  outline: none;
   cursor: pointer;
   &:hover{
     background-color: $blue;
@@ -178,7 +176,6 @@
     padding: 0 .3rem;
     font-size: 1.7rem;
     cursor: pointer;
-    outline: none;
     transition: .2s ease-in-out;
     &:hover{
       color: $blue;
@@ -201,7 +198,6 @@
       color: $primary-color;
       font-size: 1rem;
       text-align: center;
-      outline: none;
       transition: .2s ease-in-out;
       -moz-appearance: textfield;
       &::-webkit-outer-spin-button,

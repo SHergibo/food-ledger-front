@@ -21,7 +21,7 @@ registerLocale("fr", fr);
 
 function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userData } = useUserData();
-  const { userOptionData } = useUserOptionData();
+  const { userOptionData, setUserOptionData } = useUserOptionData();
   const location = useLocation();
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
   const [data, setData] = useState([]);
@@ -33,12 +33,32 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
   let btnSortRef = useRef([]);
-  let tdExpirationDate = useRef([]);
   const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 14;
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
+
+  const [hideColorCodeDate, setHideColorCodeDate] = useState("");
+  const [hideColorCodeStock, setHideColorCodeStock] = useState("");
+
+  useEffect(() => {
+    if(userOptionData){
+      if(!userOptionData.colorCodeDate){
+        setHideColorCodeDate("hide-color-code")
+      }
+      if(userOptionData.colorCodeDate){
+        setHideColorCodeDate("")
+      }
+
+      if(!userOptionData.colorCodeStock){
+        setHideColorCodeStock("hide-color-code")
+      }
+      if(userOptionData.colorCodeStock){
+        setHideColorCodeStock("")
+      }
+    }
+  }, [userOptionData]);
 
   useEffect(() => {
     if (Object.keys(queryParsed).length > 0) {
@@ -91,6 +111,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const { register, handleSubmit, reset, control } = useForm({
     defaultValues,
+    mode: "onChange"
+  });
+
+  const { register : registerFormOption, handleSubmit : handleSubmitFormOption } = useForm({
     mode: "onChange"
   });
 
@@ -373,19 +397,50 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       });
   };
 
-  let contentTitleInteraction = <div></div>
+  const udpateUserOptionDate = async (data) => {
+    const patchUserOptionDataEndPoint = `${apiDomain}/api/${apiVersion}/options/${userData._id}`;
+    await axiosInstance.patch(patchUserOptionDataEndPoint, data)
+      .then((response) => {
+        if(isMounted.current){
+          setUserOptionData(response.data);
+          return true;
+        }
+      });
+  }
+
+  let contentTitleInteraction = <form onSubmit={handleSubmitFormOption(udpateUserOptionDate)}>
+    {userOptionData &&
+    <>
+      <h3>Afficher code couleur : </h3>
+      <label className="container-checkbox-input-interaction" htmlFor="colorCodeDate">
+        Pour les dates de péremption : 
+        <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormOption()}/>
+        <span className="checkmark-checkbox"></span>
+      </label>
+      <label className="container-checkbox-input-interaction" htmlFor="colorCodeStock">
+        Pour les stock minimum de produits : 
+        <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} ref={registerFormOption()}/>
+        <span className="checkmark-checkbox"></span>
+      </label>
+      <button className="btn-action-form-interaction" type="submit">Mettre à jour</button>
+    </>
+    }
+  </form>;
+
   return (
     <div className="default-wrapper">
 
       <div className="header-list-table">
         <div className="default-title-container">
           <h1 className="default-h1">{title}</h1>
-          <TitleButtonInteraction 
-            openTitleMessage={openTitleMessage}
-            setOpenTitleMessage={setOpenTitleMessage}
-            icon={<FontAwesomeIcon icon={faCog} />}
-            contentDiv={contentTitleInteraction}
-          />
+          {requestTo === "products" &&
+            <TitleButtonInteraction 
+              openTitleMessage={openTitleMessage}
+              setOpenTitleMessage={setOpenTitleMessage}
+              icon={<FontAwesomeIcon icon={faCog} />}
+              contentDiv={contentTitleInteraction}
+            />
+          }
         </div>
 
         <div>
@@ -590,20 +645,20 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                           if(userOptionData){
                             if(row[column.id][0].expDate <= addMonths(userOptionData.warningExpirationDate.value)){
                               return (
-                                <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
-                                  <span className="color-code-red">{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
+                                <td key={`${column.id}-${index}`}>
+                                  <span className={`color-code-red ${hideColorCodeDate}`}>{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
                                 </td>
                               )
                             }else if(row[column.id][0].expDate > addMonths(userOptionData.warningExpirationDate.value) && row[column.id][0].expDate <= addMonths(userOptionData.warningExpirationDate.value + 1)){
                               return (
-                                <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
-                                  <span className="color-code-orange">{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
+                                <td key={`${column.id}-${index}`}>
+                                  <span className={`color-code-orange ${hideColorCodeDate}`}>{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
                                 </td>
                               )
                             }else{
                               return (
-                                <td ref={(el) => (tdExpirationDate.current[indexRow] = el)} key={`${column.id}-${index}`}>
-                                  <span className="no-color-code">{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
+                                <td key={`${column.id}-${index}`}>
+                                  <span className={`no-color-code ${hideColorCodeDate}`}>{transformDate(row[column.id][0].expDate)} (x{row[column.id][0].productLinkedToExpDate})</span>
                                 </td>
                               )
                             }
@@ -613,19 +668,19 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                           if(row[column.id] < row["minimumInStock"].minInStock){
                             return (
                               <td key={`${column.id}-${index}`}>
-                                <span className="color-code-red">{row[column.id]}</span>
+                                <span className={`color-code-red ${hideColorCodeStock}`}>{row[column.id]}</span>
                               </td>
                             )
                           }else if(row["minimumInStock"].minInStock !== 0 && row[column.id] >= row["minimumInStock"].minInStock && row[column.id] < row["minimumInStock"].minInStock + 5){
                             return (
                               <td key={`${column.id}-${index}`}>
-                                <span className="color-code-orange">{row[column.id]}</span>
+                                <span className={`color-code-orange ${hideColorCodeStock}`}>{row[column.id]}</span>
                               </td>
                             )
                           }else{
                             return (
                               <td key={`${column.id}-${index}`}>
-                              <span className="no-color-code">{row[column.id]}</span>
+                              <span className={`no-color-code ${hideColorCodeStock}`}>{row[column.id]}</span>
                               </td>
                             )
                           }

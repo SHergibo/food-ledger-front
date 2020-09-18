@@ -19,24 +19,30 @@
   }
 }
 
-.container-checkbox-input-form + .container-checkbox-input-form{
+.container-checkbox-input + .container-checkbox-input{
   margin-top: .8rem;
 }
 
-.container-checkbox-input-form{
+.container-checkbox-input{
   margin-bottom: .8rem;
 }
 
-.container-checkbox-input-form {
+.container-checkbox-input {
   @include container-checkbox($primary-color, $primary-color, $blue, $white);
 }
 
-.container-radio-input-form + .container-radio-input-form{
+
+.container-checkbox-input-interaction{
+  margin: .8rem 0;
+  @include container-checkbox($white, $white, $white, $primary-color-hover);
+}
+
+.container-radio-input + .container-radio-input{
   margin-top: 1rem;
 }
 
-.container-radio-input-form{
-  @include container-radio($primary-light, $primary-light-hover, $primary-light, $white)
+.container-radio-input{
+  @include container-radio($primary-light, $primary-light-hover, $primary-light, $white);
 }
 
 .small-input-form-container{

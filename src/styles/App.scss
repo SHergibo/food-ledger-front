@@ -23,6 +23,10 @@ ul {
   margin: 0;
 }
 
+button{
+  outline: none;
+}
+
 .default-wrapper{
   display: flex;
   flex-direction: column;
@@ -42,7 +46,7 @@ ul {
     @include btn-action-title(1.8rem);
   }
   .btn-action-title{
-    @include btn-action-title(1.5rem);
+    @include btn-action-title(1.5rem, false);
   }
   .title-message{
     position: absolute;
@@ -54,6 +58,9 @@ ul {
     background-color: $primary-color;
     border-radius: 5px;
     padding: 2.8rem 1rem 2rem 1rem;
+    h3{
+      color: $white;
+    }
     p{
       color: $white;
       text-align: center;
@@ -63,6 +70,20 @@ ul {
       margin-top: 2rem;
       button{
         margin-top: 1.5rem;
+      }
+    }
+    .btn-action-form-interaction{
+      margin-top: .5rem;
+      padding: .2rem .5rem;
+      font-size: 1.3rem;
+      color: $white;
+      background-color: $primary-light;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: .2s ease-in-out;
+      &:hover{
+        background-color: $primary-light-hover;
       }
     }
     .btn-delete-action-container{
@@ -76,7 +97,6 @@ ul {
       border: none;
       border-radius: 5px;
       color: $white;
-      outline: none;
       cursor: pointer;
       transition: .5s ease-in-out;
     }
@@ -109,7 +129,6 @@ ul {
     font-size: 1.5rem;
     color: $white;
     transition: .5s ease-in-out;
-    outline: none;
     cursor: pointer;
     &:hover{
       color: $grey;
