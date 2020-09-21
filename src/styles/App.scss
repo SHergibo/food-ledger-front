@@ -24,6 +24,10 @@ ul {
 }
 
 button{
+  cursor: pointer;
+}
+
+button, input{
   outline: none;
 }
 
@@ -43,10 +47,10 @@ button{
     display: flex;
   }
   .return-to{
-    @include btn-action-title(1.8rem);
+    @include btn-action-title(1.8rem, 2.5rem);
   }
   .btn-action-title{
-    @include btn-action-title(1.5rem, false);
+    @include btn-action-title(1.5rem, 2.5rem, false);
   }
   .title-message{
     position: absolute;
@@ -80,7 +84,6 @@ button{
       background-color: $primary-light;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
       transition: .2s ease-in-out;
       &:hover{
         background-color: $primary-light-hover;
@@ -97,7 +100,6 @@ button{
       border: none;
       border-radius: 5px;
       color: $white;
-      cursor: pointer;
       transition: .5s ease-in-out;
     }
     .btn-delete-action-yes{
@@ -129,7 +131,6 @@ button{
     font-size: 1.5rem;
     color: $white;
     transition: .5s ease-in-out;
-    cursor: pointer;
     &:hover{
       color: $grey;
     }

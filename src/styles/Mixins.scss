@@ -31,8 +31,8 @@
   .checkmark-checkbox {
     position: relative;
     margin: 0 0.5rem;
-    min-height: 25px;
-    min-width: 25px;
+    min-height: 1.25rem;
+    min-width: 1.25rem;
     border: 2px solid $border-checkmark;
     border-radius: 5px;
     transition: 0.3s ease-in-out;
@@ -40,10 +40,10 @@
       content: "";
       position: absolute;
       display: none;
-      left: 7px;
-      top: 2px;
+      left: 4px;
+      top: 1px;
       width: 5px;
-      height: 10px;
+      height: 8px;
       border: solid $border-check;
       border-width: 0 3px 3px 0;
       -webkit-transform: rotate(45deg);
@@ -162,6 +162,7 @@
   font-size: 1.2rem;
   font-weight: 700;
   border-radius: 10px;
+  box-shadow: 0px 3px 16px -11px rgba(0, 0, 0, 0.75);
   transition: 0.2s ease-in-out;
   svg {
     margin-left: 0.3rem;
@@ -182,8 +183,8 @@
   color: $color;
   font-size: 1rem;
   font-weight: 700;
+  box-shadow: 0px 7px 16px -11px rgba(0, 0, 0, 0.75);
   transition: 0.2s ease-in-out;
-  cursor: pointer;
   @if $hoverable {
     &:hover {
       background-color: $primary-color-hover;
@@ -305,10 +306,9 @@
       border: none;
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
-      cursor: pointer;
       transition: .2s ease-in-out;
       &:hover{
-        background-color: $blue;
+        background-color: $primary-color-hover;
       }
     }
   }
@@ -321,14 +321,15 @@
   }
 }
 
-@mixin btn-action-title($font-size, $margin-right : true){
+@mixin btn-action-title($font-size, $height-width,$margin-right : true){
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 2.5rem;
-  height: 2.5rem;
+  min-width: $height-width;
+  height: $height-width;
   font-size: $font-size;
+  box-shadow: 0px 7px 16px -11px rgba(0, 0, 0, 0.75);
   @if $margin-right {
     margin-right: .5rem;
   }
@@ -336,7 +337,6 @@
   background-color: $primary-color;
   border: none;
   border-radius: 50%;
-  cursor: pointer;
   svg{
     z-index: 1;
   }
@@ -353,6 +353,9 @@
     opacity: 0.4;
     z-index: 0;
     transition: .2s ease-in-out;
+  }
+  &:hover{
+    background-color: $primary-color-hover;
   }
   &:hover::after{
     transform: scale(1.15);

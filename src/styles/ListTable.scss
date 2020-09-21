@@ -35,8 +35,6 @@
 
 .container-list-table{
   margin-top: 1rem;
-  -webkit-box-shadow: 0px 7px 16px -11px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 7px 16px -11px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 7px 16px -11px rgba(0, 0, 0, 0.75);
   border-radius: 1rem;
   overflow: hidden;
@@ -75,11 +73,7 @@
           width: calculRem(13.33px);
           color: $primary-color;
           background-color: transparent;
-          cursor: pointer;
         }
-      }
-      &:hover{
-        background-color: $grey-lighter;
       }
     }
   }
@@ -142,23 +136,9 @@
 }
 
 .list-table-action{
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 2rem;
-  width: 2rem;
-  background-color: $primary-color;
-  color: $white;
-  border: 2px solid $primary-color;
-  border-radius: 50%;
-  transition: .2s ease-in-out;
-  cursor: pointer;
-  &:hover{
-    background-color: $blue;
-    border-color:$blue;
-  }
-  &:first-child{
-    margin-right: .5rem;
+  @include btn-action-title(1rem, 2rem);
+  &:last-child{
+    margin-right: 0rem;
   }
 }
 
@@ -181,7 +161,6 @@
     border: none;
     padding: 0 .3rem;
     font-size: 1.7rem;
-    cursor: pointer;
     transition: .2s ease-in-out;
     &:hover{
       color: $blue;
@@ -240,6 +219,9 @@
       }
       th{
         margin: 0;
+        &:hover{
+          background-color: $grey-lighter;
+        }
       }
     }
     tbody{
