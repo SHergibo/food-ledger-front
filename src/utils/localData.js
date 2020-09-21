@@ -27,12 +27,16 @@ export const columnsProductTablet = [
     id: 'type'
   },
   {
-    Header: 'Poids',
-    id: 'weight'
-  },
-  {
     Header: "Date d'exp",
     id: 'expirationDate'
+  },
+  {
+    Header: 'Nombre',
+    id: 'number'
+  },
+  {
+    Header: 'Min. Stock',
+    id: 'minimumInStock'
   },
   {
     Header: 'Actions',

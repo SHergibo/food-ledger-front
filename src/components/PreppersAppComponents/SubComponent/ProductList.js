@@ -20,11 +20,11 @@ function ProductList() {
   useEffect(() => {
     setColumns(columnsProductMobile);
 
-    if(windowWidth >= 640){
+    if(windowWidth >= 992){
       setColumns(columnsProductTablet)
     }
 
-    if(windowWidth >= 960){
+    if(windowWidth >= 1312){
       setColumns(columnsProductFullScreen)
     }
   }, [setColumns, windowWidth]);

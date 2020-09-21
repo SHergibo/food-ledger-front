@@ -46,17 +46,22 @@
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  thead, tbody{
-    tr{
-      height: 3rem;
-    }
+  table, tr {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   thead{
     background-color: $grey-darker;
     border-top: 2px solid $grey;
     border-bottom: 2px solid $grey;
     padding: 1rem 0;
+    tr{
+      height: 6rem;
+    }
     th{
+      margin: .25rem 0;
       color: $primary-color;
       cursor: pointer;
       transition: .2s ease-in-out;
@@ -80,6 +85,7 @@
   }
   tbody{
     tr{
+      height: 8rem;
       border-bottom: 2px solid $grey;
       color: $primary-color;
       transition: .2s ease-in-out;
@@ -89,8 +95,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      td:not(:last-child){
-        padding-left: 1rem;
+      td{
+        margin: .5rem 0;
       }
       td:last-child{
         text-align: center;
@@ -215,7 +221,37 @@
 /*Media queries*/
 
 /*Tablet*/
-@media screen and (min-width: 745px) {
+@media screen and (min-width: 688px) {
+  .list-table{
+    table, tr {
+      flex-direction: unset;
+      align-items: unset;
+      justify-content: unset;
+    }
+    table{
+      display: table;
+    }
+    tr{
+      display: table-row;
+    }
+    thead{
+      tr{
+        height: 3rem;
+      }
+      th{
+        margin: 0;
+      }
+    }
+    tbody{
+      tr{
+        height: 3rem;
+      }
+      td:not(:last-child){
+        padding-left: 1rem;
+      }
+    }
+  }
+  
   .header-list-table{
     div{
       display: flex;

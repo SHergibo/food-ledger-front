@@ -200,11 +200,16 @@ button{
 }
 
 /*Tablet*/
-@media screen and (min-width: 745px) {
-  .default-wrapper{
-    width: 100%;
-  }
 
+@media screen and (min-width: 688px) {
+  .default-btn-blue,
+  .default-btn-white {
+    width: auto;
+    padding: 0 .4rem;
+    margin-right: .8rem;
+  }
+}
+@media screen and (min-width: 745px) {
   .default-title-container{
     .title-message{
       width: 30rem;
@@ -213,11 +218,17 @@ button{
   
   .default-btn-blue,
   .default-btn-white {
-    width: auto;
     padding: 0 1.2rem;
-    margin-right: .8rem;
   }
   .default-action-form-container{
     margin-bottom: .8rem;
+  }
+}
+
+/*Full-screen*/
+
+@media screen and (min-width: 992px){
+  .default-wrapper{
+    width: 100%;
   }
 }
