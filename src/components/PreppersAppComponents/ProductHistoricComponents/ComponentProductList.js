@@ -142,11 +142,18 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   }, [sortObject, searchObject]);
 
 
-  const getDataList = useCallback(async () => {
+  const getDataList = useCallback(async (debounceUserData) => {
     setErrorFetch(false);
-    console.log(userData);
+
+    let user_data;
+    if(debounceUserData){
+      user_data = debounceUserData
+    }else{
+      user_data = userData;
+    }
+
     if(pageIndex >= 1 && userData){
-      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
+      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${user_data.householdCode}?page=${pageIndex - 1}`;
       const endPoint = finalEndPoint(getDataEndPoint);
       await axiosInstance.get(endPoint)
         .then((response) => {
@@ -255,8 +262,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
   }
 
-  const populateSearchObjectQuickSearch = (dataInput) => {
-
+  const populateSearchObjectQuickSearch = (dataInput, debounceUserData) => {
     if(dataInput.name !== ""){
       searchObject.name = dataInput.name;
       queryParsed.name = dataInput.name;
@@ -274,13 +280,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     setQueryParsed(queryParsed);
 
     if (pageIndex === 1) {
-      getDataList();
+      getDataList(debounceUserData);
     } else {
       gotoPage(1);
     }
   }
 
-  const debounceQuickSearch = useCallback(debounced(200, populateSearchObjectQuickSearch), []);
+  const debounceQuickSearch = useCallback(debounced(200, (data) => populateSearchObjectQuickSearch(data, userData)), [userData]);
 
 
   const resetAllSearch = () => {
