@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -144,7 +144,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const getDataList = useCallback(async () => {
     setErrorFetch(false);
-    if(pageIndex >= 1){
+    console.log(userData);
+    if(pageIndex >= 1 && userData){
       let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
       const endPoint = finalEndPoint(getDataEndPoint);
       await axiosInstance.get(endPoint)
@@ -444,9 +445,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         </div>
 
         <div>
-          {hasProduct && 
+          {(hasProduct || Object.keys(searchObject).length > 0) && 
             <>
-              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>+ Ajouter un produit</Link>
+              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon={faPlus} /></Link>
               <button className="default-btn-white" onClick={() => {
                 showFilter ? setShowFilter(false) : setShowFilter(true);
               }}>
@@ -571,7 +572,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         {!hasProduct &&
           <div className="no-data">
             <p>Pas de produit !</p>
-            <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>+ Ajouter un produit</Link>
+            {Object.keys(searchObject).length === 0 &&
+              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon={faPlus} /></Link>
+            }
           </div>
         }
         {hasProduct &&
@@ -639,9 +642,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                           )
                         }
                         if (column.id === "expirationDate") {
-                          // la classe code couleur sera toujours la, c'est la classe hide-warning qui sera utilisée pour cacher ou non le code couleur.
-                          //si on change l'option afficher code couleur, filtrer le useRef en cherchant les td avec les classes high et low-warning et boucler dans se nouveau tableau 
-                          //pour ajouter ou supprimer une classe hide-warning qui cachera le code couleur
                           if(userOptionData){
                             if(row[column.id][0].expDate <= addMonths(userOptionData.warningExpirationDate.value)){
                               return (
