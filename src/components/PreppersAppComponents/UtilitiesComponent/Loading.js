@@ -11,7 +11,9 @@ function Loading({ loading, errorFetch, retryFetch }) {
   useEffect(() => {
     let animationLoading;
     let deleteContainerLoading;
-    if(!loading){
+    if(loading){
+      setAnimLoading(true);
+    }else{
       animationLoading = setTimeout(() => {
         loadingRef.current.style.opacity = 0; 
       }, 300);
@@ -26,7 +28,7 @@ function Loading({ loading, errorFetch, retryFetch }) {
       clearInterval(deleteContainerLoading);
     }
 
-  }, [loading])
+  }, [loading]);
 
   return (
     <>

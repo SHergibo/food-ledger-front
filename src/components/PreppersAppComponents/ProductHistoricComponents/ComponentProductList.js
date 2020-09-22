@@ -153,6 +153,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
 
     if(pageIndex >= 1 && userData){
+      setLoading(true);
       let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${user_data.householdCode}?page=${pageIndex - 1}`;
       const endPoint = finalEndPoint(getDataEndPoint);
       await axiosInstance.get(endPoint)
