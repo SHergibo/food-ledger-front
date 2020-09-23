@@ -61,12 +61,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   }, [userOptionData]);
 
   useEffect(() => {
+    let searchObj = {};
+    let sortObj = {};
     if (Object.keys(queryParsed).length > 0) {
       for (const key in queryParsed) {
 
         if (key.split('-')[1] === "sort") {
-          sortObject[key] = queryParsed[key];
-          setSortObject(sortObject);
+          sortObj[key] = queryParsed[key];
 
           if (btnSortRef.current.length >= 1) {
             btnSortRef.current.forEach(element => {
@@ -84,12 +85,17 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           }
 
         } else if (key !== "page") {
-          searchObject[key] = queryParsed[key];
-          setSearchObject(searchObject);
+          searchObj[key] = queryParsed[key];
         }
       }
     }
-  }, [location, sortObject, searchObject, queryParsed, columns]);
+    if(Object.keys(sortObj).length > 0){
+      setSortObject(sortObj);
+    }
+    if(Object.keys(searchObj).length > 0){
+      setSearchObject(searchObj);
+    }
+  }, [location, queryParsed]);
 
   const defaultValues = {
     expirationDate: null,
@@ -97,22 +103,23 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     type:  null
   };
 
-  useEffect(() => {
-    if (queryParsed.expirationDate) {
-      defaultValues.expirationDate = parseISO(queryParsed.expirationDate);
-    }
-    if (queryParsed.brand) {
-      defaultValues.brand = { value: searchObject.brand, label: searchObject.brand };
-    }
-    if (queryParsed.type) {
-      defaultValues.type = { value: searchObject.type, label: searchObject.type };
-    }
-  }, [defaultValues, queryParsed, searchObject]);
-
-  const { register, handleSubmit, reset, control } = useForm({
+  const { register, handleSubmit, reset, control, setValue } = useForm({
     defaultValues,
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if (queryParsed.expirationDate) {
+      setValue("expirationDate", parseISO(queryParsed.expirationDate));
+    }
+    if (queryParsed.brand) {
+      setValue("brand", { value: searchObject.brand, label: searchObject.brand });
+    }
+    if (queryParsed.type) {
+      setValue("type", { value: searchObject.type, label: searchObject.type });
+    }
+  }, [setValue, queryParsed, searchObject]);
+
 
   const { register : registerFormOption, handleSubmit : handleSubmitFormOption } = useForm({
     mode: "onChange"
@@ -224,28 +231,29 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       dataInput.expirationDate = dataInput.expirationDate.toISOString();
     }
 
+    let searchObj = searchObject;
+    let queryObj = queryParsed;
+
     for (const key in dataInput) {
       if (dataInput[key] !== "" && dataInput[key] !== undefined && dataInput[key] !== null) {
-        searchObject[key] = dataInput[key];
-        queryParsed[key] = dataInput[key];
+        searchObj[key] = dataInput[key];
+        queryObj[key] = dataInput[key];
       }
-      if(dataInput[key] === null){
-        delete queryParsed[key];
-        delete searchObject[key];
+      if(searchObj[key] !== dataInput[key]){
+        if(dataInput[key] === "" || dataInput[key] === null)
+        delete searchObj[key];
+        delete queryObj[key];
       }
     }
+    setSearchObject(searchObj);
+    setQueryParsed(queryObj);
 
     history.push({
       pathname: `/app/liste-${urlTo}`,
-      search: `${QueryString.stringify(queryParsed, { sort: false })}`
+      search: `${QueryString.stringify(queryObj, { sort: false })}`
     })
 
-    setSearchObject(searchObject);
-    setQueryParsed(queryParsed);
-
-    if (pageIndex === 1) {
-      getDataList();
-    } else {
+    if (pageIndex > 1) {
       gotoPage(1);
     }
   }
@@ -312,8 +320,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
     }
-    reset();
-    reset({type: null, brand: null, expirationDate: null});
+    reset({name: null, brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
     setQueryParsed({});
     setPageIndex(1);
 
@@ -345,15 +352,14 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       delete queryParsed[`${dataToSort}-sort`];
     }
 
+    setQueryParsed(queryParsed);
+    setSortObject(newSortObject);
+
     history.push({
       pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     })
 
-    setQueryParsed(queryParsed);
-    setSortObject(newSortObject);
-
-    getDataList();
   };
 
   const setUrlPageQueryParam = (page) => {
@@ -502,6 +508,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 placeholder="Marque..."
                 arrayOptions={arrayOptions}
                 control={control}
+                defaultValue={""}
               />
             </div>
 
@@ -517,6 +524,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 placeholder="Type..."
                 arrayOptions={productType}
                 control={control}
+                defaultValue={""}
               />
             </div>
 
@@ -564,10 +572,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
             <div className="default-action-form-container">
               <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faFilter} />Filtrer</button>
-              <button className="default-btn-action-form" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} />Réinitialiser filtre</button>
             </div>
             
           </form>
+          <button className="default-btn-action-form" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} />Réinitialiser filtre</button>
+
         </>
       }
       <div className="container-loading">
