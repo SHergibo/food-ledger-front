@@ -613,11 +613,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
             <div className="default-action-form-container">
               <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faFilter} />Filtrer</button>
+              <button className="default-btn-action-form" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} />Réinitialiser les filtres</button>
             </div>
             
           </form>
-          <button className="default-btn-action-form" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} />Réinitialiser filtre</button>
-
         </>
       }
       <div className="container-loading">
