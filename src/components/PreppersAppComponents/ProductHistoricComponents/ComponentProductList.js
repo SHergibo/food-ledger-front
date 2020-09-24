@@ -258,45 +258,57 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
   }
 
-  const debounced = (delay, fn) => {
-    let timerId;
-    return function (...args) {
-      if (timerId) {
-        clearTimeout(timerId);
+  const populateSearchObjectQuickSearch = (e) => {
+    e.persist();
+    e.preventDefault();
+    handleSubmit((dataInput)=> {
+      let searchObj = searchObject;
+      let queryObj = queryParsed;
+  
+      if(dataInput.name !== ""){
+        searchObj.name = dataInput.name;
+        queryObj.name = dataInput.name;
+      }else{
+        delete queryObj.name;
+        delete searchObj.name;
+        getDataList();
       }
-      timerId = setTimeout(() => {
-        fn(...args);
-        timerId = null;
-      }, delay);
-    }
+  
+      setSearchObject(searchObj);
+      setQueryParsed(queryObj);
+  
+      history.push({
+        pathname: `/app/liste-${urlTo}`,
+        search: `${QueryString.stringify(queryParsed, { sort: false })}`
+      });
+
+      if (pageIndex > 1) {
+        gotoPage(1);
+      }
+    })(e);
   }
 
-  const populateSearchObjectQuickSearch = (dataInput, debounceUserData) => {
-    if(dataInput.name !== ""){
-      searchObject.name = dataInput.name;
-      queryParsed.name = dataInput.name;
-    }else{
-      delete queryParsed.name;
-      delete searchObject.name;
-    }
+  const resetQuickSearch = (e) => {
+    let searchObj = searchObject;
+    let queryObj = queryParsed;
 
-    history.push({
-      pathname: `/app/liste-${urlTo}`,
-      search: `${QueryString.stringify(queryParsed, { sort: false })}`
-    })
-
-    setSearchObject(searchObject);
-    setQueryParsed(queryParsed);
-
-    if (pageIndex === 1) {
-      getDataList(debounceUserData);
-    } else {
-      gotoPage(1);
+    if(e.target.value === "" && searchObj.name && queryObj.name){
+      if(Object.keys(searchObj).length >= 2 && Object.keys(queryObj).length >= 2){
+        delete searchObj.name;
+        delete queryObj.name;
+        setSearchObject(searchObj);
+        setQueryParsed(queryObj);
+      }else{
+        queryObj = {};
+        setSearchObject({});
+        setQueryParsed({});
+      }
+      history.push({
+        pathname: `/app/liste-${urlTo}`,
+        search: `${QueryString.stringify(queryObj, { sort: false })}`
+      })
     }
   }
-
-  const debounceQuickSearch = useCallback(debounced(200, (data) => populateSearchObjectQuickSearch(data, userData)), [userData]);
-
 
   const resetAllSearch = () => {
     if (Object.keys(queryParsed).length > 0) {
@@ -508,7 +520,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               </button>
 
               {!showFilter &&
-                <form onChange={handleSubmit(debounceQuickSearch)}>
+                <form onSubmit={(e)=>populateSearchObjectQuickSearch(e)} onChange={(e)=>{resetQuickSearch(e)}}>
                   <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} ref={register()} />
                 </form>
               }
