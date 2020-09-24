@@ -332,7 +332,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
     }
-    reset({name: null, brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
+    reset();
+    reset({brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
     setQueryParsed({});
     setPageIndex(1);
 
