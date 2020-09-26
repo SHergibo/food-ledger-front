@@ -97,6 +97,25 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
   }, [location, queryParsed]);
 
+  useEffect(() => {
+    const loadOptions = async () => {
+      let newArray = arrayOptions;
+      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
+      await axiosInstance.get(getBrandListEndPoint)
+        .then((response) => {
+          if(isMounted.current){
+            response.data.forEach(element => {
+              newArray.push({ value: element.brandName.value, label: element.brandName.label })
+            });
+          }
+        });
+      setArrayOptions(newArray);
+    }
+    if (userData) {
+      loadOptions();
+    }
+  }, [arrayOptions, userData]);
+
   const defaultValues = {
     expirationDate: null,
     brand: null,
@@ -109,16 +128,20 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   });
 
   useEffect(() => {
-    if (queryParsed.expirationDate) {
-      setValue("expirationDate", parseISO(queryParsed.expirationDate));
+    if(showFilter){
+      if (queryParsed.expirationDate) {
+        setValue("expirationDate", parseISO(queryParsed.expirationDate));
+      }
+      if (queryParsed.brand) {
+        let array = arrayOptions.filter(item => item.value === searchObject.brand);
+        setValue("brand", { value: array[0].value, label: array[0].label });
+      }
+      if (queryParsed.type) {
+        setValue("type", { value: searchObject.type, label: searchObject.type });
+      }
     }
-    if (queryParsed.brand) {
-      setValue("brand", { value: searchObject.brand, label: searchObject.brand });
-    }
-    if (queryParsed.type) {
-      setValue("type", { value: searchObject.type, label: searchObject.type });
-    }
-  }, [setValue, queryParsed, searchObject]);
+
+  }, [showFilter, setValue, queryParsed, searchObject, arrayOptions]);
 
 
   const { register : registerFormOption, handleSubmit : handleSubmitFormOption } = useForm({
@@ -196,26 +219,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     return () => {
       isMounted.current = false;
     }
-  }, [isMounted])
-
-  useEffect(() => {
-    const loadOptions = async () => {
-      let newArray = arrayOptions;
-      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
-      await axiosInstance.get(getBrandListEndPoint)
-        .then((response) => {
-          if(isMounted.current){
-            response.data.forEach(element => {
-              newArray.push({ value: element.brandName, label: element.brandName })
-            });
-          }
-        });
-      setArrayOptions(newArray);
-    }
-    if (userData) {
-      loadOptions();
-    }
-  }, [arrayOptions, userData]);
+  }, [isMounted]);
 
   const populateSearchObject = (dataInput) => {
 
@@ -674,10 +678,17 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                             </td>
                           )
                         }
-                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name" && column.id !== "number") {
+                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name" && column.id !== "number" && column.id !== "brand") {
                           return (
                             <td key={`${column.id}-${index}`}>
                               {row[column.id]}
+                            </td>
+                          )
+                        }
+                        if (column.id === "brand") {
+                          return (
+                            <td key={`${column.id}-${index}`}>
+                              {row[column.id].brandName.label}
                             </td>
                           )
                         }

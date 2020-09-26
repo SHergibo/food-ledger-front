@@ -54,7 +54,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   useEffect(() => {
     if(value){
       if (value.brand) {
-        setValue("brand", { value: value.brand, label: value.brand });
+        setValue("brand", { value: value.brand.brandName.value, label: value.brand.brandName.label });
       }
       if (value.type) {
         setValue("type", { value: value.type, label: value.type });
@@ -161,7 +161,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         .then((response) => {
           if(isMounted.current){
             response.data.forEach(element => {
-              newArray.push({ value: element.brandName, label: element.brandName })
+              newArray.push({ value: element.brandName.value, label: element.brandName.label })
             });
           }
         });
@@ -251,11 +251,11 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
       {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} ref={register()} />}
     </div>
 
-    {requestUrl === "products" && 
+    {(requestUrl === "products" || (requestUrl === "historics" && arrayExpDate.length >= 1)) && 
       <>
         <div className="input-form-container-with-error">
           <label htmlFor="minimumInStock">Stock minimum {formType === "edit" && " *"} </label>
-          {formType === "add" && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." ref={register()} />}
+          {(formType === "add" || (formType === "edit" && requestUrl === "historics")) && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." ref={register()} />}
           {formType === "edit" && value.minimumInStock && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." defaultValue={value.minimumInStock.minInStock} ref={register({ required: true })} />}
           {errors.minimumInStock && <span className="error-message-form">Ce champ est requis</span>}
         </div>
