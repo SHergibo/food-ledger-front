@@ -5,6 +5,8 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 import PropTypes from 'prop-types';
 
+let slugify = require('slugify');
+
 function AddProduct({ history }) {
   const location = useLocation();
   const [arrayExpDate, setArrayExpDate] = useState([]);
@@ -26,14 +28,14 @@ function AddProduct({ history }) {
 
 
   const addProduct = async (data) => {
+    
     if(requestUrl === "products" && arrayExpDate.length === 0) return;
 
     if (arrayExpDate.length >= 1) {
       data.expirationDate = arrayExpDate
     }
 
-    data.brand = data.brand.value;
-    data.type = data.type.value;
+    data.brand.value = slugify(data.brand.value, {lower: true});
 
     let totalNumber = 0;
     arrayExpDate.forEach(item => {

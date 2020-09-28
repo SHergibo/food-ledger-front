@@ -5,6 +5,8 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
 import PropTypes from 'prop-types';
 
+let slugify = require('slugify');
+
 function EditProduct({ history }) {
   const isMounted = useRef(true);
   const location = useLocation();
@@ -62,14 +64,15 @@ function EditProduct({ history }) {
 
 
   const EditProduct = async (data) => {
+    data.brand.value = slugify(data.brand.value, {lower: true});
     let newData = {
       kcal: data.kcal,
       location: data.location,
       name: data.name,
       expirationDate: arrayExpDate,
       weight: data.weight,
-      brand: data.brand.value,
-      type: data.type.value,
+      brand: data.brand,
+      type: data.type,
     }
 
     let totalNumber = 0;
@@ -91,7 +94,6 @@ function EditProduct({ history }) {
     }else{
       newData.minimumInStock = { minInStock : parseInt(data.minimumInStock), updatedBy: "user" };
     }
-
 
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
     await axiosInstance.patch(patchDataEndPoint, newData)

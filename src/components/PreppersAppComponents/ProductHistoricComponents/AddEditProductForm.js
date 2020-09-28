@@ -57,7 +57,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         setValue("brand", { value: value.brand.brandName.value, label: value.brand.brandName.label });
       }
       if (value.type) {
-        setValue("type", { value: value.type, label: value.type });
+        setValue("type", { value: value.type.value, label: value.type.label });
       }
     }
   }, [value, setValue]);
@@ -358,7 +358,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
 
           {number === totalExpDate &&
             <div className="default-action-form-container">
-              <button className="default-btn-action-form" onClick={(e) => {
+              <button className="default-btn-action-form" onClick={() => {
                 handleSubmit(handleFunction)();
                 expErrorMessageLogic();
                 }}>

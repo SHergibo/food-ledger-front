@@ -153,16 +153,16 @@ export const columnsHistoricFullScreen = [
 ];
 
 export const productType = [
-  { value: 'Boisson', label: 'Boisson' },
-  { value: 'Produit sucré', label: 'Produit sucré' },
-  { value: 'Produit laitier', label: 'Produit laitier' },
-  { value: 'Farineux', label: 'Farineux' },
-  { value: 'Céréale', label: 'Céréale' },
-  { value: 'Légumineuse', label: 'Légumineuse' },
-  { value: 'Légume', label: 'Légume' },
-  { value: 'Fruit', label: 'Fruit' },
-  { value: 'Viande', label: 'Viande' },
-  { value: 'Poisson', label: 'Poisson' },
+  { value: 'boisson', label: 'Boisson' },
+  { value: 'produit-sucre', label: 'Produit sucré' },
+  { value: 'produit-laitier', label: 'Produit laitier' },
+  { value: 'farineux', label: 'Farineux' },
+  { value: 'cereale', label: 'Céréale' },
+  { value: 'legumineuse', label: 'Légumineuse' },
+  { value: 'legume', label: 'Légume' },
+  { value: 'fruit', label: 'Fruit' },
+  { value: 'viande', label: 'Viande' },
+  { value: 'poisson', label: 'Poisson' },
 ]
 
 export const dateSendMailGlobal = [

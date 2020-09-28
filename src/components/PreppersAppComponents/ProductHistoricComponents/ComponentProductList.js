@@ -133,11 +133,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         setValue("expirationDate", parseISO(queryParsed.expirationDate));
       }
       if (queryParsed.brand) {
-        let array = arrayOptions.filter(item => item.value === searchObject.brand);
-        setValue("brand", { value: array[0].value, label: array[0].label });
+        let arrayBrand = arrayOptions.filter(item => item.value === searchObject.brand);
+        setValue("brand", { value: arrayBrand[0].value, label: arrayBrand[0].label });
       }
       if (queryParsed.type) {
-        setValue("type", { value: searchObject.type, label: searchObject.type });
+        let arrayType = productType.filter(item => item.value === searchObject.type)
+        setValue("type", { value: arrayType[0].value, label: arrayType[0].label });
       }
     }
 
@@ -678,7 +679,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                             </td>
                           )
                         }
-                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name" && column.id !== "number" && column.id !== "brand") {
+                        if (column.id !== "expirationDate" && column.id !== "minimumInStock" && column.id !== "name" && column.id !== "number" && column.id !== "brand" && column.id !== "type") {
                           return (
                             <td key={`${column.id}-${index}`}>
                               {row[column.id]}
@@ -689,6 +690,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                           return (
                             <td key={`${column.id}-${index}`}>
                               {row[column.id].brandName.label}
+                            </td>
+                          )
+                        }
+                        if (column.id === "type") {
+                          return (
+                            <td key={`${column.id}-${index}`}>
+                              {row[column.id].label}
                             </td>
                           )
                         }
