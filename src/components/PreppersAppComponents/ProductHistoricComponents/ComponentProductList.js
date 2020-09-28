@@ -576,13 +576,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             </div>
 
             <div className="input-form-container">
-              <label htmlFor="product-weight">Poids du produit</label>
+              <label htmlFor="product-weight">Poids du produit (gr)</label>
               <input className="input-form" name="weight" type="number" id="product-weight" placeholder="Poids..." defaultValue={searchObject.weight} ref={register()} />
             </div>
 
             <div className="input-form-container">
-              <label htmlFor="product-kcal">Valeur energétique du produit</label>
-              <input className="input-form" name="kcal" type="text" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} ref={register()} />
+              <label htmlFor="product-kcal">Valeur énergétique du produit (kcal)</label>
+              <input className="input-form" name="kcal" type="number" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} ref={register()} />
             </div>
 
             <div className="input-form-container">

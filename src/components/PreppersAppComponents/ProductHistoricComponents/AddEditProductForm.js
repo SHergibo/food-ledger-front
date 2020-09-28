@@ -235,14 +235,14 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
     </div>
 
     <div className="input-form-container-with-error">
-      <label htmlFor="weight">Poids du produit</label>
-      {formType === "add" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids..." ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="weight" type="text" id="weight" placeholder="Poids..." defaultValue={value.weight} ref={register()} />}
+      <label htmlFor="weight">Poids du produit (gr)</label>
+      {formType === "add" && <input className="input-form" name="weight" type="number" id="weight" placeholder="Poids..." ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="weight" type="number" id="weight" placeholder="Poids..." defaultValue={value.weight} ref={register()} />}
     </div>
     <div className="input-form-container-with-error">
-      <label htmlFor="kcal">Valeur énergetique du produit</label>
-      {formType === "add" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique..." ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="kcal" type="text" id="kcal" placeholder="Valeur énergetique..." defaultValue={value.kcal} ref={register()} />}
+      <label htmlFor="kcal">Valeur énergétique du produit (kcal)</label>
+      {formType === "add" && <input className="input-form" name="kcal" type="number" id="kcal" placeholder="Valeur énergetique..." ref={register()} />}
+      {formType === "edit" && <input className="input-form" name="kcal" type="number" id="kcal" placeholder="Valeur énergetique..." defaultValue={value.kcal} ref={register()} />}
     </div>
 
     <div className="input-form-container-with-error">
