@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
+let slugify = require('slugify');
 
 function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userData } = useUserData();
@@ -85,7 +86,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           }
 
         } else if (key !== "page") {
-          searchObj[key] = queryParsed[key];
+          if(key !== "name" && key !== "location"){
+            searchObj[key] = queryParsed[key];
+          }else if(key === "name"){
+            searchObj.name = sessionStorage.getItem('nameFilter');
+          }else if(key === "location"){
+            searchObj.location = sessionStorage.getItem('locationFilter');
+          }
         }
       }
     }
@@ -163,8 +170,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (Object.keys(searchObject).length > 0) {
       let urlQuery = "";
       for (const key in searchObject) {
-        if (searchObject[key] !== "") {
-          urlQuery += `&${key}=${searchObject[key]}`
+        if (searchObject[key] !== "" && key !== "name"  && key !== "location") {
+          urlQuery += `&${key}=${searchObject[key]}`;
+        }else if(key === "name" || key === "location"){
+          urlQuery += `&${key}=${slugify(searchObject[key], {lower: true})}`;
         }
       }
       endPoint += urlQuery;
@@ -224,6 +233,16 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const populateSearchObject = (dataInput) => {
 
+    if(dataInput.name){
+      sessionStorage.setItem('nameFilter', dataInput.name);
+      dataInput.name = slugify(dataInput.name, {lower: true});
+    }
+
+    if(dataInput.location){
+      sessionStorage.setItem('locationFilter', dataInput.location);
+      dataInput.location = slugify(dataInput.location, {lower: true});
+    }
+
     if (dataInput.brand) {
       dataInput.brand = dataInput.brand.value
     }
@@ -271,8 +290,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       let queryObj = queryParsed;
   
       if(dataInput.name !== ""){
-        searchObj.name = dataInput.name;
-        queryObj.name = dataInput.name;
+        sessionStorage.setItem('nameFilter', dataInput.name);
+        searchObj.name = slugify(dataInput.name, {lower: true});
+        queryObj.name = slugify(dataInput.name, {lower: true});
       }else{
         delete queryObj.name;
         delete searchObj.name;
@@ -296,6 +316,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const resetQuickSearch = (e) => {
     let searchObj = searchObject;
     let queryObj = queryParsed;
+    sessionStorage.removeItem('nameFilter');
 
     if(e.target.value === "" && searchObj.name && queryObj.name){
       if(Object.keys(searchObj).length >= 2 && Object.keys(queryObj).length >= 2){
@@ -337,6 +358,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
     }
+    sessionStorage.removeItem('nameFilter');
+    sessionStorage.removeItem('locationFilter');
     reset();
     reset({brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
     setQueryParsed({});
