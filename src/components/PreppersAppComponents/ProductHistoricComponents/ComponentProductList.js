@@ -260,6 +260,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     let searchObj = searchObject;
     let queryObj = queryParsed;
 
+
+
     for (const key in dataInput) {
       if (dataInput[key] !== "" && dataInput[key] !== undefined && dataInput[key] !== null) {
         searchObj[key] = dataInput[key];
@@ -271,8 +273,14 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         delete queryObj[key];
       }
     }
-    setSearchObject(searchObj);
-    setQueryParsed(queryObj);
+
+    if(Object.keys(searchObj).length === 0){
+      setSearchObject({});
+      setQueryParsed({});
+    }else{
+      setSearchObject(searchObj);
+      setQueryParsed(queryObj);
+    }
 
     history.push({
       pathname: `/app/liste-${urlTo}`,
@@ -450,6 +458,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           setHasProduct(true);
         }else{
           setHasProduct(false);
+          setShowFilter(false);
         }
       });
   };
@@ -610,37 +619,43 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               <input className="input-form" name="kcal" type="number" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} ref={register()} />
             </div>
 
-            <div className="input-form-container">
-              <label htmlFor="product-expirationDate">Date d'expiration du produit</label>
-              <Controller
-                control={control}
-                name="expirationDate"
-                render={(props) => (
-                  <DatePicker
-                    className="input-form input-form-date-picker"
-                    id="product-expirationDate"
-                    dateFormat="dd/MM/yyyy"
-                    locale="fr"
-                    isClearable
-                    autoComplete="off"
-                    placeholderText="Date d'expiration..."
-                    onChange={(e) => props.onChange(e)}
-                    selected={props.value}
-                  />
-                )}
-              />
-            {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
-            </div>
+            {requestTo === "products" &&
+              <div className="input-form-container">
+                <label htmlFor="product-expirationDate">Date d'expiration du produit</label>
+                <Controller
+                  control={control}
+                  name="expirationDate"
+                  render={(props) => (
+                    <DatePicker
+                      className="input-form input-form-date-picker"
+                      id="product-expirationDate"
+                      dateFormat="dd/MM/yyyy"
+                      locale="fr"
+                      isClearable
+                      autoComplete="off"
+                      placeholderText="Date d'expiration..."
+                      onChange={(e) => props.onChange(e)}
+                      selected={props.value}
+                    />
+                  )}
+                />
+                {/* TODO chercher un input de type date permettant de faire une recherce AA ou MM/AA ou JJ/MM/AA */}
+              </div>
+            }
+
+
             
             <div className="input-form-container">
               <label htmlFor="product-location">Emplacement du produit</label>
               <input className="input-form" name="location" type="text" id="product-location" placeholder="Emplacement..." defaultValue={searchObject.location} ref={register()} />
             </div>
 
-            <div className="input-form-container">
-              <label htmlFor="product-number">Nombre de produit</label>
-              <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} ref={register()} />
-            </div>
+            {requestTo === "products" &&
+              <div className="input-form-container">
+                <label htmlFor="product-number">Nombre de produit</label>
+                <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} ref={register()} />
+              </div>
+            }
 
             <div className="default-action-form-container">
               <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faFilter} />Filtrer</button>
