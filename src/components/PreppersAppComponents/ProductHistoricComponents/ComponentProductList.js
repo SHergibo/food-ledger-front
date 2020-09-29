@@ -252,7 +252,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
 
     if (dataInput.expirationDate) {
-      dataInput.expirationDate = dataInput.expirationDate.toISOString();
+      slugify.extend({':': '-', '.': '_'});
+      let date = dataInput.expirationDate.toISOString();
+      dataInput.expirationDate = slugify(date);
     }
 
     let searchObj = searchObject;
