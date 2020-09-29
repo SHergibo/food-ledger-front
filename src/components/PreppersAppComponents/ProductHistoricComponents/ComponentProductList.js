@@ -86,7 +86,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           }
 
         } else if (key !== "page") {
-          if(key !== "name" && key !== "location"){
+          if(key !== "name" && key !== "location" && key !== "expirationDate"){
             searchObj[key] = queryParsed[key];
           }else if(key === "name"){
             if(sessionStorage.getItem('nameFilter')){
@@ -100,6 +100,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             }else{
               searchObj[key] = queryParsed[key];
             }
+          }else if(key === "expirationDate"){
+            searchObj[key] = queryParsed[key];
           }
         }
       }
@@ -218,8 +220,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           }
         })
         .catch((error)=> {
+          let jsonError = JSON.parse(JSON.stringify(error));
           if(isMounted.current){
-            if(error.code === "ECONNABORTED"){
+            if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
               setErrorFetch(true);
             }
           }
