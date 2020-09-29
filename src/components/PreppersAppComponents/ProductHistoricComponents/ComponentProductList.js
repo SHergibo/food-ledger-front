@@ -89,9 +89,17 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           if(key !== "name" && key !== "location"){
             searchObj[key] = queryParsed[key];
           }else if(key === "name"){
-            searchObj.name = sessionStorage.getItem('nameFilter');
+            if(sessionStorage.getItem('nameFilter')){
+              searchObj.name = sessionStorage.getItem('nameFilter');
+            }else{
+              searchObj[key] = queryParsed[key];
+            }
           }else if(key === "location"){
-            searchObj.location = sessionStorage.getItem('locationFilter');
+            if(sessionStorage.getItem('locationFilter')){
+              searchObj.location = sessionStorage.getItem('locationFilter');
+            }else{
+              searchObj[key] = queryParsed[key];
+            }
           }
         }
       }
