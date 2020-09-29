@@ -34,7 +34,8 @@ function EditProduct({ history }) {
           if (error.response.status === 404 || error.response.status === 500) {
             history.goBack();
           }
-          if(error.code === "ECONNABORTED"){
+          let jsonError = JSON.parse(JSON.stringify(error));
+          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
             setErrorFetch(true);
           }
         }
