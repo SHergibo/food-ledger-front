@@ -35,10 +35,8 @@ const logout = async() =>{
       token : localStorage.getItem('refresh_token'),
       email : localStorage.getItem('user_email')
     });
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user_email');
+    localStorage.clear();
+    sessionStorage.clear();
 
   } catch (error) {
     console.log(error);
