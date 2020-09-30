@@ -61,9 +61,31 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
   }, [userOptionData]);
 
+
+
+  useEffect(() => {
+    const loadOptions = async () => {
+      let newArray = [];
+      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
+      await axiosInstance.get(getBrandListEndPoint)
+        .then((response) => {
+          if(isMounted.current){
+            response.data.forEach(element => {
+              newArray.push({ value: element.brandName.value, label: element.brandName.label })
+            });
+          }
+        });
+      setArrayOptions(newArray);
+    }
+    if (userData) {
+      loadOptions();
+    }
+  }, [userData]);
+
   useEffect(() => {
     let searchObj = {};
     let sortObj = {};
+    let queryParsedDelete = [];
     if (Object.keys(queryParsed).length > 0) {
       for (const key in queryParsed) {
 
@@ -86,24 +108,55 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           }
 
         } else if (key !== "page") {
-          if(key !== "name" && key !== "location" && key !== "expirationDate"){
-            searchObj[key] = queryParsed[key];
-          }else if(key === "name"){
+          if(key === "name"){
             if(sessionStorage.getItem('nameFilter') && JSON.parse(sessionStorage.getItem('nameFilter')).value ===  queryParsed[key]){
-              searchObj.name = JSON.parse(sessionStorage.getItem('nameFilter')).value;
+              searchObj.name = JSON.parse(sessionStorage.getItem('nameFilter')).label;
             }else{
               searchObj[key] = queryParsed[key];
             }
           }else if(key === "location"){
             if(sessionStorage.getItem('locationFilter') && JSON.parse(sessionStorage.getItem('locationFilter')).value ===  queryParsed[key]){
-              searchObj.location = JSON.parse(sessionStorage.getItem('locationFilter')).value;
+              searchObj.location = JSON.parse(sessionStorage.getItem('locationFilter')).label;
             }else{
               searchObj[key] = queryParsed[key];
             }
           }else if(key === "expirationDate"){
-            searchObj[key] = queryParsed[key];
+            if(/\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_\d{3}Z/.test(queryParsed[key])){
+              searchObj[key] = queryParsed[key];
+            }else{
+              queryParsedDelete.push(key);
+            }
+          }else if (key === "number" || key === "weight" || key === "kcal"){
+            if(! isNaN(queryParsed[key])){
+              searchObj[key] = parseFloat(queryParsed[key]);
+            }else{
+              queryParsedDelete.push(key);
+            }
+          }else if (key === "brand"){
+            let arrayBrand = arrayOptions.filter(item => item.value === queryParsed[key]);
+            if(arrayBrand.length >= 1){
+              searchObj[key] = queryParsed[key];
+            }else{
+              queryParsedDelete.push(key);
+            }
+          }else if (key === "type"){
+            let arrayType = productType.filter(item => item.value === queryParsed[key]);
+            if(arrayType.length === 1){
+              searchObj[key] = queryParsed[key];
+            }else{
+              queryParsedDelete.push(key);
+            }
           }
         }
+      }
+      if(queryParsedDelete.length >= 1){
+        queryParsedDelete.forEach(element => {
+          delete queryParsed[element];
+        });
+        history.push({
+          pathname: `/app/liste-${urlTo}`,
+          search: `${QueryString.stringify(queryParsed, { sort: false })}`
+        });
       }
     }
     if(Object.keys(sortObj).length > 0){
@@ -112,26 +165,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if(Object.keys(searchObj).length > 0){
       setSearchObject(searchObj);
     }
-  }, [location, queryParsed]);
-
-  useEffect(() => {
-    const loadOptions = async () => {
-      let newArray = arrayOptions;
-      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
-      await axiosInstance.get(getBrandListEndPoint)
-        .then((response) => {
-          if(isMounted.current){
-            response.data.forEach(element => {
-              newArray.push({ value: element.brandName.value, label: element.brandName.label })
-            });
-          }
-        });
-      setArrayOptions(newArray);
-    }
-    if (userData) {
-      loadOptions();
-    }
-  }, [arrayOptions, userData]);
+  }, [location, history, urlTo, queryParsed, arrayOptions]);
 
   const defaultValues = {
     expirationDate: null,
@@ -150,16 +184,16 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         setValue("expirationDate", parseISO(queryParsed.expirationDate));
       }
       if (queryParsed.brand) {
-        let arrayBrand = arrayOptions.filter(item => item.value === searchObject.brand);
+        let arrayBrand = arrayOptions.filter(item => item.value === queryParsed.brand);
         setValue("brand", { value: arrayBrand[0].value, label: arrayBrand[0].label });
       }
       if (queryParsed.type) {
-        let arrayType = productType.filter(item => item.value === searchObject.type)
+        let arrayType = productType.filter(item => item.value === queryParsed.type);
         setValue("type", { value: arrayType[0].value, label: arrayType[0].label });
       }
     }
 
-  }, [showFilter, setValue, queryParsed, searchObject, arrayOptions]);
+  }, [showFilter, setValue, queryParsed, arrayOptions]);
 
 
   const { register : registerFormOption, handleSubmit : handleSubmitFormOption } = useForm({
