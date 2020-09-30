@@ -89,14 +89,14 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           if(key !== "name" && key !== "location" && key !== "expirationDate"){
             searchObj[key] = queryParsed[key];
           }else if(key === "name"){
-            if(sessionStorage.getItem('nameFilter')){
-              searchObj.name = sessionStorage.getItem('nameFilter');
+            if(sessionStorage.getItem('nameFilter') && JSON.parse(sessionStorage.getItem('nameFilter')).value ===  queryParsed[key]){
+              searchObj.name = JSON.parse(sessionStorage.getItem('nameFilter')).value;
             }else{
               searchObj[key] = queryParsed[key];
             }
           }else if(key === "location"){
-            if(sessionStorage.getItem('locationFilter')){
-              searchObj.location = sessionStorage.getItem('locationFilter');
+            if(sessionStorage.getItem('locationFilter') && JSON.parse(sessionStorage.getItem('locationFilter')).value ===  queryParsed[key]){
+              searchObj.location = JSON.parse(sessionStorage.getItem('locationFilter')).value;
             }else{
               searchObj[key] = queryParsed[key];
             }
@@ -245,12 +245,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const populateSearchObject = (dataInput) => {
 
     if(dataInput.name){
-      sessionStorage.setItem('nameFilter', dataInput.name);
+      sessionStorage.setItem('nameFilter', JSON.stringify({label: dataInput.name, value: slugify(dataInput.name, {lower: true})}));
       dataInput.name = slugify(dataInput.name, {lower: true});
     }
 
     if(dataInput.location){
-      sessionStorage.setItem('locationFilter', dataInput.location);
+      sessionStorage.setItem('locationFilter', JSON.stringify({label: dataInput.location, value: slugify(dataInput.location, {lower: true})}));
       dataInput.location = slugify(dataInput.location, {lower: true});
     }
 
@@ -311,7 +311,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       let queryObj = queryParsed;
   
       if(dataInput.name !== ""){
-        sessionStorage.setItem('nameFilter', dataInput.name);
+        sessionStorage.setItem('nameFilter', JSON.stringify({label: dataInput.name, value: slugify(dataInput.name, {lower: true})}));
         searchObj.name = slugify(dataInput.name, {lower: true});
         queryObj.name = slugify(dataInput.name, {lower: true});
       }else{
@@ -379,8 +379,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
     }
-    sessionStorage.removeItem('nameFilter');
-    sessionStorage.removeItem('locationFilter');
+    sessionStorage.clear();
     reset();
     reset({brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
     setQueryParsed({});
