@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useCallback, useRef } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import { useUserData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
@@ -26,7 +26,6 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
-  const isMounted = useRef(true);
 
   const { register, handleSubmit, errors, control, setValue, reset } = useForm({
     mode: "onChange"
@@ -155,15 +154,13 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
 
   useEffect(() => {
     const loadOptions = async () => {
-      let newArray = arrayOptions;
+      let newArray = [];
       const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
       await axiosInstance.get(getBrandListEndPoint)
         .then((response) => {
-          if(isMounted.current){
-            response.data.forEach(element => {
-              newArray.push({ value: element.brandName.value, label: element.brandName.label })
-            });
-          }
+          response.data.forEach(element => {
+            newArray.push({ value: element.brandName.value, label: element.brandName.label })
+          });
         });
       setArrayOptions(newArray);
     }
@@ -171,11 +168,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
     if (userData) {
       loadOptions();
     }
-
-    return () => {
-      isMounted.current = false;
-    }
-  }, [arrayOptions, userData]);
+  }, [userData]);
 
   const deleteExpDate = useCallback((id) => {
     let newArray = [...arrayExpDate];
