@@ -4,6 +4,32 @@
   flex-wrap: wrap;
 }
 
+.reset-filter-table{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 10px;
+  box-shadow: 0px 3px 16px -11px rgba(0, 0, 0, 0.75);
+  transition: color background-color .2s ease-in-out;
+  svg {
+    margin-left: 0.3rem;
+    height: 1rem;
+  }
+  background-color: $primary-color;
+  color: $white;
+  border: 2px solid $primary-color;
+  &:hover {
+    background-color: $white;
+    color: $primary-color;
+  }
+}
+
 .header-list-table{
   display: flex;
   flex-direction: column;
@@ -200,7 +226,7 @@
 /*Media queries*/
 
 /*Tablet*/
-@media screen and (min-width: 688px) {
+@media screen and (min-width: 699px) {
   .list-table{
     table, tr {
       flex-direction: unset;
@@ -248,6 +274,42 @@
   .form-filter-table{
     .action-form-filter{
       margin-bottom: .5rem;
+    }
+  }
+
+  .reset-filter-table{
+    position: relative;
+    height: 2.5rem;
+    width: 2.5rem;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    border: none;
+    svg{
+      z-index: 1;
+      margin: 0;
+    }
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      border-radius: 50%;
+      background-color: $primary-color-hover;
+      opacity: 0.4;
+      z-index: 0;
+      transition: .2s ease-in-out;
+    }
+    &:hover{
+      background-color: $primary-color-hover;
+      color: $white;
+    }
+    &:hover::after{
+      transform: scale(1.15);
+    }
+    .reset-filter-text{
+      display: none;
     }
   }
 }

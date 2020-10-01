@@ -133,11 +133,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               queryParsedDelete.push(key);
             }
           }else if (key === "brand"){
-            let arrayBrand = arrayOptions.filter(item => item.value === queryParsed[key]);
-            if(arrayBrand.length >= 1){
-              searchObj[key] = queryParsed[key];
-            }else{
-              queryParsedDelete.push(key);
+            if(arrayOptions.length >= 1){
+              let arrayBrand = arrayOptions.filter(item => item.value === queryParsed[key]);
+              if(arrayBrand.length >= 1){
+                searchObj[key] = queryParsed[key];
+              }else{
+                queryParsedDelete.push(key);
+              }
             }
           }else if (key === "type"){
             let arrayType = productType.filter(item => item.value === queryParsed[key]);
@@ -413,7 +415,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (Object.keys(searchObject).length > 0) {
       setSearchObject({});
     }
-    sessionStorage.clear();
+    sessionStorage.removeItem('nameFilter');
+    sessionStorage.removeItem('locationFilter');
     reset();
     reset({brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
     setQueryParsed({});
@@ -608,6 +611,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                   <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} ref={register()} />
                 </form>
               }
+              <button title="Réinitialiser les filtres" className="reset-filter-table" onClick={resetAllSearch}>
+                <span className="reset-filter-text">Réinitialiser les filtres</span>
+                <FontAwesomeIcon icon={faUndo} />
+              </button>
             </>
           }
         </div>
@@ -703,7 +710,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
             <div className="default-action-form-container">
               <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faFilter} />Filtrer</button>
-              <button className="default-btn-action-form" onClick={resetAllSearch}><FontAwesomeIcon icon={faUndo} />Réinitialiser les filtres</button>
+              
             </div>
             
           </form>
