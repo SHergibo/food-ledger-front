@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
@@ -15,18 +15,21 @@ function SignUpStep2({ setForm, returnToLogin }) {
   });
 
   const pressHouseHoldCodeCheck = () => {
-    state.yourDetails.householdCodeCheck = !state.yourDetails.householdCodeCheck;
-    action(state.yourDetails);
+    let householdCodeCheck = {householdCodeCheck: !state.yourDetails.householdCodeCheck};
+    action(householdCodeCheck);
   };
 
   const pressHouseHoldNameCheck = () => {
-    state.yourDetails.householdNameCheck = !state.yourDetails.householdNameCheck;
-    action(state.yourDetails);
+    let householdNameCheck = {householdNameCheck: !state.yourDetails.householdNameCheck};
+    if(state.yourDetails.householdNameCheck && state.yourDetails.otherMemberCheck){
+      householdNameCheck= {...householdNameCheck, ...{otherMemberCheck: !state.yourDetails.otherMemberCheck}}
+    }
+    action(householdNameCheck);
   };
 
   const pressOtherMemberCodeCheck = () => {
-    state.yourDetails.otherMemberCheck = !state.yourDetails.otherMemberCheck;
-    action(state.yourDetails);
+    let otherMemberCheck = {otherMemberCheck: !state.yourDetails.otherMemberCheck};
+    action(otherMemberCheck);
   };
 
   const addOtherMember = (e) => {
@@ -119,7 +122,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
             </label>
           )}
           {state.yourDetails.householdNameCheck === true && (
-            <Fragment>
+            <>
               <div className="input-group">
                 <input
                   name="householdName"
@@ -145,7 +148,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 <span className="checkmark-checkbox"></span>
               </label>
               {state.yourDetails.otherMemberCheck === true && (
-                <Fragment>
+                <>
                   <div className="div-usercode">
                     <div className="input-group">
                       <input
@@ -170,9 +173,9 @@ function SignUpStep2({ setForm, returnToLogin }) {
                       }
                     </ul>
                   )}
-                </Fragment>
+                </>
               )}
-            </Fragment>
+            </>
           )}
           {errorMessage === true && (
             <span className="error-message">Vous devez repondre à une de ces deux questions et remplire le formulaire.</span>

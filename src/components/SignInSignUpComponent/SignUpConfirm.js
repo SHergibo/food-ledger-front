@@ -86,7 +86,10 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
 
   const onSubmit = async (data) => {
     action(data);
-    const objectData = await finalData(state.yourDetails);
+    const finalState = updateAction(state, data);
+    
+    const objectData = await finalData(finalState.yourDetails);
+
     let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
 
     if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
