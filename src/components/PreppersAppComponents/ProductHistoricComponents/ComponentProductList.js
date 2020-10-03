@@ -227,20 +227,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     return endPoint;
   }, [sortObject, searchObject]);
 
-
-  const getDataList = useCallback(async (debounceUserData) => {
+  const getDataList = useCallback(async () => {
     setErrorFetch(false);
-
-    let user_data;
-    if(debounceUserData){
-      user_data = debounceUserData
-    }else{
-      user_data = userData;
-    }
 
     if(pageIndex >= 1 && userData){
       setLoading(true);
-      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${user_data.householdCode}?page=${pageIndex - 1}`;
+      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
       const endPoint = finalEndPoint(getDataEndPoint);
       await axiosInstance.get(endPoint)
         .then((response) => {
@@ -270,7 +262,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if (userData) {
       getDataList();
     }
-  }, [userData, getDataList, searchObject]);
+  }, [userData, getDataList]);
 
   useEffect(() => {
     return () => {
@@ -486,7 +478,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   };
 
   const nextPage = async () => {
-    if (pageIndex < (pageCount)) {
+    if (pageIndex < pageCount) {
       setPageIndex(pageIndex + 1);
       setUrlPageQueryParam(pageIndex + 1);
     }
