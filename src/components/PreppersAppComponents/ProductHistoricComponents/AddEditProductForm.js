@@ -1,10 +1,10 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import { useUserData } from './../DataContext';
+import { useUserData, useUserOptionData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { fr } from 'date-fns/locale';
-import { transformDate } from '../../../helpers/transformDate.helper';
+import { transformDate, addMonths } from '../../../helpers/transformDate.helper';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -17,6 +17,7 @@ registerLocale("fr", fr);
 
 function AddEditProductForm({ history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
   const { userData } = useUserData();
+  const { userOptionData } = useUserOptionData();
   const [titleForm, setTitleForm] = useState("");
   const [button, setButton] = useState("");
   const [number, setNumber] = useState(0);
@@ -331,15 +332,28 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                     <>
                       <ul className="list-exp-date">
                         {arrayExpDate.map((date, index) => {
-                          return <li className="expiration-date" key={`expirationDate-${index}`}>
-                            {`${index+1}) ${transformDate(date.expDate)}`}
-                            <div className="small-input-form-container">
-                              <div className="input-add">
-                                <input type="number" className="input-form" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                                <button className="action-input-add" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon={faTimes} /></button>
+                          if(userOptionData){
+                            let cssDateColor;
+                            let title;
+                            if(date.expDate <= addMonths(userOptionData.warningExpirationDate.value)){
+                              cssDateColor = "color-code-red";
+                              title = "Date d'expiration proche !";
+                            }else if(date.expDate > addMonths(userOptionData.warningExpirationDate.value) && date.expDate <= addMonths(userOptionData.warningExpirationDate.value + 1)){
+                              cssDateColor = "color-code-orange";
+                              title = "Date d'expiration moyennement proche !";
+                            }
+                            return <li className="expiration-date" key={`expirationDate-${index}`}>
+                            <span title={title}>{`${index+1})`} <span className={cssDateColor}>{`${transformDate(date.expDate)}`}</span></span>
+                              <div className="small-input-form-container">
+                                <div className="input-add">
+                                  <input type="number" className="input-form" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                                  <button className="action-input-add" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon={faTimes} /></button>
+                                </div>
                               </div>
-                            </div>
-                          </li>
+                            </li>
+                          }else{
+                            return null;
+                          }
                         })}
                       </ul>
                     </>
