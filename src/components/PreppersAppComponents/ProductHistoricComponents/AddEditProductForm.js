@@ -27,10 +27,30 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const [showDateList, setShowDateList] = useState(true);
   const [totalExpDate, setTotalExpDate] = useState(0);
   const [arrayOptions, setArrayOptions] = useState([]);
+  const [minStock, setMinStock] = useState(0);
+  const [cssNumberCodeColor, setCssNumberCodeColor] = useState("");
 
-  const { register, handleSubmit, errors, control, setValue, reset } = useForm({
-    mode: "onChange"
-  });
+  const { register, handleSubmit, errors, control, setValue, reset } = useForm();
+
+  useEffect(() => {
+    if(value.minimumInStock){
+      setMinStock(value.minimumInStock.minInStock);
+    }
+  },[value]);
+
+  useEffect(() => {
+    let parseIntMinStock;
+    if(minStock !== ""){
+      parseIntMinStock = parseInt(minStock)
+    }
+    if(number < parseIntMinStock){
+      setCssNumberCodeColor("color-code-red");
+    }else if(minStock !== 0 && number >= parseIntMinStock && number < parseIntMinStock + 5){
+      setCssNumberCodeColor("color-code-orange");
+    }else{
+      setCssNumberCodeColor("");
+    }
+  }, [number, minStock]);
 
   useEffect(() => {
     if(formType === "add"){
@@ -250,12 +270,27 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         <div className="input-form-container-with-error">
           <label htmlFor="minimumInStock">Stock minimum {formType === "edit" && " *"} </label>
           {(formType === "add" || (formType === "edit" && requestUrl === "historics")) && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." ref={register()} />}
-          {formType === "edit" && value.minimumInStock && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." defaultValue={value.minimumInStock.minInStock} ref={register({ required: true })} />}
+          {formType === "edit" && value.minimumInStock && 
+          <input 
+            className="input-form" 
+            name="minimumInStock" 
+            type="number" 
+            min={0} 
+            id="minimumInStock" 
+            placeholder="Stock minimum..."
+            value={minStock} 
+            onChange={(e)=>{
+              setMinStock(e.target.value);
+            }} 
+            ref={register({ required: true })} 
+          />}
           {errors.minimumInStock && <span className="error-message-form">Ce champ est requis</span>}
         </div>
         <div className="total-product-count-container">
           <p>Nombre total de produit :</p>
-          <p className="total-product-count">{number}</p>
+          <p className={`total-product-count ${cssNumberCodeColor}`}>
+            {number}
+          </p>
         </div>
       </>
     }

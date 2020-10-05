@@ -65,6 +65,7 @@ function EditProduct({ history }) {
 
 
   const EditProduct = async (data) => {
+    console.log(data);
     data.brand.value = slugify(data.brand.value, {lower: true});
     let newData = {
       kcal: data.kcal,
