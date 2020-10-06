@@ -3,9 +3,8 @@ import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
+import slugUrl from './../../../utils/slugify';
 import PropTypes from 'prop-types';
-
-let slugify = require('slugify');
 
 function AddProduct({ history }) {
   const location = useLocation();
@@ -35,7 +34,7 @@ function AddProduct({ history }) {
       data.expirationDate = arrayExpDate
     }
 
-    data.brand.value = slugify(data.brand.value, {lower: true});
+    data.brand.value = slugUrl(data.brand.value);
 
     let totalNumber = 0;
     arrayExpDate.forEach(item => {

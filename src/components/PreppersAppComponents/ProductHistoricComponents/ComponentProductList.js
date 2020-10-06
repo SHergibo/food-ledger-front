@@ -16,9 +16,9 @@ import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
+import slugUrl from './../../../utils/slugify';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
-let slugify = require('slugify');
 
 function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userData } = useUserData();
@@ -121,7 +121,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               searchObj[key] = queryParsed[key];
             }
           }else if(key === "expirationDate"){
-            if(/\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_\d{3}Z/.test(queryParsed[key])){
+            if(/\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}_\d{3}Z/.test(queryParsed[key].toUpperCase())){
               searchObj[key] = queryParsed[key];
             }else{
               queryParsedDelete.push(key);
@@ -219,7 +219,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         if (searchObject[key] !== "" && key !== "name"  && key !== "location") {
           urlQuery += `&${key}=${searchObject[key]}`;
         }else if(key === "name" || key === "location"){
-          urlQuery += `&${key}=${slugify(searchObject[key], {lower: true})}`;
+          urlQuery += `&${key}=${slugUrl(searchObject[key])}`;
         }
       }
       endPoint += urlQuery;
@@ -273,13 +273,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const populateSearchObject = (dataInput) => {
 
     if(dataInput.name){
-      sessionStorage.setItem('nameFilter', JSON.stringify({label: dataInput.name, value: slugify(dataInput.name, {lower: true})}));
-      dataInput.name = slugify(dataInput.name, {lower: true});
+      sessionStorage.setItem('nameFilter', JSON.stringify({label: dataInput.name, value: slugUrl(dataInput.name)}));
+      dataInput.name = slugUrl(dataInput.name);
     }
 
     if(dataInput.location){
-      sessionStorage.setItem('locationFilter', JSON.stringify({label: dataInput.location, value: slugify(dataInput.location, {lower: true})}));
-      dataInput.location = slugify(dataInput.location, {lower: true});
+      sessionStorage.setItem('locationFilter', JSON.stringify({label: dataInput.location, value: slugUrl(dataInput.location)}));
+      dataInput.location = slugUrl(dataInput.location);
     }
 
     if (dataInput.brand) {
@@ -291,9 +291,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
 
     if (dataInput.expirationDate) {
-      slugify.extend({':': '-', '.': '_'});
       let date = dataInput.expirationDate.toISOString();
-      dataInput.expirationDate = slugify(date);
+      dataInput.expirationDate = slugUrl(date);
     }
 
     let searchObj = searchObject;
@@ -338,24 +337,20 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       let searchObj = searchObject;
       let queryObj = queryParsed;
   
-      if(dataInput.name !== ""){
-        sessionStorage.setItem('nameFilter', JSON.stringify({label: dataInput.name, value: slugify(dataInput.name, {lower: true})}));
-        searchObj.name = slugify(dataInput.name, {lower: true});
-        queryObj.name = slugify(dataInput.name, {lower: true});
-      }else{
-        delete queryObj.name;
-        delete searchObj.name;
-        getDataList();
+      if(slugUrl(dataInput.name) !== ""){
+        sessionStorage.setItem('nameFilter', JSON.stringify({label: dataInput.name, value: slugUrl(dataInput.name)}));
+        searchObj.name = slugUrl(dataInput.name);
+        queryObj.name = slugUrl(dataInput.name);
+
+        setSearchObject(searchObj);
+        setQueryParsed(queryObj);
+    
+        history.push({
+          pathname: `/app/liste-${urlTo}`,
+          search: `${QueryString.stringify(queryParsed, { sort: false })}`
+        });
       }
   
-      setSearchObject(searchObj);
-      setQueryParsed(queryObj);
-  
-      history.push({
-        pathname: `/app/liste-${urlTo}`,
-        search: `${QueryString.stringify(queryParsed, { sort: false })}`
-      });
-
       if (pageIndex > 1) {
         gotoPage(1);
       }

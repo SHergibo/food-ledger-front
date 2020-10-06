@@ -2,10 +2,10 @@ import React, { useEffect, useCallback, useState, Fragment, useRef } from 'react
 import { useLocation, withRouter } from "react-router-dom";
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
+import slugUrl from './../../../utils/slugify';
 import AddEditProductForm from './AddEditProductForm';
 import PropTypes from 'prop-types';
 
-let slugify = require('slugify');
 
 function EditProduct({ history }) {
   const isMounted = useRef(true);
@@ -65,8 +65,7 @@ function EditProduct({ history }) {
 
 
   const EditProduct = async (data) => {
-    console.log(data);
-    data.brand.value = slugify(data.brand.value, {lower: true});
+    data.brand.value = slugUrl(data.brand.value);
     let newData = {
       kcal: data.kcal,
       location: data.location,

@@ -33,7 +33,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const { register, handleSubmit, errors, control, setValue, reset } = useForm();
 
   useEffect(() => {
-    if(value.minimumInStock){
+    if(value && value.minimumInStock){
       setMinStock(value.minimumInStock.minInStock);
     }
   },[value]);
