@@ -4,7 +4,6 @@ import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function SignUpStep1({ setForm, returnToLogin }) {
@@ -108,7 +107,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
           </div>
 
           <button type="submit" className="btn-form-sign-in">
-            Étape suivante <FontAwesomeIcon icon={faAngleRight} />
+            Étape suivante <FontAwesomeIcon icon="angle-right" />
           </button>
         </div>
 

@@ -6,8 +6,60 @@ import ProtectedRoute from './components/Route/Protected.route';
 import SignInUp from './components/SignInSignUpComponent/SignInUp';
 import PreppersApp from './components/PreppersAppComponents/PreppersApp';
 import Page404 from './components/Page404';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { 
+  faHome, 
+  faList, 
+  faHistory, 
+  faSignOutAlt, 
+  faUser, 
+  faChartPie, 
+  faBars, 
+  faBell, 
+  faArrowLeft, 
+  faCheck, 
+  faExclamation, 
+  faPlus, 
+  faTimes, 
+  faPen, 
+  faFilter, 
+  faEdit, 
+  faTrash, 
+  faAngleDoubleLeft, 
+  faAngleLeft, 
+  faAngleRight, 
+  faAngleDoubleRight, 
+  faUndo, 
+  faCog,
+  faChevronLeft 
+} from '@fortawesome/free-solid-svg-icons';
 
-
+library.add(
+  faHome, 
+  faList, 
+  faHistory, 
+  faSignOutAlt, 
+  faUser, 
+  faChartPie, 
+  faBars, 
+  faBell, 
+  faArrowLeft, 
+  faCheck, 
+  faExclamation, 
+  faPlus, 
+  faTimes, 
+  faPen, 
+  faFilter, 
+  faEdit, 
+  faTrash, 
+  faAngleDoubleLeft, 
+  faAngleLeft, 
+  faAngleRight, 
+  faAngleDoubleRight, 
+  faUndo, 
+  faCog,
+  faChevronLeft
+);
 
 function App() {
   return (

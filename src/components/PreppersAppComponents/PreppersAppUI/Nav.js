@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faList, faHistory, faSignOutAlt, faUser, faChartPie, faBars } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function Nav({ logOut }) {
@@ -40,7 +39,7 @@ function Nav({ logOut }) {
     <div className="main-menu">
       <div className="interact-menu">
         <div className="svg-icon" onClick={interactMenu}>
-          <FontAwesomeIcon id="svg-menu" icon={faBars} />
+          <FontAwesomeIcon id="svg-menu" icon="bars" />
         </div>
         <Logo />
       </div>
@@ -51,7 +50,7 @@ function Nav({ logOut }) {
           <li>
             <Link to="/app">
               <div className="svg-icon">
-                <FontAwesomeIcon id="svg-home" icon={faHome} />
+                <FontAwesomeIcon id="svg-home" icon="home"/>
               </div>
               <span>Accueil</span>
             </Link>
@@ -59,7 +58,7 @@ function Nav({ logOut }) {
           <li>
             <Link to="/app/liste-produit">
               <div className="svg-icon">
-                <FontAwesomeIcon id="svg-list" icon={faList} />
+                <FontAwesomeIcon id="svg-list" icon="list" />
               </div>
               <span>Liste Produit</span>
             </Link>
@@ -67,7 +66,7 @@ function Nav({ logOut }) {
           <li>
             <Link to="/app/liste-historique">
               <div className="svg-icon">
-                <FontAwesomeIcon id="svg-history" icon={faHistory} />
+                <FontAwesomeIcon id="svg-history" icon="history" />
               </div>
               <span>Historique</span>
             </Link>
@@ -75,7 +74,7 @@ function Nav({ logOut }) {
           <li>
             <Link to="/app/profil">
               <div className="svg-icon">
-                <FontAwesomeIcon id="svg-user" icon={faUser} />
+                <FontAwesomeIcon id="svg-user" icon="user" />
               </div>
               <span>Profil</span>
             </Link>
@@ -83,7 +82,7 @@ function Nav({ logOut }) {
           <li>
             <Link to="/app/statistiques">
               <div className="svg-icon">
-                <FontAwesomeIcon id="svg-stat" icon={faChartPie} />
+                <FontAwesomeIcon id="svg-stat" icon="chart-pie" />
               </div>
               <span>Statistique</span>
             </Link>
@@ -91,7 +90,7 @@ function Nav({ logOut }) {
           <li onClick={logOut}>
             <div className="div-logout">
               <div className="svg-icon" >
-                <FontAwesomeIcon id="svg-logout" icon={faSignOutAlt} />
+                <FontAwesomeIcon id="svg-logout" icon="sign-out-alt" />
               </div>
               <span>Déconnexion</span>
             </div>

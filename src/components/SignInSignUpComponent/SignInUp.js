@@ -5,7 +5,6 @@ import Step1 from "./SignUpStep1";
 import Step2 from "./SignUpStep2";
 import Result from "./SignUpConfirm.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 createStore({
   yourDetails: {
@@ -44,7 +43,7 @@ function SignInUp() {
         <div className={`${form === "login" ? "container-sign-in": "container-sign-up"}`}>
           <div className={`welcome-container ${form === "login" ? "welcome-container-login": ""}`}>
             {form !== "login" && (
-              <FontAwesomeIcon icon={faChevronLeft} onClick={
+              <FontAwesomeIcon icon="chevron-left" onClick={
                 () => {
                   if (form === "step1") {
                     returnToLogin();

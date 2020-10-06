@@ -1,6 +1,5 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function TitleButtonInteraction({openTitleMessage, setOpenTitleMessage, icon, contentDiv}) {
@@ -16,7 +15,7 @@ function TitleButtonInteraction({openTitleMessage, setOpenTitleMessage, icon, co
           <button 
           className="btn-close-title-message" 
           onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon icon="times" />
           </button>
           {contentDiv}
         </div>

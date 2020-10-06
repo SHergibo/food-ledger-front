@@ -6,7 +6,6 @@ import { dateSendMailGlobal, dateSendMailShoppingList, warningExpirationDate } f
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { logout } from './../../../utils/Auth';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
@@ -254,11 +253,11 @@ function Profile({ history }) {
         </div>
 
         <div className="default-action-form-container">
-          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
           {successFormOne && 
             <InformationIcon 
               className="success-icon"
-              icon={<FontAwesomeIcon icon={faCheck} />}
+              icon={<FontAwesomeIcon icon="check" />}
             />
           }
         </div>
@@ -354,11 +353,11 @@ const notificatioRequest = async (id, isAccepted) => {
         </div>
 
         <div className="default-action-form-container">
-          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
           {successFormTwo && 
             <InformationIcon 
               className="success-icon"
-              icon={<FontAwesomeIcon icon={faCheck} />}
+              icon={<FontAwesomeIcon icon="check" />}
             />
           }
         </div>
@@ -396,11 +395,11 @@ const notificatioRequest = async (id, isAccepted) => {
           <span className="checkmark-checkbox"></span>
         </label>
         <div className="default-action-form-container">
-          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
           {successFormThree && 
             <InformationIcon 
               className="success-icon"
-              icon={<FontAwesomeIcon icon={faCheck} />}
+              icon={<FontAwesomeIcon icon="check" />}
             />
           }
         </div>
@@ -424,11 +423,11 @@ const notificatioRequest = async (id, isAccepted) => {
         </label>
 
         <div className="default-action-form-container">
-          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faPen} /> Éditer</button>
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
           {successFormFour && 
             <InformationIcon 
               className="success-icon"
-              icon={<FontAwesomeIcon icon={faCheck} />}
+              icon={<FontAwesomeIcon icon="check" />}
             />
           }
         </div>
@@ -478,7 +477,7 @@ const notificatioRequest = async (id, isAccepted) => {
             <TitleButtonInteraction 
               openTitleMessage={openTitleMessage}
               setOpenTitleMessage={setOpenTitleMessage}
-              icon={<FontAwesomeIcon icon={faTrash} />}
+              icon={<FontAwesomeIcon icon="trash" />}
               contentDiv={contentTitleInteraction}
             />
           </div>

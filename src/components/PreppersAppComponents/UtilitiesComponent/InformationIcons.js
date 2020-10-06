@@ -1,6 +1,5 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function InformationIcons({className, icon, message}) {
@@ -59,7 +58,7 @@ function InformationIcons({className, icon, message}) {
       {messagePopUp && className ==="warning-icon" &&
         <div className="message-box-info-warning">
           {showCloseIcon &&
-            <span className="close-message-box-info"><FontAwesomeIcon icon={faTimes} /></span>
+            <span className="close-message-box-info"><FontAwesomeIcon icon="times" /></span>
           }
           {message}
         </div>
@@ -67,7 +66,7 @@ function InformationIcons({className, icon, message}) {
       {messagePopUp && className ==="error-icon" &&
         <div className="message-box-info-error">
           {showCloseIcon &&
-            <span className="close-message-box-info"><FontAwesomeIcon icon={faTimes} /></span>
+            <span className="close-message-box-info"><FontAwesomeIcon icon="times" /></span>
           }
           {message}
         </div>

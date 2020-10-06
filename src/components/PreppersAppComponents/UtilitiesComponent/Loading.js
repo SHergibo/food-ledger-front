@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndo } from '@fortawesome/free-solid-svg-icons';
 
 function Loading({ loading, errorFetch, retryFetch }) {
   const [animLoading, setAnimLoading] = useState(true);
@@ -46,7 +45,7 @@ function Loading({ loading, errorFetch, retryFetch }) {
           {errorFetch &&
             <div className="loader">
               <p>Une erreur est survenue !</p>
-              <button className="default-btn-action-form" onClick={retryFetch}><FontAwesomeIcon icon={faUndo} />Réessayer</button>
+              <button className="default-btn-action-form" onClick={retryFetch}><FontAwesomeIcon icon="undo" />Réessayer</button>
             </div>
           }
         </div>

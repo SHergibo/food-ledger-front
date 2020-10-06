@@ -4,7 +4,6 @@ import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function SignUpStep2({ setForm, returnToLogin }) {
@@ -167,7 +166,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
                           return (
-                          <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                          <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon="times" /></button></li>
                           )
                         })
                       }
@@ -181,7 +180,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
             <span className="error-message">Vous devez repondre à une de ces deux questions et remplire le formulaire.</span>
           )}
           <button type="submit" className="btn-form-sign-in">
-            Étape suivante <FontAwesomeIcon icon={faAngleRight} />
+            Étape suivante <FontAwesomeIcon icon="angle-right" />
           </button>
         </div>
 

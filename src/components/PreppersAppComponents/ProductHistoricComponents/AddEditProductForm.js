@@ -9,7 +9,6 @@ import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCheck, faExclamation, faPlus, faTimes, faPen } from '@fortawesome/free-solid-svg-icons';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
 import Loading from '../UtilitiesComponent/Loading';
 import PropTypes from 'prop-types';
@@ -316,7 +315,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                 })
               }
             }}>
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <FontAwesomeIcon icon="arrow-left" />
           </button>
           <h1 className="default-h1">{titleForm}</h1>
         </div>
@@ -357,7 +356,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                           setExpDate(val);
                         }}
                       />
-                      <button className="action-input-add" onClick={addExpDate}><FontAwesomeIcon icon={faPlus} /></button>
+                      <button className="action-input-add" onClick={addExpDate}><FontAwesomeIcon icon="plus" /></button>
                     </div>
                     {errorExpDate && <span className="error-message-form">Minimum une date d'expiration requise !</span>}
                     {errorExpDateEmpty && <span className="error-message-form">Minimum un produit lié à une date !</span>}
@@ -382,7 +381,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                               <div className="small-input-form-container">
                                 <div className="input-add">
                                   <input type="number" className="input-form" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                                  <button className="action-input-add" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon={faTimes} /></button>
+                                  <button className="action-input-add" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon="times" /></button>
                                 </div>
                               </div>
                             </li>
@@ -405,30 +404,30 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                 expErrorMessageLogic();
                 }}>
                 {formType === "add" &&
-                  <FontAwesomeIcon icon={faPlus} /> 
+                  <FontAwesomeIcon icon="plus" /> 
                 }
                 {formType === "edit" &&
-                  <FontAwesomeIcon icon={faPen} /> 
+                  <FontAwesomeIcon icon="pen" /> 
                 }
                 {button}
               </button>
               {success && 
                 <InformationIcon 
                   className="success-icon"
-                  icon={<FontAwesomeIcon icon={faCheck} />}
+                  icon={<FontAwesomeIcon icon="check" />}
                 />
               }
               {formType === "edit" && number === 0 && requestUrl === "products" &&
                 <InformationIcon 
                   className="warning-icon"
-                  icon={<FontAwesomeIcon icon={faExclamation} />}
+                  icon={<FontAwesomeIcon icon="exclamation" />}
                   message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre total de produits est égal à 0 !"
                 />
               }
               {formType === "edit" && number >= 1 && requestUrl === "historics" &&
                 <InformationIcon 
                   className="warning-icon"
-                  icon={<FontAwesomeIcon icon={faExclamation} />}
+                  icon={<FontAwesomeIcon icon="exclamation" />}
                   message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
                 />
               }
@@ -441,7 +440,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
               </button>
               <InformationIcon 
                 className="error-icon"
-                icon={<FontAwesomeIcon icon={faTimes} />}
+                icon={<FontAwesomeIcon icon="times" />}
                 message="Attention, il n'est pas possible d'ajouter/éditer un produit si le nombre de produits est différent du nombre de dates de péremption liée à ce produit !"
               />
             </div>

@@ -6,7 +6,6 @@ import updateAction from "../../utils/updateAction";
 import axios from 'axios';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnToLogin }) {
@@ -271,7 +270,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
                           return (
-                            <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon={faTimes} /></button></li>
+                            <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon="times" /></button></li>
                           )
                         })
                       }

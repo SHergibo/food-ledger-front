@@ -15,7 +15,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faEdit, faTrash, faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faUndo, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import slugUrl from './../../../utils/slugify';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
@@ -566,7 +565,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             <TitleButtonInteraction 
               openTitleMessage={openTitleMessage}
               setOpenTitleMessage={setOpenTitleMessage}
-              icon={<FontAwesomeIcon icon={faCog} />}
+              icon={<FontAwesomeIcon icon="cog" />}
               contentDiv={contentTitleInteraction}
             />
           }
@@ -575,7 +574,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         <div>
           {(hasProduct || Object.keys(searchObject).length > 0) && 
             <>
-              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon={faPlus} /></Link>
+              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon="plus" /></Link>
               <button className="default-btn-white" onClick={() => {
                 showFilter ? setShowFilter(false) : setShowFilter(true);
               }}>
@@ -590,7 +589,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                     Fermer
                   </>
                 }
-                <FontAwesomeIcon icon={faFilter} />
+                <FontAwesomeIcon icon="filter" />
               </button>
 
               {!showFilter &&
@@ -600,7 +599,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               }
               <button title="Réinitialiser les filtres" className="reset-filter-table" onClick={resetAllSearch}>
                 <span className="reset-filter-text">Réinitialiser les filtres</span>
-                <FontAwesomeIcon icon={faUndo} />
+                <FontAwesomeIcon icon="undo" />
               </button>
             </>
           }
@@ -696,7 +695,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             }
 
             <div className="default-action-form-container">
-              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon={faFilter} />Filtrer</button>
+              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="filter" />Filtrer</button>
               
             </div>
             
@@ -713,7 +712,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           <div className="no-data">
             <p>Pas de produit !</p>
             {Object.keys(searchObject).length === 0 &&
-              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon={faPlus} /></Link>
+              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
             }
           </div>
         }
@@ -751,8 +750,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                           return (
                             <td key={`${column.id}-${index}`}>
                               <div className="div-list-table-action">
-                                <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon={faEdit} /></Link>
-                                <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                                <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon="edit" /></Link>
+                                <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon="trash"/></button>
                               </div>
                             </td>
                           )
@@ -850,10 +849,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             <div className="pagination">
               <div className="action-pagination">
                 <button onClick={() => gotoPage(1)}>
-                  <FontAwesomeIcon icon={faAngleDoubleLeft} />
+                  <FontAwesomeIcon icon="angle-double-left" />
                 </button>
                 <button onClick={() => previousPage()}>
-                  <FontAwesomeIcon icon={faAngleLeft} />
+                  <FontAwesomeIcon icon="angle-left" />
                 </button>
 
                   <span>Page
@@ -879,10 +878,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                   </span>
 
                 <button onClick={() => nextPage()}>
-                  <FontAwesomeIcon icon={faAngleRight} />
+                  <FontAwesomeIcon icon="angle-right" />
                 </button>
                 <button onClick={() => gotoPage(pageCount)}>
-                  <FontAwesomeIcon icon={faAngleDoubleRight} />
+                  <FontAwesomeIcon icon="angle-double-right" />
                 </button>
               </div>
             </div>

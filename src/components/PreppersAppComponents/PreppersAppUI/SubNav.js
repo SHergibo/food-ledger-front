@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useUserData, useNotificationData } from './../DataContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faBell } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 function SubNav({ logOut }) {
@@ -33,13 +32,13 @@ function SubNav({ logOut }) {
           {hasNotif &&
             <div className="number-nofitication">{arrayNotifLength}</div>
           }
-          <FontAwesomeIcon id="svg-bell" icon={faBell} />
+          <FontAwesomeIcon id="svg-bell" icon="bell" />
         </div>
         <Link className="user-profile-link" to="/app/profil">
           <span>{firstChar}</span>
         </Link>
         <div className="svg-icon svg-no-margin" onClick={logOut}>
-          <FontAwesomeIcon id="svg-logout-sub-menu" icon={faSignOutAlt} />
+          <FontAwesomeIcon id="svg-logout-sub-menu" icon="sign-out-alt" />
         </div>
 
       </div>
