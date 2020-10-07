@@ -5,9 +5,7 @@ let response;
 let authenticated = false;
 
 const loginIn = async (data) =>{
-  const loginEndpoint = `${apiDomain}/api/${apiVersion}/auth/login`;
-
-  await Axios.post(loginEndpoint, data)
+  await Axios.post(`${apiDomain}/api/${apiVersion}/auth/login`, data)
   .then((res) =>{
     if(res.status === 200 && res.data.token.accessToken && res.data.token.expiresIn){
       response = res.status;
@@ -22,16 +20,24 @@ const loginIn = async (data) =>{
       localStorage.setItem('user_email', user_email);
     }
   })
-  .catch((error) =>{
+  .catch(() =>{
     response = 401;
   })
   return response;
 };
 
 const logout = async() =>{
-  const logoutEndpoint = `${apiDomain}/api/${apiVersion}/auth/logout`;
   try {
-    await Axios.post(logoutEndpoint, {
+    const logout = Axios.create({
+      baseURL: apiDomain,
+      timeout: 5000,
+      headers: {
+        ContentType: 'applications/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+    await logout.post(`${apiDomain}/api/${apiVersion}/auth/logout`, {
       token : localStorage.getItem('refresh_token'),
       email : localStorage.getItem('user_email')
     });

@@ -12,7 +12,7 @@ function PreppersApp({ history }) {
   useEffect(() => {
     const refreshTokenInterval = setInterval(() => {
       refreshToken();
-    }, 900000);
+    }, 870000);
 
     return () => {
       clearInterval(refreshTokenInterval);
