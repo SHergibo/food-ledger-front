@@ -142,7 +142,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         }
 
         if (number === totalExpDate) {
-          setNumber(number + 1);
+          setNumber(currNumber => currNumber + 1);
         }
 
         if(errorExpDate){
@@ -194,7 +194,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
     let newArray = [...arrayExpDate];
     let numberSubstract = newArray[id].productLinkedToExpDate;
     if (number !== 0 && newArray.length <= number) {
-      setNumber(number - numberSubstract);
+      setNumber(currNumber => currNumber - numberSubstract);
     }
     setArrayExpDate(newArray.filter((item, index) => index !== id));
   }, [arrayExpDate, number, setArrayExpDate]);

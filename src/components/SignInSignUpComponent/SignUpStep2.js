@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 function SignUpStep2({ setForm, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState(false);
+  const otherMemberInput = useRef(null);
   const { handleSubmit, register, errors } = useForm({
     defaultValues: state.yourDetails
   });
@@ -33,7 +34,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
 
   const addOtherMember = (e) => {
     e.preventDefault();
-    let inputOtherMember = document.getElementById('otherMember');
+    let inputOtherMember = otherMemberInput.current;
     if(inputOtherMember.value){
       state.yourDetails.otherMemberArray.push(inputOtherMember.value);
       action(state.yourDetails);
@@ -151,6 +152,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                   <div className="div-usercode">
                     <div className="input-group">
                       <input
+                        ref={otherMemberInput}
                         name="otherMember"
                         type="text"
                         id="otherMember"

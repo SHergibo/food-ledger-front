@@ -12,7 +12,7 @@ import InformationIcon from './../UtilitiesComponent/InformationIcons';
 
 function Profile({ history }) {
   const { userData, setUserData } = useUserData();
-  const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
+  const { userHouseholdData } = useUserHouseHoldData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const { notification, setNotification } = useNotificationData();
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
@@ -286,8 +286,8 @@ function Profile({ history }) {
             return (
               <li key={item._id}>
                 {item.fullName} {item.senderUserCode}
-                <button onClick={()=> {notificatioRequest(item._id, "yes")}}>Accepter</button>
-                <button onClick={()=> {notificatioRequest(item._id, "no")}}>Refuser</button>
+                <button onClick={()=> {notificationRequest(item._id, "yes")}}>Accepter</button>
+                <button onClick={()=> {notificationRequest(item._id, "no")}}>Refuser</button>
               </li>
             )
           })}
@@ -296,7 +296,7 @@ function Profile({ history }) {
     }
   </div>;
 
-const notificatioRequest = async (id, isAccepted) => {
+const notificationRequest = async (id, isAccepted) => {
   const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${id}?acceptedRequest=${isAccepted}`;
   await axiosInstance.get(requestNotificationEndpoint)
     .then((response) => {

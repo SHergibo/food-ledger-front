@@ -1,42 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
+import { useUserData, useUserOptionData } from './../DataContext';
+import axiosInstance from '../../../utils/axiosInstance';
+import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function Nav({ logOut }) {
-  const [stateMainMenu, setStateMainMenu] = useState(false); //TODO recupérer depuis les options user dans le back
+  const { userData } = useUserData();
+  const { userOptionData, setUserOptionData } = useUserOptionData();
+  const [stateMainMenu, setStateMainMenu] = useState();
+  const menuResp = useRef(null);
+  const burgerSvg = useRef(null);
+  const deleteSvg = useRef(null);
+  const menu = useRef(null);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    if(userOptionData){
+      setStateMainMenu(userOptionData.openMenu);
+      if(userOptionData.openMenu){
+        menu.current.style.width = '15rem';
+      }else{
+        menu.current.style.removeProperty('width');
+      }
+    }
+  }, [userOptionData])
 
   const burgerMenu = () => {
-    let menuResp = document.getElementsByClassName('menu')[0];
-    let burgerSvg = document.getElementById('burger-svg');
-    let deleteSvg = document.getElementById('delete-svg');
-    menuResp.classList.toggle('display-block');
+    menuResp.current.classList.toggle('display-block');
 
-    if (burgerSvg.classList.contains('display-svg-menu')) {
-      burgerSvg.classList.remove('display-svg-menu');
-      deleteSvg.classList.add('display-svg-menu');
+    if (burgerSvg.current.classList.contains('display-svg-menu')) {
+      burgerSvg.current.classList.remove('display-svg-menu');
+      deleteSvg.current.classList.add('display-svg-menu');
     } else {
-      burgerSvg.classList.add('display-svg-menu');
-      deleteSvg.classList.remove('display-svg-menu');
+      burgerSvg.current.classList.add('display-svg-menu');
+      deleteSvg.current.classList.remove('display-svg-menu');
     }
   };
-  
+
+  const patchOptionData = async (data) => {
+    const patchUserOptionDataEndPoint = `${apiDomain}/api/${apiVersion}/options/${userData._id}`;
+    await axiosInstance.patch(patchUserOptionDataEndPoint, data)
+      .then((response) => {
+        if(isMounted.current){
+          setUserOptionData(response.data);
+        }
+      });
+  }
+
   const interactMenu = () => {
-    //TODO enregistrer l'état du menu dans les options de l'utilisateur dans le back
-    let menu = document.getElementsByClassName('main-menu')[0];
     if (stateMainMenu === false) {
-      setStateMainMenu(true)
-      menu.style.width = '15rem';
+      setStateMainMenu(true);
+      patchOptionData({openMenu: true});
+      menu.current.style.width = '15rem';
     } else {
-      setStateMainMenu(false)
-      menu.style.removeProperty('width');
+      setStateMainMenu(false);
+      patchOptionData({openMenu: false});
+      menu.current.style.removeProperty('width');
     }
 
   };
 
   return (
-    <div className="main-menu">
+    <div ref={menu} className="main-menu">
       <div className="interact-menu">
         <div className="svg-icon" onClick={interactMenu}>
           <FontAwesomeIcon id="svg-menu" icon="bars" />
@@ -45,7 +73,7 @@ function Nav({ logOut }) {
       </div>
 
 
-      <nav className="menu">
+      <nav ref={menuResp} className="menu">
         <ul onClick={burgerMenu}>
           <li>
             <Link to="/app">
@@ -97,7 +125,7 @@ function Nav({ logOut }) {
           </li>
         </ul>
       </nav>
-      <div id="burger-svg" className="svg-icon-responsive burger-menu-svg" onClick={burgerMenu}>
+      <div ref={burgerSvg} id="burger-svg" className="svg-icon-responsive burger-menu-svg" onClick={burgerMenu}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-labelledby="title" //TODO changer le svg avec fontAwesome
           aria-describedby="desc" role="img" xmlnsXlink="http://www.w3.org/1999/xlink">
           <path data-name="layer2"
@@ -105,7 +133,7 @@ function Nav({ logOut }) {
           <path data-name="layer1" fill="#202020" d="M2 48h60v8H2z"></path>
         </svg>
       </div>
-      <div id="delete-svg" className="svg-icon-responsive burger-menu-svg display-svg-menu" onClick={burgerMenu}>
+      <div ref={deleteSvg} id="delete-svg" className="svg-icon-responsive burger-menu-svg display-svg-menu" onClick={burgerMenu}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-labelledby="title" //TODO changer le svg avec fontAwesome
           aria-describedby="desc" role="img" xmlnsXlink="http://www.w3.org/1999/xlink">
           <path data-name="layer1"

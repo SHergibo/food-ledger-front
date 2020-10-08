@@ -297,8 +297,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     let searchObj = searchObject;
     let queryObj = queryParsed;
 
-
-
     for (const key in dataInput) {
       if (dataInput[key] !== "" && dataInput[key] !== undefined && dataInput[key] !== null) {
         searchObj[key] = dataInput[key];
@@ -466,14 +464,14 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const previousPage = () => {
     if (pageIndex > 1) {
-      setPageIndex(pageIndex - 1);
+      setPageIndex(currPageIndex => currPageIndex - 1);
       setUrlPageQueryParam(pageIndex - 1);
     }
   };
 
   const nextPage = async () => {
     if (pageIndex < pageCount) {
-      setPageIndex(pageIndex + 1);
+      setPageIndex(currPageIndex => currPageIndex + 1);
       setUrlPageQueryParam(pageIndex + 1);
     }
   };

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
@@ -13,6 +13,8 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
   const [errorMessage, setErrorMessage] = useState("");
   const [errorBool, setErrorBool] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
+  const otherMemberInput = useRef(null);
+  const otherMemberList = useRef([]);
   const { handleSubmit, errors, register, getValues } = useForm({
     defaultValues: state.yourDetails
   });
@@ -46,11 +48,12 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
 
   const addOtherMember = (e) => {
     e.preventDefault();
-    let inputOtherMember = document.getElementById('otherMember');
-    state.yourDetails.otherMemberArray.push(inputOtherMember.value);
-    //TODO utilisation de spread pour push splice, ...
-    action(state.yourDetails);
-    inputOtherMember.value = "";
+    let inputOtherMember = otherMemberInput.current;
+    if(inputOtherMember.value){
+      state.yourDetails.otherMemberArray.push(inputOtherMember.value);
+      action(state.yourDetails);
+      inputOtherMember.value = "";
+    }
   }
 
   const deleteOtherMember = (e, index) => {
@@ -105,15 +108,17 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
         setErrorMessage('');
       } else if (response.status === 404 && response.data.data) {
         let responseDataArray = response.data.data;
-        responseDataArray.forEach(element => {
-          let searchUserCode = document.getElementById(element);
-          searchUserCode.classList.add('bad-user-code');
+        responseDataArray.forEach(dataBadUserCode => {
+          const errorUserCodes = otherMemberList.current.filter(usercode => usercode.innerHTML === dataBadUserCode);
+          errorUserCodes.forEach(errorUserCode => {
+            errorUserCode.classList.add('bad-user-code');
+          });
         });
         setErrorBool(true);
         if (response.data.data.length === 1) {
-          setErrorMessage('Il y a un mauvais code utilisateur!');
+          setErrorMessage('Il y a un mauvais code utilisateur !');
         } else {
-          setErrorMessage('Il y a plusieurs mauvais codes utilisateur!');
+          setErrorMessage('Il y a plusieurs mauvais codes utilisateur !');
         }
       } else if (response.status === 400) {
         setErrorBool(true);
@@ -252,6 +257,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                   <div className="div-usercode">
                     <div className="input-group">
                       <input
+                        ref={otherMemberInput}
                         name="otherMember"
                         type="text"
                         id="otherMember"
@@ -270,7 +276,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
                           return (
-                            <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon="times" /></button></li>
+                            <li key={`userCode-${index}`}><div ref={(el) => (otherMemberList.current[index] = el)}>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon="times" /></button></li>
                           )
                         })
                       }
@@ -281,7 +287,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
               )}
             </Fragment>
           )}
-          {errorBool && <span>{errorMessage}</span>}
+          {errorBool && <span className="error-message">{errorMessage}</span>}
           <button type="submit" className="btn-form-sign-in">
             Créer son compte
           </button>
