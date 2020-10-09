@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import { useUserData, useUserOptionData } from './../DataContext';
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function Nav({ logOut }) {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [stateMainMenu, setStateMainMenu] = useState();
@@ -17,16 +18,27 @@ function Nav({ logOut }) {
   const menu = useRef(null);
   const isMounted = useRef(true);
 
+  const responsive = useCallback(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', responsive);
+    return () => {
+      window.removeEventListener('resize', responsive);
+    }
+  }, [responsive]);
+
   useEffect(() => {
     if(userOptionData){
       setStateMainMenu(userOptionData.openMenu);
-      if(userOptionData.openMenu){
+      if(userOptionData.openMenu && windowWidth >= 992){
         menu.current.style.width = '15rem';
       }else{
         menu.current.style.removeProperty('width');
       }
     }
-  }, [userOptionData])
+  }, [userOptionData, windowWidth])
 
   const burgerMenu = () => {
     menuResp.current.classList.toggle('display-block');
