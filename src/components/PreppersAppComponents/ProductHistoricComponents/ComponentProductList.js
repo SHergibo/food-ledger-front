@@ -430,8 +430,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       newSortObject[`${dataToSort}-sort`] = btnSort.dataset.sort;
       queryParsed[`${dataToSort}-sort`] = btnSort.dataset.sort;
     } else {
+      
       delete newSortObject[`${dataToSort}-sort`];
       delete queryParsed[`${dataToSort}-sort`];
+      if (Object.keys(sortObject).length < 1 && Object.keys(searchObject).length === 0) {
+        getDataList();
+      } 
     }
 
     setQueryParsed(queryParsed);
