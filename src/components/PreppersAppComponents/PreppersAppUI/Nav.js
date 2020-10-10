@@ -127,6 +127,16 @@ function Nav({ logOut }) {
               <span>Statistique</span>
             </Link>
           </li>
+          {(userData && userData.role === "admin") &&
+            <li>
+              <Link to="/app/registre-produit">
+                <div className="svg-icon">
+                  <FontAwesomeIcon id="svg-stat" icon="clipboard-list" />
+                </div>
+                <span>registre</span>
+              </Link>
+            </li>
+          }
           <li onClick={logOut}>
             <div className="div-logout">
               <div className="svg-icon" >

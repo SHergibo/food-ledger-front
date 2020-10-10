@@ -31,7 +31,8 @@ import {
   faAngleDoubleRight, 
   faUndo, 
   faCog,
-  faChevronLeft 
+  faChevronLeft ,
+  faClipboardList
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -58,7 +59,8 @@ library.add(
   faAngleDoubleRight, 
   faUndo, 
   faCog,
-  faChevronLeft
+  faChevronLeft,
+  faClipboardList
 );
 
 function App() {
@@ -75,6 +77,7 @@ function App() {
         <ProtectedRoute exact path="/app/ajout-historique" component={PreppersApp} />
         <ProtectedRoute exact path="/app/profil" component={PreppersApp} />
         <ProtectedRoute exact path="/app/statistiques" component={PreppersApp} />
+        <ProtectedRoute exact path="/app/registre-produit" component={PreppersApp} />
         <Route path="*" component={Page404} />
       </Switch>
     </div>

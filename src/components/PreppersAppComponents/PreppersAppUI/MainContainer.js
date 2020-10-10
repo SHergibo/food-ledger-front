@@ -7,6 +7,7 @@ import AddProduct from './../ProductHistoricComponents/AddProduct';
 import HistoricList from './../SubComponent/HistoricList';
 import Profile from './../SubComponent/Profile';
 import Statistics from './../SubComponent/Statistics';
+import ProductLog from './../SubComponent/ProductLog';
 
 function MainContainer() {
   return (
@@ -20,6 +21,7 @@ function MainContainer() {
       <Route path="/app/ajout-historique" component={AddProduct} />
       <Route path="/app/profil" component={Profile} />
       <Route path="/app/statistiques" component={Statistics} />
+      <Route path="/app/registre-produit" component={ProductLog} />
     </>
   )
 }
