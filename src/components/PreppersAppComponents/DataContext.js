@@ -43,27 +43,27 @@ export function DataProvider({children}) {
     };
     getUserData();
 
-    const fetchNotification = async () => {
-      const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
-      await axiosInstance.get(getNotificationEndPoint)
-        .then((response) => {
-          if(isMounted.current){
-            setNotification(response.data);
-          }
-          //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
-        });
+    // const fetchNotification = async () => {
+    //   const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
+    //   await axiosInstance.get(getNotificationEndPoint)
+    //     .then((response) => {
+    //       if(isMounted.current){
+    //         setNotification(response.data);
+    //       }
+    //       //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
+    //     });
 
-    };
-    fetchNotification();
+    // };
+    // fetchNotification();
 
-    const getNotification = setInterval(() => {
-      fetchNotification();
-    }, 30000);
+    // const getNotification = setInterval(() => {
+    //   fetchNotification();
+    // }, 30000);
 
 
-    return () => {
-      clearInterval(getNotification);
-    };
+    // return () => {
+    //   clearInterval(getNotification);
+    // };
   }, []);
 
   useEffect(() => {

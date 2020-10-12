@@ -85,9 +85,9 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
         </div>
 
         <div className="switch-form-container">
-          <p className="switch-form" onClick={() => createUserForm()}>
+          {/* <p className="switch-form" onClick={() => createUserForm()}>
             Créer un compte
-        </p>
+          </p> */}
         </div>
       </form>
     </div>
