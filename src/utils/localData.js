@@ -152,6 +152,99 @@ export const columnsHistoricFullScreen = [
   }
 ];
 
+export const columnsLogMobile = [
+  {
+    Header: 'Utilisateur',
+    id: 'user'
+  },
+  {
+    Header: 'Nom',
+    id: 'productName'
+  },
+  {
+    Header: 'Marque',
+    id: 'productBrand'
+  },
+  {
+    Header: "Poids",
+    id: 'productWeight'
+  },
+  {
+    Header: 'Info',
+    id: 'infoProduct'
+  },
+  {
+    Header: 'Nombre',
+    id: 'numberProduct'
+  },
+  {
+    Header: 'Date',
+    id: 'createdAt'
+  }
+];
+
+export const columnsLogTablet = [
+  {
+    Header: 'Utilisateur',
+    id: 'user'
+  },
+  {
+    Header: 'Nom',
+    id: 'productName'
+  },
+  {
+    Header: 'Marque',
+    id: 'productBrand'
+  },
+  {
+    Header: "Poids",
+    id: 'productWeight'
+  },
+  {
+    Header: 'Info',
+    id: 'infoProduct'
+  },
+  {
+    Header: 'Nombre',
+    id: 'numberProduct'
+  },
+  {
+    Header: 'Date',
+    id: 'createdAt'
+  }
+];
+
+export const columnsLogFullScreen = [
+  {
+    Header: 'Utilisateur',
+    id: 'user'
+  },
+  {
+    Header: 'Nom',
+    id: 'productName'
+  },
+  {
+    Header: 'Marque',
+    id: 'productBrand'
+  },
+  {
+    Header: "Poids",
+    id: 'productWeight'
+  },
+  {
+    Header: 'Info',
+    id: 'infoProduct'
+  },
+  {
+    Header: 'Nombre',
+    id: 'numberProduct'
+  },
+  {
+    Header: 'Date',
+    id: 'createdAt'
+  }
+];
+
 export const productType = [
   { value: 'boisson', label: 'Boisson' },
   { value: 'produit-sucre', label: 'Produit sucré' },
