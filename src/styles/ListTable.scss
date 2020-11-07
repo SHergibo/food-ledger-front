@@ -168,6 +168,11 @@
   }
 }
 
+.list-table-one-action{
+  @include btn-action-title(1rem, 2rem);
+  margin-right: 0rem;
+}
+
 .pagination{
   display: flex;
   justify-content: center;

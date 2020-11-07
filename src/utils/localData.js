@@ -154,20 +154,8 @@ export const columnsHistoricFullScreen = [
 
 export const columnsLogMobile = [
   {
-    Header: 'Utilisateur',
-    id: 'user'
-  },
-  {
     Header: 'Nom',
     id: 'productName'
-  },
-  {
-    Header: 'Marque',
-    id: 'productBrand'
-  },
-  {
-    Header: "Poids",
-    id: 'productWeight'
   },
   {
     Header: 'Info',
@@ -180,6 +168,10 @@ export const columnsLogMobile = [
   {
     Header: 'Date',
     id: 'createdAt'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
   }
 ];
 
@@ -211,6 +203,10 @@ export const columnsLogTablet = [
   {
     Header: 'Date',
     id: 'createdAt'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
   }
 ];
 
@@ -242,6 +238,10 @@ export const columnsLogFullScreen = [
   {
     Header: 'Date',
     id: 'createdAt'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
   }
 ];
 

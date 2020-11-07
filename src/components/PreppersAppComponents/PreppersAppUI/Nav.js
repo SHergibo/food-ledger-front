@@ -133,7 +133,7 @@ function Nav({ logOut }) {
                 <div className="svg-icon">
                   <FontAwesomeIcon id="svg-stat" icon="clipboard-list" />
                 </div>
-                <span>registre</span>
+                <span>Registre</span>
               </Link>
             </li>
           }

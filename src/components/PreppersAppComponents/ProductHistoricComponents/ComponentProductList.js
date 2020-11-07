@@ -809,6 +809,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         {hasProduct &&
           <Table 
             columns={columns}
+            sorting={true}
             btnSortRef={btnSortRef}
             sortObject={sortObject}
             populateSortObject={populateSortObject}

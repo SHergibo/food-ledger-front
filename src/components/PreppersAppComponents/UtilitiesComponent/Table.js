@@ -2,7 +2,7 @@ import React, { useCallback} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Table({ columns, btnSortRef, sortObject, populateSortObject, trTable, pagination, paginationInfo, paginationFunction }) {
+function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, trTable, pagination, paginationInfo, paginationFunction }) {
 
 
   let btnSortLogic = useCallback((btnSort, index) => {
@@ -40,7 +40,7 @@ function Table({ columns, btnSortRef, sortObject, populateSortObject, trTable, p
         <thead>
           <tr>
             {columns.map((column, index) => {
-              if (column.id !== 'action') {
+              if (column.id !== 'action' && sorting) {
                 return (
                   <th key={`${column.id}-${index}`} onClick={() => populateSortObject(column.id, index)}>
                     <span>
@@ -49,10 +49,16 @@ function Table({ columns, btnSortRef, sortObject, populateSortObject, trTable, p
                     </span>
                   </th>
                 )
-              } else {
+              } else if(column.id === 'action') {
                 return (
                   <th key={`${column.id}-${index}`}>
                     {column.Header}
+                  </th>
+                )
+              } else {
+                return (
+                  <th key={`${column.id}-${index}`}>
+                    <span>{column.Header}</span>
                   </th>
                 )
               }
@@ -96,6 +102,7 @@ function Table({ columns, btnSortRef, sortObject, populateSortObject, trTable, p
 
 Table.propTypes = {
   columns: PropTypes.array.isRequired,
+  sorting: PropTypes.bool,
   btnSortRef: PropTypes.object.isRequired,
   sortObject: PropTypes.object,
   populateSortObject: PropTypes.func,
