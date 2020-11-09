@@ -82,18 +82,17 @@
     border-bottom: 2px solid $grey;
     padding: 1rem 0;
     tr{
-      height: 6rem;
+      height: auto;
     }
     th{
       margin: .25rem 0;
       color: $primary-color;
       cursor: pointer;
       transition: .2s ease-in-out;
-      span{
+      .span-sorting, .span-no-sorting{
         display: flex;
         justify-content: left;
         align-items: center;
-        margin-left: 1rem;
         button{
           display: flex;
           width: calculRem(13.33px);
@@ -101,11 +100,14 @@
           background-color: transparent;
         }
       }
+      .span-sorting{
+        margin-left: 1rem;
+      }
     }
   }
   tbody{
     tr{
-      height: 8rem;
+      height: auto;
       border-bottom: 2px solid $grey;
       color: $primary-color;
       transition: .2s ease-in-out;
@@ -252,6 +254,9 @@
         margin: 0;
         &:hover{
           background-color: $grey-lighter;
+        }
+        .span-no-sorting{
+          margin-left: 1rem;
         }
       }
     }

@@ -43,7 +43,7 @@ function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, tr
               if (column.id !== 'action' && sorting) {
                 return (
                   <th key={`${column.id}-${index}`} onClick={() => populateSortObject(column.id, index)}>
-                    <span>
+                    <span className="span-sorting">
                       {column.Header}
                       {btnSortLogic(`${column.id}-sort`, index)}
                     </span>
@@ -58,7 +58,7 @@ function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, tr
               } else {
                 return (
                   <th key={`${column.id}-${index}`}>
-                    <span>{column.Header}</span>
+                    <span className="span-no-sorting">{column.Header}</span>
                   </th>
                 )
               }

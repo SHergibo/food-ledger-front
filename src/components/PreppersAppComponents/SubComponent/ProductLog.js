@@ -53,6 +53,10 @@ function ProductLog({ history }) {
   }, [setColumns, windowWidth]);
 
   useEffect(() => {
+    console.log(columns);
+  }, [columns]);
+
+  useEffect(() => {
     const loadProductLog = async () => {
       const getProductLogEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
       await axiosInstance.get(getProductLogEndPoint)
