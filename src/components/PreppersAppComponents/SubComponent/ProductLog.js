@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useUserData } from './../DataContext';
+import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
@@ -10,6 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function ProductLog({ history }) {
+  const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
+  const isMounted = useRef(true);
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const { userData } = useUserData();
   const [productLog, setProductLog] = useState([]);
@@ -17,6 +21,7 @@ function ProductLog({ history }) {
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 14;
   let btnSortRef = useRef([]);
+  const [hasProduct, setHasProduct] = useState(false);
 
   useEffect(() => {
     if(userData && userData.role !== "admin"){
@@ -53,22 +58,45 @@ function ProductLog({ history }) {
   }, [setColumns, windowWidth]);
 
   useEffect(() => {
-    console.log(columns);
-  }, [columns]);
+    return () => {
+      isMounted.current = false;
+    }
+  }, [isMounted]);
 
-  useEffect(() => {
-    const loadProductLog = async () => {
+  const loadProductLog = useCallback(async () => {
+    if(userData){
+      setErrorFetch(false);
+      setLoading(true);
       const getProductLogEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
       await axiosInstance.get(getProductLogEndPoint)
         .then((response) => {
-          setProductLog(response.data.arrayProductLog);
-          setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
+          if(isMounted.current){
+            if(response.data.totalProductLog >= 1){
+              setProductLog(response.data.arrayProductLog);
+              setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
+              setHasProduct(true);
+            }else{
+              setHasProduct(false);
+            }
+            setLoading(false);
+          }
+        })
+        .catch((error)=> {
+          let jsonError = JSON.parse(JSON.stringify(error));
+          if(isMounted.current){
+            if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+              setErrorFetch(true);
+            }
+          }
         });
     }
+  }, [userData, pageIndex]);
+
+  useEffect(() => {
     if (userData) {
       loadProductLog();
     }
-  }, [userData, pageIndex]);
+  }, [userData, loadProductLog]);
 
   const deleteAllProductLog = async () => {
     let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/${userData.householdCode}`;
@@ -77,6 +105,7 @@ function ProductLog({ history }) {
       .then(() => {
         setProductLog([]);
         setPageCount(0);
+        setHasProduct(false);
       });
   };
 
@@ -193,14 +222,31 @@ function ProductLog({ history }) {
         }
       </div>
 
-      <Table 
-        columns={columns}
-        btnSortRef={btnSortRef}
-        trTable={trTable}
-        pagination={true}
-        paginationInfo={{pageIndex, pageCount}}
-        paginationFunction={{gotoPage, previousPage, nextPage, inputPagination}}
-      />
+      <div className="container-loading">
+        <Loading
+          loading={loading}
+          errorFetch={errorFetch}
+          retryFetch={loadProductLog}
+        />
+        {!hasProduct &&
+          <div className="no-data">
+            <p>Pas de produit dans le registre !</p>
+          </div>
+        }
+
+        {hasProduct &&
+          <Table 
+            columns={columns}
+            btnSortRef={btnSortRef}
+            trTable={trTable}
+            pagination={true}
+            paginationInfo={{pageIndex, pageCount}}
+            paginationFunction={{gotoPage, previousPage, nextPage, inputPagination}}
+          />
+        }
+
+      </div>
+
     </div>
   )
 }
