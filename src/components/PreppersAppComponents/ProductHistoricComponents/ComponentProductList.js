@@ -34,7 +34,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
   let btnSortRef = useRef([]);
-  const [pageIndex, setPageIndex] = useState(queryParsed.page || 1);
+  const [pageIndex, setPageIndex] = useState(parseInt(queryParsed.page) || 1);
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 14;
   const [searchObject, setSearchObject] = useState({});
@@ -636,7 +636,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       setPageIndex(pageCount);
       setUrlPageQueryParam(pageCount);
     } else if (e.target.value <= 0 || e.target.value === ""){
-      setPageIndex("");
+      setPageIndex(null);
       setUrlPageQueryParam(null);
     } else {
       setPageIndex(e.target.value);
