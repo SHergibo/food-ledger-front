@@ -132,6 +132,10 @@ function ProductLog({ history }) {
 </>
 
   const deleteProductLog = async (rowId) => {
+    if(productLog.length === 1){
+      setPageIndex(currPageIndex => currPageIndex - 1);
+    }
+
     let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/delete-pagination/${rowId}?page=${pageIndex - 1}`;
 
     await axiosInstance.delete(deleteDataEndPoint)

@@ -458,6 +458,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     });
+    console.log(queryParsed);
     setQueryParsed(queryParsed);
   };
 
@@ -481,13 +482,18 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   };
 
   const deleteData = async (rowId) => {
+
+    if(data.length === 1){
+      setPageIndex(currPageIndex => currPageIndex - 1);
+      setUrlPageQueryParam(pageIndex - 1);
+    }
     let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/delete-pagination/${rowId}?page=${pageIndex - 1}`;
 
     const endPoint = finalEndPoint(deleteDataEndPoint);
 
     await axiosInstance.delete(endPoint)
       .then((response) => {
-        setData(response.data.arrayProduct)
+        setData(response.data.arrayProduct);
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
         if(response.data.totalProduct >= 1){
           setHasProduct(true);
