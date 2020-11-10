@@ -154,7 +154,7 @@ function ProductLog({ history }) {
               </td>
             )
           }
-          if (column.id !== "user" && column.id !== "createdAt") {
+          if (column.id !== "user" && column.id !== "createdAt" && column.id !== "infoProduct") {
             return (
               <td key={`${column.id}-${index}`}>
                 {row[column.id]}
@@ -167,6 +167,21 @@ function ProductLog({ history }) {
                 {row[column.id].firstname}
               </td>
             )
+          }
+          if (column.id === "infoProduct") {
+            if(row[column.id] === "Mise à jour" || row[column.id] === "Ajout"){
+              return (
+                <td key={`${column.id}-${index}`}>
+                  <span className="color-code-green">{row[column.id]}</span>
+                </td>
+              )
+            }else if (row[column.id] === "Suppression"){
+              return(
+                <td key={`${column.id}-${index}`}>
+                  <span className="color-code-red">{row[column.id]}</span>
+                </td>
+              )
+            }
           }
           if (column.id === "createdAt") {
             return (

@@ -138,12 +138,14 @@
 
 .color-code-red,
 .color-code-orange,
+.color-code-green,
 .no-color-code{
   padding: .2rem .3rem;
 }
 
 .color-code-red,
-.color-code-orange{
+.color-code-orange,
+.color-code-green{
   color: $white;
   padding: .2rem .3rem;
   border-radius: 5px;
@@ -156,6 +158,10 @@
 
 .color-code-orange{
   background-color: $orange;
+}
+
+.color-code-green{
+  background-color: $green;
 }
 
 .hide-color-code{
