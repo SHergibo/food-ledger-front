@@ -195,7 +195,6 @@ function ProductLog({ history }) {
                   </td>
                 )
               }
-
             }
           }
           if (column.id === "createdAt") {

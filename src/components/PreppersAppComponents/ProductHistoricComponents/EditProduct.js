@@ -54,7 +54,7 @@ function EditProduct({ history }) {
     if(success){
       timerSuccess = setTimeout(() => {
         setSuccess(false);
-      }, 5000);
+      }, 3500);
     }
 
     return () => {
