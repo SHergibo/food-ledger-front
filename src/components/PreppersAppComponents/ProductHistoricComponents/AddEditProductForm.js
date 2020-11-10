@@ -397,57 +397,43 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
             </div>
           </div>
 
-          {number === totalExpDate &&
-            <div className="default-action-form-container">
-              <button className="default-btn-action-form" onClick={() => {
-                handleSubmit(handleFunction)();
-                expErrorMessageLogic();
-                }}>
-                {formType === "add" &&
-                  <FontAwesomeIcon icon="plus" /> 
-                }
-                {formType === "edit" &&
-                  <FontAwesomeIcon icon="pen" /> 
-                }
-                {button}
-              </button>
-              {success && 
-                <InformationIcon 
-                  className="success-icon"
-                  icon={<FontAwesomeIcon icon="check" />}
-                />
+          <div className="default-action-form-container">
+            <button className="default-btn-action-form" onClick={() => {
+              handleSubmit(handleFunction)();
+              expErrorMessageLogic();
+              }}>
+              {formType === "add" &&
+                <FontAwesomeIcon icon="plus" /> 
               }
-              {formType === "edit" && number === 0 && requestUrl === "products" &&
-                <InformationIcon 
-                  className="warning-icon"
-                  icon={<FontAwesomeIcon icon="exclamation" />}
-                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre total de produits est égal à 0 !"
-                />
+              {formType === "edit" &&
+                <FontAwesomeIcon icon="pen" /> 
               }
-              {formType === "edit" && number >= 1 && requestUrl === "historics" &&
-                <InformationIcon 
-                  className="warning-icon"
-                  icon={<FontAwesomeIcon icon="exclamation" />}
-                  message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
-                />
-              }
-            </div>
-          }
-          {number !== totalExpDate &&
-            <div className="default-action-form-container">
-              <button className="default-btn-disabled-form" disabled>
-                {button}
-              </button>
+              {button}
+            </button>
+            {success && 
               <InformationIcon 
-                className="error-icon"
-                icon={<FontAwesomeIcon icon="times" />}
-                message="Attention, il n'est pas possible d'ajouter/éditer un produit si le nombre de produits est différent du nombre de dates de péremption liée à ce produit !"
+                className="success-icon"
+                icon={<FontAwesomeIcon icon="check" />}
               />
-            </div>
-          }
+            }
+            {formType === "edit" && number === 0 && requestUrl === "products" &&
+              <InformationIcon 
+                className="warning-icon"
+                icon={<FontAwesomeIcon icon="exclamation" />}
+                message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre total de produits est égal à 0 !"
+              />
+            }
+            {formType === "edit" && number >= 1 && requestUrl === "historics" &&
+              <InformationIcon 
+                className="warning-icon"
+                icon={<FontAwesomeIcon icon="exclamation" />}
+                message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
+              />
+            }
+          </div>
+          
         </div>
       </div>
-      
       
     </div>
   )
