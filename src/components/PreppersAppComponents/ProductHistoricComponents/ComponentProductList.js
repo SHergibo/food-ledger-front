@@ -237,7 +237,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       await axiosInstance.get(endPoint)
         .then((response) => {
           if(isMounted.current){
-            setData(response.data.arrayProduct);
+            setData(response.data.arrayData);
             setPageCount(Math.ceil(response.data.totalProduct / pageSize));
             if(response.data.totalProduct >= 1){
               setHasProduct(true);
@@ -493,7 +493,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     await axiosInstance.delete(endPoint)
       .then((response) => {
-        setData(response.data.arrayProduct);
+        setData(response.data.arrayData);
         setPageCount(Math.ceil(response.data.totalProduct / pageSize));
         if(response.data.totalProduct >= 1){
           setHasProduct(true);

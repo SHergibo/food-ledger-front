@@ -71,9 +71,9 @@ function ProductLog({ history }) {
       await axiosInstance.get(getProductLogEndPoint)
         .then((response) => {
           if(isMounted.current){
-            if(response.data.totalProductLog >= 1){
-              setProductLog(response.data.arrayProductLog);
-              setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
+            if(response.data.totalProduct >= 1){
+              setProductLog(response.data.arrayData);
+              setPageCount(Math.ceil(response.data.totalProduct / pageSize));
               setHasProduct(true);
             }else{
               setHasProduct(false);
@@ -140,8 +140,8 @@ function ProductLog({ history }) {
 
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
-        setProductLog(response.data.arrayProductLog);
-          setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
+        setProductLog(response.data.arrayData);
+          setPageCount(Math.ceil(response.data.totalProduct / pageSize));
       });
   };
 

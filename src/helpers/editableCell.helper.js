@@ -13,8 +13,8 @@ exports.EditableCell = ({ initialValue, row, indexRow }) => {
       const endPoint = finalEndPoint(patchDataEndPoint);
       await axiosInstance.patch(endPoint, { number: value })
         .then((response) => {
-          if (response.data.arrayProduct) {
-            setData(response.data.arrayProduct);
+          if (response.data.arrayData) {
+            setData(response.data.arrayData);
             setPageCount(Math.ceil(response.data.totalProduct / pageSize));
           } else {
             let newData = data;
