@@ -245,6 +245,75 @@ export const columnsLogFullScreen = [
   }
 ];
 
+export const columnsShoppingListMobile = [
+  {
+    Header: 'Nom',
+    id: 'name'
+  },
+  {
+    Header: 'Marque',
+    id: 'brand'
+  },
+  {
+    Header: 'Poids',
+    id: 'weight'
+  },
+  {
+    Header: 'Nombre',
+    id: 'numberProduct'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
+  }
+];
+
+export const columnsShoppingListTablet = [
+  {
+    Header: 'Nom',
+    id: 'name'
+  },
+  {
+    Header: 'Marque',
+    id: 'brand'
+  },
+  {
+    Header: 'Poids',
+    id: 'weight'
+  },
+  {
+    Header: 'Nombre',
+    id: 'numberProduct'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
+  }
+];
+
+export const columnsShoppingListFullScreen = [
+  {
+    Header: 'Nom',
+    id: 'name'
+  },
+  {
+    Header: 'Marque',
+    id: 'brand'
+  },
+  {
+    Header: 'Poids',
+    id: 'weight'
+  },
+  {
+    Header: 'Nombre',
+    id: 'numberProduct'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
+  }
+];
+
 export const productType = [
   { value: 'boisson', label: 'Boisson' },
   { value: 'produit-sucre', label: 'Produit sucré' },

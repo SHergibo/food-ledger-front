@@ -458,7 +458,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryParsed, { sort: false })}`
     });
-    console.log(queryParsed);
     setQueryParsed(queryParsed);
   };
 

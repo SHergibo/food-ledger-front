@@ -112,6 +112,14 @@ function Nav({ logOut }) {
             </Link>
           </li>
           <li>
+            <Link to="/app/liste-de-course">
+              <div className="svg-icon">
+                <FontAwesomeIcon id="svg-shopping" icon="shopping-cart" />
+              </div>
+              <span>Liste course</span>
+            </Link>
+          </li>
+          <li>
             <Link to="/app/profil">
               <div className="svg-icon">
                 <FontAwesomeIcon id="svg-user" icon="user" />

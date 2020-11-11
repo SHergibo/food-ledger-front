@@ -85,7 +85,7 @@
         cursor: pointer;
       }
       &:hover{
-        #svg-home, #svg-list, #svg-history, #svg-user, #svg-stat, #svg-logout{
+        #svg-home, #svg-list, #svg-history, #svg-shopping, #svg-user, #svg-stat, #svg-logout{
           color: $primary-light;
         }
       }
@@ -118,7 +118,7 @@
         color: $primary-light;
       }
     }
-    #svg-menu, #svg-home, #svg-list, #svg-history, #svg-user, #svg-stat, #svg-logout{
+    #svg-menu, #svg-home, #svg-list, #svg-history, #svg-shopping, #svg-user, #svg-stat, #svg-logout{
       @include fontAwesomeIcon();
     }
   }
