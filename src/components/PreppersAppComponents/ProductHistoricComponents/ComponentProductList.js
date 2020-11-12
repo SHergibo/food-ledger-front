@@ -482,7 +482,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const deleteData = async (rowId) => {
 
-    if(data.length === 1){
+    if(data.length === 1 && pageIndex > 1){
       setPageIndex(currPageIndex => currPageIndex - 1);
       setUrlPageQueryParam(pageIndex - 1);
     }

@@ -132,7 +132,7 @@ function ProductLog({ history }) {
 </>
 
   const deleteProductLog = async (rowId) => {
-    if(productLog.length === 1){
+    if(productLog.length === 1 && pageIndex > 1){
       setPageIndex(currPageIndex => currPageIndex - 1);
     }
 
@@ -141,7 +141,12 @@ function ProductLog({ history }) {
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
         setProductLog(response.data.arrayData);
-          setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+        if(response.data.totalProduct >= 1){
+          setHasProduct(true);
+        }else{
+          setHasProduct(false);
+        }
       });
   };
 

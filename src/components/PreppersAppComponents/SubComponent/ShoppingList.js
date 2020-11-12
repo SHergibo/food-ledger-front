@@ -122,7 +122,7 @@ function ShoppingList() {
 </>
 
   const deleteShopping = async (rowId) => {
-    if(shoppingList.length === 1){
+    if(shoppingList.length === 1 && pageIndex > 1){
       setPageIndex(currPageIndex => currPageIndex - 1);
     }
 
@@ -131,7 +131,12 @@ function ShoppingList() {
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
         setShoppingList(response.data.arrayData);
-          setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+        if(response.data.totalProduct >= 1){
+          setHasProduct(true);
+        }else{
+          setHasProduct(false);
+        }
       });
   };
 
