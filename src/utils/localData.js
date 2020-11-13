@@ -328,21 +328,21 @@ export const productType = [
 ]
 
 export const dateSendMailGlobal = [
-  { value: 1, label: 'Tout les mois' },
-  { value: 2, label: 'Tout les deux mois' },
-  { value: 3, label: 'Tout les trois mois' },
+  { value: 0, label: 'Tout les mois' },
+  { value: 1, label: 'Tout les deux mois' },
+  { value: 2, label: 'Tout les trois mois' },
 ]
 
 export const dateSendMailShoppingList = [
-  { value: 1, label: 'Toutes les semaines' },
-  { value: 2, label: 'Toutes les deux semaines' },
-  { value: 3, label: 'Toutes les trois semaines' },
-  { value: '1 mois', label: 'Une fois par mois' },
+  { value: 0, label: 'Toutes les semaines' },
+  { value: 1, label: 'Toutes les deux semaines' },
+  { value: 2, label: 'Toutes les trois semaines' },
+  { value: 3, label: 'Tous les mois' },
 ]
 
 export const warningExpirationDate = [
-  { value: 1, label: "Un mois à l'avance" },
-  { value: 2, label: "Deux mois à l'avance" },
-  { value: 3, label: "Trois mois à l'avance" },
+  { value: 0, label: "Un mois à l'avance" },
+  { value: 1, label: "Deux mois à l'avance" },
+  { value: 2, label: "Trois mois à l'avance" },
 ]
 
