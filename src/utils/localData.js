@@ -328,9 +328,9 @@ export const productType = [
 ]
 
 export const dateSendMailGlobal = [
-  { value: 0, label: 'Tout les mois' },
-  { value: 1, label: 'Tout les deux mois' },
-  { value: 2, label: 'Tout les trois mois' },
+  { value: 0, label: 'Tous les mois' },
+  { value: 1, label: 'Tous les deux mois' },
+  { value: 2, label: 'Tous les trois mois' },
 ]
 
 export const dateSendMailShoppingList = [
