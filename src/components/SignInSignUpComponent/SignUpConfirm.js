@@ -138,11 +138,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 name="firstName"
                 type="text"
                 id="fistName"
-                placeholder="Nom"
+                placeholder="Prénom"
                 className="form-input"
                 ref={register({ required: "Ce champ est requis !" })}
               />
-              <label htmlFor="fistName" className="form-label">Nom *</label>
+              <label htmlFor="fistName" className="form-label">Prénom *</label>
               <div className="error-message">
                 <ErrorMessage errors={errors} name="firstName" as="span" />
               </div>
@@ -153,11 +153,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 name="lastName"
                 type="text"
                 id="lastName"
-                placeholder="Prénom"
+                placeholder="Nom"
                 className="form-input"
                 ref={register({ required: "Ce champ est requis !" })}
               />
-              <label htmlFor="lastName" className="form-label">Prénom *</label>
+              <label htmlFor="lastName" className="form-label">Nom *</label>
               <div className="error-message">
                 <ErrorMessage errors={errors} name="lastName" as="span" />
               </div>
