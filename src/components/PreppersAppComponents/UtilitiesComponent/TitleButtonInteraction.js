@@ -2,21 +2,26 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function TitleButtonInteraction({openTitleMessage, setOpenTitleMessage, icon, contentDiv}) {
+function TitleButtonInteraction({title, openTitleMessage, setOpenTitleMessage, icon, contentDiv}) {
   return (
     <>
       <button 
-      className="btn-action-title" 
+      className="btn-action-title"
+      title={title} 
       onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
         {icon}
       </button>
       {openTitleMessage && 
         <div className="title-message">
-          <button 
-          className="btn-close-title-message" 
-          onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
-            <FontAwesomeIcon icon="times" />
-          </button>
+          <div className="header-title-message">
+            <h3>{title}</h3>
+            <button 
+            className="btn-close-title-message" 
+            onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
+          
           {contentDiv}
         </div>
       }
@@ -25,6 +30,7 @@ function TitleButtonInteraction({openTitleMessage, setOpenTitleMessage, icon, co
 }
 
 TitleButtonInteraction.propTypes = {
+  title: PropTypes.string.isRequired,
   openTitleMessage: PropTypes.bool.isRequired,
   setOpenTitleMessage: PropTypes.func.isRequired,
   icon : PropTypes.object.isRequired,
