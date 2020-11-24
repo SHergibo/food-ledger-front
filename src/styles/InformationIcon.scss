@@ -1,3 +1,10 @@
+.multiple-button-interaction{
+  display: flex;
+  button:not(:first-child){
+    margin-left: .5rem;
+  }
+}
+
 .info-icon-container{
   position: relative;
 }

@@ -13,6 +13,7 @@ function ShoppingList() {
   const [errorFetch, setErrorFetch] = useState(false);
   const isMounted = useRef(true);
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
+  const [ deleteAllMessage, setDeleteAllMessage ] = useState(false);
   const { userData } = useUserData();
   const [shoppingList, setShoppingList] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
@@ -88,6 +89,15 @@ function ShoppingList() {
     }
   }, [userData, loadShoppingList]);
 
+  const sendShoppingListEmail = async () => {
+    let sendShoppingListEmailEndPoin = `${apiDomain}/api/${apiVersion}/shopping-lists/send-mail/${userData.householdCode}`;
+
+    await axiosInstance.get(sendShoppingListEmailEndPoin)
+    .then(() => {
+      //TODO animation loading puis checkmark puis remettre l'icône normal;
+    });
+  };
+
   const deleteAllShoppingList = async () => {
     let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/${userData.householdCode}`;
 
@@ -99,10 +109,57 @@ function ShoppingList() {
       });
   };
 
-  let contentTitleInteraction = <>
-  {openTitleMessage && 
-    <div className="title-message">
-      <div>
+  const closeAllTitleMessage = () => {
+    setOpenTitleMessage(!openTitleMessage);
+    setDeleteAllMessage(false);
+  };
+
+  let contentTitleInteractionSmartPhone = <>
+    {openTitleMessage && 
+    <>
+     {!deleteAllMessage &&
+        <div className="multiple-action-container">
+          <button 
+          className="btn-delete-action-no" 
+          onClick={() => {}}>
+            <FontAwesomeIcon icon="download" /> Télécharger la liste de course
+          </button>
+          <button 
+          className="btn-delete-action-no" 
+          onClick={sendShoppingListEmail}>
+            <FontAwesomeIcon icon="envelope" /> Envoyer la liste de course par mail
+          </button>
+          <button 
+          className="btn-delete-action-yes"
+          onClick={()=> {setDeleteAllMessage(!deleteAllMessage)}}>
+            <FontAwesomeIcon icon="trash" /> Supprimer tout le registe !
+          </button>
+        </div>
+     }
+     {deleteAllMessage &&
+      <div className="title-message-container-delete-action">
+        <p>Êtes-vous sur et certain de vouloir supprimer toute la liste de course? Toutes les courses seront perdues !</p>
+        <div className="btn-delete-action-container">
+          <button 
+          className="btn-delete-action-yes"
+          onClick={()=>{deleteAllShoppingList()}}>
+            Oui
+          </button>
+          <button 
+          className="btn-delete-action-no" 
+          onClick={() => {setDeleteAllMessage(!deleteAllMessage)}}>
+            Non
+          </button>
+        </div>
+      </div>
+     }
+    </>
+    }
+  </>;
+
+  let contentTitleInteractionFullScreen = <>
+    {openTitleMessage && 
+      <div className="title-message-container-delete-action">
         <p>Êtes-vous sur et certain de vouloir supprimer toute la liste de course? Toutes les courses seront perdues !</p>
         <div className="btn-delete-action-container">
           <button 
@@ -117,9 +174,8 @@ function ShoppingList() {
           </button>
         </div>
       </div>
-    </div>
-  }
-</>
+    }
+  </>;
 
   const deleteShopping = async (rowId) => {
     if(shoppingList.length === 1 && pageIndex > 1){
@@ -231,12 +287,41 @@ function ShoppingList() {
         }
         
         {shoppingList.length >= 1 &&
-          <TitleButtonInteraction 
-            openTitleMessage={openTitleMessage}
-            setOpenTitleMessage={setOpenTitleMessage}
-            icon={<FontAwesomeIcon icon="trash" />}
-            contentDiv={contentTitleInteraction}
-          />
+        <>
+          {windowWidth >= 992 &&
+            <div className="multiple-button-interaction">
+              <button 
+                className="btn-action-title"
+                title="Télécharger la liste"
+                onClick={() => {}}>
+                <FontAwesomeIcon icon="download" />
+              </button>
+              <button 
+                className="btn-action-title" 
+                title="Envoyer la liste par mail"
+                onClick={sendShoppingListEmail}>
+                <FontAwesomeIcon icon="envelope" />
+              </button>
+              <TitleButtonInteraction
+                title={"Supprimer toute la liste !"}
+                openTitleMessage={openTitleMessage}
+                setOpenTitleMessage={setOpenTitleMessage}
+                icon={<FontAwesomeIcon icon="trash" />}
+                contentDiv={contentTitleInteractionFullScreen}
+              />
+            </div>
+          }
+          {windowWidth < 992 &&
+            <TitleButtonInteraction
+              title={"Actions liste de course"}
+              openTitleMessage={openTitleMessage}
+              setOpenTitleMessage={closeAllTitleMessage}
+              icon={<FontAwesomeIcon icon="cog" />}
+              contentDiv={contentTitleInteractionSmartPhone}
+            />
+          }
+        </>
+
         }
       </div>
 
