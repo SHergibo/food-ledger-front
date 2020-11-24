@@ -111,21 +111,19 @@ function ProductLog({ history }) {
 
   let contentTitleInteraction = <>
   {openTitleMessage && 
-    <div className="title-message">
-      <div>
-        <p>Êtes-vous sur et certain de vouloir supprimer tout le registre? Tous les registres seront perdus !</p>
-        <div className="btn-delete-action-container">
-          <button 
-          className="btn-delete-action-yes"
-          onClick={()=>{deleteAllProductLog()}}>
-            Oui
-          </button>
-          <button 
-          className="btn-delete-action-no" 
-          onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
-            Non
-          </button>
-        </div>
+    <div className="title-message-container-delete-action">
+      <p>Êtes-vous sur et certain de vouloir supprimer tout le registre? Tous les registres seront perdus !</p>
+      <div className="btn-delete-action-container">
+        <button 
+        className="btn-delete-action-yes"
+        onClick={()=>{deleteAllProductLog()}}>
+          Oui
+        </button>
+        <button 
+        className="btn-delete-action-no" 
+        onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
+          Non
+        </button>
       </div>
     </div>
   }
@@ -251,7 +249,8 @@ function ProductLog({ history }) {
       <div className="default-title-container">
         <h1 className="default-h1">Registre des produits</h1>
         {productLog.length >= 1 &&
-          <TitleButtonInteraction 
+          <TitleButtonInteraction
+            title={"Supprimer tout le registre"} 
             openTitleMessage={openTitleMessage}
             setOpenTitleMessage={setOpenTitleMessage}
             icon={<FontAwesomeIcon icon="trash" />}

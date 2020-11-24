@@ -146,9 +146,9 @@ function Profile({ history }) {
 
   let contentTitleInteraction = <>
     {openTitleMessage && 
-      <div className="title-message">
+      <>
         {userHouseholdData.member.length === 1 &&
-          <div>
+          <div className="title-message-container-delete-action">
             <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
             <div className="btn-delete-action-container">
               <button 
@@ -165,7 +165,7 @@ function Profile({ history }) {
           </div>
         }
         {userHouseholdData.member.length > 1 && !didNoTAcceptDelegate &&
-          <div>
+          <div className="title-message-container-delete-action">
             {!delegate &&
               <>
                 <p>Voulez-vous déléguer vos droits d'administrations à un membre de votre famille avant de supprimer votre compte ?</p>
@@ -211,7 +211,7 @@ function Profile({ history }) {
           </div>
         }
         {userHouseholdData.member.length > 1 && didNoTAcceptDelegate &&
-          <div>
+          <div className="title-message-container-delete-action">
             <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
             <div className="btn-delete-action-container">
               <button 
@@ -227,7 +227,7 @@ function Profile({ history }) {
             </div>
           </div>
         }
-      </div>
+      </>
     }
   </>
 
@@ -475,6 +475,7 @@ const notificationRequest = async (id, isAccepted) => {
           <div className="default-title-container">
             <h1 className="default-h1">Profil de {userData.firstname} {userData.lastname}</h1>
             <TitleButtonInteraction 
+              title={"Supprimer son compte"}
               openTitleMessage={openTitleMessage}
               setOpenTitleMessage={setOpenTitleMessage}
               icon={<FontAwesomeIcon icon="trash" />}

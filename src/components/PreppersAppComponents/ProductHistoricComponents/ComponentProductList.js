@@ -514,10 +514,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       });
   }
 
-  let contentTitleInteraction = <form onSubmit={handleSubmitFormOption(udpateUserOptionDate)}>
+  let contentTitleInteraction = <form className="form-standard" onSubmit={handleSubmitFormOption(udpateUserOptionDate)}>
     {userOptionData &&
     <>
-      <h3>Afficher code couleur : </h3>
+      <h4>Afficher code couleur : </h4>
       <label className="container-checkbox-input-interaction" htmlFor="colorCodeDate">
         Pour les dates de péremption : 
         <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormOption()}/>
@@ -656,7 +656,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         <div className="default-title-container">
           <h1 className="default-h1">{title}</h1>
           {requestTo === "products" &&
-            <TitleButtonInteraction 
+            <TitleButtonInteraction
+              title={"Options du tableau"}
               openTitleMessage={openTitleMessage}
               setOpenTitleMessage={setOpenTitleMessage}
               icon={<FontAwesomeIcon icon="cog" />}
