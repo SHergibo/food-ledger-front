@@ -120,14 +120,6 @@ function Nav({ logOut }) {
             </Link>
           </li>
           <li>
-            <Link to="/app/profil">
-              <div className="svg-icon">
-                <FontAwesomeIcon id="svg-user" icon="user" />
-              </div>
-              <span>Profil</span>
-            </Link>
-          </li>
-          <li>
             <Link to="/app/statistiques">
               <div className="svg-icon">
                 <FontAwesomeIcon id="svg-stat" icon="chart-pie" />
@@ -145,6 +137,14 @@ function Nav({ logOut }) {
               </Link>
             </li>
           }
+          <li>
+            <Link to="/app/profil">
+              <div className="svg-icon">
+                <FontAwesomeIcon id="svg-user" icon="user" />
+              </div>
+              <span>Profil</span>
+            </Link>
+          </li>
           <li onClick={logOut}>
             <div className="div-logout">
               <div className="svg-icon" >
