@@ -410,7 +410,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
               }
               {button}
             </button>
-            {success && 
+            {success && number !== 0 &&
               <InformationIcon 
                 className="success-icon"
                 icon={<FontAwesomeIcon icon="check" />}
