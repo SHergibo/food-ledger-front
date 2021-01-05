@@ -183,7 +183,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   useEffect(() => {
     if(showFilter){
       if (queryParsed.expirationDate) {
-        setValue("expirationDate", parseISO(queryParsed.expirationDate));
+        let dateUpperCase = queryParsed.expirationDate.toUpperCase()
+        let unSlugExpDate = dateUpperCase.split('T')[1].replace(/-/g, ":").replace("_", ".");
+        let expDate = `${dateUpperCase.split('T')[0]}T${unSlugExpDate}`;
+        setValue("expirationDate", parseISO(expDate));
       }
       if (queryParsed.brand) {
         let arrayBrand = arrayOptions.filter(item => item.value === queryParsed.brand);
@@ -194,7 +197,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         setValue("type", { value: arrayType[0].value, label: arrayType[0].label });
       }
     }
-
   }, [showFilter, setValue, queryParsed, arrayOptions]);
 
 
