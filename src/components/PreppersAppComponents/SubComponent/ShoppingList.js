@@ -3,6 +3,8 @@ import { useUserData } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
+import exportFromJSON from 'export-from-json';
+import { transformDate } from '../../../helpers/transformDate.helper';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import {columnsShoppingListMobile, columnsShoppingListTablet, columnsShoppingListFullScreen} from "./../../../utils/localData";
 import Table from './../UtilitiesComponent/Table';
@@ -89,10 +91,24 @@ function ShoppingList() {
     }
   }, [userData, loadShoppingList]);
 
-  const sendShoppingListEmail = async () => {
-    let sendShoppingListEmailEndPoin = `${apiDomain}/api/${apiVersion}/shopping-lists/send-mail/${userData.householdCode}`;
+  const downloadShoppingList = async () => {
+    let downloadShoppingListEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/download/${userData.householdCode}`;
 
-    await axiosInstance.get(sendShoppingListEmailEndPoin)
+    await axiosInstance.get(downloadShoppingListEndPoint)
+    .then((response) => {
+      const data = response.data;
+      const date = transformDate(new Date());
+      const fileName = `Liste-de-course-${date}`;
+      const exportType = 'csv';
+
+      exportFromJSON({ data, fileName, exportType });
+    })
+  };
+
+  const sendShoppingListEmail = async () => {
+    let sendShoppingListEmailEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/send-mail/${userData.householdCode}`;
+
+    await axiosInstance.get(sendShoppingListEmailEndPoint)
     .then(() => {
       //TODO animation loading puis checkmark puis remettre l'icône normal;
     });
@@ -293,7 +309,7 @@ function ShoppingList() {
               <button 
                 className="btn-action-title"
                 title="Télécharger la liste"
-                onClick={() => {}}>
+                onClick={downloadShoppingList}>
                 <FontAwesomeIcon icon="download" />
               </button>
               <button 

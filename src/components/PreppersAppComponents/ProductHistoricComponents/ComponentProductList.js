@@ -6,6 +6,7 @@ import ReactSelect from './../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import Loading from '../UtilitiesComponent/Loading';
+import exportFromJSON from 'export-from-json';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
@@ -516,6 +517,25 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       });
   }
 
+  const downloadList = async () => {
+    let downloadListEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/download/${userData.householdCode}`;
+
+    await axiosInstance.get(downloadListEndPoint)
+    .then((response) => {
+      const data = response.data;
+      let fileName= "Document-gestion-de-stock";
+      const date = transformDate(new Date());
+      if(requestTo === "products"){
+        fileName = `Liste-des-produit-${date}`;
+      }else if(requestTo === "historics"){
+        fileName = `Liste-historique-des-produits-${date}`;
+      }
+      const exportType = 'csv';
+
+      exportFromJSON({ data, fileName, exportType });
+    })
+  };
+
   let contentTitleInteraction = <form className="form-standard" onSubmit={handleSubmitFormOption(udpateUserOptionDate)}>
     {userOptionData &&
     <>
@@ -657,15 +677,25 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       <div className="header-list-table">
         <div className="default-title-container">
           <h1 className="default-h1">{title}</h1>
-          {requestTo === "products" &&
-            <TitleButtonInteraction
-              title={"Options du tableau"}
-              openTitleMessage={openTitleMessage}
-              setOpenTitleMessage={setOpenTitleMessage}
-              icon={<FontAwesomeIcon icon="cog" />}
-              contentDiv={contentTitleInteraction}
-            />
-          }
+          <div className="multiple-button-interaction">
+            {hasProduct &&
+              <button 
+                className="btn-action-title"
+                title="Télécharger la liste"
+                onClick={downloadList}>
+                <FontAwesomeIcon icon="download" />
+              </button>
+            }
+            {requestTo === "products" &&
+              <TitleButtonInteraction
+                title={"Options du tableau"}
+                openTitleMessage={openTitleMessage}
+                setOpenTitleMessage={setOpenTitleMessage}
+                icon={<FontAwesomeIcon icon="cog" />}
+                contentDiv={contentTitleInteraction}
+              />
+            }
+          </div>
         </div>
 
         <div>
