@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useUserData, useUserOptionData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
@@ -11,6 +11,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InformationIcon from './../UtilitiesComponent/InformationIcons';
 import Loading from '../UtilitiesComponent/Loading';
+import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -28,6 +29,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const [arrayOptions, setArrayOptions] = useState([]);
   const [minStock, setMinStock] = useState(0);
   const [cssNumberCodeColor, setCssNumberCodeColor] = useState("");
+  const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
 
   const { register, handleSubmit, errors, control, setValue, reset } = useForm();
 
@@ -203,9 +205,52 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
     if(arrayExpDate.length === 0 && formType === "add" && requestUrl === "products"){
       setErrorExpDate(true);
     }
+  };
+
+  const deleteProductHistoric = async () => {
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${value._id}`;
+
+    await axiosInstance.delete(deleteDataEndPoint)
+      .then((response) => {
+        if(response.status === 200){
+          if(requestUrl === "products"){
+            history.push({
+              pathname: '/app/liste-produit',
+            })
+          }else if(requestUrl === "historics"){
+            history.push({
+              pathname: '/app/liste-historique',
+            })
+          }else{
+            history.push({
+              pathname: '/app',
+            })
+          }
+        }
+      });
   }
 
-  const form = <Fragment>
+  let contentTitleInteractionDeleteProductHistoric = <>
+  {openTitleMessage && 
+    <div className="title-message-container-delete-action">
+      <p>Êtes-vous sur et certain de vouloir supprimer ce produit ?</p>
+      <div className="btn-delete-action-container">
+        <button 
+        className="btn-delete-action-yes"
+        onClick={()=>{deleteProductHistoric()}}>
+          Oui
+        </button>
+        <button 
+        className="btn-delete-action-no" 
+        onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
+          Non
+        </button>
+      </div>
+    </div>
+  }
+</>;
+
+  const form = <>
     <div className="input-form-container-with-error">
       <label htmlFor="name">Nom du produit *</label>
       {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." ref={register({ required: true })} />}
@@ -293,7 +338,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         </div>
       </>
     }
-  </Fragment>;
+  </>;
 
   return (
     <div className="default-wrapper">
@@ -319,6 +364,13 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
           </button>
           <h1 className="default-h1">{titleForm}</h1>
         </div>
+        <TitleButtonInteraction
+          title={"Supprimer le produit !"}
+          openTitleMessage={openTitleMessage}
+          setOpenTitleMessage={setOpenTitleMessage}
+          icon={<FontAwesomeIcon icon="trash" />}
+          contentDiv={contentTitleInteractionDeleteProductHistoric}
+        />
       </div>
       
       <div className="container-loading">

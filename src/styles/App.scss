@@ -45,6 +45,7 @@ button, input{
   margin-bottom: 1rem;
   .title-and-return{
     display: flex;
+    align-items: center
   }
   .return-to{
     @include btn-action-title(1.8rem, 2.5rem);
