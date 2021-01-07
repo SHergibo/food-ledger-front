@@ -8,9 +8,12 @@ function Page404({ history }) {
   };
 
   return (
-    <div>
-      <p>404 not found</p>
-      <button onClick={returnHome}>Retour</button>
+    <div className="not-found-container">
+      <h1>Gestion de stock</h1>
+      <div className="not-found-action">
+        <p>404 page non trouvée !</p>
+        <button className="default-btn-action-form" onClick={returnHome}>Retour</button>
+      </div>
     </div>
   )
 }
