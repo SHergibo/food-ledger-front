@@ -530,7 +530,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       }else if(requestTo === "historics"){
         fileName = `Liste-historique-des-produits-${date}`;
       }
-      const exportType = 'csv';
+      const exportType = 'xls';
 
       exportFromJSON({ data, fileName, exportType });
     })

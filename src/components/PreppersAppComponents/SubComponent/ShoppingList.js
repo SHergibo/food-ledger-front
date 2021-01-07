@@ -99,7 +99,7 @@ function ShoppingList() {
       const data = response.data;
       const date = transformDate(new Date());
       const fileName = `Liste-de-course-${date}`;
-      const exportType = 'csv';
+      const exportType = 'xls';
 
       exportFromJSON({ data, fileName, exportType });
     })
