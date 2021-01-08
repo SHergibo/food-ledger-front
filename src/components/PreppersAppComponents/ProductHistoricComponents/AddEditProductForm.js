@@ -349,10 +349,12 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
               if(requestUrl === "products"){
                 history.push({
                   pathname: '/app/liste-produit',
+                  search: sessionStorage.getItem('productQueryParamsFilter')
                 })
               }else if(requestUrl === "historics"){
                 history.push({
                   pathname: '/app/liste-historique',
+                  search: sessionStorage.getItem('historicQueryParamsFilter')
                 })
               }else{
                 history.push({

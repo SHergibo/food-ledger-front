@@ -38,7 +38,7 @@ function Nav({ logOut }) {
         menu.current.style.removeProperty('width');
       }
     }
-  }, [userOptionData, windowWidth])
+  }, [userOptionData, windowWidth]);
 
   const burgerMenu = () => {
     menuResp.current.classList.toggle('display-block');
@@ -60,7 +60,7 @@ function Nav({ logOut }) {
           setUserOptionData(response.data);
         }
       });
-  }
+  };
 
   const interactMenu = () => {
     if (stateMainMenu === false) {
@@ -72,7 +72,6 @@ function Nav({ logOut }) {
       patchOptionData({openMenu: false});
       menu.current.style.removeProperty('width');
     }
-
   };
 
   return (
@@ -96,7 +95,7 @@ function Nav({ logOut }) {
             </Link>
           </li>
           <li>
-            <Link to="/app/liste-produit">
+            <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
               <div className="svg-icon">
                 <FontAwesomeIcon id="svg-list" icon="list" />
               </div>
@@ -104,7 +103,7 @@ function Nav({ logOut }) {
             </Link>
           </li>
           <li>
-            <Link to="/app/liste-historique">
+            <Link to={{ pathname: '/app/liste-historique', search: sessionStorage.getItem('historicQueryParamsFilter') }}>
               <div className="svg-icon">
                 <FontAwesomeIcon id="svg-history" icon="history" />
               </div>

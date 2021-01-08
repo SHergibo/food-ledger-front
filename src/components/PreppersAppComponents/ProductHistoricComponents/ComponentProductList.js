@@ -321,6 +321,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       setQueryParsed(queryObj);
     }
 
+    if(requestTo === "products"){
+      sessionStorage.setItem('productQueryParamsFilter', QueryString.stringify(queryObj));
+    }else if (requestTo === "historics"){
+      sessionStorage.setItem('historicQueryParamsFilter', QueryString.stringify(queryObj));
+    }
+
     history.push({
       pathname: `/app/liste-${urlTo}`,
       search: `${QueryString.stringify(queryObj, { sort: false })}`
@@ -345,6 +351,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
         setSearchObject(searchObj);
         setQueryParsed(queryObj);
+
+        if(requestTo === "products"){
+          sessionStorage.setItem('productQueryParamsFilter', QueryString.stringify(queryObj));
+        }else if (requestTo === "historics"){
+          sessionStorage.setItem('historicQueryParamsFilter', QueryString.stringify(queryObj));
+        }
     
         history.push({
           pathname: `/app/liste-${urlTo}`,
@@ -374,6 +386,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         setSearchObject({});
         setQueryParsed({});
       }
+
+      if(requestTo === "products"){
+        sessionStorage.setItem('productQueryParamsFilter', QueryString.stringify(queryObj));
+      }else if (requestTo === "historics"){
+        sessionStorage.setItem('historicQueryParamsFilter', QueryString.stringify(queryObj));
+      }
+
       history.push({
         pathname: `/app/liste-${urlTo}`,
         search: `${QueryString.stringify(queryObj, { sort: false })}`
@@ -405,6 +424,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
     sessionStorage.removeItem('nameFilter');
     sessionStorage.removeItem('locationFilter');
+
+    if(requestTo === "products"){
+      sessionStorage.removeItem('productQueryParamsFilter');
+    }else if (requestTo === "historics"){
+      sessionStorage.removeItem('historicQueryParamsFilter');
+    }
+    
     reset();
     reset({brand: null, type: null, weight: null, kcal: null, expirationDate: null, location: null, number: null});
     setQueryParsed({});
@@ -443,6 +469,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     setQueryParsed(queryParsed);
     setSortObject(newSortObject);
+
+    if(requestTo === "products"){
+      sessionStorage.setItem('productQueryParamsFilter', QueryString.stringify(queryParsed));
+    }else if (requestTo === "historics"){
+      sessionStorage.setItem('historicQueryParamsFilter', QueryString.stringify(queryParsed));
+    }
 
     history.push({
       pathname: `/app/liste-${urlTo}`,
