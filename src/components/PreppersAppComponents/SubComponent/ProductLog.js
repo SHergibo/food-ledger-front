@@ -26,7 +26,7 @@ function ProductLog({ history }) {
   useEffect(() => {
     if(userData && userData.role !== "admin"){
       history.push({
-        pathname: '/app',
+        pathname: '/app/liste-produit',
       });
     }
   }, [userData, history]);

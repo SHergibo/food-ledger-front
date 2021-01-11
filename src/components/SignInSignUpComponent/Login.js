@@ -35,7 +35,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
   const onSubmit = async (data) => {
     let responseLogin = await loginIn(data);
     if (responseLogin !== 401) {
-      history.push("/app");
+      history.push("/app/liste-produit");
     } else {
       setErrorMessage(true);
     }

@@ -213,17 +213,13 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
         if(response.status === 200){
-          if(requestUrl === "products"){
-            history.push({
-              pathname: '/app/liste-produit',
-            })
-          }else if(requestUrl === "historics"){
+          if(requestUrl === "historics"){
             history.push({
               pathname: '/app/liste-historique',
             })
           }else{
             history.push({
-              pathname: '/app',
+              pathname: '/app/liste-produit',
             })
           }
         }
@@ -358,7 +354,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                 })
               }else{
                 history.push({
-                  pathname: '/app',
+                  pathname: '/app/liste-produit',
                 })
               }
             }}>

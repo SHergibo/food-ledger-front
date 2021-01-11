@@ -74,7 +74,6 @@ function App() {
     <div className="app">
       <Switch>
         <IsLoggedRoute exact path="/" component={SignInUp} />
-        <ProtectedRoute exact path="/app" component={PreppersApp} />
         <ProtectedRoute exact path="/app/liste-produit" component={PreppersApp} />
         <ProtectedRoute exact path="/app/edition-produit/:id" component={PreppersApp} />
         <ProtectedRoute exact path="/app/ajout-produit" component={PreppersApp} />

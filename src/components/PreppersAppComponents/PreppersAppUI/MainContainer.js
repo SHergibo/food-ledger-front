@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { Route } from "react-router-dom";
-import Home from './../SubComponent/Home';
 import ProductList from './../SubComponent/ProductList';
 import EditProduct from './../ProductHistoricComponents/EditProduct';
 import AddProduct from './../ProductHistoricComponents/AddProduct';
@@ -13,8 +12,7 @@ import ShoppingList from './../SubComponent/ShoppingList';
 function MainContainer() {
   return (
     <>
-      <Route exact path="/app" component={Home} />
-      <Route path="/app/liste-produit" component={ProductList} />
+      <Route exact path="/app/liste-produit" component={ProductList} />
       <Route path="/app/edition-produit/:id" component={EditProduct} />
       <Route path="/app/ajout-produit" component={AddProduct} />
       <Route path="/app/liste-historique" component={HistoricList} />

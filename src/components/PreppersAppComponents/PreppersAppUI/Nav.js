@@ -87,14 +87,6 @@ function Nav({ logOut }) {
       <nav ref={menuResp} className="menu">
         <ul onClick={burgerMenu}>
           <li>
-            <Link to="/app">
-              <div className="svg-icon">
-                <FontAwesomeIcon id="svg-home" icon="home"/>
-              </div>
-              <span>Accueil</span>
-            </Link>
-          </li>
-          <li>
             <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
               <div className="svg-icon">
                 <FontAwesomeIcon id="svg-list" icon="list" />
