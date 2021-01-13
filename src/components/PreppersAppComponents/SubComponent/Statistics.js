@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useUserData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
-import { Bar, Doughnut, Pie } from 'react-chartjs-2';
+import { Bar, Doughnut, Pie, Line } from 'react-chartjs-2';
 
 function Statistics() {
   const { userData } = useUserData();
@@ -11,6 +11,8 @@ function Statistics() {
   const labelChartTypeProduct = ['Légume', 'Viande', 'Poisson', 'Fruit', 'Boisson', 'Produit sucré', 'Produit laitier', 'Farineux', 'Céréale', 'Légumineuse'];
   const [dataChartTwo, setDataChartTwo] = useState([]);
   const [dataChartThree, setDataChartThree] = useState([]);
+  const [labelChartFour, setLabelChartFour] = useState([]);
+  const [dataChartFour, setDataChartFour] = useState([]);
   const [allDataChart, setAllDataChart] = useState({});
 
   const loadChartOneData = useCallback(async () => {
@@ -18,9 +20,15 @@ function Statistics() {
       const getChartOneDataEndPoint = `${apiDomain}/api/${apiVersion}/statistics/chart-data/${userData.householdCode}`;
       await axiosInstance.get(getChartOneDataEndPoint)
         .then((response) => {
-          setDataChartOne(response.data.chartOne[Object.keys(response.data.chartOne)[0]]);
+          setDataChartOne(response.data.chartOne[new Date().getFullYear()]);
           setDataChartTwo(response.data.chartTwo);
           setDataChartThree(response.data.chartThree);
+          let arrayLabelChartFour = [];
+          response.data.chartFour[new Date().getFullYear()].forEach((data, index) => {
+            arrayLabelChartFour.push(`${index + 1}`);
+          });
+          setLabelChartFour(arrayLabelChartFour);
+          setDataChartFour(response.data.chartFour[new Date().getFullYear()]);
           setAllDataChart(response.data);
       })
     }
@@ -127,8 +135,49 @@ function Statistics() {
     ],
   };
 
+  const data_ChartFour = {
+    labels: labelChartFour,
+    datasets: [
+      {
+        label: 'N° de produit',
+        data: dataChartFour,
+        fill: false,
+        backgroundColor: 'rgba(3, 62, 129, 0.5)',
+        borderColor: 'rgba(3, 62, 129, 1)',
+      },
+    ],
+  };
+  
+  const options_ChartFour = {
+    responsive: true,
+    scales: {
+      xAxes: [
+        {
+          ticks: {
+            autoSkip: false,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Semaine'
+          }
+        }
+      ],
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ]
+    },
+  };
+
   const switchDataChartOne = (year) => {
     setDataChartOne(allDataChart.chartOne[year]);
+  };
+
+  const switchDataChartFour = (year) => {
+    setDataChartFour(allDataChart.chartFour[year]);
   };
 
 
@@ -161,6 +210,19 @@ function Statistics() {
           <h4>Nombre de Kcal par type de produit</h4>
             <Pie 
             data={data_ChartThree} />
+        </div>
+        <div className="chart">
+          <h4>Nombre de produit par semaine</h4>
+            <ul className="chart-menu-interaction">
+              {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartFour).map((keyName, i) => (
+                <li onClick={()=>switchDataChartFour(keyName)} key={i}>
+                    {keyName}
+                </li>
+              ))}
+            </ul>
+            <Line 
+            data={data_ChartFour} 
+            options={options_ChartFour} />
         </div>
       </div>
     </div>
