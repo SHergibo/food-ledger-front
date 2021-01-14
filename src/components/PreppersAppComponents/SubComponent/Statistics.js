@@ -20,16 +20,16 @@ function Statistics() {
       const getChartOneDataEndPoint = `${apiDomain}/api/${apiVersion}/statistics/chart-data/${userData.householdCode}`;
       await axiosInstance.get(getChartOneDataEndPoint)
         .then((response) => {
-          setDataChartOne(response.data.chartOne[new Date().getFullYear()]);
-          setDataChartTwo(response.data.chartTwo);
-          setDataChartThree(response.data.chartThree);
+          setDataChartOne(response.data.statistics.chartOne[new Date().getFullYear()]);
+          setDataChartTwo(response.data.statistics.chartTwo);
+          setDataChartThree(response.data.statistics.chartThree);
           let arrayLabelChartFour = [];
-          response.data.chartFour[new Date().getFullYear()].forEach((data, index) => {
+          response.data.statistics.chartFour[new Date().getFullYear()].forEach((data, index) => {
             arrayLabelChartFour.push(`${index + 1}`);
           });
           setLabelChartFour(arrayLabelChartFour);
-          setDataChartFour(response.data.chartFour[new Date().getFullYear()]);
-          setAllDataChart(response.data);
+          setDataChartFour(response.data.statistics.chartFour[new Date().getFullYear()]);
+          setAllDataChart(response.data.statistics);
       })
     }
   }, [userData]);
