@@ -1,11 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { useUserData } from './../DataContext';
+import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { Bar, Doughnut, Pie, Line } from 'react-chartjs-2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 function Statistics() {
   const { userData } = useUserData();
+  const isMounted = useRef(true);
+  const [hasStat, setHasStat] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
   const labelChartOne = ['Janvier', 'Février', 'Mars', 'Avril', 'Mais', 'Juin', 'Juillet', 'Aôut', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
   const [dataChartOne, setDataChartOne] = useState([]);
   const labelChartTypeProduct = ['Légume', 'Viande', 'Poisson', 'Fruit', 'Boisson', 'Produit sucré', 'Produit laitier', 'Farineux', 'Céréale', 'Légumineuse'];
@@ -15,30 +22,54 @@ function Statistics() {
   const [dataChartFour, setDataChartFour] = useState([]);
   const [allDataChart, setAllDataChart] = useState({});
 
-  const loadChartOneData = useCallback(async () => {
+  const loadChartData = useCallback(async () => {
     if(userData){
+      setErrorFetch(false);
+      setLoading(true);
       const getChartOneDataEndPoint = `${apiDomain}/api/${apiVersion}/statistics/chart-data/${userData.householdCode}`;
       await axiosInstance.get(getChartOneDataEndPoint)
         .then((response) => {
-          setDataChartOne(response.data.statistics.chartOne[new Date().getFullYear()]);
-          setDataChartTwo(response.data.statistics.chartTwo);
-          setDataChartThree(response.data.statistics.chartThree);
-          let arrayLabelChartFour = [];
-          response.data.statistics.chartFour[new Date().getFullYear()].forEach((data, index) => {
-            arrayLabelChartFour.push(`${index + 1}`);
-          });
-          setLabelChartFour(arrayLabelChartFour);
-          setDataChartFour(response.data.statistics.chartFour[new Date().getFullYear()]);
-          setAllDataChart(response.data.statistics);
-      })
+          if(isMounted.current){
+            if(Object.keys(response.data.statistics).length === 4){
+              setDataChartOne(response.data.statistics.chartOne[new Date().getFullYear()]);
+              setDataChartTwo(response.data.statistics.chartTwo);
+              setDataChartThree(response.data.statistics.chartThree);
+              let arrayLabelChartFour = [];
+              response.data.statistics.chartFour[new Date().getFullYear()].forEach((data, index) => {
+                arrayLabelChartFour.push(`${index + 1}`);
+              });
+              setLabelChartFour(arrayLabelChartFour);
+              setDataChartFour(response.data.statistics.chartFour[new Date().getFullYear()]);
+              setAllDataChart(response.data.statistics);
+              setHasStat(true);
+            }else{
+              setHasStat(false);
+            }
+            setLoading(false);
+          }
+        })
+        .catch((error)=> {
+          let jsonError = JSON.parse(JSON.stringify(error));
+          if(isMounted.current){
+            if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+              setErrorFetch(true);
+            }
+          }
+        });
     }
   }, [userData]);
 
   useEffect(() => {
     if (userData) {
-      loadChartOneData();
+      loadChartData();
     }
-  }, [userData, loadChartOneData]);
+  }, [userData, loadChartData]);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    }
+  }, [isMounted]);
 
 
   const data_ChartOne = {
@@ -186,44 +217,62 @@ function Statistics() {
       <div className="default-title-container">
         <h1 className="default-h1">Statistiques des stocks</h1>
       </div>
-      <div className="chart-container">
-        <div className="chart">
-          <h4>Nombre de produit périmé par mois</h4>
-          <ul className="chart-menu-interaction">
-            {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartOne).map((keyName, i) => (
-              <li onClick={()=>switchDataChartOne(keyName)} key={i}>
-                  {keyName}
-              </li>
-            ))}
-          </ul>
-          <Bar 
-          data={data_ChartOne} 
-          options={options_ChartOne} />
-        </div>
 
-        <div className="chart">
-          <h4>Nombre de produit par type de produit</h4>
-            <Doughnut 
-            data={data_ChartTwo} />
-        </div>
-        <div className="chart">
-          <h4>Nombre de Kcal par type de produit</h4>
-            <Pie 
-            data={data_ChartThree} />
-        </div>
-        <div className="chart">
-          <h4>Nombre de produit par semaine</h4>
-            <ul className="chart-menu-interaction">
-              {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartFour).map((keyName, i) => (
-                <li onClick={()=>switchDataChartFour(keyName)} key={i}>
-                    {keyName}
-                </li>
-              ))}
-            </ul>
-            <Line 
-            data={data_ChartFour} 
-            options={options_ChartFour} />
-        </div>
+      <div className="container-loading">
+        <Loading
+          loading={loading}
+          errorFetch={errorFetch}
+          retryFetch={loadChartData}
+        />
+        {!hasStat &&
+          <div className="no-data">
+            <p>Pas de statistiques disponibles !</p>
+            <p>Ajoutez au minimum un produit pour avoir des statistiques !</p>
+            <Link className="default-btn-blue" to={`/app/ajout-produit`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
+          </div>
+        }
+
+        {hasStat &&
+          <div className="chart-container">
+            <div className="chart">
+              <h4>Nombre de produit périmé par mois</h4>
+              <ul className="chart-menu-interaction">
+                {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartOne).map((keyName, i) => (
+                  <li onClick={()=>switchDataChartOne(keyName)} key={i}>
+                      {keyName}
+                  </li>
+                ))}
+              </ul>
+              <Bar 
+              data={data_ChartOne} 
+              options={options_ChartOne} />
+            </div>
+
+            <div className="chart">
+              <h4>Nombre de produit par type de produit</h4>
+                <Doughnut 
+                data={data_ChartTwo} />
+            </div>
+            <div className="chart">
+              <h4>Nombre de Kcal par type de produit</h4>
+                <Pie 
+                data={data_ChartThree} />
+            </div>
+            <div className="chart">
+              <h4>Nombre de produit par semaine</h4>
+                <ul className="chart-menu-interaction">
+                  {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartFour).map((keyName, i) => (
+                    <li onClick={()=>switchDataChartFour(keyName)} key={i}>
+                        {keyName}
+                    </li>
+                  ))}
+                </ul>
+                <Line 
+                data={data_ChartFour} 
+                options={options_ChartFour} />
+            </div>
+          </div>
+        }
       </div>
     </div>
   )
