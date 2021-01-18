@@ -20,7 +20,8 @@ function Statistics() {
   const [dataChartThree, setDataChartThree] = useState([]);
   const [labelChartFour, setLabelChartFour] = useState([]);
   const [dataChartFour, setDataChartFour] = useState([]);
-  const [allDataChart, setAllDataChart] = useState({});
+  const linkChartOneData = useRef([]);
+  const linkChartFourData = useRef([]);
 
   const loadChartData = useCallback(async () => {
     if(userData){
@@ -31,6 +32,7 @@ function Statistics() {
         .then((response) => {
           if(isMounted.current){
             if(Object.keys(response.data.statistics).length === 4){
+              sessionStorage.setItem('allDataChart', JSON.stringify(response.data.statistics));
               setDataChartOne(response.data.statistics.chartOne[new Date().getFullYear()]);
               setDataChartTwo(response.data.statistics.chartTwo);
               setDataChartThree(response.data.statistics.chartThree);
@@ -40,7 +42,6 @@ function Statistics() {
               });
               setLabelChartFour(arrayLabelChartFour);
               setDataChartFour(response.data.statistics.chartFour[new Date().getFullYear()]);
-              setAllDataChart(response.data.statistics);
               setHasStat(true);
             }else{
               setHasStat(false);
@@ -68,6 +69,7 @@ function Statistics() {
   useEffect(() => {
     return () => {
       isMounted.current = false;
+      sessionStorage.removeItem('allDataChart');
     }
   }, [isMounted]);
 
@@ -203,12 +205,18 @@ function Statistics() {
     },
   };
 
-  const switchDataChartOne = (year) => {
-    setDataChartOne(allDataChart.chartOne[year]);
+  const switchDataChartOne = (year, index) => {
+    let oldLinkChartOneData = linkChartOneData.current.find(element => element.className === 'chart-menu-interaction-active');
+    oldLinkChartOneData.classList.remove('chart-menu-interaction-active');
+    linkChartOneData.current[index].classList.add('chart-menu-interaction-active');
+    setDataChartOne(JSON.parse(sessionStorage.getItem('allDataChart')).chartOne[year]);
   };
 
-  const switchDataChartFour = (year) => {
-    setDataChartFour(allDataChart.chartFour[year]);
+  const switchDataChartFour = (year, index) => {
+    let oldLinkChartFourData = linkChartFourData.current.find(element => element.className === 'chart-menu-interaction-active');
+    oldLinkChartFourData.classList.remove('chart-menu-interaction-active');
+    linkChartFourData.current[index].classList.add('chart-menu-interaction-active');
+    setDataChartFour(JSON.parse(sessionStorage.getItem('allDataChart')).chartFour[year]);
   };
 
 
@@ -237,11 +245,15 @@ function Statistics() {
             <div className="chart">
               <h4>Nombre de produit périmé par mois</h4>
               <ul className="chart-menu-interaction">
-                {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartOne).map((keyName, i) => (
-                  <li onClick={()=>switchDataChartOne(keyName)} key={i}>
-                      {keyName}
-                  </li>
-                ))}
+                {Object.keys(JSON.parse(sessionStorage.getItem('allDataChart')).chartOne).map((keyName, i) => {
+                  let cssClass;
+                  if(i === 0){
+                    cssClass = "chart-menu-interaction-active";
+                  }
+                  return <li ref={(el) => (linkChartOneData.current[i] = el)} className={cssClass} onClick={()=>switchDataChartOne(keyName, i)} key={i}>
+                            {keyName}
+                        </li>
+                })}
               </ul>
               <Bar 
               data={data_ChartOne} 
@@ -261,11 +273,15 @@ function Statistics() {
             <div className="chart">
               <h4>Nombre de produit par semaine</h4>
                 <ul className="chart-menu-interaction">
-                  {Object.keys(allDataChart).length >= 1 && Object.keys(allDataChart.chartFour).map((keyName, i) => (
-                    <li onClick={()=>switchDataChartFour(keyName)} key={i}>
-                        {keyName}
-                    </li>
-                  ))}
+                  {Object.keys(JSON.parse(sessionStorage.getItem('allDataChart')).chartFour).map((keyName, i) => {
+                  let cssClass;
+                  if(i === 0){
+                    cssClass = "chart-menu-interaction-active";
+                  }
+                  return <li ref={(el) => (linkChartFourData.current[i] = el)} className={cssClass} onClick={()=>switchDataChartFour(keyName, i)} key={i}>
+                            {keyName}
+                        </li>
+                })}
                 </ul>
                 <Line 
                 data={data_ChartFour} 

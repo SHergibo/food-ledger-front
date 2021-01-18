@@ -26,6 +26,17 @@
       justify-content: center;
       li{
         margin: 0 .5rem;
+        cursor: pointer;
+        color: $primary-color;
+        text-decoration: underline;
+        text-decoration-color: $white;
+        transition: .2s ease-in-out;
+        &:hover{
+          text-decoration-color: $primary-color;
+        }
+      }
+      .chart-menu-interaction-active{
+        text-decoration-color: $primary-color;
       }
     }
   }
