@@ -88,6 +88,7 @@ function Statistics() {
   };
   
   const options_ChartOne = {
+    maintainAspectRatio: false,
     scales: {
       yAxes: [
         {
@@ -168,6 +169,10 @@ function Statistics() {
     ],
   };
 
+  const options_ChartTwoThree = {
+    maintainAspectRatio: false,
+  };
+
   const data_ChartFour = {
     labels: labelChartFour,
     datasets: [
@@ -182,7 +187,7 @@ function Statistics() {
   };
   
   const options_ChartFour = {
-    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       xAxes: [
         {
@@ -255,20 +260,28 @@ function Statistics() {
                         </li>
                 })}
               </ul>
-              <Bar 
-              data={data_ChartOne} 
-              options={options_ChartOne} />
+              <div className="canvas-chart-container">
+                <Bar 
+                data={data_ChartOne} 
+                options={options_ChartOne} />
+              </div>
             </div>
 
             <div className="chart">
               <h4>Nombre de produit par type de produit</h4>
+              <div className="canvas-chart-container-pie">
                 <Doughnut 
-                data={data_ChartTwo} />
+                data={data_ChartTwo} 
+                options={options_ChartTwoThree} />
+              </div>
             </div>
             <div className="chart">
               <h4>Nombre de Kcal par type de produit</h4>
+              <div className="canvas-chart-container-pie">
                 <Pie 
-                data={data_ChartThree} />
+                data={data_ChartThree} 
+                options={options_ChartTwoThree} />
+              </div>
             </div>
             <div className="chart">
               <h4>Nombre de produit par semaine</h4>
@@ -283,9 +296,11 @@ function Statistics() {
                         </li>
                 })}
                 </ul>
-                <Line 
-                data={data_ChartFour} 
-                options={options_ChartFour} />
+                <div className="canvas-chart-container">
+                  <Line 
+                  data={data_ChartFour} 
+                  options={options_ChartFour} />
+                </div>
             </div>
           </div>
         }

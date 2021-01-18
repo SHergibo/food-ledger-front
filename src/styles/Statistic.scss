@@ -8,6 +8,16 @@
     }
     width: 100%;
   }
+  .canvas-chart-container{
+    position: relative;
+    margin: auto;
+    height: 40vh;
+  }
+  .canvas-chart-container-pie{
+    position: relative;
+    margin: auto;
+    height: 60vh;
+  }
 }
 
 /*Media queries*/
@@ -38,6 +48,16 @@
       .chart-menu-interaction-active{
         text-decoration-color: $primary-color;
       }
+    }
+    .canvas-chart-container{
+      position: relative;
+      margin: auto;
+      height: 85%;
+    }
+    .canvas-chart-container-pie{
+      position: relative;
+      margin: auto;
+      height: 85%;
     }
   }
 }
