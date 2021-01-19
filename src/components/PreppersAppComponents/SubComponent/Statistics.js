@@ -211,17 +211,26 @@ function Statistics() {
   };
 
   const switchDataChartOne = (year, index) => {
-    let oldLinkChartOneData = linkChartOneData.current.find(element => element.className === 'chart-menu-interaction-active');
-    oldLinkChartOneData.classList.remove('chart-menu-interaction-active');
-    linkChartOneData.current[index].classList.add('chart-menu-interaction-active');
-    setDataChartOne(JSON.parse(sessionStorage.getItem('allDataChart')).chartOne[year]);
+    try {
+      let oldLinkChartOneData = linkChartOneData.current.find(element => element.className === 'chart-menu-interaction-active');
+      oldLinkChartOneData.classList.remove('chart-menu-interaction-active');
+      linkChartOneData.current[index].classList.add('chart-menu-interaction-active');
+      setDataChartOne(JSON.parse(sessionStorage.getItem('allDataChart')).chartOne[year]);
+    } catch (error) {
+      loadChartData();
+    }
+    
   };
 
   const switchDataChartFour = (year, index) => {
-    let oldLinkChartFourData = linkChartFourData.current.find(element => element.className === 'chart-menu-interaction-active');
-    oldLinkChartFourData.classList.remove('chart-menu-interaction-active');
-    linkChartFourData.current[index].classList.add('chart-menu-interaction-active');
-    setDataChartFour(JSON.parse(sessionStorage.getItem('allDataChart')).chartFour[year]);
+    try {
+      let oldLinkChartFourData = linkChartFourData.current.find(element => element.className === 'chart-menu-interaction-active');
+      oldLinkChartFourData.classList.remove('chart-menu-interaction-active');
+      linkChartFourData.current[index].classList.add('chart-menu-interaction-active');
+      setDataChartFour(JSON.parse(sessionStorage.getItem('allDataChart')).chartFour[year]);
+    } catch (error) {
+      loadChartData();
+    }
   };
 
 
@@ -250,7 +259,7 @@ function Statistics() {
             <div className="chart">
               <h4>Nombre de produit périmé par mois</h4>
               <ul className="chart-menu-interaction">
-                {Object.keys(JSON.parse(sessionStorage.getItem('allDataChart')).chartOne).map((keyName, i) => {
+                {sessionStorage.getItem('allDataChart') && JSON.parse(sessionStorage.getItem('allDataChart')).chartOne && Object.keys(JSON.parse(sessionStorage.getItem('allDataChart')).chartOne).map((keyName, i) => {
                   let cssClass;
                   if(i === 0){
                     cssClass = "chart-menu-interaction-active";
@@ -286,7 +295,7 @@ function Statistics() {
             <div className="chart">
               <h4>Nombre de produit par semaine</h4>
                 <ul className="chart-menu-interaction">
-                  {Object.keys(JSON.parse(sessionStorage.getItem('allDataChart')).chartFour).map((keyName, i) => {
+                  {sessionStorage.getItem('allDataChart') && JSON.parse(sessionStorage.getItem('allDataChart')).chartFour && Object.keys(JSON.parse(sessionStorage.getItem('allDataChart')).chartFour).map((keyName, i) => {
                   let cssClass;
                   if(i === 0){
                     cssClass = "chart-menu-interaction-active";
