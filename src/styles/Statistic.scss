@@ -4,18 +4,42 @@
   .chart{
     h4{
       text-align: center;
+      font-size: 1.2rem;
+      margin: .5rem;
       color: $primary-color;
     }
     width: 100%;
   }
-  .canvas-chart-container{
+  .chart-menu-interaction{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    li{
+      margin: 0 .5rem;
+      padding: .2rem 0;
+      cursor: pointer;
+      color: $primary-color;
+      text-decoration: underline;
+      text-decoration-color: $white;
+      transition: .2s ease-in-out;
+      &:hover{
+        text-decoration-color: $primary-color;
+      }
+    }
+    .chart-menu-interaction-active{
+      text-decoration-color: $primary-color;
+    }
+  }
+
+  .canvas-chart-container, .canvas-chart-container-pie{
     position: relative;
     margin: auto;
+    margin-bottom: 2rem;
+  }
+  .canvas-chart-container{
     height: 40vh;
   }
   .canvas-chart-container-pie{
-    position: relative;
-    margin: auto;
     height: 60vh;
   }
 }
@@ -30,33 +54,17 @@
     flex-wrap: wrap;
     .chart{
       width: 50%;
-    }
-    .chart-menu-interaction{
-      display: flex;
-      justify-content: center;
-      li{
-        margin: 0 .5rem;
-        cursor: pointer;
+      h4{
+        text-align: center;
+        font-size: 1rem;
+        margin: 0;
         color: $primary-color;
-        text-decoration: underline;
-        text-decoration-color: $white;
-        transition: .2s ease-in-out;
-        &:hover{
-          text-decoration-color: $primary-color;
-        }
-      }
-      .chart-menu-interaction-active{
-        text-decoration-color: $primary-color;
       }
     }
-    .canvas-chart-container{
+    .canvas-chart-container, .canvas-chart-container-pie{
       position: relative;
       margin: auto;
-      height: 85%;
-    }
-    .canvas-chart-container-pie{
-      position: relative;
-      margin: auto;
+      margin-bottom: 0;
       height: 85%;
     }
   }
