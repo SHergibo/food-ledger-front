@@ -1,6 +1,7 @@
 import React, { useContext, useState, createContext, useEffect, useRef } from 'react';
 import axiosInstance from './../../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
+import { io } from "socket.io-client";
 
 const UserDataContext = createContext();
 const UserHouseholdDataContext = createContext();
@@ -29,6 +30,7 @@ export function DataProvider({children}) {
   const [userOptionData, setUserOptionData] = useState();
   const [notification, setNotification] = useState([]);
   const isMounted = useRef(true);
+  const socketRef = useRef();
 
   useEffect(() => {
 
@@ -43,6 +45,10 @@ export function DataProvider({children}) {
     };
     getUserData();
 
+    socketRef.current = io(apiDomain);
+    socketRef.current.on('hello', function(msg){
+      console.log('Message from back-end', msg)
+   });
     // const fetchNotification = async () => {
     //   const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
     //   await axiosInstance.get(getNotificationEndPoint)
@@ -61,9 +67,9 @@ export function DataProvider({children}) {
     // }, 30000);
 
 
-    // return () => {
-    //   clearInterval(getNotification);
-    // };
+    return () => {
+      socketRef.current.disconnect();
+    };
   }, []);
 
   useEffect(() => {
