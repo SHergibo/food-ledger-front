@@ -46,9 +46,15 @@ export function DataProvider({children}) {
     getUserData();
 
     socketRef.current = io(apiDomain);
-    socketRef.current.on('hello', function(msg){
-      console.log('Message from back-end', msg)
-   });
+    socketRef.current.on("connect", () => {
+      console.log(socketRef.current.id);
+      socketRef.current.emit('setSocketId', {userId: localStorage.getItem('user_id'), socketId: socketRef.current.id});
+    });
+
+    socketRef.current.on("notification", (arg) => {
+      console.log(arg);
+    });
+
     // const fetchNotification = async () => {
     //   const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
     //   await axiosInstance.get(getNotificationEndPoint)
