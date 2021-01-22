@@ -45,33 +45,27 @@ export function DataProvider({children}) {
     };
     getUserData();
 
+    const fetchNotification = async () => {
+      const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
+      await axiosInstance.get(getNotificationEndPoint)
+        .then((response) => {
+          if(isMounted.current){
+            setNotification(response.data);
+          }
+          //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
+        });
+
+    };
+    fetchNotification();
+
     socketRef.current = io(apiDomain);
     socketRef.current.on("connect", () => {
-      console.log(socketRef.current.id);
       socketRef.current.emit('setSocketId', {userId: localStorage.getItem('user_id'), socketId: socketRef.current.id});
     });
 
-    socketRef.current.on("notification", (arg) => {
-      console.log(arg);
+    socketRef.current.on("notifSocketIo", (notif) => {
+      setNotification(notification => [...notification, ...notif]);
     });
-
-    // const fetchNotification = async () => {
-    //   const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
-    //   await axiosInstance.get(getNotificationEndPoint)
-    //     .then((response) => {
-    //       if(isMounted.current){
-    //         setNotification(response.data);
-    //       }
-    //       //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
-    //     });
-
-    // };
-    // fetchNotification();
-
-    // const getNotification = setInterval(() => {
-    //   fetchNotification();
-    // }, 30000);
-
 
     return () => {
       socketRef.current.disconnect();

@@ -1,8 +1,55 @@
 .container-sub{
   display: none;
   width: 100%;
+  padding: 1.5rem;
   background-color: $primary-color;
   color: $white;
+  .notification{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 0 .8rem;
+    overflow: hidden;
+    border-radius: .8rem;
+    background-color: $white;
+    color: $primary-color;
+    box-shadow: 0px 7px 16px -11px rgba(0, 0, 0, 0.75);
+    &:not(:last-child){
+      margin-bottom: 1rem;
+    }
+    .notification-message{
+      display: flex;
+      align-items: center;
+      padding: .8rem 0;
+    }
+    .notification-interaction{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid $primary-color;
+      button{
+        display: flex;
+        align-items: center;
+        padding: 0 .8rem;
+        min-height: 2.5rem;
+        height: 50%;
+        font-family: "Roboto", sans-serif;
+        line-height: 1.4;
+        color: $primary-color;
+        font-size: 1rem;
+        font-weight: 700;
+        background-color: $white;
+        border: none;
+        cursor: pointer;
+        transition: .3s ease-in-out;
+        &:first-child{
+          border-bottom: 1px solid $primary-color;
+        }
+        &:hover{
+          background-color: $grey;
+        }
+      }
+    }
+  }
 }
 
 
