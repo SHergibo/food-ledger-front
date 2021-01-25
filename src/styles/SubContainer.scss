@@ -1,5 +1,10 @@
 .container-sub{
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
   width: 100%;
   padding: 1.5rem;
   background-color: $primary-color;
@@ -52,16 +57,35 @@
   }
 }
 
+.anim-container-sub-enter {
+  right: -25rem;
+}
+
+.anim-container-sub-enter-done {
+  right: 0;
+}
+.anim-container-sub-enter-active {
+  right: 0;
+  transition: right 0.5s ease-in-out;
+}
+.anim-container-sub-exit {
+  right: 0;
+}
+.anim-container-sub-exit-active {
+  right: -25rem;
+  transition: right 0.5s ease-in-out;
+}
+
 
 /*Media queries*/
 
-/*Full-screen*/
-@media screen and (min-width: 1553px){
+/*Tablet*/
+@media screen and (min-width: 640px) {
   .container-sub{
-    display: block;
+    left: unset;
     width: 25rem;
-    min-width: 25rem;
     height: inherit;
     min-height: calc(100vh - 4rem);
+    overflow-y: auto;
   }
 }

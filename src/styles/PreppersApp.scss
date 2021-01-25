@@ -1,6 +1,8 @@
 .container-row{
+  position: relative;
   display: block;
   height: 100%;
+  overflow: hidden;
 }
 
 .container-column{

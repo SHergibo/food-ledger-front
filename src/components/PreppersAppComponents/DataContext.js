@@ -64,7 +64,7 @@ export function DataProvider({children}) {
     });
 
     socketRef.current.on("notifSocketIo", (notif) => {
-      setNotification(notification => [...notification, ...notif]);
+      setNotification(notification => [...notification, notif]);
     });
 
     return () => {

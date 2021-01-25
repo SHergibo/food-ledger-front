@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataProvider } from './DataContext';
 import { logout, refreshToken } from './../../utils/Auth';
 import Nav from './PreppersAppUI/Nav';
 import SubNav from './PreppersAppUI/SubNav';
 import MainContainer from './PreppersAppUI/MainContainer';
+import { CSSTransition } from 'react-transition-group';
 import SubContainer from './PreppersAppUI/SubContainer';
 import PropTypes from 'prop-types';
 
 function PreppersApp({ history }) {
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(() => {
@@ -18,6 +20,10 @@ function PreppersApp({ history }) {
       clearInterval(refreshTokenInterval);
     };
   }, []);
+
+  let showNotif = () => {
+    setShowNotification(!showNotification);
+  };
 
   let logOut = async () => {
     await logout();
@@ -32,11 +38,19 @@ function PreppersApp({ history }) {
         />
         <div className="container-column">
           <SubNav
+            showNotif={showNotif}
             logOut={logOut}
           />
           <div className="container-row">
             <MainContainer />
-            <SubContainer />
+            <CSSTransition
+              in={showNotification}
+              timeout={500}
+              classNames="anim-container-sub"
+              unmountOnExit
+            >
+              <SubContainer />
+            </CSSTransition>
           </div>
         </div>
       </div>
