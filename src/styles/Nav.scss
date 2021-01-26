@@ -39,24 +39,26 @@
   background-color: $primary-color;
 }
 
+.svg-icon-responsive-container{
+  display: flex;
+}
+
 .svg-icon{
   display: none;
 }
 
 .svg-icon-responsive{
   @include svgIcon();
-}
-
-.burger-menu-svg {
-  @include svgFill(30px);
+  #svg-notification, #svg-burger, #svg-close{
+    @include fontAwesomeIcon();
+  }
+  &:last-child{
+    margin-right: 0;
+  }
 }
 
 .display-block{
   display: block;
-}
-
-.display-svg-menu{
-  display: none;
 }
 
 /*Media queries*/
@@ -106,13 +108,6 @@
 
   .svg-icon{
     @include svgIcon();
-  }
-
-  .burger-menu-svg{
-    display: none;
-  }
-
-  .svg-icon{
     &:hover{
       #svg-menu{
         color: $primary-light;

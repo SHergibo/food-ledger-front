@@ -11,6 +11,23 @@
   user-select: none;
 }
 
+.info-notification{
+  position: relative;
+  .number-nofitication{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -.2rem;
+    right: -.3rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: $red;
+    color: $white;
+    border-radius: 50%;
+  }
+}
+
 /*Media queries*/
 
 /*Full-screen*/
@@ -39,22 +56,6 @@
 
   .svg-no-margin{
     margin: 0;
-  }
-
-  .info-notification{
-    position: relative;
-    .number-nofitication{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      top: -.2rem;
-      right: -.3rem;
-      width: 1.5rem;
-      height: 1.5rem;
-      background-color: $red;
-      border-radius: 50%;
-    }
   }
 
   .user-profile-link{

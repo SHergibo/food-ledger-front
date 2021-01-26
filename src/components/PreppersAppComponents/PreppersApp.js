@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { DataProvider } from './DataContext';
 import { logout, refreshToken } from './../../utils/Auth';
 import Nav from './PreppersAppUI/Nav';
@@ -9,7 +9,30 @@ import SubContainer from './PreppersAppUI/SubContainer';
 import PropTypes from 'prop-types';
 
 function PreppersApp({ history }) {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showNotification, setShowNotification] = useState(false);
+
+  const responsive = useCallback(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', responsive);
+    return () => {
+      window.removeEventListener('resize', responsive);
+    }
+  }, [responsive]);
+
+  //Todo créer une route comme protected.route pour gérer la route notification hors responsive mobile
+  useEffect(() => {
+      if(windowWidth > 640 && history.location.pathname === "/app/notification" && history.length <= 2){
+        history.push({
+          pathname: '/app/liste-produit',
+        })
+      }else if (windowWidth > 640 && history.location.pathname === "/app/notification" && history.length > 2){
+        history.goBack();
+      }
+  }, [windowWidth, history]);
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(() => {
@@ -34,6 +57,7 @@ function PreppersApp({ history }) {
     <DataProvider>
       <div className="container-prepper-app">
         <Nav
+          history={history}
           logOut={logOut}
         />
         <div className="container-column">

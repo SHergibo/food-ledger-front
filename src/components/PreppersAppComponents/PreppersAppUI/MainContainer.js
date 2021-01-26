@@ -8,6 +8,7 @@ import Profile from './../SubComponent/Profile';
 import Statistics from './../SubComponent/Statistics';
 import ProductLog from './../SubComponent/ProductLog';
 import ShoppingList from './../SubComponent/ShoppingList';
+import SubContainer from './../PreppersAppUI/SubContainer'
 
 function MainContainer() {
   return (
@@ -22,6 +23,7 @@ function MainContainer() {
       <Route path="/app/statistiques" component={Statistics} />
       <Route path="/app/registre-produit" component={ProductLog} />
       <Route path="/app/liste-de-course" component={ShoppingList} />
+      <Route path="/app/notification" component={SubContainer} />
     </>
   )
 }

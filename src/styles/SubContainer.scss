@@ -1,11 +1,6 @@
 .container-sub{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
   width: 100%;
+  min-height: calc(100vh - 5rem);
   padding: 1.5rem;
   background-color: $primary-color;
   color: $white;
@@ -57,35 +52,41 @@
   }
 }
 
-.anim-container-sub-enter {
-  right: -25rem;
-}
-
 .anim-container-sub-enter-done {
-  right: 0;
+  display: none;
 }
-.anim-container-sub-enter-active {
-  right: 0;
-  transition: right 0.5s ease-in-out;
-}
-.anim-container-sub-exit {
-  right: 0;
-}
-.anim-container-sub-exit-active {
-  right: -25rem;
-  transition: right 0.5s ease-in-out;
-}
-
 
 /*Media queries*/
 
 /*Tablet*/
 @media screen and (min-width: 640px) {
+  .anim-container-sub-enter {
+    right: -25rem;
+  }
+  
+  .anim-container-sub-enter-done {
+    right: 0;
+    display: block;
+  }
+  .anim-container-sub-enter-active {
+    right: 0;
+    transition: right 0.5s ease-in-out;
+  }
+  .anim-container-sub-exit {
+    right: 0;
+  }
+  .anim-container-sub-exit-active {
+    right: -25rem;
+    transition: right 0.5s ease-in-out;
+  }
+
   .container-sub{
+    position: absolute;
+    z-index: 10;
     left: unset;
     width: 25rem;
-    height: inherit;
     min-height: calc(100vh - 4rem);
+    height: inherit;
     overflow-y: auto;
   }
 }

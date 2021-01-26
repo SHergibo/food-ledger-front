@@ -1,20 +1,22 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
-import { useUserData, useUserOptionData } from './../DataContext';
+import { useUserData, useUserOptionData, useNotificationData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Nav({ logOut }) {
+function Nav({ history, logOut }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
+  const { notification } = useNotificationData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [stateMainMenu, setStateMainMenu] = useState();
+  const [closedMenu, setClosedMenu] = useState(false);
+  const [hasNotif, setHasNotif] = useState(false);
+  const [arrayNotifLength, setArrayNotifLength] = useState(0);
   const menuResp = useRef(null);
-  const burgerSvg = useRef(null);
-  const deleteSvg = useRef(null);
   const menu = useRef(null);
   const isMounted = useRef(true);
 
@@ -39,16 +41,24 @@ function Nav({ logOut }) {
       }
     }
   }, [userOptionData, windowWidth]);
+  
+  useEffect(() => {
+    if (notification.length >= 1) {
+      let arrayLength = notification.length;
+      setArrayNotifLength(arrayLength);
+      setHasNotif(true);
+    }else{
+      setHasNotif(false);
+    }
+  }, [userData, notification]);
 
   const burgerMenu = () => {
     menuResp.current.classList.toggle('display-block');
 
-    if (burgerSvg.current.classList.contains('display-svg-menu')) {
-      burgerSvg.current.classList.remove('display-svg-menu');
-      deleteSvg.current.classList.add('display-svg-menu');
-    } else {
-      burgerSvg.current.classList.add('display-svg-menu');
-      deleteSvg.current.classList.remove('display-svg-menu');
+    if(closedMenu){
+      setClosedMenu(false);
+    }else{
+      setClosedMenu(true);
     }
   };
 
@@ -74,6 +84,16 @@ function Nav({ logOut }) {
     }
   };
 
+  const goToNotification = () => {
+    if(history.location.pathname === "/app/notification"){
+      history.goBack();
+    }else{
+      history.push({
+        pathname: '/app/notification',
+      })
+    }
+  };
+
   return (
     <div ref={menu} className="main-menu">
       <div className="interact-menu">
@@ -82,7 +102,6 @@ function Nav({ logOut }) {
         </div>
         <Logo />
       </div>
-
 
       <nav ref={menuResp} className="menu">
         <ul onClick={burgerMenu}>
@@ -146,21 +165,25 @@ function Nav({ logOut }) {
           </li>
         </ul>
       </nav>
-      <div ref={burgerSvg} id="burger-svg" className="svg-icon-responsive burger-menu-svg" onClick={burgerMenu}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-labelledby="title" //TODO changer le svg avec fontAwesome
-          aria-describedby="desc" role="img" xmlnsXlink="http://www.w3.org/1999/xlink">
-          <path data-name="layer2"
-            fill="#202020" d="M2 8h60v8H2zm0 20h60v8H2z"></path>
-          <path data-name="layer1" fill="#202020" d="M2 48h60v8H2z"></path>
-        </svg>
-      </div>
-      <div ref={deleteSvg} id="delete-svg" className="svg-icon-responsive burger-menu-svg display-svg-menu" onClick={burgerMenu}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-labelledby="title" //TODO changer le svg avec fontAwesome
-          aria-describedby="desc" role="img" xmlnsXlink="http://www.w3.org/1999/xlink">
-          <path data-name="layer1"
-            fill="#202020" d="M51 17.25L46.75 13 32 27.75 17.25 13 13 17.25 27.75 32 13 46.75 17.25 51 32 36.25 46.75 51 51 46.75 36.25 32 51 17.25z"></path>
-        </svg>
-      </div>
+      {windowWidth < 640 &&
+        <div className="svg-icon-responsive-container">
+          <div className="svg-icon-responsive info-notification burger-menu-svg" onClick={goToNotification}>
+            {hasNotif &&
+              <div className="number-nofitication">{arrayNotifLength}</div>
+            }
+            <FontAwesomeIcon id="svg-notification" icon="bell" />
+          </div>
+          {!closedMenu ? 
+            <div className="svg-icon-responsive" onClick={burgerMenu}>
+              <FontAwesomeIcon id="svg-burger" icon="bars" />
+            </div> :
+            <div className="svg-icon-responsive" onClick={burgerMenu}>
+              <FontAwesomeIcon id="svg-close" icon="times" />
+            </div>
+          }
+        </div>
+      }
+      
     </div>
   )
 }

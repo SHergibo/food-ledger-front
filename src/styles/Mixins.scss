@@ -129,21 +129,6 @@
   cursor: pointer;
 }
 
-@mixin svgFill($height) {
-  svg {
-    height: $height;
-    path {
-      fill: $primary-color;
-      transition: 0.2s ease-in-out;
-    }
-    &:hover {
-      path {
-        fill: $white;
-      }
-    }
-  }
-}
-
 @mixin fontAwesomeIcon() {
   color: $primary-color;
   width: 1.5rem;

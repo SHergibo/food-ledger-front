@@ -84,6 +84,7 @@ function App() {
         <ProtectedRoute exact path="/app/statistiques" component={PreppersApp} />
         <ProtectedRoute exact path="/app/registre-produit" component={PreppersApp} />
         <ProtectedRoute exact path="/app/liste-de-course" component={PreppersApp} />
+        <ProtectedRoute exact path="/app/notification" component={PreppersApp} />
         <Route path="*" component={Page404} />
       </Switch>
     </div>

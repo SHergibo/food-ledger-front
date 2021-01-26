@@ -5,7 +5,6 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 
 function SubContainer() {
   const { notification, setNotification } = useNotificationData();
-  console.log(notification)
 
   const interactionNotification = async (urlRequest, id, accepted) => {
     const requestNotificationEndPoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${accepted}`;
