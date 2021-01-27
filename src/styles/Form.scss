@@ -6,7 +6,7 @@
 .input-form-container-with-error{
   @include input-form-container();
   position: relative;
-  margin-bottom: .2rem;
+  margin-bottom: .25rem;
   padding-bottom: .8rem;
   .error-message-form {
     position: absolute;
@@ -64,5 +64,12 @@
   }
   .input-form-date-picker{
     width: calculRem(230px);
+  }
+  .form-inline{
+    display: flex;
+    margin-bottom: .25rem;
+    .input-form-container-with-error{
+      margin-bottom: 0;
+    }
   }
 }

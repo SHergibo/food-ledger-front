@@ -28,19 +28,23 @@ function Profile({ history }) {
     mode: "onChange"
   });
 
-  const { register : registerFormOne, handleSubmit : handleSubmitFormOne, errors : errorsFormOne } = useForm({
+  const { register : registerFormUser, handleSubmit : handleSubmitFormUser, errors : errorsFormUser } = useForm({
     mode: "onChange"
   });
 
-  const { register : registerFormTwo, handleSubmit : handleSubmitFormTwo, setValue : setValueFormTwo, control : controlFormTwo } = useForm({
+  const { register : registerFormFamillyName, handleSubmit : handleSubmitFormFamillyName, errors : errorsFormFamillyName } = useForm({
     mode: "onChange"
   });
 
-  const { register : registerFormThree, handleSubmit : handleSubmitFormThree, errors : errorsFormThree, setValue: setValueFormThree, control: controlFormThree } = useForm({
+  const { register : registerFormEmailing, handleSubmit : handleSubmitFormEmailing, setValue : setValueFormEmailing, control : controlFormEmailing } = useForm({
     mode: "onChange"
   });
 
-  const { register : registerFormFour, handleSubmit : handleSubmitFormFour } = useForm({
+  const { register : registerFormProduct, handleSubmit : handleSubmitFormProduct, errors : errorsFormProduct, setValue: setValueFormProduct, control: controlFormProduct } = useForm({
+    mode: "onChange"
+  });
+
+  const { register : registerFormProductTable, handleSubmit : handleSubmitProductTable } = useForm({
     mode: "onChange"
   });
 
@@ -109,16 +113,16 @@ function Profile({ history }) {
   useEffect(() => {
     if(userOptionData){
       if (userOptionData.dateMailGlobal) {
-        setValueFormTwo("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
+        setValueFormEmailing("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
       }
       if (userOptionData.dateMailGlobal) {
-        setValueFormTwo("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
+        setValueFormEmailing("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
       }
       if (userOptionData.warningExpirationDate) {
-        setValueFormThree("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
+        setValueFormProduct("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
       }
     }
-  }, [userOptionData, setValueFormTwo, setValueFormThree]);
+  }, [userOptionData, setValueFormEmailing, setValueFormProduct]);
 
 
   const deleteUser = async (data) => {
@@ -236,20 +240,20 @@ function Profile({ history }) {
       <>
         <div className="input-form-container-with-error">
           <label htmlFor="firstname">Prénom *</label>
-          <input name="firstname" className="input-form" type="text" id="firstname" placeholder="Prénom..." defaultValue={userData.firstname} ref={registerFormOne({ required: true })} />
-          {errorsFormOne.firstname && <span className="error-message-form">Ce champ est requis</span>}
+          <input name="firstname" className="input-form" type="text" id="firstname" placeholder="Prénom..." defaultValue={userData.firstname} ref={registerFormUser({ required: true })} />
+          {errorsFormUser.firstname && <span className="error-message-form">Ce champ est requis</span>}
         </div>
 
         <div className="input-form-container-with-error">
           <label htmlFor="lastname">Nom *</label>
-          <input name="lastname" className="input-form" type="text" id="lastname" placeholder="Nom..." defaultValue={userData.lastname} ref={registerFormOne({ required: true })} />
-          {errorsFormOne.firstname && <span className="error-message-form">Ce champ est requis</span>}
+          <input name="lastname" className="input-form" type="text" id="lastname" placeholder="Nom..." defaultValue={userData.lastname} ref={registerFormUser({ required: true })} />
+          {errorsFormUser.lastname && <span className="error-message-form">Ce champ est requis</span>}
         </div>
 
         <div className="input-form-container-with-error">
           <label htmlFor="email">E-mail *</label>
-          <input name="email" className="input-form" type="mail" id="email" placeholder="Prénom..." defaultValue={userData.email} ref={registerFormOne({ required: true })} />
-          {errorsFormOne.firstname && <span className="error-message-form">Ce champ est requis</span>}
+          <input name="email" className="input-form" type="mail" id="email" placeholder="Prénom..." defaultValue={userData.email} ref={registerFormUser({ required: true })} />
+          {errorsFormUser.email && <span className="error-message-form">Ce champ est requis</span>}
         </div>
 
         <div className="default-action-form-container">
@@ -276,25 +280,60 @@ function Profile({ history }) {
       });
   };
 
-  let userAdminOption = 
-  <div>
+  let notificationList =
+  <>
     {notification.length >= 1 &&
-      <div>
-        <h2 className="default-h2">Notifications</h2>
-        <ul>
-          {notification.map(item => {
-            return (
-              <li key={item._id}>
-                {item.fullName} {item.senderUserCode}
-                <button onClick={()=> {notificationRequest(item._id, "yes")}}>Accepter</button>
-                <button onClick={()=> {notificationRequest(item._id, "no")}}>Refuser</button>
-              </li>
-            )
-          })}
-        </ul>
+    <>
+      <div className="default-title-container delimiter-title">
+        <h1 className="default-h1">Listes des notifications</h1>
       </div>
+
+      <div>
+        
+          <div>
+            <h2 className="default-h2">Notifications</h2>
+            <ul>
+              {notification.map(item => {
+                return (
+                  <li key={item._id}>
+                    {item.fullName} {item.senderUserCode}
+                    <button onClick={()=> {notificationRequest(item._id, "yes")}}>Accepter</button>
+                    <button onClick={()=> {notificationRequest(item._id, "no")}}>Refuser</button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+      </div>
+    </>
     }
-  </div>;
+  </>;
+
+  const updateFamillyName = () => {
+
+  };
+
+  let famillyOptions = 
+  <>
+    {userHouseholdData && 
+      <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
+        <div className="input-form-container-with-error">
+          <label htmlFor="famillyName">Nom de la famille *</label>
+          <input name="famillyName" className="input-form" type="mail" id="famillyName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
+          {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
+        </div>
+        <div className="default-action-form-container">
+          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
+          {successFormOne && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon="check" />}
+            />
+          }
+        </div>
+      </form>
+    }
+  </>;
 
 const notificationRequest = async (id, isAccepted) => {
   const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${id}?acceptedRequest=${isAccepted}`;
@@ -311,7 +350,7 @@ const notificationRequest = async (id, isAccepted) => {
     {userOptionData && 
       <>
         <label className="container-checkbox-input" htmlFor="sendMailGlobal">Recevoir le mail d'information sur vos stocks : 
-          <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} ref={registerFormTwo()}/>
+          <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} ref={registerFormEmailing()}/>
           <span className="checkmark-checkbox"></span>
         </label>
 
@@ -326,13 +365,13 @@ const notificationRequest = async (id, isAccepted) => {
             isClearable={false}
             placeholder="Interval d'envoi..."
             arrayOptions={dateSendMailGlobal}
-            control={controlFormTwo}
+            control={controlFormEmailing}
             defaultValue={""}
           />
         </div>
 
         <label className="container-checkbox-input" htmlFor="sendMailShoppingList">Recevoir le mail liste de course : 
-          <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" defaultChecked={userOptionData.sendMailShoppingList} ref={registerFormTwo()}/>
+          <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" defaultChecked={userOptionData.sendMailShoppingList} ref={registerFormEmailing()}/>
           <span className="checkmark-checkbox"></span>
         </label>
 
@@ -347,7 +386,7 @@ const notificationRequest = async (id, isAccepted) => {
             isClearable={false}
             placeholder="Interval d'envoi..."
             arrayOptions={dateSendMailShoppingList}
-            control={controlFormTwo}
+            control={controlFormEmailing}
             defaultValue={""}
           />
         </div>
@@ -379,19 +418,19 @@ const notificationRequest = async (id, isAccepted) => {
             isClearable={false}
             placeholder="Interval d'envoi..."
             arrayOptions={warningExpirationDate}
-            control={controlFormThree}
+            control={controlFormProduct}
             defaultValue={""}
           />
         </div>
 
         <div className="input-form-container">
           <label htmlFor="minimalProductStockGlobal">Stock minimum global *</label>
-          <input className="input-form" name="minimalProductStockGlobal" type="number" id="minimalProductStockGlobal" placeholder="Stock minimum..." defaultValue={userOptionData.minimalProductStockGlobal} ref={registerFormThree({required: true})} />
-          {errorsFormThree.minimalProductStockGlobal && <span className="error-message-form">Ce champ est requis</span>}
+          <input className="input-form" name="minimalProductStockGlobal" type="number" id="minimalProductStockGlobal" placeholder="Stock minimum..." defaultValue={userOptionData.minimalProductStockGlobal} ref={registerFormProduct({required: true})} />
+          {errorsFormProduct.minimalProductStockGlobal && <span className="error-message-form">Ce champ est requis</span>}
         </div>
 
         <label className="container-checkbox-input" htmlFor="updateAllMinimalProductStock">Utiliser le stock global pour les stocks entrées manuellement : 
-          <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} ref={registerFormThree()}/>
+          <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} ref={registerFormProduct()}/>
           <span className="checkmark-checkbox"></span>
         </label>
         <div className="default-action-form-container">
@@ -412,13 +451,13 @@ const notificationRequest = async (id, isAccepted) => {
     {userOptionData && 
       <>
         <label className="container-checkbox-input" htmlFor="colorCodeDate">Afficher le code couleur pour les dates de péremption : 
-          <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormFour()}/>
+          <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormProductTable()}/>
           <span className="checkmark-checkbox"></span>
         </label>
 
         <label className="container-checkbox-input" htmlFor="colorCodeStock">
           Afficher le code couleur pour les stock minimum de produits : 
-          <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} ref={registerFormFour()}/>
+          <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} ref={registerFormProductTable()}/>
           <span className="checkmark-checkbox"></span>
         </label>
 
@@ -483,25 +522,23 @@ const notificationRequest = async (id, isAccepted) => {
             />
           </div>
 
-          <form onSubmit={handleSubmitFormOne(updateUserData)}>
+          <form onSubmit={handleSubmitFormUser(updateUserData)}>
             {userForm}
           </form>
 
-          {userData.role === "admin" &&
-            <>
-              <div className="default-title-container delimiter-title">
-                <h1 className="default-h1">Options administrateur</h1>
-              </div>
+          {notificationList}
 
-              {userAdminOption}
-            </>
-          }
+          <div className="default-title-container delimiter-title">
+            <h1 className="default-h1">Options Famille</h1>
+          </div>
+
+          {famillyOptions}
 
           <div className="default-title-container delimiter-title">
             <h1 className="default-h1">Options e-mailing</h1>
           </div>
           
-          <form onSubmit={handleSubmitFormTwo(updateUserOptionMailingData)}>
+          <form onSubmit={handleSubmitFormEmailing(updateUserOptionMailingData)}>
             {userOptionMailingForm}
           </form>
 
@@ -509,7 +546,7 @@ const notificationRequest = async (id, isAccepted) => {
             <h1 className="default-h1">Options produit</h1>
           </div>
 
-          <form onSubmit={handleSubmitFormThree(updateUserOptionProductData)}>
+          <form onSubmit={handleSubmitFormProduct(updateUserOptionProductData)}>
             {userOptionProductForm}
           </form>
 
@@ -517,7 +554,7 @@ const notificationRequest = async (id, isAccepted) => {
             <h1 className="default-h1">Options tableau de produits</h1>
           </div>
 
-          <form onSubmit={handleSubmitFormFour(updateUserOptionProductTableData)}>
+          <form onSubmit={handleSubmitProductTable(updateUserOptionProductTableData)}>
             {userOptionProductTableForm}
           </form>
         </>

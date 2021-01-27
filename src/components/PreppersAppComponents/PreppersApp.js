@@ -23,7 +23,7 @@ function PreppersApp({ history }) {
     }
   }, [responsive]);
 
-  //Todo créer une route comme protected.route pour gérer la route notification hors responsive mobile
+  //TODO créer une route comme protected.route pour gérer la route notification hors responsive mobile
   useEffect(() => {
       if(windowWidth > 640 && history.location.pathname === "/app/notification" && history.length <= 2){
         history.push({

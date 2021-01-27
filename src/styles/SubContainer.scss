@@ -4,6 +4,10 @@
   padding: 1.5rem;
   background-color: $primary-color;
   color: $white;
+  .zero-notification{
+    text-align: center;
+    font-size: 1.5rem;
+  }
   .notification{
     display: flex;
     justify-content: space-between;

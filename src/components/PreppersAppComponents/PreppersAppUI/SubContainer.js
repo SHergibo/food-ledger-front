@@ -15,19 +15,24 @@ function SubContainer() {
   };
   return (
     <div className="container-sub">
-    {notification.map((notif) => {
-      return(
-        <div className="notification" key={notif._id}>
-          <div className="notification-message">
-            {notif.message}
-          </div>
-          <div className="notification-interaction">
-            <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
-            <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
-          </div>
-        </div>
-      )
-    })}
+      {notification.length <= 0 ?
+        <p className="zero-notification">Pas de notification !</p> :
+        <>
+        {notification.map((notif) => {
+          return(
+            <div className="notification" key={notif._id}>
+              <div className="notification-message">
+                {notif.message}
+              </div>
+              <div className="notification-interaction">
+                <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
+              </div>
+            </div>
+          )
+        })}
+      </>
+      }
     </div>
   )
 }
