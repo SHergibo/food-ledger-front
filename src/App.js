@@ -35,7 +35,8 @@ import {
   faClipboardList,
   faShoppingCart,
   faEnvelope,
-  faDownload
+  faDownload,
+  faExchangeAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -66,7 +67,8 @@ library.add(
   faClipboardList,
   faShoppingCart,
   faEnvelope,
-  faDownload
+  faDownload,
+  faExchangeAlt
 );
 
 function App() {

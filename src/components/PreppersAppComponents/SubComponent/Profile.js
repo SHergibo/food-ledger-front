@@ -12,16 +12,19 @@ import InformationIcon from './../UtilitiesComponent/InformationIcons';
 
 function Profile({ history }) {
   const { userData, setUserData } = useUserData();
-  const { userHouseholdData } = useUserHouseHoldData();
+  const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const { notification, setNotification } = useNotificationData();
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const [ delegate, setDelegate ] = useState(false);
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
-  const [ successFormOne, setSuccessFormOne ] = useState(false);
-  const [ successFormTwo, setSuccessFormTwo ] = useState(false);
-  const [ successFormThree, setSuccessFormThree ] = useState(false);
-  const [ successFormFour, setSuccessFormFour ] = useState(false);
+  const [ successFormUser, setSuccessFormUser ] = useState(false);
+  const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
+  const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
+  const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
+  const [ successFormEmailing, setSuccessFormEmailing ] = useState(false);
+  const [ successFormProduct, setSuccessFormProduct ] = useState(false);
+  const [ successFormProductTable, setSuccessFormProductTable ] = useState(false);
   const isMounted = useRef(true);
 
   const { register : registerFormDelegate, handleSubmit : handleSubmitFormDelegate } = useForm({
@@ -33,6 +36,14 @@ function Profile({ history }) {
   });
 
   const { register : registerFormFamillyName, handleSubmit : handleSubmitFormFamillyName, errors : errorsFormFamillyName } = useForm({
+    mode: "onChange"
+  });
+
+  const { register : registerFormAddUser, handleSubmit : handleSubmitFormAddUser} = useForm({
+    mode: "onChange"
+  });
+
+  const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly} = useForm({
     mode: "onChange"
   });
 
@@ -56,52 +67,88 @@ function Profile({ history }) {
   }, [openTitleMessage])
 
   useEffect(() => {
-    let timerSuccessOne;
-    if(successFormOne){
-      timerSuccessOne = setTimeout(() => {
-        setSuccessFormOne(false);
+    let timerSuccessFormUser;
+    if(successFormUser){
+      timerSuccessFormUser = setTimeout(() => {
+        setSuccessFormUser(false);
       }, 5000);
     }
     return () => {
-      clearTimeout(timerSuccessOne);
+      clearTimeout(timerSuccessFormUser);
     }
-  }, [successFormOne]);
+  }, [successFormUser]);
 
   useEffect(() => {
-    let timerSuccessTwo;
-    if(successFormTwo){
-      timerSuccessTwo = setTimeout(() => {
-        setSuccessFormTwo(false);
+    let timerSuccessFormFamillyName;
+    if(successFormFamillyName){
+      timerSuccessFormFamillyName = setTimeout(() => {
+        setSuccessFormFamillyName(false);
       }, 5000);
     }
     return () => {
-      clearTimeout(timerSuccessTwo);
+      clearTimeout(timerSuccessFormFamillyName);
     }
-  }, [successFormTwo]);
+  }, [successFormFamillyName]);
 
   useEffect(() => {
-    let timerSuccessThree;
-    if(successFormThree){
-      timerSuccessThree = setTimeout(() => {
-        setSuccessFormThree(false);
+    let timerSuccessFormAddUser;
+    if(successFormAddUser){
+      timerSuccessFormAddUser = setTimeout(() => {
+        setSuccessFormAddUser(false);
       }, 5000);
     }
     return () => {
-      clearTimeout(timerSuccessThree);
+      clearTimeout(timerSuccessFormAddUser);
     }
-  }, [successFormThree]);
+  }, [successFormAddUser]);
 
   useEffect(() => {
-    let timerSuccessFour;
-    if(successFormFour){
-      timerSuccessFour = setTimeout(() => {
-        setSuccessFormFour(false);
+    let timerSuccessFormSwitchFamilly;
+    if(successFormSwitchFamilly){
+      timerSuccessFormSwitchFamilly = setTimeout(() => {
+        setSuccessFormSwitchFamilly(false);
       }, 5000);
     }
     return () => {
-      clearTimeout(timerSuccessFour);
+      clearTimeout(timerSuccessFormSwitchFamilly);
     }
-  }, [successFormFour]);
+  }, [successFormSwitchFamilly]);
+
+  useEffect(() => {
+    let timerSuccessFormEmailing;
+    if(successFormEmailing){
+      timerSuccessFormEmailing = setTimeout(() => {
+        setSuccessFormEmailing(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessFormEmailing);
+    }
+  }, [successFormEmailing]);
+
+  useEffect(() => {
+    let timerSuccessFormProduct;
+    if(successFormProduct){
+      timerSuccessFormProduct = setTimeout(() => {
+        setSuccessFormProduct(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessFormProduct);
+    }
+  }, [successFormProduct]);
+
+  useEffect(() => {
+    let timerSuccessProductTable;
+    if(successFormProductTable){
+      timerSuccessProductTable = setTimeout(() => {
+        setSuccessFormProductTable(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessProductTable);
+    }
+  }, [successFormProductTable]);
 
 
   useEffect(() => {
@@ -258,7 +305,7 @@ function Profile({ history }) {
 
         <div className="default-action-form-container">
           <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-          {successFormOne && 
+          {successFormUser && 
             <InformationIcon 
               className="success-icon"
               icon={<FontAwesomeIcon icon="check" />}
@@ -275,7 +322,7 @@ function Profile({ history }) {
       .then((response) => {
         if(isMounted.current){
           setUserData(response.data);
-          setSuccessFormOne(true);
+          setSuccessFormUser(true);
         }
       });
   };
@@ -309,29 +356,112 @@ function Profile({ history }) {
     }
   </>;
 
-  const updateFamillyName = () => {
+  const updateFamillyName = async (data) => {
+    const patchHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userHouseholdData._id}`;
+    await axiosInstance.patch(patchHouseholdDataEndPoint, data)
+      .then((response) => {
+        if(isMounted.current){
+          setUserHouseholdData(response.data);
+          setSuccessFormFamillyName(true);
+        }
+      });
+  };
 
+  const switchFamilly = async (data) => {
+    // const patchHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userHouseholdData._id}`;
+    // await axiosInstance.patch(patchHouseholdDataEndPoint, data)
+    //   .then((response) => {
+    //     if(isMounted.current){
+    //       setUserHouseholdData(response.data);
+    //       setSuccessFormFamillyName(true);
+    //     }
+    //   });
+  };
+
+  const addUserToFamilly = async (data) => {
+    // const patchHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userHouseholdData._id}`;
+    // await axiosInstance.patch(patchHouseholdDataEndPoint, data)
+    //   .then((response) => {
+    //     if(isMounted.current){
+    //       setUserHouseholdData(response.data);
+    //       setSuccessFormFamillyName(true);
+    //     }
+    //   });
   };
 
   let famillyOptions = 
   <>
-    {userHouseholdData && 
-      <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
-        <div className="input-form-container-with-error">
-          <label htmlFor="famillyName">Nom de la famille *</label>
-          <input name="famillyName" className="input-form" type="mail" id="famillyName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
-          {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
+    {userHouseholdData && userData &&
+      <>
+        <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
+          <div className="input-form-container-with-error">
+            <label htmlFor="famillyName">Nom de la famille *</label>
+            <input name="famillyName" className="input-form" type="mail" id="famillyName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
+            {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
+          </div>
+          <div className="default-action-form-container">
+            <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
+            {successFormFamillyName && 
+              <InformationIcon 
+                className="success-icon"
+                icon={<FontAwesomeIcon icon="check" />}
+              />
+            }
+          </div>
+        </form>
+
+        <div>
+          <h2 className="default-h2">Membres de la famille</h2>
+          <ul>
+            {userHouseholdData.member.map(member => {
+              return (
+                <li key={`member-${member.userId}`}>
+                  {member.firstname} {member.lastname} 
+                  {member.userId === userHouseholdData.userId ? " admin" : " user"}
+                  {userData.role === "admin" && 
+                  //TODO ne pas affiche le btn pour son propre compte user
+                    <button>Retirer de la famille</button>
+                  }
+                </li>
+              )
+            })}
+          </ul>
         </div>
-        <div className="default-action-form-container">
-          <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-          {successFormOne && 
-            <InformationIcon 
-              className="success-icon"
-              icon={<FontAwesomeIcon icon="check" />}
-            />
-          }
-        </div>
-      </form>
+        
+        {userData.role === "admin" &&
+          <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
+            <div className="input-form-container">
+              <label htmlFor="addUserCode">Ajouter un membre</label>
+              <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." ref={registerFormAddUser()} />
+            </div>
+            <div className="default-action-form-container">
+              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="plus" /> Ajouter</button>
+              {successFormAddUser && 
+                <InformationIcon 
+                  className="success-icon"
+                  icon={<FontAwesomeIcon icon="check" />}
+                />
+              }
+            </div>
+          </form>
+        }
+
+        <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
+          <div className="input-form-container">
+            <label htmlFor="switchFamillyCode">Changer de famille</label>
+            <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." ref={registerFormSwitchFamilly()} />
+          </div>
+          <div className="default-action-form-container">
+            <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="exchange-alt" /> Changer</button>
+            {successFormSwitchFamilly && 
+              <InformationIcon 
+                className="success-icon"
+                icon={<FontAwesomeIcon icon="check" />}
+              />
+            }
+          </div>
+        </form>
+      </>
     }
   </>;
 
@@ -393,7 +523,7 @@ const notificationRequest = async (id, isAccepted) => {
 
         <div className="default-action-form-container">
           <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-          {successFormTwo && 
+          {successFormEmailing && 
             <InformationIcon 
               className="success-icon"
               icon={<FontAwesomeIcon icon="check" />}
@@ -435,7 +565,7 @@ const notificationRequest = async (id, isAccepted) => {
         </label>
         <div className="default-action-form-container">
           <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-          {successFormThree && 
+          {successFormProduct && 
             <InformationIcon 
               className="success-icon"
               icon={<FontAwesomeIcon icon="check" />}
@@ -463,7 +593,7 @@ const notificationRequest = async (id, isAccepted) => {
 
         <div className="default-action-form-container">
           <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-          {successFormFour && 
+          {successFormProductTable && 
             <InformationIcon 
               className="success-icon"
               icon={<FontAwesomeIcon icon="check" />}
@@ -488,21 +618,21 @@ const notificationRequest = async (id, isAccepted) => {
   const updateUserOptionMailingData = async (data) => {
     let success = patchOptionData(data);
     if(success){
-      setSuccessFormTwo(true);
+      setSuccessFormEmailing(true);
     }
   };
 
   const updateUserOptionProductData = async (data) => {
     let success = patchOptionData(data);
     if(success){
-      setSuccessFormThree(true);
+      setSuccessFormProduct(true);
     }
   };
 
   const updateUserOptionProductTableData = async (data) => {
     let success = patchOptionData(data);
     if(success){
-      setSuccessFormFour(true);
+      setSuccessFormProductTable(true);
     }
   };
 
