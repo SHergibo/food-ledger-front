@@ -368,25 +368,35 @@ function Profile({ history }) {
   };
 
   const switchFamilly = async (data) => {
-    // const patchHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userHouseholdData._id}`;
-    // await axiosInstance.patch(patchHouseholdDataEndPoint, data)
-    //   .then((response) => {
-    //     if(isMounted.current){
-    //       setUserHouseholdData(response.data);
-    //       setSuccessFormFamillyName(true);
-    //     }
-    //   });
+    let switchFamillyData = {
+      usercode : `${userData.usercode}`, 
+      type : "userToHousehold",
+      householdCode : `${data.switchFamillyCode}`
+    }
+    const switchFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
+
+    await axiosInstance.post(switchFamillyEndPoint, switchFamillyData)
+      .then((response) => {
+        if(isMounted.current){
+          setSuccessFormSwitchFamilly(true);
+        }
+      });
   };
 
   const addUserToFamilly = async (data) => {
-    // const patchHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userHouseholdData._id}`;
-    // await axiosInstance.patch(patchHouseholdDataEndPoint, data)
-    //   .then((response) => {
-    //     if(isMounted.current){
-    //       setUserHouseholdData(response.data);
-    //       setSuccessFormFamillyName(true);
-    //     }
-    //   });
+    let addUserData = {
+      usercode : `${data.addUserCode}`, 
+      type : "householdToUser",
+      householdCode : `${userData.householdCode}`
+    }
+
+    const addUserToFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
+    await axiosInstance.post(addUserToFamillyEndPoint, addUserData)
+      .then((response) => {
+        if(isMounted.current){
+          setSuccessFormAddUser(true);
+        }
+      });
   };
 
   let famillyOptions = 
