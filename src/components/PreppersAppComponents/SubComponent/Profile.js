@@ -22,12 +22,16 @@ function Profile({ history }) {
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
   const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
+  const [ successFormDelegate, setSuccessFormDelegate ] = useState(false);
+  const [ btnDisabledFormDelegate, setBtnDisabledFormDelegate ] = useState(true);
+  const [ warningMessageDelegate, setWarningMessageDelegate ] = useState(false);
   const [ successFormEmailing, setSuccessFormEmailing ] = useState(false);
   const [ successFormProduct, setSuccessFormProduct ] = useState(false);
   const [ successFormProductTable, setSuccessFormProductTable ] = useState(false);
   const isMounted = useRef(true);
+  const btnDelegateForm = useRef(null);
 
-  const { register : registerFormDelegate, handleSubmit : handleSubmitFormDelegate } = useForm({
+  const { register : registerFormDelegateWhenDeleting, handleSubmit : handleSubmitFormDelegateWhenDeleting } = useForm({
     mode: "onChange"
   });
 
@@ -36,6 +40,10 @@ function Profile({ history }) {
   });
 
   const { register : registerFormFamillyName, handleSubmit : handleSubmitFormFamillyName, errors : errorsFormFamillyName } = useForm({
+    mode: "onChange"
+  });
+
+  const { register : registerFormDelegateWhenSwitching, handleSubmit : handleSubmitFormDelegateWhenSwitching } = useForm({
     mode: "onChange"
   });
 
@@ -89,6 +97,18 @@ function Profile({ history }) {
       clearTimeout(timerSuccessFormFamillyName);
     }
   }, [successFormFamillyName]);
+
+  useEffect(() => {
+    let timerSuccessFormDelegate;
+    if(successFormDelegate){
+      timerSuccessFormDelegate = setTimeout(() => {
+        setSuccessFormDelegate(false);
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(timerSuccessFormDelegate);
+    }
+  }, [successFormDelegate]);
 
   useEffect(() => {
     let timerSuccessFormAddUser;
@@ -238,7 +258,7 @@ function Profile({ history }) {
             {delegate &&
               <>
                 <p>Choississez le membre à qui vous voulez déléguer les droits administrations de cette famille !</p>
-                <form className="form-delegate" onSubmit={handleSubmitFormDelegate(deleteUser)}>
+                <form className="form-delegate" onSubmit={handleSubmitFormDelegateWhenDeleting(deleteUser)}>
                   {userHouseholdData.member.map((item, index) => {
                     if(userData._id !== item.userId && item.isFlagged === false){
                       let defaultChecked = false;
@@ -246,8 +266,8 @@ function Profile({ history }) {
                         defaultChecked = true;
                       }
                       return (
-                        <label key={index} className="container-radio-input" htmlFor={`delegateMember${index}`}>{item.firstname} {item.lastname} : 
-                          <input type="radio" name="delegateRadioInput" id={`delegateMember${index}`} value={item.usercode} defaultChecked={defaultChecked} ref={registerFormDelegate()}/>
+                        <label key={`delMember-${index}`} className="container-radio-input" htmlFor={`delegateMemberDelete${index}`}>{item.firstname} {item.lastname} : 
+                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={item.usercode} defaultChecked={defaultChecked} ref={registerFormDelegateWhenDeleting()}/>
                           <span className="radio-checkmark"></span>
                         </label>
                       )
@@ -367,6 +387,24 @@ function Profile({ history }) {
       });
   };
 
+  const enableSubmitBtn = (usercode) => {
+    if(userData.role === "admin" && usercode === userData.usercode){
+      setBtnDisabledFormDelegate(true);
+      setWarningMessageDelegate(false);
+      btnDelegateForm.current.classList.remove('default-btn-action-form');
+      btnDelegateForm.current.classList.add('default-btn-disabled-form');
+    }else{
+      setBtnDisabledFormDelegate(false);
+      setWarningMessageDelegate(true);
+      btnDelegateForm.current.classList.remove('default-btn-disabled-form');
+      btnDelegateForm.current.classList.add('default-btn-action-form');
+    }
+  }
+
+  const delegateUser = (data) => {
+    console.log(data)
+  }
+
   const switchFamilly = async (data) => {
     let switchFamillyData = {
       usercode : `${userData.usercode}`, 
@@ -422,20 +460,52 @@ function Profile({ history }) {
 
         <div>
           <h2 className="default-h2">Membres de la famille</h2>
-          <ul>
-            {userHouseholdData.member.map(member => {
-              return (
-                <li key={`member-${member.userId}`}>
-                  {member.firstname} {member.lastname} 
-                  {member.userId === userHouseholdData.userId ? " admin" : " user"}
-                  {userData.role === "admin" && 
-                  //TODO ne pas affiche le btn pour son propre compte user
-                    <button>Retirer de la famille</button>
+          <form onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
+            <ul>
+              {userHouseholdData.member.map((member, index) => {
+                if(member.isFlagged === false){
+                  let defaultChecked = false;
+                  if(userData.role === "admin" && member.usercode === userData.usercode){
+                    defaultChecked = true;
                   }
-                </li>
-              )
-            })}
-          </ul>
+                  return (
+                    <li key={`member-${member.userId}`}>
+                    {member.firstname} {member.lastname} 
+                    {member.userId === userHouseholdData.userId ? " admin" : " user"}
+                    {userData.role === "admin" &&
+                      <> 
+                        <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> : 
+                          <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.usercode} defaultChecked={defaultChecked} ref={registerFormDelegateWhenSwitching()}/>
+                          <span className="radio-checkmark"></span>
+                        </label>
+                        {(userData.role === "admin" && member.usercode === userData.usercode) ? "" : <button>Retirer de la famille</button>}
+                      </>
+                    }
+                  </li>
+                   
+                  )
+                }else{
+                  return null
+                }
+              })}
+            </ul>
+            <div className="default-action-form-container">
+              <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">Déléguer droits administrateur</button>
+              {successFormDelegate && 
+                <InformationIcon 
+                  className="success-icon"
+                  icon={<FontAwesomeIcon icon="check" />}
+                />
+              }
+              {warningMessageDelegate &&
+              <InformationIcon 
+                className="warning-icon"
+                icon={<FontAwesomeIcon icon="exclamation" />}
+                message="Vous êtes sur le point de déléguer vos droits d'administrateur à une autre personne de votre famille !"
+              />
+            }
+            </div>
+          </form>
         </div>
         
         {userData.role === "admin" &&
