@@ -36,7 +36,8 @@ import {
   faShoppingCart,
   faEnvelope,
   faDownload,
-  faExchangeAlt
+  faExchangeAlt,
+  faDoorOpen
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -68,7 +69,8 @@ library.add(
   faShoppingCart,
   faEnvelope,
   faDownload,
-  faExchangeAlt
+  faExchangeAlt,
+  faDoorOpen
 );
 
 function App() {
