@@ -67,9 +67,9 @@ export function DataProvider({children}) {
       setNotification(notification => [...notification, notif]);
     });
 
-    socketRef.current.on("switchFamilly", (updatedFamillyData) => {
-      setUserData(updatedFamillyData.userData);
-      setUserHouseholdData(updatedFamillyData.householdData);
+    socketRef.current.on("updateUserAndFamillyData", (data) => {
+      setUserData(data.userData);
+      setUserHouseholdData(data.householdData);
     });
 
     socketRef.current.on("updateFamilly", (householdData) => {
