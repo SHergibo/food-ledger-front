@@ -401,8 +401,19 @@ function Profile({ history }) {
     }
   }
 
-  const delegateUser = (data) => {
-    console.log(data)
+  const delegateUser = async (data) => {
+    const switchAdminRightsData = {
+      userId : data.delegateRadioInput,
+      householdId : userHouseholdData._id
+    }
+    const switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/switch-admin-rights`;
+
+    await axiosInstance.post(switchAdminRightsEndPoint, switchAdminRightsData)
+      .then((response) => {
+        if(isMounted.current){
+          setSuccessFormDelegate(true);
+        }
+      });
   }
 
   const switchFamilly = async (data) => {
@@ -459,36 +470,65 @@ function Profile({ history }) {
         </form>
 
         <div>
-          <h2 className="default-h2">Membres de la famille</h2>
-          <form onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
-            <ul>
-              {userHouseholdData.member.map((member, index) => {
-                if(member.isFlagged === false){
-                  let defaultChecked = false;
-                  if(userData.role === "admin" && member.usercode === userData.usercode){
-                    defaultChecked = true;
-                  }
-                  return (
-                    <li key={`member-${member.userId}`}>
-                    {member.firstname} {member.lastname} 
-                    {member.userId === userHouseholdData.userId ? " admin" : " user"}
-                    {userData.role === "admin" &&
-                      <> 
-                        <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> : 
-                          <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.usercode} defaultChecked={defaultChecked} ref={registerFormDelegateWhenSwitching()}/>
-                          <span className="radio-checkmark"></span>
-                        </label>
-                        {(userData.role === "admin" && member.usercode === userData.usercode) ? "" : <button>Retirer de la famille</button>}
+          
+          <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
+            <h2 className="default-h2">Membres de la famille</h2>
+            <div className="container-list-table list-table-profile">
+              <table className="list-table">
+                <thead className="thead-no-cursor">
+                  <tr>
+                    <th>Nom</th>
+                    <th>Rôle</th>
+                    {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                      <>
+                        <th>Droits administrateur</th>
+                        <th>Retirer le membre</th>
                       </>
                     }
-                  </li>
-                   
-                  )
-                }else{
-                  return null
-                }
-              })}
-            </ul>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userHouseholdData.member.map((member, index) => {
+                    if(member.isFlagged === false){
+                      let defaultChecked = false;
+                      if(userData.role === "admin" && member.usercode === userData.usercode){
+                        defaultChecked = true;
+                      }
+                      return (
+                        <tr key={`memberTable-${index}`}>
+                          <td>
+                            {member.firstname} {member.lastname}
+                          </td>
+                          <td>
+                            {member.userId === userHouseholdData.userId ? " Administrateur" : " Utilisateur"}
+                          </td>
+                          {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                            <>
+                              <td className="td-align-center"> 
+                                <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                                  <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={defaultChecked} ref={registerFormDelegateWhenSwitching()}/>
+                                  <span className="radio-checkmark"></span>
+                                </label>
+                              </td>
+                              <td>
+                                {(userData.role === "admin" && member.usercode === userData.usercode) 
+                                  ? "" 
+                                  : <div className="div-list-table-action">
+                                      <button className="list-table-one-action"><FontAwesomeIcon icon="door-open"/></button>
+                                    </div>
+                                }
+                              </td>
+                            </>
+                          }
+                      </tr>  
+                      )
+                    }else{
+                      return null
+                    }
+                  })}
+                </tbody>
+              </table>
+            </div>
             <div className="default-action-form-container">
               <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">Déléguer droits administrateur</button>
               {successFormDelegate && 
@@ -497,7 +537,7 @@ function Profile({ history }) {
                   icon={<FontAwesomeIcon icon="check" />}
                 />
               }
-              {warningMessageDelegate &&
+              {warningMessageDelegate && successFormDelegate !== true &&
               <InformationIcon 
                 className="warning-icon"
                 icon={<FontAwesomeIcon icon="exclamation" />}

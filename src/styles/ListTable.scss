@@ -76,6 +76,11 @@
     align-items: center;
     justify-content: center;
   }
+  .thead-no-cursor{
+    th{
+      cursor: unset;
+    }
+  }
   thead{
     background-color: $grey-darker;
     border-top: 2px solid $grey;
@@ -236,6 +241,10 @@
   }
 }
 
+.list-table-profile{
+  margin-bottom: 1rem;
+}
+
 /*Media queries*/
 
 /*Tablet*/
@@ -270,10 +279,15 @@
       tr{
         height: 3rem;
       }
+      .td-align-center{
+        padding-right: 1rem;
+        text-align: center;
+      }
       td:not(:last-child){
         padding-left: 1rem;
       }
     }
+
   }
   
   .header-list-table{
@@ -327,5 +341,12 @@
     .reset-filter-text{
       display: none;
     }
+  }
+}
+
+/*Full-screen*/
+@media screen and (min-width: 992px){
+  .list-table-profile{
+    width: 50%;
   }
 }
