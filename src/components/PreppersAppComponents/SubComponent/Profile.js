@@ -410,8 +410,12 @@ function Profile({ history }) {
 
     await axiosInstance.post(switchAdminRightsEndPoint, switchAdminRightsData)
       .then((response) => {
-        if(isMounted.current){
-          setSuccessFormDelegate(true);
+        if(response.status === 200){
+          setBtnDisabledFormDelegate(true);
+          setWarningMessageDelegate(false);
+          if(isMounted.current){
+            setSuccessFormDelegate(true);
+          }
         }
       });
   }
@@ -448,6 +452,77 @@ function Profile({ history }) {
       });
   };
 
+  let tableMemberFamilly = <>
+  {userData && userHouseholdData &&
+    <>
+      <h2 className="default-h2">Membres de la famille</h2>
+      <div className="container-list-table list-table-profile">
+        <table className="list-table">
+          <thead className="thead-no-cursor">
+            <tr>
+              <th>Nom</th>
+              <th>Rôle</th>
+              {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                <>
+                  <th>Droits administrateur</th>
+                  <th>Retirer le membre</th>
+                </>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {userHouseholdData.member.map((member, index) => {
+              if(member.isFlagged === false){
+                return (
+                  <tr key={`memberTable-${index}`}>
+                    <td>
+                      {member.firstname} {member.lastname}
+                    </td>
+                    <td>
+                      {member.userId === userHouseholdData.userId ? " Administrateur" : " Utilisateur"}
+                    </td>
+                    {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                      <>
+                        {userData.role === "admin" && member.usercode === userData.usercode &&
+                          <td className="td-align-center"> 
+                            <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={true} ref={registerFormDelegateWhenSwitching()}/>
+                              <span className="radio-checkmark"></span>
+                            </label>
+                          </td>
+                        }
+                        {userData.role !== "user" && member.usercode !== userData.usercode &&
+                          <td className="td-align-center"> 
+                            <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={false} ref={registerFormDelegateWhenSwitching()}/>
+                              <span className="radio-checkmark"></span>
+                            </label>
+                          </td>
+                        }
+                        <td>
+                          {(userData.role === "admin" && member.usercode === userData.usercode) 
+                            ? "" 
+                            : <div className="div-list-table-action">
+                                <button className="list-table-one-action"><FontAwesomeIcon icon="door-open"/></button>
+                              </div>
+                          }
+                        </td>
+                      </>
+                    }
+                </tr>  
+                )
+              }else{
+                return null
+              }
+            })}
+          </tbody>
+        </table>
+      </div>     
+    </>
+  }
+    
+  </>;
+
   let famillyOptions = 
   <>
     {userHouseholdData && userData &&
@@ -469,101 +544,50 @@ function Profile({ history }) {
           </div>
         </form>
 
-        <div>
-          
-          <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
-            <h2 className="default-h2">Membres de la famille</h2>
-            <div className="container-list-table list-table-profile">
-              <table className="list-table">
-                <thead className="thead-no-cursor">
-                  <tr>
-                    <th>Nom</th>
-                    <th>Rôle</th>
-                    {userData.role === "admin" && userHouseholdData.member.length > 1 &&
-                      <>
-                        <th>Droits administrateur</th>
-                        <th>Retirer le membre</th>
-                      </>
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  {userHouseholdData.member.map((member, index) => {
-                    if(member.isFlagged === false){
-                      let defaultChecked = false;
-                      if(userData.role === "admin" && member.usercode === userData.usercode){
-                        defaultChecked = true;
-                      }
-                      return (
-                        <tr key={`memberTable-${index}`}>
-                          <td>
-                            {member.firstname} {member.lastname}
-                          </td>
-                          <td>
-                            {member.userId === userHouseholdData.userId ? " Administrateur" : " Utilisateur"}
-                          </td>
-                          {userData.role === "admin" && userHouseholdData.member.length > 1 &&
-                            <>
-                              <td className="td-align-center"> 
-                                <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
-                                  <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={defaultChecked} ref={registerFormDelegateWhenSwitching()}/>
-                                  <span className="radio-checkmark"></span>
-                                </label>
-                              </td>
-                              <td>
-                                {(userData.role === "admin" && member.usercode === userData.usercode) 
-                                  ? "" 
-                                  : <div className="div-list-table-action">
-                                      <button className="list-table-one-action"><FontAwesomeIcon icon="door-open"/></button>
-                                    </div>
-                                }
-                              </td>
-                            </>
-                          }
-                      </tr>  
-                      )
-                    }else{
-                      return null
-                    }
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <div className="default-action-form-container">
-              <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">Déléguer droits administrateur</button>
-              {successFormDelegate && 
-                <InformationIcon 
-                  className="success-icon"
-                  icon={<FontAwesomeIcon icon="check" />}
-                />
-              }
-              {warningMessageDelegate && successFormDelegate !== true &&
-              <InformationIcon 
-                className="warning-icon"
-                icon={<FontAwesomeIcon icon="exclamation" />}
-                message="Vous êtes sur le point de déléguer vos droits d'administrateur à une autre personne de votre famille !"
-              />
-            }
-            </div>
-          </form>
-        </div>
-        
+        {userData.role === 'user' && 
+          <div>
+           {tableMemberFamilly}
+          </div>
+        }
+
         {userData.role === "admin" &&
-          <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
-            <div className="input-form-container">
-              <label htmlFor="addUserCode">Ajouter un membre</label>
-              <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." ref={registerFormAddUser()} />
-            </div>
-            <div className="default-action-form-container">
-              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="plus" /> Ajouter</button>
-              {successFormAddUser && 
-                <InformationIcon 
-                  className="success-icon"
-                  icon={<FontAwesomeIcon icon="check" />}
-                />
-              }
-            </div>
-          </form>
+          <>
+            <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
+              {tableMemberFamilly}
+              <div className="default-action-form-container">
+                <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">Déléguer droits administrateur</button>
+                {successFormDelegate && 
+                  <InformationIcon 
+                    className="success-icon"
+                    icon={<FontAwesomeIcon icon="check" />}
+                  />
+                }
+                {warningMessageDelegate && successFormDelegate !== true &&
+                  <InformationIcon 
+                    className="warning-icon"
+                    icon={<FontAwesomeIcon icon="exclamation" />}
+                    message="Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                  />
+                }
+              </div>
+            </form>
+
+            <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
+              <div className="input-form-container">
+                <label htmlFor="addUserCode">Ajouter un membre</label>
+                <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." ref={registerFormAddUser()} />
+              </div>
+              <div className="default-action-form-container">
+                <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="plus" /> Ajouter</button>
+                {successFormAddUser && 
+                  <InformationIcon 
+                    className="success-icon"
+                    icon={<FontAwesomeIcon icon="check" />}
+                  />
+                }
+              </div>
+            </form>
+          </>
         }
 
         <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
