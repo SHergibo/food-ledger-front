@@ -401,6 +401,17 @@ function Profile({ history }) {
     }
   }
 
+  const kickUser = async (userId) => {
+    const kicUserEndPoint = `${apiDomain}/api/${apiVersion}/households/kick-user/${userHouseholdData._id}`;
+
+    await axiosInstance.patch(kicUserEndPoint, {userId : userId})
+      .then((response) => {
+        if(response.status === 200){
+          setUserHouseholdData(response.data);
+        }
+      });
+  }
+
   const delegateUser = async (data) => {
     const switchAdminRightsData = {
       userId : data.delegateRadioInput,
@@ -503,7 +514,7 @@ function Profile({ history }) {
                           {(userData.role === "admin" && member.usercode === userData.usercode) 
                             ? "" 
                             : <div className="div-list-table-action">
-                                <button className="list-table-one-action"><FontAwesomeIcon icon="door-open"/></button>
+                                <button type="button" className="list-table-one-action" onClick={() => kickUser(member.userId)}><FontAwesomeIcon icon="door-open"/></button>
                               </div>
                           }
                         </td>
