@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 function Nav({ history, logOut }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
-  const { notification } = useNotificationData();
+  const { notificationReceived } = useNotificationData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [stateMainMenu, setStateMainMenu] = useState();
   const [closedMenu, setClosedMenu] = useState(false);
@@ -43,14 +43,14 @@ function Nav({ history, logOut }) {
   }, [userOptionData, windowWidth]);
   
   useEffect(() => {
-    if (notification.length >= 1) {
-      let arrayLength = notification.length;
+    if (notificationReceived.length >= 1) {
+      let arrayLength = notificationReceived.length;
       setArrayNotifLength(arrayLength);
       setHasNotif(true);
     }else{
       setHasNotif(false);
     }
-  }, [userData, notification]);
+  }, [userData, notificationReceived]);
 
   const burgerMenu = () => {
     menuResp.current.classList.toggle('display-block');

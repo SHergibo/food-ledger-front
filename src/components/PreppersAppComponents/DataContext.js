@@ -28,7 +28,8 @@ export function DataProvider({children}) {
   const [userData, setUserData] = useState();
   const [userHouseholdData, setUserHouseholdData] = useState();
   const [userOptionData, setUserOptionData] = useState();
-  const [notification, setNotification] = useState([]);
+  const [notificationReceived, setNotificationReceived] = useState([]);
+  const [notificationSended, setNotificationSended] = useState([]);
   const isMounted = useRef(true);
   const socketRef = useRef();
 
@@ -50,7 +51,8 @@ export function DataProvider({children}) {
       await axiosInstance.get(getNotificationEndPoint)
         .then((response) => {
           if(isMounted.current){
-            setNotification(response.data);
+            setNotificationReceived(response.data.notificationsReceived);
+            setNotificationSended(response.data.notificationsSended)
           }
           //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
         });
@@ -64,7 +66,11 @@ export function DataProvider({children}) {
     });
 
     socketRef.current.on("notifSocketIo", (notif) => {
-      setNotification(notification => [...notification, notif]);
+      setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
+    });
+
+    socketRef.current.on("updateNotificationSended", (notifId) => {
+      setNotificationSended(notificationSended => notificationSended.filter((notif) => notif._id !== notifId));
     });
 
     socketRef.current.on("updateUserAndFamillyData", (data) => {
@@ -117,7 +123,7 @@ export function DataProvider({children}) {
     <UserDataContext.Provider value={{ userData, setUserData }}>
       <UserHouseholdDataContext.Provider value={{ userHouseholdData, setUserHouseholdData }}>
         <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
-          <NotificationContext.Provider value={{ notification, setNotification }}>
+          <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationSended, setNotificationSended }}>
             {children}
           </NotificationContext.Provider>
         </UserOptionContext.Provider>

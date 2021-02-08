@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 function SubNav({ showNotif, logOut }) {
   const { userData } = useUserData();
-  const { notification } = useNotificationData();
+  const { notificationReceived } = useNotificationData();
   const [firstChar, setFirstChar] = useState("P"); //TODO download l'image si l'user a une image de profil???
   const [hasNotif, setHasNotif] = useState(false);
   const [arrayNotifLength, setArrayNotifLength] = useState(0);
@@ -16,14 +16,14 @@ function SubNav({ showNotif, logOut }) {
       const userName = userData.firstname;
       setFirstChar(userName.charAt(0));
     }
-    if (notification.length >= 1) {
-      let arrayLength = notification.length;
+    if (notificationReceived.length >= 1) {
+      let arrayLength = notificationReceived.length;
       setArrayNotifLength(arrayLength);
       setHasNotif(true);
     }else{
       setHasNotif(false);
     }
-  }, [userData, notification]);
+  }, [userData, notificationReceived]);
 
   return (
     <div className="container-subnav">

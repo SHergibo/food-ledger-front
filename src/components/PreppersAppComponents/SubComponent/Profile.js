@@ -14,7 +14,7 @@ function Profile({ history }) {
   const { userData, setUserData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
-  const { notification, setNotification } = useNotificationData();
+  const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const [ delegate, setDelegate ] = useState(false);
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
@@ -349,10 +349,34 @@ function Profile({ history }) {
 
   let notificationList =
   <>
-    {notification.length >= 1 &&
+    {notificationReceived.length >= 1 &&
     <>
       <div className="default-title-container delimiter-title">
-        <h1 className="default-h1">Listes des notifications</h1>
+        <h1 className="default-h1">Listes des notifications reçues</h1>
+      </div>
+
+      <div>
+          <div>
+            <h2 className="default-h2">Notifications</h2>
+            <ul>
+              {notificationReceived.map(item => {
+                return (
+                  <li key={item._id}>
+                    {item.message}
+                    <button onClick={()=> {notificationRequest(item._id, "yes")}}>Accepter</button>
+                    <button onClick={()=> {notificationRequest(item._id, "no")}}>Refuser</button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+      </div>
+    </>
+    }
+    {notificationSended.length >= 1 &&
+    <>
+      <div className="default-title-container delimiter-title">
+        <h1 className="default-h1">Listes des notifications envoyées</h1>
       </div>
 
       <div>
@@ -360,12 +384,11 @@ function Profile({ history }) {
           <div>
             <h2 className="default-h2">Notifications</h2>
             <ul>
-              {notification.map(item => {
+              {notificationSended.map(item => {
                 return (
                   <li key={item._id}>
-                    {item.fullName} {item.senderUserCode}
-                    <button onClick={()=> {notificationRequest(item._id, "yes")}}>Accepter</button>
-                    <button onClick={()=> {notificationRequest(item._id, "no")}}>Refuser</button>
+                    {item.message}
+                    <button onClick={()=> {}}>Supprimer</button>
                   </li>
                 )
               })}
@@ -422,6 +445,7 @@ function Profile({ history }) {
     await axiosInstance.post(switchAdminRightsEndPoint, switchAdminRightsData)
       .then((response) => {
         if(response.status === 200){
+          setNotificationSended(notificationSended => [...notificationSended, response.data]);
           setBtnDisabledFormDelegate(true);
           setWarningMessageDelegate(false);
           if(isMounted.current){
@@ -441,8 +465,11 @@ function Profile({ history }) {
 
     await axiosInstance.post(switchFamillyEndPoint, switchFamillyData)
       .then((response) => {
-        if(isMounted.current){
-          setSuccessFormSwitchFamilly(true);
+        if(response.status === 200){
+          setNotificationSended(notificationSended => [...notificationSended, response.data]);
+          if(isMounted.current){
+            setSuccessFormSwitchFamilly(true);
+          }
         }
       });
   };
@@ -457,8 +484,11 @@ function Profile({ history }) {
     const addUserToFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
     await axiosInstance.post(addUserToFamillyEndPoint, addUserData)
       .then((response) => {
-        if(isMounted.current){
-          setSuccessFormAddUser(true);
+        if(response.status === 200){
+          setNotificationSended(notificationSended => [...notificationSended, response.data]);
+          if(isMounted.current){
+            setSuccessFormAddUser(true);
+          }
         }
       });
   };
@@ -625,7 +655,7 @@ const notificationRequest = async (id, isAccepted) => {
   await axiosInstance.get(requestNotificationEndpoint)
     .then((response) => {
       if(isMounted.current){
-        setNotification(response.data);
+        setNotificationReceived(response.data);
       }
     });
 };

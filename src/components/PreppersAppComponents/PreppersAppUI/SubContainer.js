@@ -5,7 +5,7 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 
 function SubContainer({history}) {
-  const { notification, setNotification } = useNotificationData();
+  const { notificationReceived, setNotificationReceived } = useNotificationData();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const responsive = useCallback(() => {
@@ -34,15 +34,15 @@ function SubContainer({history}) {
     const requestNotificationEndPoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${accepted}`;
     await axiosInstance.get(requestNotificationEndPoint)
       .then((response) => {
-        setNotification(response.data);
+        setNotificationReceived(response.data);
       });
   };
   return (
     <div className="container-sub">
-      {notification.length <= 0 ?
+      {notificationReceived.length <= 0 ?
         <p className="zero-notification">Pas de notification !</p> :
         <>
-        {notification.map((notif) => {
+        {notificationReceived.map((notif) => {
           return(
             <div className="notification" key={notif._id}>
               <div className="notification-message">
