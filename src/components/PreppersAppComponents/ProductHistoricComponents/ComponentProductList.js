@@ -628,7 +628,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               title = {title : `${row[column.id]}`}
             }
             return (
-              <td key={`${column.id}-${index}`} {...title}>
+              <td key={`${column.id}-${index}`} {...title} className="ellipsis-info">
                 {row[column.id]}
               </td>
             )

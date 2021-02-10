@@ -116,7 +116,12 @@
       border-bottom: 2px solid $grey;
       color: $primary-color;
       transition: .2s ease-in-out;
-      td:first-child{
+      .all-info{
+        height: auto;
+        max-width: 90%;
+        padding: 1rem 0;
+      }
+      .ellipsis-info{
         max-width: 10rem;
         white-space: nowrap;
         overflow: hidden;
@@ -278,6 +283,9 @@
     tbody{
       tr{
         height: 3rem;
+        .all-info{
+          max-width: 10rem;
+        }
       }
       .td-align-center{
         padding-right: 1rem;

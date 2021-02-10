@@ -235,7 +235,7 @@ function HouseholdOptionProfile() {
                             {(userData.role === "admin" && member.usercode === userData.usercode) 
                               ? "" 
                               : <div className="div-list-table-action">
-                                  <button type="button" className="list-table-one-action" onClick={() => kickUser(member.userId)}><FontAwesomeIcon icon="door-open"/></button>
+                                  <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userId)}><FontAwesomeIcon icon="door-open"/></button>
                                 </div>
                             }
                           </td>
