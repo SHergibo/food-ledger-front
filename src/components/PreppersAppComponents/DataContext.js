@@ -69,8 +69,12 @@ export function DataProvider({children}) {
       setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
     });
 
-    socketRef.current.on("updateNotificationSended", (notifId) => {
+    socketRef.current.on("deleteNotificationSended", (notifId) => {
       setNotificationSended(notificationSended => notificationSended.filter((notif) => notif._id !== notifId));
+    });
+
+    socketRef.current.on("deleteNotificationReceived", (notifId) => {
+      setNotificationReceived(notificationReceived => notificationReceived.filter((notif) => notif._id !== notifId));
     });
 
     socketRef.current.on("updateUserAndFamillyData", (data) => {
