@@ -8,12 +8,27 @@ function NotificationOptionProfile() {
   const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
   const [notificationTable, setNotificationTable] = useState(true);
   const isMounted = useRef(true);
+  const btnSwitchReceivedNotif = useRef(null);
+  const btnSwitchSendedNotif = useRef(null);
 
   useEffect(() => {
     return () => {
       isMounted.current = false;
     }
   }, []);
+
+  useEffect(() => {
+    if(notificationReceived.length >= 1 && notificationSended.length === 0){
+      btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
+      btnSwitchReceivedNotif.current.classList.remove("btn-switch-notification-inactive");
+    }else if(notificationSended.length >= 1 && notificationReceived.length === 0){
+      btnSwitchSendedNotif.current.classList.add("btn-switch-notification-active");
+      btnSwitchSendedNotif.current.classList.remove("btn-switch-notification-inactive");
+    }else if(notificationReceived.length >= 1 && notificationSended.length >= 1){
+      btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
+      btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
+    }
+  }, [notificationReceived, notificationSended]);
 
   const notificationRequest = async (id, isAccepted) => {
     const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${id}?acceptedRequest=${isAccepted}`;
@@ -133,10 +148,18 @@ function NotificationOptionProfile() {
   const switchTableNotification = (tableName) => {
     if(tableName === "received"){
       if(notificationSended.length >= 1){
+        btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
+        btnSwitchReceivedNotif.current.classList.remove("btn-switch-notification-inactive");
+        btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
+        btnSwitchSendedNotif.current.classList.remove("btn-switch-notification-active");
         setNotificationTable(true);
       }
     }else if (tableName === "sended"){
       if(notificationReceived.length >= 1){
+        btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-inactive");
+        btnSwitchReceivedNotif.current.classList.remove("btn-switch-notification-active");
+        btnSwitchSendedNotif.current.classList.add("btn-switch-notification-active");
+        btnSwitchSendedNotif.current.classList.remove("btn-switch-notification-inactive");
         setNotificationTable(false);
       }
     }
@@ -149,16 +172,18 @@ function NotificationOptionProfile() {
       </div>
 
       <div>
-          <div>
-            {notificationReceived.length >= 1 && <button onClick={()=> switchTableNotification("received")}>Notif reçues</button>}
-            {notificationSended.length >= 1 && <button onClick={()=> switchTableNotification("sended")}>Notif envoyées</button>}
-            {notificationReceived.length >= 1 && notificationSended.length === 0 && <>{tableNotificationReceived}</>}
-            {notificationSended.length >= 1 && notificationReceived.length === 0 && <>{tableNotificationSended}</>}
-            {notificationReceived.length >= 1 && notificationSended.length >= 1 && <>{notificationTable ? <>{tableNotificationReceived}</> : <>{tableNotificationSended}</>}</>}
-            {notificationSended.length === 0 && notificationReceived.length === 0 && 
-              <p>Pas de notification!</p>
-            }
+        <>
+          <div className="container-btn-switch-notification-table">
+            {notificationReceived.length >= 1 && <button ref={btnSwitchReceivedNotif} onClick={()=> switchTableNotification("received")}>Notif. reçues</button>}
+            {notificationSended.length >= 1 && <button ref={btnSwitchSendedNotif} onClick={()=> switchTableNotification("sended")}>Notif. envoyées</button>}
           </div>
+          {notificationReceived.length >= 1 && notificationSended.length === 0 && <>{tableNotificationReceived}</>}
+          {notificationSended.length >= 1 && notificationReceived.length === 0 && <>{tableNotificationSended}</>}
+          {notificationReceived.length >= 1 && notificationSended.length >= 1 && <>{notificationTable ? <>{tableNotificationReceived}</> : <>{tableNotificationSended}</>}</>}
+          {notificationSended.length === 0 && notificationReceived.length === 0 && 
+            <p>Pas de notification!</p>
+          }
+        </>
       </div>
     </>
 

@@ -1,3 +1,27 @@
+.container-btn-switch-notification-table{
+  display: flex;
+  justify-content: center;
+  margin-bottom: -1rem;
+  button{
+    height: 2rem;
+    padding: 0 1rem;
+    font-family: "Roboto", sans-serif;
+    line-height: 1.4;
+    font-weight: 700;
+    color: $primary-color;
+    border: none;
+    border-top: 2px solid $grey;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  .btn-switch-notification-active{
+    background-color: $grey-darker;
+  }
+  .btn-switch-notification-inactive{
+    background-color: $white;
+  }
+}
+
 .form-filter-table{
   display: flex;
   align-items: center;
@@ -254,6 +278,11 @@
 
 /*Tablet*/
 @media screen and (min-width: 699px) {
+  .container-btn-switch-notification-table{
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2rem;
+  }
   .list-table{
     table, tr {
       flex-direction: unset;
