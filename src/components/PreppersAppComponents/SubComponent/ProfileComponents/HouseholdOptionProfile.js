@@ -16,6 +16,8 @@ function HouseholdOptionProfile() {
   const [ successFormDelegate, setSuccessFormDelegate ] = useState(false);
   const [ btnDisabledFormDelegate, setBtnDisabledFormDelegate ] = useState(true);
   const [ warningMessageDelegate, setWarningMessageDelegate ] = useState(false);
+  const [ errorMessageDelegate, setErrorMessageDelegate ] = useState(false);
+  const [ messageErrorDelegate, setMessageErrorDelegate ] = useState("");
   const isMounted = useRef(true);
   const btnDelegateForm = useRef(null);
 
@@ -135,13 +137,20 @@ function HouseholdOptionProfile() {
     await axiosInstance.post(switchAdminRightsEndPoint, switchAdminRightsData)
       .then((response) => {
         if(response.status === 200){
+          setErrorMessageDelegate(false);
           setNotificationSended(notificationSended => [...notificationSended, response.data]);
-          setBtnDisabledFormDelegate(true);
           setWarningMessageDelegate(false);
           if(isMounted.current){
             setSuccessFormDelegate(true);
           }
         }
+      }).catch((error) => {
+        if(isMounted.current){
+          setErrorMessageDelegate(true);
+          setMessageErrorDelegate(error.response.data.output.payload.message);
+        }
+        setSuccessFormDelegate(false);
+        setWarningMessageDelegate(false);
       });
   }
 
@@ -298,6 +307,13 @@ function HouseholdOptionProfile() {
                       className="warning-icon"
                       icon={<FontAwesomeIcon icon="exclamation" />}
                       message="Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                    />
+                  }
+                  {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
+                    <InformationIcon 
+                      className="error-icon"
+                      icon={<FontAwesomeIcon icon="times" />}
+                      message={messageErrorDelegate}
                     />
                   }
                 </div>
