@@ -24,7 +24,7 @@ function NotificationOptionProfile() {
     }else if(notificationSended.length >= 1 && notificationReceived.length === 0){
       btnSwitchSendedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchSendedNotif.current.classList.remove("btn-switch-notification-inactive");
-    }else if(notificationReceived.length >= 1 && notificationSended.length >= 1){
+    }else if(notificationReceived.length >= 1 && notificationSended.length >= 1 && !btnSwitchSendedNotif.current.classList.contains("btn-switch-notification-active")){
       btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
     }
@@ -56,7 +56,7 @@ function NotificationOptionProfile() {
     }
   }, [notificationSended, setNotificationTable]);
 
-  const notificationTypes = (type) => {
+  const notificationReceivedTypes = (type) => {
     switch (type) {
       case "information" :
         return "Information";
@@ -66,8 +66,30 @@ function NotificationOptionProfile() {
         return "Délégation droits administrateurs";
       case "last-chance-request-admin" :
         return "Délégation droits administrateurs";
-      case "request-addUser" :
-        return "Invitation";
+      case "invitation-household-to-user" :
+        return "Invitation nouvelle famille";
+      case "invitation-user-to-household" :
+          return "Invitation nouveau membre";
+  
+      default:
+        break;
+    }
+  }
+
+  const notificationSendedTypes = (type) => {
+    switch (type) {
+      case "information" :
+        return "Information";
+      case "need-switch-admin" :
+        return "Délégation droits administrateurs";
+      case "request-admin" :
+        return "Délégation droits administrateurs";
+      case "last-chance-request-admin" :
+        return "Délégation droits administrateurs";
+      case "invitation-household-to-user" :
+        return "Invitation nouveau membre";
+      case "invitation-user-to-household" :
+          return "Invitation nouvelle famille";
   
       default:
         break;
@@ -93,7 +115,7 @@ function NotificationOptionProfile() {
                     {notification.message}
                   </td>
                   <td className="td-align-center">
-                    {notificationTypes(notification.type)}
+                    {notificationReceivedTypes(notification.type)}
                   </td>
                   <td>
                     <div className="div-list-table-action">
@@ -126,7 +148,7 @@ function NotificationOptionProfile() {
             return (
               <tr key={`memberTable-${index}`}>
                 <td className="td-align-center">
-                  {notificationTypes(notification.type)}
+                  {notificationSendedTypes(notification.type)}
                 </td>
                 <td className="td-align-center">
                   {notification.userId.firstname} {notification.userId.lastname}
