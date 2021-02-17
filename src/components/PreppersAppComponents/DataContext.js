@@ -77,6 +77,11 @@ export function DataProvider({children}) {
       setNotificationReceived(notificationReceived => notificationReceived.filter((notif) => notif._id !== notifId));
     });
 
+    socketRef.current.on("updateAllNotifications", (data) => {
+      setNotificationReceived(data.notificationsReceived);
+      setNotificationSended(data.notificationsSended);
+    });
+
     socketRef.current.on("updateUserAndFamillyData", (data) => {
       setUserData(data.userData);
       setUserHouseholdData(data.householdData);
