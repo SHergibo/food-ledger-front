@@ -1,11 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useNotificationData } from '../../DataContext';
+import { useUserData } from '../../DataContext';
+import { useUserHouseHoldData } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function NotificationOptionProfile() {
   const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
+  const { setUserData } = useUserData();
+  const { setUserHouseholdData } = useUserHouseHoldData();
   const [notificationTable, setNotificationTable] = useState(true);
   const isMounted = useRef(true);
   const btnSwitchReceivedNotif = useRef(null);
@@ -27,15 +31,25 @@ function NotificationOptionProfile() {
     }else if(notificationReceived.length >= 1 && notificationSended.length >= 1 && !btnSwitchSendedNotif.current.classList.contains("btn-switch-notification-active")){
       btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
+    }else if(notificationReceived.length >= 1 && notificationSended.length >= 1 && !btnSwitchReceivedNotif.current.classList.contains("btn-switch-notification-active")){
+      btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
+      btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
     }
   }, [notificationReceived, notificationSended]);
 
-  const notificationRequest = async (id, isAccepted) => {
-    const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${id}?acceptedRequest=${isAccepted}`;
+  const notificationRequest = async (urlRequest, id, isAccepted) => {
+    const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${isAccepted}`;
     await axiosInstance.get(requestNotificationEndpoint)
       .then((response) => {
         if(isMounted.current){
-          setNotificationReceived(response.data);
+          setNotificationReceived(response.data.notificationsReceived);
+          if(response.data.notificationsSended && response.data.notificationsSended.length >= 1){
+            setNotificationSended(response.data.notificationsSended);
+          }
+          if(response.data.userData && response.data.householdData){
+            setUserData(response.data.userData);
+            setUserHouseholdData(response.data.householdData);
+          }
         }
       });
   };
@@ -119,8 +133,8 @@ function NotificationOptionProfile() {
                   </td>
                   <td>
                     <div className="div-list-table-action">
-                      <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
-                      <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification._id, "no")}><FontAwesomeIcon icon="trash"/></button>
+                      <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
+                      <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="trash"/></button>
                     </div>
                   </td>
                 </tr>  
