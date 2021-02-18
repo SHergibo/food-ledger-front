@@ -13,17 +13,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { logout } from './../../../utils/Auth';
 
-function Profile({ history }) {
+function Profile({ history, location }) {
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const [ delegate, setDelegate ] = useState(false);
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
+  const householdOptions = useRef(null);
   const isMounted = useRef(true);
 
   const { register : registerFormDelegateWhenDeleting, handleSubmit : handleSubmitFormDelegateWhenDeleting } = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(location.state && location.state.scrollDelegate && householdOptions.current){
+      householdOptions.current.scrollIntoView();
+    }
+  }, [location])
 
   useEffect(() => {
     if(!openTitleMessage){
@@ -168,7 +175,7 @@ function Profile({ history }) {
 
           <NotificationOptionProfile />
 
-          <div className="default-title-container delimiter-title">
+          <div ref={householdOptions} className="default-title-container delimiter-title">
             <h1 className="default-h1">Options Famille</h1>
           </div>
 

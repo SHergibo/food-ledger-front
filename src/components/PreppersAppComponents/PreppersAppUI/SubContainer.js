@@ -37,6 +37,16 @@ function SubContainer({history}) {
         setNotificationReceived(response.data);
       });
   };
+
+  const delegateNotification = () => {
+    history.push({
+      pathname: '/app/profil',
+      state: {
+        scrollDelegate: true
+      }
+    })
+  };
+
   return (
     <div className="container-sub">
       {notificationReceived.length <= 0 ?
@@ -49,7 +59,10 @@ function SubContainer({history}) {
                 {notif.message}
               </div>
               <div className="notification-interaction">
-                <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                {notif.type === "need-switch-admin" ? 
+                  <button onClick={delegateNotification}>Déléguer</button> :
+                  <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                }
                 <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
               </div>
             </div>
