@@ -9,7 +9,8 @@ import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 function HouseholdOptionProfile() {
   const { userData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
-  const { setNotificationSended } = useNotificationData();
+  const { notificationReceived, setNotificationSended } = useNotificationData();
+  const [ delegateAdminAndSwitch, setdelegateAdminAndSwitch ] = useState(false);
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
   const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
@@ -36,6 +37,17 @@ function HouseholdOptionProfile() {
   const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly} = useForm({
     mode: "onChange"
   });
+
+  useEffect(() => {
+    if(notificationReceived){
+      const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
+      if(needSwitchAdminNotif !== undefined){
+        setdelegateAdminAndSwitch(true);
+      }else{
+        setdelegateAdminAndSwitch(false);
+      }
+    }
+  }, [notificationReceived]);
 
   useEffect(() => {
     let timerSuccessFormFamillyName;
@@ -295,7 +307,10 @@ function HouseholdOptionProfile() {
               <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
                 {tableMemberFamilly}
                 <div className="default-action-form-container">
-                  <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">Déléguer droits administrateurs</button>
+                  <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
+                    {delegateAdminAndSwitch ? "Déléguer droits administrateurs et changer de famille" :
+                    "Déléguer droits administrateurs"}
+                  </button>
                   {successFormDelegate && 
                     <InformationIcon 
                       className="success-icon"
@@ -306,7 +321,10 @@ function HouseholdOptionProfile() {
                     <InformationIcon 
                       className="warning-icon"
                       icon={<FontAwesomeIcon icon="exclamation" />}
-                      message="Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                      message={delegateAdminAndSwitch ? 
+                        "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
+                        "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                      }
                     />
                   }
                   {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
