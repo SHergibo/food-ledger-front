@@ -5,8 +5,9 @@ import { useUserHouseHoldData } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 
-function NotificationOptionProfile() {
+function NotificationOptionProfile({scrollToHouseholdOptions}) {
   const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
   const { setUserData } = useUserData();
   const { setUserHouseholdData } = useUserHouseHoldData();
@@ -133,7 +134,10 @@ function NotificationOptionProfile() {
                   </td>
                   <td>
                     <div className="div-list-table-action">
-                      <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
+                      {notification.type === "need-switch-admin" ? 
+                        <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
+                        <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
+                      }
                       <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="trash"/></button>
                     </div>
                   </td>
@@ -203,10 +207,6 @@ function NotificationOptionProfile() {
 
   return (
     <>
-      <div className="default-title-container delimiter-title">
-        <h1 className="default-h1">Listes des notifications reçues/envoyées</h1>
-      </div>
-
       <div>
         <>
           <div className="container-btn-switch-notification-table">
@@ -224,6 +224,10 @@ function NotificationOptionProfile() {
     </>
 
   )
+}
+
+NotificationOptionProfile.propTypes = {
+  scrollToHouseholdOptions: PropTypes.func.isRequired,
 }
 
 export default NotificationOptionProfile

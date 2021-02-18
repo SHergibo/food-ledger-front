@@ -12,6 +12,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { logout } from './../../../utils/Auth';
+import PropTypes from 'prop-types';
 
 function Profile({ history, location }) {
   const { userData } = useUserData();
@@ -30,7 +31,7 @@ function Profile({ history, location }) {
     if(location.state && location.state.scrollDelegate && householdOptions.current){
       householdOptions.current.scrollIntoView();
     }
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
     if(!openTitleMessage){
@@ -44,6 +45,10 @@ function Profile({ history, location }) {
       isMounted.current = false;
     }
   }, []);
+
+  const scrollToHouseholdOptions = () =>{
+    householdOptions.current.scrollIntoView();
+  }
 
   const deleteUser = async (data) => {
 
@@ -173,7 +178,13 @@ function Profile({ history, location }) {
 
           <UserOptionProfile />
 
-          <NotificationOptionProfile />
+          <div className="default-title-container delimiter-title">
+            <h1 className="default-h1">Listes des notifications reçues/envoyées</h1>
+          </div>
+
+          <NotificationOptionProfile 
+            scrollToHouseholdOptions = {scrollToHouseholdOptions}
+          />
 
           <div ref={householdOptions} className="default-title-container delimiter-title">
             <h1 className="default-h1">Options Famille</h1>
@@ -202,6 +213,11 @@ function Profile({ history, location }) {
       }
     </div>
   )
+}
+
+Profile.propTypes = {
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
 }
 
 export default Profile;
