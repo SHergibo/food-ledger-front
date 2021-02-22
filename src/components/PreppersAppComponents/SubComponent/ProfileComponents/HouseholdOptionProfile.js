@@ -9,7 +9,7 @@ import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 function HouseholdOptionProfile() {
   const { userData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
-  const { notificationReceived, setNotificationSended } = useNotificationData();
+  const { notificationReceived, setNotificationReceived, setNotificationSended } = useNotificationData();
   const [ delegateAdminAndSwitch, setdelegateAdminAndSwitch ] = useState(false);
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
@@ -164,7 +164,30 @@ function HouseholdOptionProfile() {
         setSuccessFormDelegate(false);
         setWarningMessageDelegate(false);
       });
-  }
+  };
+
+  const delegateAndSwitch = async (data) => {
+    const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
+    const switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${needSwitchAdminNotif._id}?acceptedRequest=yes&otherMember=${data.delegateRadioInput}`;
+    await axiosInstance.get(switchAdminRightsEndPoint)
+      .then((response) => {
+        if(response.status === 200){
+          setErrorMessageDelegate(false);
+          setNotificationReceived(response.data.notificationsReceived);
+          setWarningMessageDelegate(false);
+          if(isMounted.current){
+            setSuccessFormDelegate(true);
+          }
+        }
+      }).catch((error) => {
+        if(isMounted.current){
+          setErrorMessageDelegate(true);
+          setMessageErrorDelegate(error.response.data.output.payload.message);
+        }
+        setSuccessFormDelegate(false);
+        setWarningMessageDelegate(false);
+      });
+  };
 
   const switchFamilly = async (data) => {
     let switchFamillyData = {
@@ -304,7 +327,7 @@ function HouseholdOptionProfile() {
 
           {userData.role === "admin" &&
             <>
-              <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateUser)}>
+              <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateUser)}>
                 {tableMemberFamilly}
                 <div className="default-action-form-container">
                   <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
