@@ -59,7 +59,7 @@ function Profile({ history, location }) {
 
     let deleteUserDataEndPoint;
     if(data){
-      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserCode=${data.delegateRadioInput}`;
+      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserId=${data.delegateRadioInput}`;
     }else{
       deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
     }
@@ -125,7 +125,7 @@ function Profile({ history, location }) {
                       }
                       return (
                         <label key={`delMember-${index}`} className="container-radio-input" htmlFor={`delegateMemberDelete${index}`}>{item.firstname} {item.lastname} : 
-                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={item.usercode} defaultChecked={defaultChecked} ref={registerFormDelegateWhenDeleting()}/>
+                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={item.userId} defaultChecked={defaultChecked} ref={registerFormDelegateWhenDeleting()}/>
                           <span className="radio-checkmark"></span>
                         </label>
                       )
