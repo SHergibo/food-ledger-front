@@ -138,7 +138,10 @@ function NotificationOptionProfile({scrollToHouseholdOptions}) {
                         <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
                         <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
                       }
+                      {notification.type === "request-delegate-admin" ?
+                      <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
                       <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="trash"/></button>
+                      }
                     </div>
                   </td>
                 </tr>  
