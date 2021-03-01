@@ -11,6 +11,8 @@ function HouseholdOptionProfile() {
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { notificationReceived, setNotificationReceived, setNotificationSended } = useNotificationData();
   const [ delegateAdminAndSwitch, setdelegateAdminAndSwitch ] = useState(false);
+  const [ requestDelegateAdmin, setRequestDelegateAdmin ] = useState(false);
+  const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
   const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
@@ -34,6 +36,10 @@ function HouseholdOptionProfile() {
     mode: "onChange"
   });
 
+  const { register : registerRequestDelagateAdmin, handleSubmit : handleSubmitFormRequestDelegateAdmin } = useForm({
+    mode: "onChange"
+  });
+
   const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly} = useForm({
     mode: "onChange"
   });
@@ -46,8 +52,26 @@ function HouseholdOptionProfile() {
       }else{
         setdelegateAdminAndSwitch(false);
       }
+
+      const requestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
+      if(requestDelegateAdmin !== undefined){
+        setRequestDelegateAdmin(true);
+      }else{
+        setRequestDelegateAdmin(false);
+      }
     }
   }, [notificationReceived]);
+
+  useEffect(() => {
+    if(userHouseholdData){
+      const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
+      if(memberEligible.length > 1 ){
+        setOtherMemberEligible(true);
+      }else{
+        setOtherMemberEligible(false);
+      }
+    }
+  }, [userHouseholdData]);
 
   useEffect(() => {
     let timerSuccessFormFamillyName;
@@ -189,6 +213,10 @@ function HouseholdOptionProfile() {
       });
   };
 
+  const didNotAccepterRequestDelegateAdmin = (data) => {
+    console.log(data)
+  }
+
   const switchFamilly = async (data) => {
     let switchFamillyData = {
       usercode : `${userData.usercode}`, 
@@ -244,52 +272,61 @@ function HouseholdOptionProfile() {
                     <th>Retirer le membre</th>
                   </>
                 }
+                {userHouseholdData.isWaiting && requestDelegateAdmin && 
+                  <>
+                    <th>Droits administrateurs</th>
+                  </>
+                }
               </tr>
             </thead>
             <tbody>
               {userHouseholdData.member.map((member, index) => {
-                if(member.isFlagged === false){
-                  return (
-                    <tr key={`memberTable-${index}`}>
-                      <td>
-                        {member.firstname} {member.lastname}
-                      </td>
-                      <td>
-                        {member.userId === userHouseholdData.userId ? " Administrateur" : " Utilisateur"}
-                      </td>
-                      {userData.role === "admin" && userHouseholdData.member.length > 1 &&
-                        <>
-                          {userData.role === "admin" && member.usercode === userData.usercode &&
-                            <td className="td-align-center"> 
-                              <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
-                                <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={true} ref={registerFormDelegateWhenSwitching()}/>
-                                <span className="radio-checkmark"></span>
-                              </label>
-                            </td>
-                          }
-                          {userData.role !== "user" && member.usercode !== userData.usercode &&
-                            <td className="td-align-center"> 
-                              <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
-                                <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={false} ref={registerFormDelegateWhenSwitching()}/>
-                                <span className="radio-checkmark"></span>
-                              </label>
-                            </td>
-                          }
-                          <td>
-                            {(userData.role === "admin" && member.usercode === userData.usercode) 
-                              ? "" 
-                              : <div className="div-list-table-action">
-                                  <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userId)}><FontAwesomeIcon icon="door-open"/></button>
-                                </div>
-                            }
+                return (
+                  <tr key={`memberTable-${index}`}>
+                    <td>
+                      {member.firstname} {member.lastname}
+                    </td>
+                    <td>
+                      {member.userId === userHouseholdData.userId ? " Administrateur" : " Utilisateur"}
+                    </td>
+                    {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                      <>
+                        {userData.role === "admin" && member.usercode === userData.usercode &&
+                          <td className="td-align-center"> 
+                            <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={true} ref={registerFormDelegateWhenSwitching()}/>
+                              <span className="radio-checkmark"></span>
+                            </label>
                           </td>
-                        </>
-                      }
-                  </tr>  
-                  )
-                }else{
-                  return null
-                }
+                        }
+                        {userData.role !== "user" && member.usercode !== userData.usercode &&
+                          <td className="td-align-center"> 
+                            <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} defaultChecked={false} ref={registerFormDelegateWhenSwitching()}/>
+                              <span className="radio-checkmark"></span>
+                            </label>
+                          </td>
+                        }
+                        <td>
+                          {(userData.role === "admin" && member.usercode === userData.usercode) 
+                            ? "" 
+                            : <div className="div-list-table-action">
+                                <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userId)}><FontAwesomeIcon icon="door-open"/></button>
+                              </div>
+                          }
+                        </td>
+                      </>
+                    }
+                    {userHouseholdData.isWaiting && requestDelegateAdmin && otherMemberEligible &&
+                      <>
+                        {requestDelegateAdmin && member.usercode !== userData.usercode && !member.isFlagged ?
+                          <td>radio btn</td> :
+                          <td>disabled radio btn</td>
+                        }
+                      </>
+                    }
+                </tr>  
+                )
               })}
             </tbody>
           </table>
@@ -319,7 +356,7 @@ function HouseholdOptionProfile() {
             </div>
           </form>
 
-          {userData.role === 'user' && 
+          {userData.role === 'user' && !requestDelegateAdmin && 
             <div>
             {tableMemberFamilly}
             </div>
@@ -376,6 +413,41 @@ function HouseholdOptionProfile() {
                 </div>
               </form>
             </>
+          }
+
+          {userData.role === 'user' && requestDelegateAdmin && 
+            <form className="form-profile-list-table" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAccepterRequestDelegateAdmin)}>
+              {tableMemberFamilly}
+              <div className="default-action-form-container">
+                <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
+                  {delegateAdminAndSwitch ? "Déléguer droits administrateurs et changer de famille" :
+                  "Déléguer droits administrateurs"}
+                </button>
+                {successFormDelegate && 
+                  <InformationIcon 
+                    className="success-icon"
+                    icon={<FontAwesomeIcon icon="check" />}
+                  />
+                }
+                {warningMessageDelegate && successFormDelegate !== true &&
+                  <InformationIcon 
+                    className="warning-icon"
+                    icon={<FontAwesomeIcon icon="exclamation" />}
+                    message={delegateAdminAndSwitch ? 
+                      "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
+                      "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                    }
+                  />
+                }
+                {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
+                  <InformationIcon 
+                    className="error-icon"
+                    icon={<FontAwesomeIcon icon="times" />}
+                    message={messageErrorDelegate}
+                  />
+                }
+              </div>
+            </form>
           }
 
           <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
