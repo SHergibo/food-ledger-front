@@ -34,7 +34,7 @@ function SubContainer({history}) {
     const requestNotificationEndPoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${accepted}`;
     await axiosInstance.get(requestNotificationEndPoint)
       .then((response) => {
-        setNotificationReceived(response.data);
+        setNotificationReceived(response.data.notificationsReceived);
       });
   };
 
