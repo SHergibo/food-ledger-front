@@ -13,6 +13,7 @@ function HouseholdOptionProfile() {
   const [ delegateAdminAndSwitch, setdelegateAdminAndSwitch ] = useState(false);
   const [ requestDelegateAdmin, setRequestDelegateAdmin ] = useState(false);
   const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
+  const [ firstMemberEligible, setFirstMemberEligible ] = useState("");
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
   const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
@@ -36,7 +37,7 @@ function HouseholdOptionProfile() {
     mode: "onChange"
   });
 
-  const { register : registerRequestDelagateAdmin, handleSubmit : handleSubmitFormRequestDelegateAdmin } = useForm({
+  const { register : registerRequestDelegateAdmin, handleSubmit : handleSubmitFormRequestDelegateAdmin } = useForm({
     mode: "onChange"
   });
 
@@ -45,7 +46,7 @@ function HouseholdOptionProfile() {
   });
 
   useEffect(() => {
-    if(notificationReceived){
+    if(notificationReceived.length >= 1){
       const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
       if(needSwitchAdminNotif !== undefined){
         setdelegateAdminAndSwitch(true);
@@ -53,8 +54,8 @@ function HouseholdOptionProfile() {
         setdelegateAdminAndSwitch(false);
       }
 
-      const requestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
-      if(requestDelegateAdmin !== undefined){
+      const notificationRequestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
+      if(notificationRequestDelegateAdmin !== undefined){
         setRequestDelegateAdmin(true);
       }else{
         setRequestDelegateAdmin(false);
@@ -63,15 +64,17 @@ function HouseholdOptionProfile() {
   }, [notificationReceived]);
 
   useEffect(() => {
-    if(userHouseholdData){
+    if(userHouseholdData && requestDelegateAdmin){
       const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
       if(memberEligible.length > 1 ){
         setOtherMemberEligible(true);
+        const firstMemberEligible = userHouseholdData.member.find(member => member.isFlagged === false && userData.usercode !== member.usercode && userHouseholdData.userId !== member.userId);
+        setFirstMemberEligible(firstMemberEligible.usercode)
       }else{
         setOtherMemberEligible(false);
       }
     }
-  }, [userHouseholdData]);
+  }, [userHouseholdData, requestDelegateAdmin, userData]);
 
   useEffect(() => {
     let timerSuccessFormFamillyName;
@@ -281,6 +284,12 @@ function HouseholdOptionProfile() {
             </thead>
             <tbody>
               {userHouseholdData.member.map((member, index) => {
+                let checkedRadioBtn = false;
+                if(requestDelegateAdmin && member.usercode !== userData.usercode && !member.isFlagged){
+                  if(member.usercode === firstMemberEligible){
+                    checkedRadioBtn = true;
+                  }
+                }
                 return (
                   <tr key={`memberTable-${index}`}>
                     <td>
@@ -319,9 +328,19 @@ function HouseholdOptionProfile() {
                     }
                     {userHouseholdData.isWaiting && requestDelegateAdmin && otherMemberEligible &&
                       <>
-                        {requestDelegateAdmin && member.usercode !== userData.usercode && !member.isFlagged ?
-                          <td>radio btn</td> :
-                          <td>disabled radio btn</td>
+                        {member.usercode !== userData.usercode && !member.isFlagged ?
+                          <td className="td-align-center"> 
+                            <label key={`delegateMember-${index}`} htmlFor={`delegateMember${index}`}> 
+                              <input type="radio" name="delegateRadioInput" id={`delegateMember${index}`} value={member.userId} defaultChecked={checkedRadioBtn} ref={registerRequestDelegateAdmin()}/>
+                              <span className="radio-checkmark"></span>
+                            </label>
+                          </td> :
+                          <td className="td-align-center"> 
+                            <label key={`delegateMember-${index}`}> 
+                              <input type="radio" name="delegateRadioInput" disabled/>
+                              <span className="radio-checkmark"></span>
+                            </label>
+                          </td>
                         }
                       </>
                     }
@@ -419,26 +438,17 @@ function HouseholdOptionProfile() {
             <form className="form-profile-list-table" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAccepterRequestDelegateAdmin)}>
               {tableMemberFamilly}
               <div className="default-action-form-container">
-                <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
-                  {delegateAdminAndSwitch ? "Déléguer droits administrateurs et changer de famille" :
-                  "Déléguer droits administrateurs"}
+                <button className="default-btn-action-form" type="submit">
+                  Refuser et déléguer droits administrateurs
                 </button>
-                {successFormDelegate && 
-                  <InformationIcon 
-                    className="success-icon"
-                    icon={<FontAwesomeIcon icon="check" />}
-                  />
-                }
-                {warningMessageDelegate && successFormDelegate !== true &&
+                {!otherMemberEligible &&
                   <InformationIcon 
                     className="warning-icon"
                     icon={<FontAwesomeIcon icon="exclamation" />}
-                    message={delegateAdminAndSwitch ? 
-                      "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
-                      "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
-                    }
+                    message={"Attention vous êtes le dernier membre éligible de la famille, si vous refusez, la famille sera supprimer !"}
                   />
                 }
+                {/* //TODO changer condition errorMessage */}
                 {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
                   <InformationIcon 
                     className="error-icon"
