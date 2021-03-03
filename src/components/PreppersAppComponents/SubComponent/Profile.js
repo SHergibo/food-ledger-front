@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useUserData, useUserHouseHoldData } from './../DataContext';
+import { useUserData, useUserHouseHoldData, useNotificationData } from './../DataContext';
 import UserOptionProfile from './ProfileComponents/UserOptionProfile';
 import NotificationOptionProfile from './ProfileComponents/NotificationOptionProfile';
 import HouseholdOptionProfile from './ProfileComponents/HouseholdOptionProfile';
@@ -17,9 +17,12 @@ import PropTypes from 'prop-types';
 function Profile({ history, location }) {
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
+  const { notificationReceived } = useNotificationData();
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const [ delegate, setDelegate ] = useState(false);
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
+  const [ requestDelegateAdmin, setRequestDelegateAdmin ] = useState(false);
+  const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
   const householdOptions = useRef(null);
   const isMounted = useRef(true);
 
@@ -39,6 +42,26 @@ function Profile({ history, location }) {
       setdidNoTAcceptDelegate(false);
     }
   }, [openTitleMessage]);
+
+  useEffect(() => {
+    const notificationRequestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
+    if(notificationRequestDelegateAdmin !== undefined){
+      setRequestDelegateAdmin(true);
+    }else{
+      setRequestDelegateAdmin(false);
+    }
+  }, [notificationReceived]);
+
+  useEffect(() => {
+    if(userHouseholdData && requestDelegateAdmin){
+      const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
+      if(memberEligible.length > 1 ){
+        setOtherMemberEligible(true);
+      }else{
+        setOtherMemberEligible(false);
+      }
+    }
+  }, [userHouseholdData, requestDelegateAdmin]);
 
   useEffect(() => {
     return () => {
@@ -184,13 +207,17 @@ function Profile({ history, location }) {
 
           <NotificationOptionProfile 
             scrollToHouseholdOptions = {scrollToHouseholdOptions}
+            otherMemberEligible={otherMemberEligible}
           />
 
           <div ref={householdOptions} className="default-title-container delimiter-title">
             <h1 className="default-h1">Options Famille</h1>
           </div>
 
-          <HouseholdOptionProfile />
+          <HouseholdOptionProfile 
+            requestDelegateAdmin={requestDelegateAdmin}
+            otherMemberEligible={otherMemberEligible}
+          />
 
           <div className="default-title-container delimiter-title">
             <h1 className="default-h1">Options e-mailing</h1>

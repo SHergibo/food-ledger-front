@@ -5,14 +5,13 @@ import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
+import PropTypes from 'prop-types';
 
-function HouseholdOptionProfile() {
+function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const { userData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { notificationReceived, setNotificationReceived, setNotificationSended } = useNotificationData();
   const [ delegateAdminAndSwitch, setdelegateAdminAndSwitch ] = useState(false);
-  const [ requestDelegateAdmin, setRequestDelegateAdmin ] = useState(false);
-  const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
   const [ firstMemberEligible, setFirstMemberEligible ] = useState("");
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
@@ -46,32 +45,21 @@ function HouseholdOptionProfile() {
   });
 
   useEffect(() => {
-    if(notificationReceived.length >= 1){
-      const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
-      if(needSwitchAdminNotif !== undefined){
-        setdelegateAdminAndSwitch(true);
-      }else{
-        setdelegateAdminAndSwitch(false);
-      }
-
-      const notificationRequestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
-      if(notificationRequestDelegateAdmin !== undefined){
-        setRequestDelegateAdmin(true);
-      }else{
-        setRequestDelegateAdmin(false);
-      }
+    const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
+    if(needSwitchAdminNotif !== undefined){
+      setdelegateAdminAndSwitch(true);
+    }else{
+      setdelegateAdminAndSwitch(false);
     }
   }, [notificationReceived]);
 
   useEffect(() => {
     if(userHouseholdData && requestDelegateAdmin){
       const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
-      if(memberEligible.length > 1 ){
-        setOtherMemberEligible(true);
-        const firstMemberEligible = userHouseholdData.member.find(member => member.isFlagged === false && userData.usercode !== member.usercode && userHouseholdData.userId !== member.userId);
+
+      if(memberEligible.length > 1){
+        const firstMemberEligible = userHouseholdData.member.find(member => member.isFlagged === false && userData.usercode !== member.usercode);
         setFirstMemberEligible(firstMemberEligible.usercode)
-      }else{
-        setOtherMemberEligible(false);
       }
     }
   }, [userHouseholdData, requestDelegateAdmin, userData]);
@@ -216,8 +204,21 @@ function HouseholdOptionProfile() {
       });
   };
 
-  const didNotAccepterRequestDelegateAdmin = (data) => {
-    console.log(data)
+  const didNotAcceptRequestDelegateAdmin = async (data) => {
+    const requestDelegateAdminNotif = notificationReceived.find(notif => notif.type === "request-delegate-admin");
+    const requestDelegateAdminEndPoint = `${apiDomain}/api/${apiVersion}/requests/${requestDelegateAdminNotif.urlRequest}/${requestDelegateAdminNotif._id}?acceptedRequest=no&otherMember=${data.otherUserIdDidNotAcceptDelegate}`;
+    await axiosInstance.get(requestDelegateAdminEndPoint)
+      .then((response) => {
+        if(response.status === 200){
+          setErrorMessageDelegate(false);
+          setNotificationReceived(response.data.notificationsReceived);
+        }
+      }).catch((error) => {
+        if(isMounted.current){
+          setErrorMessageDelegate(true);
+          setMessageErrorDelegate(error.response.data.output.payload.message);
+        }
+      });
   }
 
   const switchFamilly = async (data) => {
@@ -331,13 +332,13 @@ function HouseholdOptionProfile() {
                         {member.usercode !== userData.usercode && !member.isFlagged ?
                           <td className="td-align-center"> 
                             <label key={`delegateMember-${index}`} htmlFor={`delegateMember${index}`}> 
-                              <input type="radio" name="delegateRadioInput" id={`delegateMember${index}`} value={member.userId} defaultChecked={checkedRadioBtn} ref={registerRequestDelegateAdmin()}/>
+                              <input type="radio" name="otherUserIdDidNotAcceptDelegate" id={`delegateMember${index}`} value={member.userId} defaultChecked={checkedRadioBtn} ref={registerRequestDelegateAdmin()}/>
                               <span className="radio-checkmark"></span>
                             </label>
                           </td> :
                           <td className="td-align-center"> 
                             <label key={`delegateMember-${index}`}> 
-                              <input type="radio" name="delegateRadioInput" disabled/>
+                              <input type="radio" name="otherUserIdDidNotAcceptDelegate" disabled/>
                               <span className="radio-checkmark"></span>
                             </label>
                           </td>
@@ -435,21 +436,20 @@ function HouseholdOptionProfile() {
           }
 
           {userData.role === 'user' && requestDelegateAdmin && 
-            <form className="form-profile-list-table" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAccepterRequestDelegateAdmin)}>
+            <form className="form-profile-list-table" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAcceptRequestDelegateAdmin)}>
               {tableMemberFamilly}
               <div className="default-action-form-container">
                 <button className="default-btn-action-form" type="submit">
-                  Refuser et déléguer droits administrateurs
+                  {!otherMemberEligible ? "Refuser les droits administrateurs" : "Refuser et déléguer droits administrateurs"}
                 </button>
-                {!otherMemberEligible &&
+                {!errorMessageDelegate && !otherMemberEligible &&
                   <InformationIcon 
                     className="warning-icon"
                     icon={<FontAwesomeIcon icon="exclamation" />}
                     message={"Attention vous êtes le dernier membre éligible de la famille, si vous refusez, la famille sera supprimer !"}
                   />
                 }
-                {/* //TODO changer condition errorMessage */}
-                {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
+                {errorMessageDelegate &&
                   <InformationIcon 
                     className="error-icon"
                     icon={<FontAwesomeIcon icon="times" />}
@@ -479,6 +479,11 @@ function HouseholdOptionProfile() {
       }
     </>
   )
+}
+
+HouseholdOptionProfile.propTypes = {
+  otherMemberEligible: PropTypes.bool.isRequired,
+  requestDelegateAdmin: PropTypes.bool.isRequired
 }
 
 export default HouseholdOptionProfile

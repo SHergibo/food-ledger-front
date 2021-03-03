@@ -7,7 +7,7 @@ import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function NotificationOptionProfile({scrollToHouseholdOptions}) {
+function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligible}) {
   const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
   const { setUserData } = useUserData();
   const { setUserHouseholdData } = useUserHouseHoldData();
@@ -138,9 +138,9 @@ function NotificationOptionProfile({scrollToHouseholdOptions}) {
                         <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
                         <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
                       }
-                      {notification.type === "request-delegate-admin" ?
+                      {notification.type === "request-delegate-admin" && otherMemberEligible ?
                       <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
-                      <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="trash"/></button>
+                      <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
                       }
                     </div>
                   </td>
@@ -226,6 +226,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions}) {
 
 NotificationOptionProfile.propTypes = {
   scrollToHouseholdOptions: PropTypes.func.isRequired,
+  otherMemberEligible: PropTypes.bool.isRequired
 }
 
 export default NotificationOptionProfile
