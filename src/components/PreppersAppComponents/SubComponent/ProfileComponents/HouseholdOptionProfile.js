@@ -206,11 +206,16 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
   const didNotAcceptRequestDelegateAdmin = async (data) => {
     const requestDelegateAdminNotif = notificationReceived.find(notif => notif.type === "request-delegate-admin");
-    const requestDelegateAdminEndPoint = `${apiDomain}/api/${apiVersion}/requests/${requestDelegateAdminNotif.urlRequest}/${requestDelegateAdminNotif._id}?acceptedRequest=no&otherMember=${data.otherUserIdDidNotAcceptDelegate}`;
+    let requestDelegateAdminEndPoint = `${apiDomain}/api/${apiVersion}/requests/${requestDelegateAdminNotif.urlRequest}/${requestDelegateAdminNotif._id}?acceptedRequest=no`;
+    if(data.otherUserIdDidNotAcceptDelegate){
+      requestDelegateAdminEndPoint = `${requestDelegateAdminEndPoint}&otherMember=${data.otherUserIdDidNotAcceptDelegate}`;
+    }
     await axiosInstance.get(requestDelegateAdminEndPoint)
       .then((response) => {
         if(response.status === 200){
-          setErrorMessageDelegate(false);
+          if(isMounted.current){
+            setErrorMessageDelegate(false);
+          }
           setNotificationReceived(response.data.notificationsReceived);
         }
       }).catch((error) => {
