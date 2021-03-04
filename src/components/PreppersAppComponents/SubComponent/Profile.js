@@ -53,7 +53,7 @@ function Profile({ history, location }) {
   }, [notificationReceived]);
 
   useEffect(() => {
-    if(userHouseholdData && requestDelegateAdmin){
+    if(Object.keys(userHouseholdData).length > 0 && requestDelegateAdmin){
       const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
       if(memberEligible.length > 1 ){
         setOtherMemberEligible(true);
@@ -214,10 +214,15 @@ function Profile({ history, location }) {
             <h1 className="default-h1">Options Famille</h1>
           </div>
 
-          <HouseholdOptionProfile 
-            requestDelegateAdmin={requestDelegateAdmin}
-            otherMemberEligible={otherMemberEligible}
-          />
+          {Object.keys(userHouseholdData).length > 0 ?
+            <HouseholdOptionProfile 
+              requestDelegateAdmin={requestDelegateAdmin}
+              otherMemberEligible={otherMemberEligible}
+            /> :
+            //TODO add form create new household
+            <p>Création d'une nouvelle famille</p>
+          }
+          
 
           <div className="default-title-container delimiter-title">
             <h1 className="default-h1">Options e-mailing</h1>
