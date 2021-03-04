@@ -26,7 +26,7 @@ export function useNotificationData(){
 
 export function DataProvider({children}) {
   const [userData, setUserData] = useState();
-  const [userHouseholdData, setUserHouseholdData] = useState();
+  const [userHouseholdData, setUserHouseholdData] = useState({});
   const [userOptionData, setUserOptionData] = useState();
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationSended, setNotificationSended] = useState([]);
@@ -98,13 +98,15 @@ export function DataProvider({children}) {
 
   useEffect(() => {
     const getUserHouseHoldData = async () => {
-      const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userData.householdCode}`;
-      await axiosInstance.get(getUserHouseholdDataEndPoint)
-        .then((response) => {
-          if(isMounted.current){
-            setUserHouseholdData(response.data);
-          }
-        });
+      if(userData.householdCode !== "none"){
+        const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userData.householdCode}`;
+        await axiosInstance.get(getUserHouseholdDataEndPoint)
+          .then((response) => {
+            if(isMounted.current){
+              setUserHouseholdData(response.data);
+            }
+          });
+      }
     };
 
     const getUserOptionData = async () => {
