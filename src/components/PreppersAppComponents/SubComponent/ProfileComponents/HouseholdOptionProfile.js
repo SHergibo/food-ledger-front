@@ -389,23 +389,26 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     <>
       {userHouseholdData && userData &&
         <>
-          <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
-            <div className="input-form-container-with-error">
-              <label htmlFor="householdName">Nom de la famille *</label>
-              <input name="householdName" className="input-form" type="mail" id="householdName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
-              {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
-            </div>
-            <div className="default-action-form-container">
-              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-              {successFormFamillyName && 
-                <InformationIcon 
-                  className="success-icon"
-                  icon={<FontAwesomeIcon icon="check" />}
-                />
-              }
-            </div>
-          </form>
-
+          {userData.role === "admin" ?
+            <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
+              <div className="input-form-container-with-error">
+                <label htmlFor="householdName">Nom de la famille *</label>
+                <input name="householdName" className="input-form" type="mail" id="householdName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
+                {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
+              </div>
+              <div className="default-action-form-container">
+                <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
+                {successFormFamillyName && 
+                  <InformationIcon 
+                    className="success-icon"
+                    icon={<FontAwesomeIcon icon="check" />}
+                  />
+                }
+              </div>
+            </form> :
+            <p>Nom de la famille : {userHouseholdData.householdName}</p>
+          }
+          
           {userData.role === 'user' && !requestDelegateAdmin && 
             <div>
             {tableMemberFamilly}
