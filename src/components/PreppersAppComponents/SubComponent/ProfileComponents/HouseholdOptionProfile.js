@@ -12,6 +12,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
   const { notificationReceived, setNotificationReceived, setNotificationSended } = useNotificationData();
   const [ delegateAdminAndSwitch, setdelegateAdminAndSwitch ] = useState(false);
+  const [ dontWantToDelegate, setDontWantToDelegate ] = useState(false);
   const [ firstMemberEligible, setFirstMemberEligible ] = useState("");
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
@@ -133,9 +134,17 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     if(userData.role === "admin" && usercode === userData.usercode){
       setBtnDisabledFormDelegate(true);
       setWarningMessageDelegate(false);
+      if(dontWantToDelegate){
+        setDontWantToDelegate(false);
+      }
       btnDelegateForm.current.classList.remove('default-btn-action-form');
       btnDelegateForm.current.classList.add('default-btn-disabled-form');
     }else{
+      if(usercode === undefined){
+        setDontWantToDelegate(true);
+      }else if(dontWantToDelegate){
+        setDontWantToDelegate(false);
+      }
       setBtnDisabledFormDelegate(false);
       setWarningMessageDelegate(true);
       btnDelegateForm.current.classList.remove('default-btn-disabled-form');
@@ -183,7 +192,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
   const delegateAndSwitch = async (data) => {
     const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
-    const switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${needSwitchAdminNotif._id}?acceptedRequest=yes&otherMember=${data.delegateRadioInput}`;
+    let switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${needSwitchAdminNotif._id}?acceptedRequest=yes&otherMember=${data.delegateRadioInput}`;
+    if(data === ""){
+      switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${needSwitchAdminNotif._id}?acceptedRequest=yes`;
+    }
     await axiosInstance.get(switchAdminRightsEndPoint)
       .then((response) => {
         if(response.status === 200){
@@ -353,6 +365,19 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                 </tr>  
                 )
               })}
+              {userData.role === "admin" && delegateAdminAndSwitch && userHouseholdData.member.length > 1 &&
+                <tr>
+                  <td>Ne pas déléguer / supprimer la famille</td>
+                  <td></td>
+                  <td className="td-align-center"> 
+                    <label htmlFor={"no-delegate"} onClick={() => {enableSubmitBtn()}}> 
+                      <input type="radio" name="delegateRadioInput" id={"no-delegate"} value={""} ref={registerFormDelegateWhenSwitching()}/>
+                      <span className="radio-checkmark"></span>
+                    </label>
+                  </td>
+                  <td></td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>     
@@ -393,7 +418,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                 {tableMemberFamilly}
                 <div className="default-action-form-container">
                   <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
-                    {delegateAdminAndSwitch ? "Déléguer droits administrateurs et changer de famille" :
+                    {delegateAdminAndSwitch ? 
+                      dontWantToDelegate ? "Ne pas déléguer et changer de famille" : "Déléguer droits administrateurs et changer de famille" :
                     "Déléguer droits administrateurs"}
                   </button>
                   {successFormDelegate && 
@@ -407,7 +433,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                       className="warning-icon"
                       icon={<FontAwesomeIcon icon="exclamation" />}
                       message={delegateAdminAndSwitch ? 
-                        "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
+                        dontWantToDelegate ? "Vous êtes sur le point de changer de famille sans déléguer vos droits administrateurs à une autre personne, votre famille sera supprimée, cette action est irréversible ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
                         "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
                       }
                     />

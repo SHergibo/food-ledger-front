@@ -219,7 +219,7 @@ function Profile({ history, location }) {
               requestDelegateAdmin={requestDelegateAdmin}
               otherMemberEligible={otherMemberEligible}
             /> :
-            //TODO add form create new household
+            //TODO add form create new household et rajouter form pour switch famille
             <p>Création d'une nouvelle famille</p>
           }
           
