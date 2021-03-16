@@ -11,7 +11,6 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
-import { logout } from './../../../utils/Auth';
 import PropTypes from 'prop-types';
 
 function Profile({ history, location }) {
@@ -75,11 +74,6 @@ function Profile({ history, location }) {
 
   const deleteUser = async (data) => {
 
-    let logOut = async () => {
-      await logout();
-      history.push("/");
-    };
-
     let deleteUserDataEndPoint;
     if(data){
       deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserId=${data.delegateRadioInput}`;
@@ -90,7 +84,9 @@ function Profile({ history, location }) {
     .then((response) => {
       if(isMounted.current){
         if(response.status === 200){
-          logOut();
+          localStorage.clear();
+          sessionStorage.clear();
+          history.push("/");
         }
       }
     });
@@ -138,7 +134,7 @@ function Profile({ history, location }) {
             }
             {delegate &&
               <>
-                <p>Choississez le membre à qui vous voulez déléguer les droits administrations de cette famille !</p>
+                <p>Choississez le membre à qui vous voulez déléguer les droits d'administrations de cette famille !</p>
                 <form className="form-delegate" onSubmit={handleSubmitFormDelegateWhenDeleting(deleteUser)}>
                   {userHouseholdData.member.map((item, index) => {
                     if(userData._id !== item.userId && item.isFlagged === false){
