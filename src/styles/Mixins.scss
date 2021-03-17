@@ -175,6 +175,14 @@
       background-color: $primary-color-hover;
       border-color: $primary-color-hover;
     }
+  } @else{
+    cursor: not-allowed;
+  }
+  @if $hoverable {
+    &:hover {
+      background-color: $primary-color-hover;
+      border-color: $primary-color-hover;
+    }
   }
   svg {
     margin-right: 0.8rem;
