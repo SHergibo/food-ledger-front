@@ -30,7 +30,7 @@ const logout = async() =>{
   try {
     const logout = Axios.create({
       baseURL: apiDomain,
-      timeout: 5000,
+      timeout: 15000,
       headers: {
         ContentType: 'applications/json',
         Accept: 'application/json',
@@ -55,7 +55,7 @@ const refreshToken = async() =>{
   if(refreshToken && email){
     const refresh = Axios.create({
       baseURL: apiDomain,
-      timeout: 5000,
+      timeout: 15000,
       headers: {
         ContentType: 'applications/json',
         Accept: 'application/json',

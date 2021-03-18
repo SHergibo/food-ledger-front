@@ -4,7 +4,7 @@ import { apiDomain } from './../apiConfig/ApiConfig';
 
 const axiosInstance = axios.create({
   baseURL: apiDomain,
-  timeout: 5000,
+  timeout: 15000,
   headers: {
     ContentType: 'applications/json',
     Accept: 'application/json',
@@ -18,7 +18,7 @@ axiosInstance.interceptors.request.use(
   },
   error => {
     return Promise.reject(error);
-    }
+  }
 );
 
 export default axiosInstance;
