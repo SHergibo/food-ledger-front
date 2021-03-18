@@ -24,6 +24,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const [ warningMessageDelegate, setWarningMessageDelegate ] = useState(false);
   const [ errorMessageDelegate, setErrorMessageDelegate ] = useState(false);
   const [ messageErrorDelegate, setMessageErrorDelegate ] = useState("");
+  const [ errorMessageAddUser, setErrorMessageAddUser ] = useState(false);
+  const [ messageErrorAddUser, setMessageErrorAddUser ] = useState("");
+  const [ errorMessageSwitchFamilly, setErrorMessageSwitchFamilly ] = useState(false);
+  const [ messageErrorSwitchFamilly, setMessageErrorSwitchFamilly ] = useState("");
   const isMounted = useRef(true);
   const btnDelegateForm = useRef(null);
 
@@ -280,7 +284,15 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           setNotificationSended(notificationSended => [...notificationSended, response.data]);
           if(isMounted.current){
             setSuccessFormSwitchFamilly(true);
+            setErrorMessageSwitchFamilly(false);
+          setMessageErrorSwitchFamilly("");
           }
+        }
+      })
+      .catch((error) => {
+        if(isMounted.current){
+          setErrorMessageSwitchFamilly(true);
+          setMessageErrorSwitchFamilly(error.response.data.output.payload.message);
         }
       });
   };
@@ -299,10 +311,26 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           setNotificationSended(notificationSended => [...notificationSended, response.data]);
           if(isMounted.current){
             setSuccessFormAddUser(true);
+            setErrorMessageAddUser(false);
+            setMessageErrorAddUser("");
           }
+        }
+      })
+      .catch((error) => {
+        if(isMounted.current){
+          setErrorMessageAddUser(true);
+          setMessageErrorAddUser(error.response.data.output.payload.message);
         }
       });
   };
+
+  const clearErrorMessage = () =>{
+    if(messageErrorAddUser){
+      setErrorMessageAddUser(false);
+    }else if(messageErrorSwitchFamilly){
+      setErrorMessageSwitchFamilly(false);
+    }
+  }
 
 
   let tableMemberFamilly = <>
@@ -482,14 +510,21 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
                 <div className="input-form-container">
                   <label htmlFor="addUserCode">Ajouter un membre</label>
-                  <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." ref={registerFormAddUser()} />
+                  <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} ref={registerFormAddUser()} />
                 </div>
                 <div className="default-action-form-container">
                   <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="plus" /> Ajouter</button>
-                  {successFormAddUser && 
+                  {successFormAddUser && !errorMessageAddUser &&
                     <InformationIcon 
                       className="success-icon"
                       icon={<FontAwesomeIcon icon="check" />}
+                    />
+                  }
+                  {errorMessageAddUser &&
+                    <InformationIcon 
+                      className="error-icon"
+                      icon={<FontAwesomeIcon icon="times" />}
+                      message={messageErrorAddUser}
                     />
                   }
                 </div>
@@ -525,16 +560,23 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
             <div className="input-form-container">
               <label htmlFor="switchFamillyCode">Changer de famille</label>
-              <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." ref={registerFormSwitchFamilly()} />
+              <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly()} />
             </div>
             <div className="default-action-form-container">
               <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="exchange-alt" /> Changer</button>
-              {successFormSwitchFamilly && 
+              {successFormSwitchFamilly && !errorMessageSwitchFamilly &&
                 <InformationIcon 
                   className="success-icon"
                   icon={<FontAwesomeIcon icon="check" />}
                 />
               }
+              {errorMessageSwitchFamilly &&
+                    <InformationIcon 
+                      className="error-icon"
+                      icon={<FontAwesomeIcon icon="times" />}
+                      message={messageErrorSwitchFamilly}
+                    />
+                  }
             </div>
           </form>
         </>
