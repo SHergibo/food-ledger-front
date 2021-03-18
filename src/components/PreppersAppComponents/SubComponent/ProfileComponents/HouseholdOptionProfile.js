@@ -195,7 +195,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
       });
   }
 
-  const delegateUser = async (data) => {
+  const delegateAdminRights = async (data) => {
     const switchAdminRightsData = {
       userId : data.delegateRadioInput,
       householdId : userHouseholdData._id
@@ -473,7 +473,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
           {userData.role === "admin" &&
             <>
-              <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateUser)}>
+              <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
                 {tableMemberFamilly}
                 <div className="default-action-form-container">
                   <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
