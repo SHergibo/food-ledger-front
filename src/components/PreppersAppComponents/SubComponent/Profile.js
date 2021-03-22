@@ -43,11 +43,13 @@ function Profile({ history, location }) {
   }, [openTitleMessage]);
 
   useEffect(() => {
-    const notificationRequestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
-    if(notificationRequestDelegateAdmin !== undefined){
-      setRequestDelegateAdmin(true);
-    }else{
-      setRequestDelegateAdmin(false);
+    if(notificationReceived.length >= 1){
+      const notificationRequestDelegateAdmin = notificationReceived.find(notif => notif.type === "request-delegate-admin");
+      if(notificationRequestDelegateAdmin !== undefined){
+        setRequestDelegateAdmin(true);
+      }else{
+        setRequestDelegateAdmin(false);
+      }
     }
   }, [notificationReceived]);
 
