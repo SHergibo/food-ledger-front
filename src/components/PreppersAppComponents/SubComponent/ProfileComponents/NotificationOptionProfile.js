@@ -12,6 +12,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
   const { setUserData } = useUserData();
   const { setUserHouseholdData } = useUserHouseHoldData();
   const [notificationTable, setNotificationTable] = useState(true);
+  const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
   const isMounted = useRef(true);
   const btnSwitchReceivedNotif = useRef(null);
   const btnSwitchSendedNotif = useRef(null);
@@ -70,6 +71,17 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
       setNotificationTable(true);
     }
   }, [notificationSended, setNotificationTable]);
+
+  useEffect(() => {
+    if(notificationReceived.length >= 1){
+      const notifDelegateAdmin = notificationReceived.find(notif => notif.type === "request-admin" || notif.type === "need-switch-admin");
+      if(notifDelegateAdmin !== undefined){
+        setNotificationDelegateAdmin(true);
+      }else{
+        setNotificationDelegateAdmin(false);
+      }
+    }
+  }, [notificationReceived]);
 
   const notificationReceivedTypes = (type) => {
     switch (type) {
@@ -134,13 +146,25 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
                   </td>
                   <td>
                     <div className="div-list-table-action">
-                      {notification.type === "need-switch-admin" ? 
-                        <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
-                        <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
+                      {notification.type === "need-switch-admin" &&
+                        <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button>
+                      }
+                      {(notification.type === "invitation-household-to-user" || notification.type === "invitation-user-to-household") &&
+                        <button 
+                        title={notificationDelegateAdmin ? "Veuillez accepter ou non la délégation de droits administrateurs avant de pouvoir effectuer cette action !" : "Accepter"}
+                        type="button" 
+                        className={notificationDelegateAdmin ? "list-table-action-disabled" : "list-table-action"}
+                        disabled={notificationDelegateAdmin} 
+                        onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}>
+                          <FontAwesomeIcon icon="check"/>
+                        </button>
+                      }
+                      {notification.type === "request-admin" &&
+                       <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
                       }
                       {notification.type === "request-delegate-admin" && otherMemberEligible ?
-                      <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
-                      <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
+                        <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
+                        <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
                       }
                     </div>
                   </td>
