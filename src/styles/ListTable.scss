@@ -210,6 +210,13 @@
   }
 }
 
+.list-table-action-disabled{
+  @include btn-action-title(1rem, 2rem, true, true);
+  &:last-child{
+    margin-right: 0rem;
+  }
+}
+
 .list-table-one-action{
   @include btn-action-title(1rem, 2rem);
   margin-right: 0rem;
@@ -338,6 +345,14 @@
       margin-right: 1rem;
     }
   }
+
+  .list-table-action-disabled{
+    @include btn-action-title(1rem, 2rem, true, true);
+    &:last-child{
+      margin-right: 1rem;
+    }
+  }
+
   .form-filter-table{
     .action-form-filter{
       margin-bottom: .5rem;
