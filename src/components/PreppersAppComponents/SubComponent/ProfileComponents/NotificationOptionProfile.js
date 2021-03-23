@@ -93,8 +93,6 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
         return "Délégation droits administrateurs";
       case "request-delegate-admin" :
           return "Délégation droits administrateurs";
-      case "last-chance-request-admin" :
-        return "Délégation droits administrateurs";
       case "last-chance-request-delegate-admin" :
           return "Délégation droits administrateurs";
       case "invitation-household-to-user" :
@@ -117,8 +115,6 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
         return "Délégation droits administrateurs";
       case "request-delegate-admin" :
           return "Délégation droits administrateurs";
-      case "last-chance-request-admin" :
-        return "Délégation droits administrateurs";
       case "last-chance-request-delegate-admin" :
           return "Délégation droits administrateurs";
       case "invitation-household-to-user" :
