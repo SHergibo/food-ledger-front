@@ -65,8 +65,12 @@ export function DataProvider({children}) {
       socketRef.current.emit('setSocketId', {userId: localStorage.getItem('user_id'), socketId: socketRef.current.id});
     });
 
-    socketRef.current.on("notifSocketIo", (notif) => {
+    socketRef.current.on("updateNotificationReceived", (notif) => {
       setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
+    });
+
+    socketRef.current.on("updateNotificationSended", (notif) => {
+      setNotificationSended(notificationSended => [...notificationSended, notif]);
     });
 
     socketRef.current.on("deleteNotificationSended", (notifId) => {
