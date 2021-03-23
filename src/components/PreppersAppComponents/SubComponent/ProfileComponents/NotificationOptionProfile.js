@@ -74,7 +74,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
 
   useEffect(() => {
     if(notificationReceived.length >= 1){
-      const notifDelegateAdmin = notificationReceived.find(notif => notif.type === "request-admin" || notif.type === "need-switch-admin");
+      const notifDelegateAdmin = notificationReceived.find(notif => notif.type === "request-admin" || notif.type === "need-switch-admin" || notif.type === "request-delegate-admin" || notif.type === "last-chance-request-delegate-admin");
       if(notifDelegateAdmin !== undefined){
         setNotificationDelegateAdmin(true);
       }else{
@@ -91,8 +91,12 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
         return "Délégation droits administrateurs";
       case "request-admin" :
         return "Délégation droits administrateurs";
+      case "request-delegate-admin" :
+          return "Délégation droits administrateurs";
       case "last-chance-request-admin" :
         return "Délégation droits administrateurs";
+      case "last-chance-request-delegate-admin" :
+          return "Délégation droits administrateurs";
       case "invitation-household-to-user" :
         return "Invitation nouvelle famille";
       case "invitation-user-to-household" :
@@ -111,8 +115,12 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
         return "Délégation droits administrateurs";
       case "request-admin" :
         return "Délégation droits administrateurs";
+      case "request-delegate-admin" :
+          return "Délégation droits administrateurs";
       case "last-chance-request-admin" :
         return "Délégation droits administrateurs";
+      case "last-chance-request-delegate-admin" :
+          return "Délégation droits administrateurs";
       case "invitation-household-to-user" :
         return "Invitation nouveau membre";
       case "invitation-user-to-household" :
@@ -159,10 +167,10 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
                           <FontAwesomeIcon icon="check"/>
                         </button>
                       }
-                      {notification.type === "request-admin" &&
+                      {(notification.type === "request-admin" || notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin")  &&
                        <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
                       }
-                      {notification.type === "request-delegate-admin" && otherMemberEligible ?
+                      {(notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin") && otherMemberEligible ?
                         <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
                         <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
                       }
