@@ -107,16 +107,10 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
 
   const notificationSendedTypes = (type) => {
     switch (type) {
-      case "information" :
-        return "Information";
       case "need-switch-admin" :
-        return "Délégation droits administrateurs";
+        return "Invitation nouveau membre";
       case "request-admin" :
         return "Délégation droits administrateurs";
-      case "request-delegate-admin" :
-          return "Délégation droits administrateurs";
-      case "last-chance-request-delegate-admin" :
-          return "Délégation droits administrateurs";
       case "invitation-household-to-user" :
         return "Invitation nouveau membre";
       case "invitation-user-to-household" :
