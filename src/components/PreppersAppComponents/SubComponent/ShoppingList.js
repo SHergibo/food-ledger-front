@@ -118,10 +118,12 @@ function ShoppingList() {
     let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/${userData.householdCode}`;
 
     await axiosInstance.delete(deleteDataEndPoint)
-      .then(() => {
-        setShoppingList([]);
-        setPageCount(0);
-        setHasProduct(false);
+      .then((response) => {
+        if(response.status === 204){
+          setShoppingList([]);
+          setPageCount(0);
+          setHasProduct(false);
+        }
       });
   };
 
