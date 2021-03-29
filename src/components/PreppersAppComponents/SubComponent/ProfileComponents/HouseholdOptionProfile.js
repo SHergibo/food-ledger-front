@@ -204,9 +204,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
     await axiosInstance.post(switchAdminRightsEndPoint, switchAdminRightsData)
       .then((response) => {
-        if(response.status === 200){
+        if(response.status === 204){
           setErrorMessageDelegate(false);
-          setNotificationSended(notificationSended => [...notificationSended, response.data]);
           setWarningMessageDelegate(false);
           if(isMounted.current){
             setSuccessFormDelegate(true);
@@ -230,7 +229,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     }
     await axiosInstance.get(switchAdminRightsEndPoint)
       .then((response) => {
-        if(response.status === 200){
+        if(response.status === 204){
           setErrorMessageDelegate(false);
           setNotificationReceived(response.data.notificationsReceived);
           setWarningMessageDelegate(false);
@@ -256,7 +255,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     }
     await axiosInstance.get(requestDelegateAdminEndPoint)
       .then((response) => {
-        if(response.status === 200){
+        if(response.status === 204){
           if(isMounted.current){
             setErrorMessageDelegate(false);
           }
@@ -280,12 +279,11 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
     await axiosInstance.post(switchFamillyEndPoint, switchFamillyData)
       .then((response) => {
-        if(response.status === 200){
-          setNotificationSended(notificationSended => [...notificationSended, response.data]);
+        if(response.status === 204){
           if(isMounted.current){
             setSuccessFormSwitchFamilly(true);
             setErrorMessageSwitchFamilly(false);
-          setMessageErrorSwitchFamilly("");
+            setMessageErrorSwitchFamilly("");
           }
         }
       })
@@ -307,7 +305,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     const addUserToFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
     await axiosInstance.post(addUserToFamillyEndPoint, addUserData)
       .then((response) => {
-        if(response.status === 200){
+        if(response.status === 204){
           setNotificationSended(notificationSended => [...notificationSended, response.data]);
           if(isMounted.current){
             setSuccessFormAddUser(true);
