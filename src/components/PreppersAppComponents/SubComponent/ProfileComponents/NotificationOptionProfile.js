@@ -1,16 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useNotificationData } from '../../DataContext';
-import { useUserData } from '../../DataContext';
-import { useUserHouseHoldData } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligible}) {
-  const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
-  const { setUserData } = useUserData();
-  const { setUserHouseholdData } = useUserHouseHoldData();
+  const { notificationReceived, notificationSended } = useNotificationData();
   const [notificationTable, setNotificationTable] = useState(true);
   const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
   const isMounted = useRef(true);
@@ -41,29 +37,12 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
 
   const notificationRequest = async (urlRequest, id, isAccepted) => {
     const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${isAccepted}`;
-    await axiosInstance.get(requestNotificationEndpoint)
-      .then((response) => {
-        if(isMounted.current){
-          setNotificationReceived(response.data.notificationsReceived);
-          if(response.data.notificationsSended && response.data.notificationsSended.length >= 1){
-            setNotificationSended(response.data.notificationsSended);
-          }
-          if(response.data.userData && response.data.householdData){
-            setUserData(response.data.userData);
-            setUserHouseholdData(response.data.householdData);
-          }
-        }
-      });
+    await axiosInstance.get(requestNotificationEndpoint);
   };
 
   const deleteNotification = async (notificationId) => {
     const removeNotificationEndpoint = `${apiDomain}/api/${apiVersion}/notifications/${notificationId}`;
-    await axiosInstance.delete(removeNotificationEndpoint)
-      .then((response) => {
-        if(isMounted.current){
-          setNotificationSended(notificationSended => notificationSended.filter((notif) => notif._id !== response.data._id));
-        }
-      });
+    await axiosInstance.delete(removeNotificationEndpoint);
   }
 
   useEffect(() => {
