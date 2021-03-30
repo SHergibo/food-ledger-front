@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const { userData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
-  const { notificationReceived, setNotificationReceived, notificationSended, setNotificationSended } = useNotificationData();
+  const { notificationReceived, notificationSended } = useNotificationData();
   const [ defaultCheckedAdmin, setDefaultCheckedAdmin ] = useState(true);
   const [ delegateAdminAndSwitch, setDelegateAdminAndSwitch ] = useState(false);
   const [ requestAdminNotification, setRequestAdminNotification ] = useState(false);
@@ -231,7 +231,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
       .then((response) => {
         if(response.status === 204){
           setErrorMessageDelegate(false);
-          setNotificationReceived(response.data.notificationsReceived);
           setWarningMessageDelegate(false);
           if(isMounted.current){
             setSuccessFormDelegate(true);
@@ -255,11 +254,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     }
     await axiosInstance.get(requestDelegateAdminEndPoint)
       .then((response) => {
-        if(response.status === 204){
-          if(isMounted.current){
-            setErrorMessageDelegate(false);
-          }
-          setNotificationReceived(response.data.notificationsReceived);
+        if(response.status === 204 && isMounted.current){
+          setErrorMessageDelegate(false);
         }
       }).catch((error) => {
         if(isMounted.current){
@@ -279,12 +275,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
     await axiosInstance.post(switchFamillyEndPoint, switchFamillyData)
       .then((response) => {
-        if(response.status === 204){
-          if(isMounted.current){
-            setSuccessFormSwitchFamilly(true);
-            setErrorMessageSwitchFamilly(false);
-            setMessageErrorSwitchFamilly("");
-          }
+        if(response.status === 204 && isMounted.current){
+          setSuccessFormSwitchFamilly(true);
+          setErrorMessageSwitchFamilly(false);
+          setMessageErrorSwitchFamilly("");
         }
       })
       .catch((error) => {
@@ -305,13 +299,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     const addUserToFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
     await axiosInstance.post(addUserToFamillyEndPoint, addUserData)
       .then((response) => {
-        if(response.status === 204){
-          setNotificationSended(notificationSended => [...notificationSended, response.data]);
-          if(isMounted.current){
-            setSuccessFormAddUser(true);
-            setErrorMessageAddUser(false);
-            setMessageErrorAddUser("");
-          }
+        if(response.status === 204 && isMounted.current){
+          setSuccessFormAddUser(true);
+          setErrorMessageAddUser(false);
+          setMessageErrorAddUser("");
         }
       })
       .catch((error) => {
