@@ -5,7 +5,7 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 
 function SubContainer({history}) {
-  const { notificationReceived, setNotificationReceived } = useNotificationData();
+  const { notificationReceived } = useNotificationData();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const responsive = useCallback(() => {
@@ -32,10 +32,7 @@ function SubContainer({history}) {
 
   const interactionNotification = async (urlRequest, id, accepted) => {
     const requestNotificationEndPoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${accepted}`;
-    await axiosInstance.get(requestNotificationEndPoint)
-      .then((response) => {
-        setNotificationReceived(response.data.notificationsReceived);
-      });
+    await axiosInstance.get(requestNotificationEndPoint);
   };
 
   const delegateNotification = () => {
