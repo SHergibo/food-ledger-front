@@ -60,13 +60,13 @@ function ShoppingList() {
     if(userData){
       setErrorFetch(false);
       setLoading(true);
-      const getShoppingListEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
+      const getShoppingListEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/pagination/${userData.householdId}?page=${pageIndex - 1}`;
       await axiosInstance.get(getShoppingListEndPoint)
         .then((response) => {
           if(isMounted.current){
-            if(response.data.totalProduct >= 1){
+            if(response.data.totalShoppingList >= 1){
               setShoppingList(response.data.arrayData);
-              setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+              setPageCount(Math.ceil(response.data.totalShoppingList / pageSize));
               setHasProduct(true);
             }else{
               setHasProduct(false);
@@ -92,7 +92,7 @@ function ShoppingList() {
   }, [userData, loadShoppingList]);
 
   const downloadShoppingList = async () => {
-    let downloadShoppingListEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/download/${userData.householdCode}`;
+    let downloadShoppingListEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/download/${userData.householdId}`;
 
     await axiosInstance.get(downloadShoppingListEndPoint)
     .then((response) => {
@@ -106,7 +106,7 @@ function ShoppingList() {
   };
 
   const sendShoppingListEmail = async () => {
-    let sendShoppingListEmailEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/send-mail/${userData.householdCode}`;
+    let sendShoppingListEmailEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/send-mail/${userData.householdId}`;
 
     await axiosInstance.get(sendShoppingListEmailEndPoint)
     .then(() => {
@@ -115,7 +115,7 @@ function ShoppingList() {
   };
 
   const deleteAllShoppingList = async () => {
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/${userData.householdCode}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/${userData.householdId}`;
 
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {

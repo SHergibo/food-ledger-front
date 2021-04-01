@@ -67,13 +67,13 @@ function ProductLog({ history }) {
     if(userData){
       setErrorFetch(false);
       setLoading(true);
-      const getProductLogEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
+      const getProductLogEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/pagination/${userData.householdId}?page=${pageIndex - 1}`;
       await axiosInstance.get(getProductLogEndPoint)
         .then((response) => {
           if(isMounted.current){
-            if(response.data.totalProduct >= 1){
+            if(response.data.totalProductLog >= 1){
               setProductLog(response.data.arrayData);
-              setPageCount(Math.ceil(response.data.totalProduct / pageSize));
+              setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
               setHasProduct(true);
             }else{
               setHasProduct(false);
@@ -99,7 +99,7 @@ function ProductLog({ history }) {
   }, [userData, loadProductLog]);
 
   const deleteAllProductLog = async () => {
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/${userData.householdCode}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/${userData.householdId}`;
 
     await axiosInstance.delete(deleteDataEndPoint)
       .then(() => {
