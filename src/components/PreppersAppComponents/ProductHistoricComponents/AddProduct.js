@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
+import { useUserHouseHoldData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import AddEditProductForm from './AddEditProductForm';
@@ -8,6 +9,7 @@ import PropTypes from 'prop-types';
 
 function AddProduct({ history }) {
   const location = useLocation();
+  const { userHouseholdData } = useUserHouseHoldData();
   const [arrayExpDate, setArrayExpDate] = useState([]);
   const [success, setSuccess] = useState(false);
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
@@ -50,6 +52,8 @@ function AddProduct({ history }) {
         data.minimumInStock = { minInStock : parseInt(data.minimumInStock), updatedBy: "user" };
       }
     }
+
+    data.householdId = userHouseholdData._id;
 
     const postDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}`;
     await axiosInstance.post(postDataEndPoint, data)

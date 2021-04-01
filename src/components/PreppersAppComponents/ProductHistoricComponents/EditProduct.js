@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useState, Fragment, useRef } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
+import { useUserHouseHoldData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import slugUrl from './../../../utils/slugify';
@@ -10,6 +11,7 @@ import PropTypes from 'prop-types';
 function EditProduct({ history }) {
   const isMounted = useRef(true);
   const location = useLocation();
+  const { userHouseholdData } = useUserHouseHoldData();
   const [product, setProduct] = useState({});
   const [arrayExpDate, setArrayExpDate] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +76,7 @@ function EditProduct({ history }) {
       weight: data.weight,
       brand: data.brand,
       type: data.type,
+      householdId: userHouseholdData._id
     }
 
     let totalNumber = 0;
