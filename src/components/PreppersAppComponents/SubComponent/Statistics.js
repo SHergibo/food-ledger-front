@@ -27,7 +27,7 @@ function Statistics() {
     if(userData){
       setErrorFetch(false);
       setLoading(true);
-      const getChartOneDataEndPoint = `${apiDomain}/api/${apiVersion}/statistics/chart-data/${userData.householdCode}`;
+      const getChartOneDataEndPoint = `${apiDomain}/api/${apiVersion}/statistics/chart-data/${userData.householdId}`;
       await axiosInstance.get(getChartOneDataEndPoint)
         .then((response) => {
           if(isMounted.current){

@@ -67,7 +67,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   useEffect(() => {
     const loadOptions = async () => {
       let newArray = [];
-      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdCode}`;
+      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdId}`;
       await axiosInstance.get(getBrandListEndPoint)
         .then((response) => {
           if(isMounted.current){
@@ -235,7 +235,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     if(pageIndex >= 1 && userData){
       setLoading(true);
-      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdCode}?page=${pageIndex - 1}`;
+      let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdId}?page=${pageIndex - 1}`;
       const endPoint = finalEndPoint(getDataEndPoint);
       await axiosInstance.get(endPoint)
         .then((response) => {
@@ -550,7 +550,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   }
 
   const downloadList = async () => {
-    let downloadListEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/download/${userData.householdCode}`;
+    let downloadListEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/download/${userData.householdId}`;
 
     await axiosInstance.get(downloadListEndPoint)
     .then((response) => {

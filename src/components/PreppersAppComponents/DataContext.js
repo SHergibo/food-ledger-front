@@ -107,8 +107,8 @@ export function DataProvider({children}) {
 
   useEffect(() => {
     const getUserHouseHoldData = async () => {
-      if(userData.householdCode !== "none"){
-        const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userData.householdCode}`;
+      if(userData.householdId !== null){
+        const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userData.householdId}`;
         await axiosInstance.get(getUserHouseholdDataEndPoint)
           .then((response) => {
             if(isMounted.current){
