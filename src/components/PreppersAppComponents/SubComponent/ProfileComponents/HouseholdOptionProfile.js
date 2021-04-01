@@ -293,7 +293,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     let addUserData = {
       usercode : `${data.addUserCode}`, 
       type : "householdToUser",
-      householdCode : `${userData.householdCode}`
+      householdCode : `${userHouseholdData.householdCode}`
     }
 
     const addUserToFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
