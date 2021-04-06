@@ -141,7 +141,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
                       }
                       {(notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin") && otherMemberEligible ?
                         <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
-                        <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
+                        notification.type === "information" ? <button title="Supprimer la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button> : <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
                       }
                     </div>
                   </td>
