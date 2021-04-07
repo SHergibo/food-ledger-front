@@ -11,7 +11,6 @@
   .notification{
     display: flex;
     justify-content: space-between;
-    padding: 0 0 0 .8rem;
     overflow: hidden;
     border-radius: .8rem;
     background-color: $white;
@@ -23,19 +22,15 @@
     .notification-message{
       display: flex;
       align-items: center;
-      padding: .8rem 0;
+      padding: .8rem;
     }
     .notification-interaction{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       border-left: 1px solid $primary-color;
       button{
         display: flex;
         align-items: center;
         padding: 0 .8rem;
         min-height: 2.5rem;
-        height: 50%;
         font-family: "Roboto", sans-serif;
         line-height: 1.4;
         color: $primary-color;
@@ -45,11 +40,17 @@
         border: none;
         cursor: pointer;
         transition: .3s ease-in-out;
-        &:first-child{
-          border-bottom: 1px solid $primary-color;
-        }
         &:hover{
           background-color: $grey;
+        }
+      }
+      .notif-one-interaction{
+        height: 100%;
+      }
+      .notif-two-interactions{
+        height: 50%;
+        &:first-child{
+          border-bottom: 1px solid $primary-color;
         }
       }
     }
