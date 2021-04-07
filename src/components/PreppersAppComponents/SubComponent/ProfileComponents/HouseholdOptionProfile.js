@@ -359,7 +359,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                       {member.firstname} {member.lastname}
                     </td>
                     <td>
-                      {member.userId === userHouseholdData.userId ? " Administrateur" : " Utilisateur"}
+                      {member.userId === userHouseholdData.userId ? " Administrateur.trice" : " Utilisateur.trice"}
                     </td>
                     {userData.role === "admin" && userHouseholdData.member.length > 1 &&
                       <>

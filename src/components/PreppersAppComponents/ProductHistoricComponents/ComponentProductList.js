@@ -739,7 +739,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               }}>
                 {!showFilter &&
                   <>
-                    Filtre avancée
+                    Filtres avancés
                   </>
                 }
 

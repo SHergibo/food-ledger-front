@@ -118,7 +118,7 @@ function Profile({ history, location }) {
           <div className="title-message-container-delete-action">
             {!delegate &&
               <>
-                <p>Voulez-vous déléguer vos droits d'administrations à un membre de votre famille avant de supprimer votre compte ?</p>
+                <p>Voulez-vous déléguer vos droits d'administrations à un.e membre de votre famille avant de supprimer votre compte ?</p>
                 <p>Si vous ne déléguez pas vos droits d'administrations, la famille sera supprimée définitivement !</p>
                 <div className="btn-delete-action-container">
                   <button 
@@ -136,7 +136,7 @@ function Profile({ history, location }) {
             }
             {delegate &&
               <>
-                <p>Choississez le membre à qui vous voulez déléguer les droits d'administrations de cette famille !</p>
+                <p>Choississez le/la membre à qui vous voulez déléguer les droits d'administrations de cette famille !</p>
                 <form className="form-delegate" onSubmit={handleSubmitFormDelegateWhenDeleting(deleteUser)}>
                   {userHouseholdData.member.map((item, index) => {
                     if(userData._id !== item.userId && item.isFlagged === false){
