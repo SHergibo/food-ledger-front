@@ -44,6 +44,11 @@ function SubContainer({history}) {
     })
   };
 
+  const deleteNotification = async (id) => {
+    const deleteNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${id}`;
+    await axiosInstance.delete(deleteNotificationEndPoint);
+  };
+
   return (
     <div className="container-sub">
       {notificationReceived.length <= 0 ?
@@ -56,11 +61,20 @@ function SubContainer({history}) {
                 {notif.message}
               </div>
               <div className="notification-interaction">
-                {notif.type === "need-switch-admin" ? 
-                  <button onClick={delegateNotification}>Déléguer</button> :
-                  <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                {notif.type !== "information" ? 
+                  <>
+                    {notif.type === "need-switch-admin" ? 
+                      <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> :
+                      <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                    }
+                    {notif.type === "request-delegate-admin" || notif.type === "last-chance-request-delegate-admin" ? 
+                      <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> : 
+                      <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
+                    }
+                    
+                  </> :
+                  <button className="notif-one-interaction" onClick={()=>deleteNotification(notif._id)}>Supprimer</button>
                 }
-                <button onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
               </div>
             </div>
           )
