@@ -55,7 +55,7 @@ function Profile({ history, location }) {
 
   useEffect(() => {
     if(Object.keys(userHouseholdData).length > 0 && requestDelegateAdmin){
-      const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
+      const memberEligible = userHouseholdData.members.filter(member => member.isFlagged === false);
       if(memberEligible.length > 1 ){
         setOtherMemberEligible(true);
       }else{
@@ -97,7 +97,7 @@ function Profile({ history, location }) {
   let contentTitleInteraction = <>
     {openTitleMessage && 
       <>
-        {userHouseholdData.member.length === 1 &&
+        {userHouseholdData.members.length === 1 &&
           <div className="title-message-container-delete-action">
             <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
             <div className="btn-delete-action-container">
@@ -114,7 +114,7 @@ function Profile({ history, location }) {
             </div>
           </div>
         }
-        {userHouseholdData.member.length > 1 && !didNoTAcceptDelegate &&
+        {userHouseholdData.members.length > 1 && !didNoTAcceptDelegate &&
           <div className="title-message-container-delete-action">
             {!delegate &&
               <>
@@ -138,15 +138,15 @@ function Profile({ history, location }) {
               <>
                 <p>Choississez le/la membre à qui vous voulez déléguer les droits d'administrations de cette famille !</p>
                 <form className="form-delegate" onSubmit={handleSubmitFormDelegateWhenDeleting(deleteUser)}>
-                  {userHouseholdData.member.map((item, index) => {
-                    if(userData._id !== item.userId && item.isFlagged === false){
+                  {userHouseholdData.members.map((member, index) => {
+                    if(userData._id !== member.userData._id && member.isFlagged === false){
                       let defaultChecked = false;
                       if(index === 1){
                         defaultChecked = true;
                       }
                       return (
-                        <label key={`delMember-${index}`} className="container-radio-input" htmlFor={`delegateMemberDelete${index}`}>{item.firstname} {item.lastname} : 
-                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={item.userId} defaultChecked={defaultChecked} ref={registerFormDelegateWhenDeleting()}/>
+                        <label key={`delMember-${index}`} className="container-radio-input" htmlFor={`delegateMemberDelete${index}`}>{member.userData.firstname} {member.userData.lastname} : 
+                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={member.userData._id} defaultChecked={defaultChecked} ref={registerFormDelegateWhenDeleting()}/>
                           <span className="radio-checkmark"></span>
                         </label>
                       )
@@ -160,7 +160,7 @@ function Profile({ history, location }) {
             }
           </div>
         }
-        {userHouseholdData.member.length > 1 && didNoTAcceptDelegate &&
+        {userHouseholdData.members.length > 1 && didNoTAcceptDelegate &&
           <div className="title-message-container-delete-action">
             <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
             <div className="btn-delete-action-container">

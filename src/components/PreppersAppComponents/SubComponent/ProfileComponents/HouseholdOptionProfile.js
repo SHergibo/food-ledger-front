@@ -86,10 +86,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
   useEffect(() => {
     if(userHouseholdData && requestDelegateAdmin){
-      const memberEligible = userHouseholdData.member.filter(member => member.isFlagged === false);
+      const memberEligible = userHouseholdData.members.filter(member => member.isFlagged === false);
 
       if(memberEligible.length > 1){
-        const firstMemberEligible = userHouseholdData.member.find(member => member.isFlagged === false && userData.usercode !== member.usercode);
+        const firstMemberEligible = userHouseholdData.members.find(member => member.isFlagged === false && userData.usercode !== member.userData.usercode);
         setFirstMemberEligible(firstMemberEligible.usercode)
       }
     }
@@ -332,7 +332,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               <tr>
                 <th>Nom</th>
                 <th>Rôle</th>
-                {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                {userData.role === "admin" && userHouseholdData.members.length > 1 &&
                   <>
                     <th>Droits administrateurs</th>
                     <th>Retirer le membre</th>
@@ -346,44 +346,44 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               </tr>
             </thead>
             <tbody>
-              {userHouseholdData.member.map((member, index) => {
+              {userHouseholdData.members.map((member, index) => {
                 let checkedRadioBtn = false;
-                if(requestDelegateAdmin && member.usercode !== userData.usercode && !member.isFlagged){
-                  if(member.usercode === firstMemberEligible){
+                if(requestDelegateAdmin && member.userData.usercode !== userData.usercode && !member.isFlagged){
+                  if(member.userData.usercode === firstMemberEligible){
                     checkedRadioBtn = true;
                   }
                 }
                 return (
                   <tr key={`memberTable-${index}`}>
                     <td>
-                      {member.firstname} {member.lastname}
+                      {member.userData.firstname} {member.userData.lastname}
                     </td>
                     <td>
-                      {member.userId === userHouseholdData.userId ? " Administrateur.trice" : " Utilisateur.trice"}
+                      {member.userData._id === userHouseholdData.userId ? " Administrateur.trice" : " Utilisateur.trice"}
                     </td>
-                    {userData.role === "admin" && userHouseholdData.member.length > 1 &&
+                    {userData.role === "admin" && userHouseholdData.members.length > 1 &&
                       <>
-                        {userData.role === "admin" && member.usercode === userData.usercode &&
+                        {userData.role === "admin" && member.userData.usercode === userData.usercode &&
                           <td className="td-align-center"> 
                             <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} > 
-                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId} onChange={() => {enableSubmitBtn(member.usercode)}} checked={defaultCheckedAdmin} ref={registerFormDelegateWhenSwitching()}/>
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id} onChange={() => {enableSubmitBtn(member.userData.usercode)}} checked={defaultCheckedAdmin} ref={registerFormDelegateWhenSwitching()}/>
                               <span className="radio-checkmark"></span>
                             </label>
                           </td>
                         }
-                        {userData.role !== "user" && member.usercode !== userData.usercode &&
+                        {userData.role !== "user" && member.userData.usercode !== userData.usercode &&
                           <td className="td-align-center"> 
-                            <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
-                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userId}  disabled={requestAdminNotification} ref={registerFormDelegateWhenSwitching()} />
+                            <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.userData.usercode)}}> 
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id}  disabled={requestAdminNotification} ref={registerFormDelegateWhenSwitching()} />
                               <span className="radio-checkmark"></span>
                             </label>
                           </td>
                         }
                         <td>
-                          {(userData.role === "admin" && member.usercode === userData.usercode) 
+                          {(userData.role === "admin" && member.userData.usercode === userData.usercode) 
                             ? "" 
                             : <div className="div-list-table-action">
-                                <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userId)}><FontAwesomeIcon icon="door-open"/></button>
+                                <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userData._id)}><FontAwesomeIcon icon="door-open"/></button>
                               </div>
                           }
                         </td>
@@ -391,10 +391,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                     }
                     {userHouseholdData.isWaiting && requestDelegateAdmin && otherMemberEligible &&
                       <>
-                        {member.usercode !== userData.usercode && !member.isFlagged ?
+                        {member.userData.usercode !== userData.usercode && !member.isFlagged ?
                           <td className="td-align-center"> 
                             <label key={`delegateMember-${index}`} htmlFor={`delegateMember${index}`}> 
-                              <input type="radio" name="otherUserIdDidNotAcceptDelegate" id={`delegateMember${index}`} value={member.userId} defaultChecked={checkedRadioBtn} ref={registerRequestDelegateAdmin()}/>
+                              <input type="radio" name="otherUserIdDidNotAcceptDelegate" id={`delegateMember${index}`} value={member.userData._id} defaultChecked={checkedRadioBtn} ref={registerRequestDelegateAdmin()}/>
                               <span className="radio-checkmark"></span>
                             </label>
                           </td> :
@@ -410,7 +410,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                 </tr>  
                 )
               })}
-              {userData.role === "admin" && delegateAdminAndSwitch && userHouseholdData.member.length > 1 &&
+              {userData.role === "admin" && delegateAdminAndSwitch && userHouseholdData.members.length > 1 &&
                 <tr>
                   <td>Ne pas déléguer / supprimer la famille</td>
                   <td></td>
