@@ -359,11 +359,11 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                       {member.userData.firstname} {member.userData.lastname}
                     </td>
                     <td>
-                      {member.userData._id === userHouseholdData.userId ? " Administrateur.trice" : " Utilisateur.trice"}
+                      {member.userData.role === "admin" ? " Administrateur.trice" : " Utilisateur.trice"}
                     </td>
                     {userData.role === "admin" && userHouseholdData.members.length > 1 &&
                       <>
-                        {userData.role === "admin" && member.userData.usercode === userData.usercode &&
+                        {member.userData.role === "admin" &&
                           <td className="td-align-center"> 
                             <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} > 
                               <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id} onChange={() => {enableSubmitBtn(member.userData.usercode)}} checked={defaultCheckedAdmin} ref={registerFormDelegateWhenSwitching()}/>
@@ -371,7 +371,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                             </label>
                           </td>
                         }
-                        {userData.role !== "user" && member.userData.usercode !== userData.usercode &&
+                        {member.userData.role === "user" &&
                           <td className="td-align-center"> 
                             <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.userData.usercode)}}> 
                               <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id}  disabled={requestAdminNotification} ref={registerFormDelegateWhenSwitching()} />
@@ -380,11 +380,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                           </td>
                         }
                         <td>
-                          {(userData.role === "admin" && member.userData.usercode === userData.usercode) 
-                            ? "" 
-                            : <div className="div-list-table-action">
-                                <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userData._id)}><FontAwesomeIcon icon="door-open"/></button>
-                              </div>
+                          {member.userData.role === "user" &&
+                            <div className="div-list-table-action">
+                              <button title="Retirer le membre" type="button" className="list-table-one-action" onClick={() => kickUser(member.userData._id)}><FontAwesomeIcon icon="door-open"/></button>
+                            </div>
                           }
                         </td>
                       </>
