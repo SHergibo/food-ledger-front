@@ -34,37 +34,59 @@ export function DataProvider({children}) {
   const socketRef = useRef();
 
   useEffect(() => {
-
+    socketRef.current = io(apiDomain);
+    
     const getUserData = async () => {
       const getUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getUserDataEndPoint)
-        .then((response) => {
+        .then(async (response) => {
           if(isMounted.current){
             setUserData(response.data);
+            getUserHouseholdData(response.data.householdId);
+            getUserOptionData(response.data._id);
+            fetchNotification(response.data._id);
+
+            socketRef.current.on("connect", () => {
+              socketRef.current.emit('setSocketId', {userId: response.data._id, socketId: socketRef.current.id, oldSocketId : sessionStorage.getItem("socketID")});
+              sessionStorage.setItem("socketID", socketRef.current.id);
+            });
           }
         });
     };
     getUserData();
 
-    const fetchNotification = async () => {
-      const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${localStorage.getItem('user_id')}`;
+    const getUserHouseholdData = async (householdId) => {
+      if(householdId !== null){
+        const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${householdId}`;
+        await axiosInstance.get(getUserHouseholdDataEndPoint)
+          .then((response) => {
+            if(isMounted.current){
+              setUserHouseholdData(response.data);
+            }
+          });
+      }
+    };
+
+    const getUserOptionData = async (userId) => {
+      const getUserOptionDataEndPoint = `${apiDomain}/api/${apiVersion}/options/${userId}`;
+      await axiosInstance.get(getUserOptionDataEndPoint)
+        .then((response) => {
+          if(isMounted.current){
+            setUserOptionData(response.data);
+          }
+        });
+    };
+
+    const fetchNotification = async (userId) => {
+      const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${userId}`;
       await axiosInstance.get(getNotificationEndPoint)
         .then((response) => {
           if(isMounted.current){
             setNotificationReceived(response.data.notificationsReceived);
             setNotificationSended(response.data.notificationsSended)
           }
-          //TODO mettre lu ou non lu dans le back pour ne pas ré-afficher les notifcations déjà lu
         });
-
     };
-    fetchNotification();
-
-    socketRef.current = io(apiDomain);
-    socketRef.current.on("connect", () => {
-      socketRef.current.emit('setSocketId', {userId: localStorage.getItem('user_id'), socketId: socketRef.current.id, oldSocketId : sessionStorage.getItem("socketID")});
-      sessionStorage.setItem("socketID", socketRef.current.id);
-    });
 
     socketRef.current.on("updateNotificationReceived", (notif) => {
       setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
@@ -104,34 +126,6 @@ export function DataProvider({children}) {
       socketRef.current.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    const getUserHouseHoldData = async () => {
-      if(userData.householdId !== null){
-        const getUserHouseholdDataEndPoint = `${apiDomain}/api/${apiVersion}/households/${userData.householdId}`;
-        await axiosInstance.get(getUserHouseholdDataEndPoint)
-          .then((response) => {
-            if(isMounted.current){
-              setUserHouseholdData(response.data);
-            }
-          });
-      }
-    };
-
-    const getUserOptionData = async () => {
-      const getUserOptionDataEndPoint = `${apiDomain}/api/${apiVersion}/options/${userData._id}`;
-      await axiosInstance.get(getUserOptionDataEndPoint)
-        .then((response) => {
-          if(isMounted.current){
-            setUserOptionData(response.data);
-          }
-        });
-    };
-    if(userData){
-      getUserHouseHoldData();
-      getUserOptionData();
-    }
-  }, [userData]);
 
   useEffect(() => {
     return () => {
