@@ -39,7 +39,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     mode: "onChange"
   });
 
-  const { register : registerFormAddUser, handleSubmit : handleSubmitFormAddUser} = useForm({
+  const { register : registerFormAddUser, handleSubmit : handleSubmitFormAddUser, errors : errorsFormAddUser} = useForm({
     mode: "onChange"
   });
 
@@ -47,7 +47,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     mode: "onChange"
   });
 
-  const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly} = useForm({
+  const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly, errors : errorsFormSwitchFamilly} = useForm({
     mode: "onChange"
   });
 
@@ -496,9 +496,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               </form>
 
               <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
-                <div className="input-form-container">
-                  <label htmlFor="addUserCode">Ajouter un membre</label>
-                  <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} ref={registerFormAddUser()} />
+                <div className="input-form-container-with-error">
+                  <label htmlFor="addUserCode">Ajouter un membre *</label>
+                  <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} ref={registerFormAddUser({ required: true })} />
+                  {errorsFormAddUser.addUserCode && <span className="error-message-form">Ce champ est requis</span>}
                 </div>
                 <div className="default-action-form-container">
                   <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="plus" /> Ajouter</button>
@@ -546,9 +547,10 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           }
 
           <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
-            <div className="input-form-container">
-              <label htmlFor="switchFamillyCode">Changer de famille</label>
-              <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly()} />
+            <div className="input-form-container-with-error">
+              <label htmlFor="switchFamillyCode">Changer de famille *</label>
+              <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />
+              {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
             </div>
             <div className="default-action-form-container">
               <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="exchange-alt" /> Changer</button>
