@@ -553,7 +553,12 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
             </div>
             <div className="default-action-form-container">
-              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="exchange-alt" /> Changer</button>
+              <button 
+              className={requestDelegateAdmin ? "default-btn-disabled-form" : "default-btn-action-form"}
+              disabled={requestDelegateAdmin}
+              type="submit">
+                <FontAwesomeIcon icon="exchange-alt" /> Changer
+              </button> 
               {successFormSwitchFamilly && !errorMessageSwitchFamilly &&
                 <InformationIcon 
                   className="success-icon"
