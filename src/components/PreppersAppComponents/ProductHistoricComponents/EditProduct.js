@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, Fragment, useRef } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
 import { useUserHouseHoldData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
@@ -19,6 +19,13 @@ function EditProduct({ history }) {
   const [success, setSuccess] = useState(false);
   let productId = location.pathname.split('/')[3];
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
+
+  useEffect(() => {
+    if(userHouseholdData.isWaiting){
+      let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
+      history.push(url);
+    }
+  }, [userHouseholdData, requestUrl, history]);
 
   const getProductData = useCallback(async () => {
     setErrorFetch(false);
@@ -121,7 +128,7 @@ function EditProduct({ history }) {
   }
 
   return (
-    <Fragment>
+    <>
       <AddEditProductForm
         history={history}
         handleFunction={EditProduct}
@@ -135,7 +142,7 @@ function EditProduct({ history }) {
         errorFetch={errorFetch}
         getProductData={getProductData}
       />
-    </Fragment>
+    </>
   )
 }
 

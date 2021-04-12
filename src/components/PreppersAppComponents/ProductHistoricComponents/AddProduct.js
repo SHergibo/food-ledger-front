@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
 import { useUserHouseHoldData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
@@ -14,6 +14,13 @@ function AddProduct({ history }) {
   const [success, setSuccess] = useState(false);
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
+  useEffect(() => {
+    if(userHouseholdData.isWaiting){
+      let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
+      history.push(url);
+    }
+  }, [userHouseholdData, requestUrl, history]);
+  
   useEffect(() => {
     let timerSuccess;
     if(success){
@@ -65,7 +72,7 @@ function AddProduct({ history }) {
   }
 
   return (
-    <Fragment>
+    <>
       <AddEditProductForm
         history={history}
         handleFunction={addProduct}
@@ -75,7 +82,7 @@ function AddProduct({ history }) {
         requestUrl={requestUrl}
         success={success}
       />
-    </Fragment>
+    </>
   )
 }
 
