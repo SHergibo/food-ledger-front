@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useUserData, useUserOptionData } from './../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import { productType } from "../../../utils/localData";
@@ -30,6 +30,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const [minStock, setMinStock] = useState(0);
   const [cssNumberCodeColor, setCssNumberCodeColor] = useState("");
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
+  const isMounted = useRef(true);
 
   const { register, handleSubmit, errors, control, setValue, reset } = useForm();
 
@@ -88,7 +89,6 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   }, [register]);
 
   useEffect(() => {
-
     if (formType === "add" && requestUrl === "historics") {
       setShowDateList(false);
     }
@@ -184,13 +184,21 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
             newArray.push({ value: element.brandName.value, label: element.brandName.label })
           });
         });
-      setArrayOptions(newArray);
+      if(isMounted.current){
+        setArrayOptions(newArray);
+      }
     }
     
     if (userData) {
       loadOptions();
     }
   }, [userData]);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    }
+  }, [isMounted]);
 
   const deleteExpDate = useCallback((id) => {
     let newArray = [...arrayExpDate];
