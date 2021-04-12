@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useUserData } from './../DataContext';
+import { useUserData, useUserHouseHoldData } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -17,6 +17,7 @@ function ShoppingList() {
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const [ deleteAllMessage, setDeleteAllMessage ] = useState(false);
   const { userData } = useUserData();
+  const { userHouseholdData } = useUserHouseHoldData();
   const [shoppingList, setShoppingList] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -178,11 +179,15 @@ function ShoppingList() {
   let contentTitleInteractionFullScreen = <>
     {openTitleMessage && 
       <div className="title-message-container-delete-action">
-        <p>Êtes-vous sur et certain de vouloir supprimer toute la liste de course? Toutes les courses seront perdues !</p>
+        {userHouseholdData.isWaiting ?
+          <p>Vous ne pouvez effectuer cette action tant qu'il n'y a pas d'administrateur dans votre famille!</p> :
+          <p>Êtes-vous sur et certain de vouloir supprimer toute la liste de course? Toutes les courses seront perdues !</p>
+        }
         <div className="btn-delete-action-container">
           <button 
-          className="btn-delete-action-yes"
-          onClick={()=>{deleteAllShoppingList()}}>
+          className={userHouseholdData.isWaiting ? "btn-delete-action-disabled" : "btn-delete-action-yes"}
+          onClick={()=>{deleteAllShoppingList()}}
+          disabled={userHouseholdData.isWaiting}>
             Oui
           </button>
           <button 
@@ -224,11 +229,17 @@ function ShoppingList() {
     return (
       <tr key={`${row}-${indexRow}`}>
         {columns.map((column, index) => {
+          console.log(userHouseholdData.isWaiting)
           if (column.id === 'action') {
             return (
               <td key={`${column.id}-${index}`}>
                 <div className="div-list-table-action">
-                  <button className="list-table-one-action" onClick={() => deleteShopping(row._id)}><FontAwesomeIcon icon="trash"/></button>
+                  <button 
+                  className={userHouseholdData.isWaiting ? "list-table-one-action-disabled " : "list-table-one-action"} 
+                  onClick={() => deleteShopping(row._id)} 
+                  disabled={userHouseholdData.isWaiting}>
+                    <FontAwesomeIcon icon="trash"/>
+                  </button>
                 </div>
               </td>
             )
