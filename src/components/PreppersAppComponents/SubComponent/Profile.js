@@ -75,23 +75,22 @@ function Profile({ history, location }) {
   }
 
   const deleteUser = async (data) => {
-
-    // let deleteUserDataEndPoint;
-    // if(data){
-    //   deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserId=${data.delegateRadioInput}`;
-    // }else{
-    //   deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
-    // }
-    // await axiosInstance.delete(deleteUserDataEndPoint)
-    // .then((response) => {
-    //   if(isMounted.current){
-    //     if(response.status === 200){
-    //       localStorage.clear();
-    //       sessionStorage.clear();
-    //       history.push("/");
-    //     }
-    //   }
-    // });
+    let deleteUserDataEndPoint;
+    if(data){
+      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserId=${data.delegateRadioInput}`;
+    }else{
+      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
+    }
+    await axiosInstance.delete(deleteUserDataEndPoint)
+    .then((response) => {
+      if(isMounted.current){
+        if(response.status === 200){
+          localStorage.clear();
+          sessionStorage.clear();
+          history.push("/");
+        }
+      }
+    });
   }
 
   let contentTitleInteraction = <>
@@ -99,10 +98,14 @@ function Profile({ history, location }) {
       <>
         {((userData.role === "admin" && userHouseholdData.members.length === 1) || (userData.role === "admin" && didNoTAcceptDelegate) || userData.role === "user") &&
           <div className="title-message-container-delete-action">
-            <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
+            {requestDelegateAdmin ?
+              <p>Vous ne pouvez effectuer cette action tant que vous avez une délégation de droit d'administration en cours!</p> :
+              <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues!</p>
+            }
             <div className="btn-delete-action-container">
               <button 
-              className="btn-delete-action-yes"
+              className={requestDelegateAdmin ? "btn-delete-action-disabled" : 'btn-delete-action-yes'}
+              disabled={requestDelegateAdmin}
               onClick={()=>{deleteUser()}}>
                 Oui
               </button>
