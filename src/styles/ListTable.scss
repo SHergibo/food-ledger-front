@@ -218,8 +218,11 @@
 }
 
 .list-table-one-action{
-  @include btn-action-title(1rem, 2rem);
-  margin-right: 0rem;
+  @include btn-action-title(1rem, 2rem, false);
+}
+
+.list-table-one-action-disabled{
+  @include btn-action-title(1rem, 2rem, false, true);
 }
 
 .pagination{
