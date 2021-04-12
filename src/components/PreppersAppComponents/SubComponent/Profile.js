@@ -76,28 +76,28 @@ function Profile({ history, location }) {
 
   const deleteUser = async (data) => {
 
-    let deleteUserDataEndPoint;
-    if(data){
-      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserId=${data.delegateRadioInput}`;
-    }else{
-      deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
-    }
-    await axiosInstance.delete(deleteUserDataEndPoint)
-    .then((response) => {
-      if(isMounted.current){
-        if(response.status === 200){
-          localStorage.clear();
-          sessionStorage.clear();
-          history.push("/");
-        }
-      }
-    });
+    // let deleteUserDataEndPoint;
+    // if(data){
+    //   deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}?delegateUserId=${data.delegateRadioInput}`;
+    // }else{
+    //   deleteUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
+    // }
+    // await axiosInstance.delete(deleteUserDataEndPoint)
+    // .then((response) => {
+    //   if(isMounted.current){
+    //     if(response.status === 200){
+    //       localStorage.clear();
+    //       sessionStorage.clear();
+    //       history.push("/");
+    //     }
+    //   }
+    // });
   }
 
   let contentTitleInteraction = <>
     {openTitleMessage && 
       <>
-        {userHouseholdData.members.length === 1 &&
+        {((userData.role === "admin" && userHouseholdData.members.length === 1) || (userData.role === "admin" && didNoTAcceptDelegate) || userData.role === "user") &&
           <div className="title-message-container-delete-action">
             <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
             <div className="btn-delete-action-container">
@@ -114,7 +114,7 @@ function Profile({ history, location }) {
             </div>
           </div>
         }
-        {userHouseholdData.members.length > 1 && !didNoTAcceptDelegate &&
+        {(userData.role === "admin" && userHouseholdData.members.length > 1 && !didNoTAcceptDelegate) &&
           <div className="title-message-container-delete-action">
             {!delegate &&
               <>
@@ -158,23 +158,6 @@ function Profile({ history, location }) {
                 </form>
               </>
             }
-          </div>
-        }
-        {userHouseholdData.members.length > 1 && didNoTAcceptDelegate &&
-          <div className="title-message-container-delete-action">
-            <p>Êtes-vous sur et certain de vouloir supprimer votre compte? Toutes vos données seront perdues !</p>
-            <div className="btn-delete-action-container">
-              <button 
-              className="btn-delete-action-yes"
-              onClick={()=>{deleteUser()}}>
-                Oui
-              </button>
-              <button 
-              className="btn-delete-action-no" 
-              onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
-                Non
-              </button>
-            </div>
           </div>
         }
       </>
