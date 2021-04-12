@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useUserData, useUserOptionData } from './../DataContext';
+import { useUserData, useUserOptionData, useUserHouseHoldData } from './../DataContext';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
@@ -24,6 +24,7 @@ registerLocale("fr", fr);
 function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userData } = useUserData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
+  const { userHouseholdData } = useUserHouseHoldData();
   const location = useLocation();
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
   const [data, setData] = useState([]);
@@ -595,8 +596,17 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             return (
               <td key={`${column.id}-${index}`}>
                 <div className="div-list-table-action">
-                  <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon="edit" /></Link>
-                  <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon="trash"/></button>
+                  {userHouseholdData.isWaiting ?
+                    <> 
+                      <button className="list-table-action-disabled" disabled><FontAwesomeIcon icon="edit" /></button>
+                      <button className="list-table-action-disabled" disabled><FontAwesomeIcon icon="trash" /></button>
+                    </> :
+                    <>
+                      <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon="edit" /></Link>
+                      <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon="trash" /></button>
+                    </>
+                  }
+                  
                 </div>
               </td>
             )
@@ -733,7 +743,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         <div>
           {(hasProduct || Object.keys(searchObject).length > 0) && 
             <>
-              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon="plus" /></Link>
+              {userHouseholdData.isWaiting ? 
+                <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
+                <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon="plus" /></Link>
+              }
               <button className="default-btn-white" onClick={() => {
                 showFilter ? setShowFilter(false) : setShowFilter(true);
               }}>
@@ -871,7 +884,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           <div className="no-data">
             <p>Pas de produit !</p>
             {Object.keys(searchObject).length === 0 &&
-              <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
+              <>
+                {userHouseholdData.isWaiting ? 
+                  <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
+                  <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
+                }
+              </>
             }
           </div>
         }
