@@ -229,7 +229,6 @@ function ShoppingList() {
     return (
       <tr key={`${row}-${indexRow}`}>
         {columns.map((column, index) => {
-          console.log(userHouseholdData.isWaiting)
           if (column.id === 'action') {
             return (
               <td key={`${column.id}-${index}`}>
