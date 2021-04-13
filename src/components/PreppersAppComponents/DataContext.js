@@ -34,16 +34,6 @@ export function DataProvider({children}) {
   const socketRef = useRef();
 
   useEffect(() => {
-    if(userData){
-      socketRef.current = io(apiDomain);
-      socketRef.current.on("connect", () => {
-        socketRef.current.emit('setSocketId', {userId: userData._id, socketId: socketRef.current.id, oldSocketId : sessionStorage.getItem("socketID")});
-        sessionStorage.setItem("socketID", socketRef.current.id);
-      });
-    }
-  }, [userData]);
-
-  useEffect(() => {
     const getUserData = async () => {
       const getUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getUserDataEndPoint)
@@ -92,7 +82,11 @@ export function DataProvider({children}) {
     };
 
     socketRef.current = io(apiDomain);
-    
+    socketRef.current.on("connect", () => {
+      socketRef.current.emit('setSocketId', {userId: localStorage.getItem('user_id'), socketId: socketRef.current.id, oldSocketId : sessionStorage.getItem("socketID")});
+      sessionStorage.setItem("socketID", socketRef.current.id);
+    });
+
     socketRef.current.on("updateNotificationReceived", (notif) => {
       setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
     });
