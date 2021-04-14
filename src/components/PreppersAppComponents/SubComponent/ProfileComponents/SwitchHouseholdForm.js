@@ -9,9 +9,9 @@ import PropTypes from 'prop-types';
 
 function SwitchFamillyForm({requestDelegateAdmin}) {
   const { userData } = useUserData();
-  const [ errorMessageSwitchFamilly, setErrorMessageSwitchFamilly ] = useState(false);
-  const [ messageErrorSwitchFamilly, setMessageErrorSwitchFamilly ] = useState("");
-  const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
+  const [ errorMessage, setErrorMessage ] = useState(false);
+  const [ messageError, setMessageError ] = useState("");
+  const [ successForm, setSuccessForm ] = useState(false);
   const isMounted = useRef(true);
 
   const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly, errors : errorsFormSwitchFamilly} = useForm({
@@ -19,16 +19,16 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   });
 
   useEffect(() => {
-    let timerSuccessFormSwitchFamilly;
-    if(successFormSwitchFamilly){
-      timerSuccessFormSwitchFamilly = setTimeout(() => {
-        setSuccessFormSwitchFamilly(false);
+    let timerSuccessForm;
+    if(successForm){
+      timerSuccessForm = setTimeout(() => {
+        setSuccessForm(false);
       }, 5000);
     }
     return () => {
-      clearTimeout(timerSuccessFormSwitchFamilly);
+      clearTimeout(timerSuccessForm);
     }
-  }, [successFormSwitchFamilly]);
+  }, [successForm]);
 
   const switchFamilly = async (data) => {
     let switchFamillyData = {
@@ -41,22 +41,22 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
     await axiosInstance.post(switchFamillyEndPoint, switchFamillyData)
       .then((response) => {
         if(response.status === 204 && isMounted.current){
-          setSuccessFormSwitchFamilly(true);
-          setErrorMessageSwitchFamilly(false);
-          setMessageErrorSwitchFamilly("");
+          setSuccessForm(true);
+          setErrorMessage(false);
+          setMessageError("");
         }
       })
       .catch((error) => {
         if(isMounted.current){
-          setErrorMessageSwitchFamilly(true);
-          setMessageErrorSwitchFamilly(error.response.data.output.payload.message);
+          setErrorMessage(true);
+          setMessageError(error.response.data.output.payload.message);
         }
       });
   };
 
   const clearErrorMessage = () =>{
-    if(messageErrorSwitchFamilly){
-      setErrorMessageSwitchFamilly(false);
+    if(errorMessage){
+      setErrorMessage(false);
     }
   }
 
@@ -64,7 +64,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
     <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
       <div className="input-form-container-with-error">
         <label htmlFor="switchFamillyCode">Changer de famille *</label>
-        <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />
+        <input name="switchFamillyCode" className="input-form" type="text" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />
         {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
       </div>
       <div className="default-action-form-container">
@@ -74,17 +74,17 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
         type="submit">
           <FontAwesomeIcon icon="exchange-alt" /> Changer
         </button> 
-        {successFormSwitchFamilly && !errorMessageSwitchFamilly &&
+        {successForm && !errorMessage &&
           <InformationIcon 
             className="success-icon"
             icon={<FontAwesomeIcon icon="check" />}
           />
         }
-        {errorMessageSwitchFamilly &&
+        {errorMessage &&
           <InformationIcon 
             className="error-icon"
             icon={<FontAwesomeIcon icon="times" />}
-            message={messageErrorSwitchFamilly}
+            message={messageError}
           />
         }
       </div>
