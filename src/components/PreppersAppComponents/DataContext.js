@@ -26,7 +26,7 @@ export function useNotificationData(){
 
 export function DataProvider({children}) {
   const [userData, setUserData] = useState();
-  const [userHouseholdData, setUserHouseholdData] = useState({});
+  const [userHouseholdData, setUserHouseholdData] = useState();
   const [userOptionData, setUserOptionData] = useState();
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationSended, setNotificationSended] = useState([]);
