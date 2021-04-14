@@ -3,7 +3,7 @@ import { useUserData, useUserHouseHoldData, useNotificationData } from './../Dat
 import UserOptionProfile from './ProfileComponents/UserOptionProfile';
 import NotificationOptionProfile from './ProfileComponents/NotificationOptionProfile';
 import HouseholdOptionProfile from './ProfileComponents/HouseholdOptionProfile';
-import SwitchFamillyForm from './ProfileComponents/SwitchFamillyForm';
+import SwitchFamillyForm from './ProfileComponents/SwitchHouseholdForm';
 import EmailOptionProfile from './ProfileComponents/EmailOptionProfile';
 import ProductOptionProfile from './ProfileComponents/ProductOptionProfile';
 import ProductTableOptionProfile from './ProfileComponents/ProductTableOptionProfile';
