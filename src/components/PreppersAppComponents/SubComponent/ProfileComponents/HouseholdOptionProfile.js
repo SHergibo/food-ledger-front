@@ -392,7 +392,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
               <div className="input-form-container-with-error">
                 <label htmlFor="householdName">Nom de la famille *</label>
-                <input name="householdName" className="input-form" type="mail" id="householdName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
+                <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
                 {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
               </div>
               <div className="default-action-form-container">
@@ -453,7 +453,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
                 <div className="input-form-container-with-error">
                   <label htmlFor="addUserCode">Ajouter un membre *</label>
-                  <input name="addUserCode" className="input-form" type="mail" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} ref={registerFormAddUser({ required: true })} />
+                  <input name="addUserCode" className="input-form" type="text" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} ref={registerFormAddUser({ required: true })} />
                   {errorsFormAddUser.addUserCode && <span className="error-message-form">Ce champ est requis</span>}
                 </div>
                 <div className="default-action-form-container">
