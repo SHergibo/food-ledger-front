@@ -3,6 +3,7 @@ import { useUserData, useUserHouseHoldData, useNotificationData } from './../Dat
 import UserOptionProfile from './ProfileComponents/UserOptionProfile';
 import NotificationOptionProfile from './ProfileComponents/NotificationOptionProfile';
 import HouseholdOptionProfile from './ProfileComponents/HouseholdOptionProfile';
+import CreateHouseholdForm from './ProfileComponents/CreateHouseholdForm';
 import SwitchFamillyForm from './ProfileComponents/SwitchHouseholdForm';
 import EmailOptionProfile from './ProfileComponents/EmailOptionProfile';
 import ProductOptionProfile from './ProfileComponents/ProductOptionProfile';
@@ -55,7 +56,7 @@ function Profile({ history, location }) {
   }, [notificationReceived]);
 
   useEffect(() => {
-    if(Object.keys(userHouseholdData).length > 0 && requestDelegateAdmin){
+    if(userHouseholdData && requestDelegateAdmin){
       const memberEligible = userHouseholdData.members.filter(member => member.isFlagged === false);
       if(memberEligible.length > 1 ){
         setOtherMemberEligible(true);
@@ -199,12 +200,12 @@ function Profile({ history, location }) {
             <h1 className="default-h1">Options Famille</h1>
           </div>
 
-          {Object.keys(userHouseholdData).length > 0 ?
+          {userData.householdId ?
             <HouseholdOptionProfile 
               requestDelegateAdmin={requestDelegateAdmin}
               otherMemberEligible={otherMemberEligible}
             /> :
-            <p>Création d'une nouvelle famille</p>
+            <CreateHouseholdForm />
           }
           <SwitchFamillyForm 
             requestDelegateAdmin={requestDelegateAdmin}
