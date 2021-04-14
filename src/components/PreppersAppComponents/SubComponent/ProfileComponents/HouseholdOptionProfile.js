@@ -18,7 +18,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const [ firstMemberEligible, setFirstMemberEligible ] = useState("");
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
-  const [ successFormSwitchFamilly, setSuccessFormSwitchFamilly ] = useState(false);
   const [ successFormDelegate, setSuccessFormDelegate ] = useState(false);
   const [ btnDisabledFormDelegate, setBtnDisabledFormDelegate ] = useState(true);
   const [ warningMessageDelegate, setWarningMessageDelegate ] = useState(false);
@@ -26,8 +25,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const [ messageErrorDelegate, setMessageErrorDelegate ] = useState("");
   const [ errorMessageAddUser, setErrorMessageAddUser ] = useState(false);
   const [ messageErrorAddUser, setMessageErrorAddUser ] = useState("");
-  const [ errorMessageSwitchFamilly, setErrorMessageSwitchFamilly ] = useState(false);
-  const [ messageErrorSwitchFamilly, setMessageErrorSwitchFamilly ] = useState("");
   const isMounted = useRef(true);
   const btnDelegateForm = useRef(null);
 
@@ -44,10 +41,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   });
 
   const { register : registerRequestDelegateAdmin, handleSubmit : handleSubmitFormRequestDelegateAdmin } = useForm({
-    mode: "onChange"
-  });
-
-  const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly, errors : errorsFormSwitchFamilly} = useForm({
     mode: "onChange"
   });
 
@@ -130,18 +123,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
       clearTimeout(timerSuccessFormAddUser);
     }
   }, [successFormAddUser]);
-
-  useEffect(() => {
-    let timerSuccessFormSwitchFamilly;
-    if(successFormSwitchFamilly){
-      timerSuccessFormSwitchFamilly = setTimeout(() => {
-        setSuccessFormSwitchFamilly(false);
-      }, 5000);
-    }
-    return () => {
-      clearTimeout(timerSuccessFormSwitchFamilly);
-    }
-  }, [successFormSwitchFamilly]);
 
   useEffect(() => {
     return () => {
@@ -265,30 +246,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
       });
   }
 
-  const switchFamilly = async (data) => {
-    let switchFamillyData = {
-      usercode : `${userData.usercode}`, 
-      type : "userToHousehold",
-      householdCode : `${data.switchFamillyCode}`
-    }
-    const switchFamillyEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-request`;
-
-    await axiosInstance.post(switchFamillyEndPoint, switchFamillyData)
-      .then((response) => {
-        if(response.status === 204 && isMounted.current){
-          setSuccessFormSwitchFamilly(true);
-          setErrorMessageSwitchFamilly(false);
-          setMessageErrorSwitchFamilly("");
-        }
-      })
-      .catch((error) => {
-        if(isMounted.current){
-          setErrorMessageSwitchFamilly(true);
-          setMessageErrorSwitchFamilly(error.response.data.output.payload.message);
-        }
-      });
-  };
-
   const addUserToFamilly = async (data) => {
     let addUserData = {
       usercode : `${data.addUserCode}`, 
@@ -316,8 +273,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const clearErrorMessage = () =>{
     if(messageErrorAddUser){
       setErrorMessageAddUser(false);
-    }else if(messageErrorSwitchFamilly){
-      setErrorMessageSwitchFamilly(false);
     }
   }
 
@@ -545,35 +500,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               </div>
             </form>
           }
-
-          <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
-            <div className="input-form-container-with-error">
-              <label htmlFor="switchFamillyCode">Changer de famille *</label>
-              <input name="switchFamillyCode" className="input-form" type="mail" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />
-              {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
-            </div>
-            <div className="default-action-form-container">
-              <button 
-              className={requestDelegateAdmin ? "default-btn-disabled-form" : "default-btn-action-form"}
-              disabled={requestDelegateAdmin}
-              type="submit">
-                <FontAwesomeIcon icon="exchange-alt" /> Changer
-              </button> 
-              {successFormSwitchFamilly && !errorMessageSwitchFamilly &&
-                <InformationIcon 
-                  className="success-icon"
-                  icon={<FontAwesomeIcon icon="check" />}
-                />
-              }
-              {errorMessageSwitchFamilly &&
-                    <InformationIcon 
-                      className="error-icon"
-                      icon={<FontAwesomeIcon icon="times" />}
-                      message={messageErrorSwitchFamilly}
-                    />
-                  }
-            </div>
-          </form>
         </>
       }
     </>
