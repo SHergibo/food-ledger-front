@@ -63,7 +63,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   return (
     <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
       <div className="input-form-container-with-error">
-        <label htmlFor="switchFamillyCode">Changer de famille *</label>
+        <label htmlFor="switchFamillyCode">{userData.householdId ? "Changer de famille *" : "Rejoindre une famille *"}</label>
         <input name="switchFamillyCode" className="input-form" type="text" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />
         {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
       </div>
@@ -72,7 +72,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
         className={requestDelegateAdmin ? "default-btn-disabled-form" : "default-btn-action-form"}
         disabled={requestDelegateAdmin}
         type="submit">
-          <FontAwesomeIcon icon="exchange-alt" /> Changer
+          <FontAwesomeIcon icon="exchange-alt" /> {userData.householdId ? "Changer": "Demander"}
         </button> 
         {successForm && !errorMessage &&
           <InformationIcon 
