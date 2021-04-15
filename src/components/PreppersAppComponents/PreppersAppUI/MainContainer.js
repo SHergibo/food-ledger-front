@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { Route } from "react-router-dom";
+import HasHousehold from '../../Route/HasHousehold.route';
 import ProductList from './../SubComponent/ProductList';
 import EditProduct from './../ProductHistoricComponents/EditProduct';
 import AddProduct from './../ProductHistoricComponents/AddProduct';
@@ -13,16 +14,16 @@ import SubContainer from './../PreppersAppUI/SubContainer'
 function MainContainer() {
   return (
     <>
-      <Route exact path="/app/liste-produit" component={ProductList} />
-      <Route path="/app/edition-produit/:id" component={EditProduct} />
-      <Route path="/app/ajout-produit" component={AddProduct} />
-      <Route path="/app/liste-historique" component={HistoricList} />
-      <Route path="/app/edition-historique/:id" component={EditProduct} />
-      <Route path="/app/ajout-historique" component={AddProduct} />
+      <HasHousehold exact path="/app/liste-produit" component={ProductList} />
+      <HasHousehold path="/app/edition-produit/:id" component={EditProduct} />
+      <HasHousehold path="/app/ajout-produit" component={AddProduct} />
+      <HasHousehold path="/app/liste-historique" component={HistoricList} />
+      <HasHousehold path="/app/edition-historique/:id" component={EditProduct} />
+      <HasHousehold path="/app/ajout-historique" component={AddProduct} />
       <Route path="/app/profil" component={Profile} />
-      <Route path="/app/statistiques" component={Statistics} />
-      <Route path="/app/registre-produit" component={ProductLog} />
-      <Route path="/app/liste-de-course" component={ShoppingList} />
+      <HasHousehold path="/app/statistiques" component={Statistics} />
+      <HasHousehold path="/app/registre-produit" component={ProductLog} />
+      <HasHousehold path="/app/liste-de-course" component={ShoppingList} />
       <Route path="/app/notification" component={SubContainer} />
     </>
   )
