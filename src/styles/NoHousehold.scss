@@ -1,0 +1,32 @@
+.no-household-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 5rem);
+  width: 100%;
+  .no-household-content{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 1rem;
+    .default-btn-blue{
+      width: 18rem;
+      margin-right: 0;
+    }
+  }
+  p{
+    text-align: center;
+    font-size: 1.5rem;
+    color: $primary-color;
+    margin-bottom: 1rem;
+  }
+}
+
+/*Media queries*/
+
+/*Full-screen*/
+@media screen and (min-width: 992px){
+  .no-household-container{
+    height: 100%;
+  }
+}
