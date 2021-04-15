@@ -885,7 +885,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             <p>Pas de produit !</p>
             {Object.keys(searchObject).length === 0 &&
               <>
-                {userHouseholdData.isWaiting ? 
+                {userHouseholdData && userHouseholdData.isWaiting ? 
                   <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
                   <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
                 }
