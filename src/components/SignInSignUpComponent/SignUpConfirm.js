@@ -109,16 +109,17 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
       } else if (response.status === 404 && response.data.data) {
         let responseDataArray = response.data.data;
         responseDataArray.forEach(dataBadUserCode => {
-          const errorUserCodes = otherMemberList.current.filter(usercode => usercode.innerHTML === dataBadUserCode);
+          const errorUserCodes = otherMemberList.current.filter(usercode => usercode.innerHTML === dataBadUserCode.usercode);
           errorUserCodes.forEach(errorUserCode => {
             errorUserCode.classList.add('bad-user-code');
+            errorUserCode.title = dataBadUserCode.errorType === "userCodeNotFound" ? "Ce code utilisateur n'existe pas!" : "Cet.te utilisateur.trice ne pas pas rejoindre votre famille pour le moment !"
           });
         });
         setErrorBool(true);
         if (response.data.data.length === 1) {
-          setErrorMessage('Il y a un mauvais code utilisateur !');
+          setErrorMessage('Il y a un problème avec un code utilisateur!');
         } else {
-          setErrorMessage('Il y a plusieurs mauvais codes utilisateur !');
+          setErrorMessage('Il y a un problème avec plusieurs codes utilisateur!');
         }
       } else if (response.status === 400) {
         setErrorBool(true);
