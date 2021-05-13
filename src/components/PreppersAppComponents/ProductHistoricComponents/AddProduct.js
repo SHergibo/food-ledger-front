@@ -15,7 +15,7 @@ function AddProduct({ history }) {
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   useEffect(() => {
-    if(userHouseholdData.isWaiting){
+    if(userHouseholdData?.isWaiting){
       let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
       history.push(url);
     }
