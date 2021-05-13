@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useUserData, useUserHouseHoldData, useNotificationData } from '../../DataContext';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import ReactSelect from './../../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,6 +14,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const { notificationReceived, notificationSended } = useNotificationData();
   const [ defaultCheckedAdmin, setDefaultCheckedAdmin ] = useState(true);
   const [ delegateAdminAndSwitch, setDelegateAdminAndSwitch ] = useState(false);
+  const [ showSelectHousehold, setShowSelectHousehold ] = useState(false);
+  const [ arrayOptionSelectHousehold, setArrayOptionSelectHousehold ] = useState([]);
   const [ requestAdminNotification, setRequestAdminNotification ] = useState(false);
   const [ dontWantToDelegate, setDontWantToDelegate ] = useState(false);
   const [ firstMemberEligible, setFirstMemberEligible ] = useState("");
@@ -32,7 +35,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     mode: "onChange"
   });
 
-  const { register : registerFormDelegateWhenSwitching, handleSubmit : handleSubmitFormDelegateWhenSwitching } = useForm({
+  const { register : registerFormDelegateWhenSwitching, handleSubmit : handleSubmitFormDelegateWhenSwitching, errors : errorsFormDelegateWhenSwitching, control } = useForm({
     mode: "onChange"
   });
 
@@ -45,12 +48,22 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   });
 
   useEffect(() => {
-    const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
-    if(needSwitchAdminNotif !== undefined){
-      setDelegateAdminAndSwitch(true);
-    }else{
-      setDelegateAdminAndSwitch(false);
-    }
+    if(showSelectHousehold) registerFormDelegateWhenSwitching({ name: "notifId" }, {required : true});
+    if(!showSelectHousehold) registerFormDelegateWhenSwitching({ name: "notifId" });
+  }, [registerFormDelegateWhenSwitching, showSelectHousehold]);
+
+  useEffect(() => {
+    const needSwitchAdminNotif = notificationReceived.filter(notif => notif.type === "need-switch-admin");
+    if(needSwitchAdminNotif.length >= 1) setDelegateAdminAndSwitch(true);
+    if(needSwitchAdminNotif.length >= 2) {
+      setShowSelectHousehold(true);
+      setArrayOptionSelectHousehold([]);
+      needSwitchAdminNotif.forEach(notif => {
+        setArrayOptionSelectHousehold(arrayOptionSelectHousehold => [...arrayOptionSelectHousehold,{ value: notif._id, label: notif.householdId.householdName }]);
+      });
+    };
+    if(needSwitchAdminNotif.length === 0) setDelegateAdminAndSwitch(false);
+    if(needSwitchAdminNotif.length < 2)  setShowSelectHousehold(false);
   }, [notificationReceived]);
 
   useEffect(() => {
@@ -203,10 +216,14 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   };
 
   const delegateAndSwitch = async (data) => {
-    const needSwitchAdminNotif = notificationReceived.find(notif => notif.type === "need-switch-admin");
-    let switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${needSwitchAdminNotif._id}?acceptedRequest=yes&otherMember=${data.delegateRadioInput}`;
-    if(data === ""){
-      switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${needSwitchAdminNotif._id}?acceptedRequest=yes`;
+    const needSwitchAdminNotif = notificationReceived.filter(notif => notif.type === "need-switch-admin");
+    let notifId;
+    if(needSwitchAdminNotif.length === 1) notifId = needSwitchAdminNotif[0]._id;
+    if(needSwitchAdminNotif.length >= 2) notifId = data.notifId.value;
+
+    let switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${notifId}?acceptedRequest=yes&otherMember=${data.delegateRadioInput}`;
+    if(data.delegateRadioInput === ""){
+      switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${notifId}?acceptedRequest=yes`;
     }
     await axiosInstance.get(switchAdminRightsEndPoint)
       .then((response) => {
@@ -418,6 +435,24 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             <>
               <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
                 {tableMemberFamilly}
+                {showSelectHousehold &&
+                  <div className="input-form-container-with-error">
+                    <ReactSelect
+                      format="select"
+                      label="Choisir une famille *"
+                      Controller={Controller}
+                      name="notifId"
+                      inputId="householdName"
+                      classNamePrefix="select-type"
+                      isClearable={true}
+                      placeholder="Choisir une famille"
+                      arrayOptions={arrayOptionSelectHousehold}
+                      control={control}
+                      defaultValue={""}
+                    />
+                    {errorsFormDelegateWhenSwitching.notifId && <span className="error-message-form">Ce champ est requis</span>}
+                  </div>
+                }
                 <div className="default-action-form-container">
                   <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="default-btn-disabled-form" type="submit">
                     {delegateAdminAndSwitch ? 
