@@ -83,8 +83,7 @@ export function DataProvider({children}) {
 
     socketRef.current = io(apiDomain);
     socketRef.current.on("connect", () => {
-      socketRef.current.emit('setSocketId', {userId: localStorage.getItem('user_id'), socketId: socketRef.current.id, oldSocketId : sessionStorage.getItem("socketID")});
-      sessionStorage.setItem("socketID", socketRef.current.id);
+      socketRef.current.emit('setUserRoom', {userId: localStorage.getItem('user_id')});
     });
 
     socketRef.current.on("updateNotificationReceived", (notif) => {
