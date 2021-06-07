@@ -5,11 +5,13 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import slugUrl from './../../../utils/slugify';
 import AddEditProductForm from './AddEditProductForm';
+import { io } from "socket.io-client";
 import PropTypes from 'prop-types';
 
 
 function EditProduct({ history }) {
   const isMounted = useRef(true);
+  const socketRef = useRef();
   const location = useLocation();
   const { userHouseholdData } = useUserHouseHoldData();
   const [product, setProduct] = useState({});
@@ -21,11 +23,27 @@ function EditProduct({ history }) {
   let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
 
   useEffect(() => {
-    if(userHouseholdData.isWaiting){
+    if(userHouseholdData?.isWaiting){
       let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
       history.push(url);
     }
   }, [userHouseholdData, requestUrl, history]);
+
+  useEffect(() => {
+    socketRef.current = io(apiDomain);
+    if(userHouseholdData){
+      socketRef.current.on("connect", () => {
+        socketRef.current.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
+      });
+    }
+
+    return () => {
+      if(userHouseholdData){
+      socketRef.current.emit('productIsNotEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
+      socketRef.current.disconnect();
+      }
+    };
+  }, [location, productId, userHouseholdData]);
 
   const getProductData = useCallback(async () => {
     setErrorFetch(false);
