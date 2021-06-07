@@ -18,6 +18,7 @@ import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import slugUrl from './../../../utils/slugify';
+import { io } from "socket.io-client";
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -36,6 +37,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
   let btnSortRef = useRef([]);
+  const socketRef = useRef();
   const [pageIndex, setPageIndex] = useState(parseInt(queryParsed.page) || 1);
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 14;
@@ -44,6 +46,34 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const [hideColorCodeDate, setHideColorCodeDate] = useState("");
   const [hideColorCodeStock, setHideColorCodeStock] = useState("");
+
+  useEffect(() => {
+    socketRef.current = io(apiDomain);
+    if(userHouseholdData){
+      socketRef.current.on("connect", () => {
+        socketRef.current.emit('setProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+      });
+    }
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, [urlTo, userHouseholdData]);
+
+  useEffect(() => {
+    socketRef.current = io(apiDomain);
+    socketRef.current.on("productIsEdited", (productId) => {
+      console.log(productId, 'isBeingEdited')
+    });
+
+    socketRef.current.on("productIsNotEdited", (productId) => {
+      console.log(productId, 'isNotEdited')
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    }
+  }, [])
 
   useEffect(() => {
     if(userOptionData){
@@ -62,8 +92,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       }
     }
   }, [userOptionData]);
-
-
 
   useEffect(() => {
     const loadOptions = async () => {
