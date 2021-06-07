@@ -210,8 +210,8 @@ function ShoppingList() {
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
         setShoppingList(response.data.arrayData);
-        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-        if(response.data.totalProduct >= 1){
+        setPageCount(Math.ceil(response.data.totalShoppingList / pageSize));
+        if(response.data.totalShoppingList >= 1){
           setHasProduct(true);
         }else{
           setHasProduct(false);
