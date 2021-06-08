@@ -1,19 +1,18 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
-import { useUserHouseHoldData } from './../DataContext';
+import { useUserHouseHoldData, useSocket } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import slugUrl from './../../../utils/slugify';
 import AddEditProductForm from './AddEditProductForm';
-import { io } from "socket.io-client";
 import PropTypes from 'prop-types';
 
 
 function EditProduct({ history }) {
   const isMounted = useRef(true);
-  const socketRef = useRef();
   const location = useLocation();
   const { userHouseholdData } = useUserHouseHoldData();
+  const { socketRef } = useSocket();
   const [product, setProduct] = useState({});
   const [arrayExpDate, setArrayExpDate] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,20 +29,18 @@ function EditProduct({ history }) {
   }, [userHouseholdData, requestUrl, history]);
 
   useEffect(() => {
-    socketRef.current = io(apiDomain);
-    if(userHouseholdData){
-      socketRef.current.on("connect", () => {
-        socketRef.current.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
-      });
+    let socket = null;
+    if(socketRef.current && userHouseholdData){
+      socket = socketRef.current;
+      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
     }
 
     return () => {
-      if(userHouseholdData){
-      socketRef.current.emit('productIsNotEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
-      socketRef.current.disconnect();
+      if(socket && userHouseholdData){
+      socket.emit('productIsNotEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
       }
     };
-  }, [location, productId, userHouseholdData]);
+  }, [location, productId, userHouseholdData, socketRef]);
 
   const getProductData = useCallback(async () => {
     setErrorFetch(false);
