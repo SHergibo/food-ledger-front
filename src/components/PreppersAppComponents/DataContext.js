@@ -7,6 +7,7 @@ const UserDataContext = createContext();
 const UserHouseholdDataContext = createContext();
 const UserOptionContext = createContext();
 const NotificationContext = createContext();
+const SocketContext = createContext();
 
 export function useUserData(){
   return useContext(UserDataContext);
@@ -22,6 +23,10 @@ export function useUserOptionData(){
 
 export function useNotificationData(){
   return useContext(NotificationContext);
+}
+
+export function useSocket(){
+  return useContext(SocketContext);
 }
 
 export function DataProvider({children}) {
@@ -136,7 +141,9 @@ export function DataProvider({children}) {
       <UserHouseholdDataContext.Provider value={{ userHouseholdData, setUserHouseholdData }}>
         <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
           <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationSended, setNotificationSended }}>
-            {children}
+            <SocketContext.Provider value={{socketRef}}>
+              {children}
+            </SocketContext.Provider>
           </NotificationContext.Provider>
         </UserOptionContext.Provider>
       </UserHouseholdDataContext.Provider>
