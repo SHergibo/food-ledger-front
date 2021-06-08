@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useUserData, useUserOptionData, useUserHouseHoldData } from './../DataContext';
+import { useUserData, useUserOptionData, useUserHouseHoldData, useSocket } from './../DataContext';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
@@ -18,7 +18,6 @@ import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import slugUrl from './../../../utils/slugify';
-import { io } from "socket.io-client";
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -26,6 +25,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userData } = useUserData();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const { userHouseholdData } = useUserHouseHoldData();
+  const { socketRef } = useSocket();
   const location = useLocation();
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
   const [data, setData] = useState([]);
@@ -37,7 +37,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [showFilter, setShowFilter] = useState(false);
   const [arrayOptions, setArrayOptions] = useState([]);
   let btnSortRef = useRef([]);
-  const socketRef = useRef();
   const [pageIndex, setPageIndex] = useState(parseInt(queryParsed.page) || 1);
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 14;
@@ -48,32 +47,36 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [hideColorCodeStock, setHideColorCodeStock] = useState("");
 
   useEffect(() => {
-    socketRef.current = io(apiDomain);
-    if(userHouseholdData){
-      socketRef.current.on("connect", () => {
-        socketRef.current.emit('setProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+    let socket = null;
+
+    if(socketRef.current && userHouseholdData){
+      socket = socketRef.current;
+      socket.emit('enterProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+    }
+
+    return () => {
+      if(socket && userHouseholdData) socket.emit('leaveProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+    };
+  }, [userHouseholdData, urlTo, socketRef]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+      socket.on("productIsEdited", (productId) => {
+        console.log(productId, 'isBeingEdited')
+      });
+  
+      socket.on("productIsNotEdited", (productId) => {
+        console.log(productId, 'isNotEdited')
       });
     }
 
     return () => {
-      socketRef.current.disconnect();
-    };
-  }, [urlTo, userHouseholdData]);
-
-  useEffect(() => {
-    socketRef.current = io(apiDomain);
-    socketRef.current.on("productIsEdited", (productId) => {
-      console.log(productId, 'isBeingEdited')
-    });
-
-    socketRef.current.on("productIsNotEdited", (productId) => {
-      console.log(productId, 'isNotEdited')
-    });
-
-    return () => {
-      socketRef.current.disconnect();
+      //if(socket) socket.disconnect();
     }
-  }, [])
+  }, [socketRef]);
 
   useEffect(() => {
     if(userOptionData){
@@ -624,7 +627,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             return (
               <td key={`${column.id}-${index}`}>
                 <div className="div-list-table-action">
-                  {userHouseholdData.isWaiting ?
+                  {userHouseholdData?.isWaiting ?
                     <> 
                       <button className="list-table-action-disabled" disabled><FontAwesomeIcon icon="edit" /></button>
                       <button className="list-table-action-disabled" disabled><FontAwesomeIcon icon="trash" /></button>
@@ -771,7 +774,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         <div>
           {(hasProduct || Object.keys(searchObject).length > 0) && 
             <>
-              {userHouseholdData.isWaiting ? 
+              {userHouseholdData?.isWaiting ? 
                 <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
                 <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon="plus" /></Link>
               }
@@ -913,7 +916,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             <p>Pas de produit !</p>
             {Object.keys(searchObject).length === 0 &&
               <>
-                {userHouseholdData && userHouseholdData.isWaiting ? 
+                {userHouseholdData && userHouseholdData?.isWaiting ? 
                   <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
                   <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
                 }
