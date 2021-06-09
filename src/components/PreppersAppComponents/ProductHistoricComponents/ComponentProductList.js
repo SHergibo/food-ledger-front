@@ -52,10 +52,17 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
       socket.emit('enterProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+
+      socket.on("connect", () => {
+        socket.emit('enterProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+      });
     }
 
     return () => {
-      if(socket && userHouseholdData) socket.emit('leaveProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+      if(socket && userHouseholdData) {
+        socket.emit('leaveProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+        socket.off('connect');
+      }
     };
   }, [userHouseholdData, urlTo, socketRef]);
 
@@ -74,7 +81,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
 
     return () => {
-      //if(socket) socket.disconnect();
+      if(socket) {
+        socket.off('productIsEdited');
+        socket.off('productIsNotEdited');
+      }
     }
   }, [socketRef]);
 
