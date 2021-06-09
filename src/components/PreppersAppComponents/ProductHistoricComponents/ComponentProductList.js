@@ -66,17 +66,21 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     };
   }, [userHouseholdData, urlTo, socketRef]);
 
+  const productIsEdited = useCallback((productId) => {
+      setData(data.map(data => data._id === productId ? {...data, isBeingEdited: !data.isBeingEdited} : data));
+    }, [data]);
+
   useEffect(() => {
     let socket = null;
 
     if(socketRef.current){
       socket = socketRef.current;
       socket.on("productIsEdited", (productId) => {
-        console.log(productId, 'isBeingEdited')
+        productIsEdited(productId);
       });
   
       socket.on("productIsNotEdited", (productId) => {
-        console.log(productId, 'isNotEdited')
+        productIsEdited(productId);
       });
     }
 
@@ -86,7 +90,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         socket.off('productIsNotEdited');
       }
     }
-  }, [socketRef]);
+  }, [socketRef, productIsEdited]);
 
   useEffect(() => {
     if(userOptionData){
@@ -629,9 +633,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
   </form>;
 
-  let trTable = data.map((row, indexRow) => {
+  let trTable = data.map((row) => {
     return (
-      <tr key={`${row}-${indexRow}`}>
+      <tr key={`${row._id}`}>
         {columns.map((column, index) => {
           if (column.id === 'action') {
             return (
@@ -643,8 +647,16 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                       <button className="list-table-action-disabled" disabled><FontAwesomeIcon icon="trash" /></button>
                     </> :
                     <>
-                      <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon="edit" /></Link>
-                      <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon="trash" /></button>
+                    {row.isBeingEdited ?
+                      <>
+                        <button title="Une autre personne édite ce produit!" className="list-table-action-disabled" disabled><FontAwesomeIcon icon="edit" /></button>
+                        <button title="Vous ne pouvez pas supprimer ce produit pendant qu'une personne l'édite!" className="list-table-action-disabled" disabled><FontAwesomeIcon icon="trash" /></button>
+                      </> : 
+                      <>
+                        <Link className="list-table-action" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon="edit" /></Link>
+                        <button className="list-table-action" onClick={() => deleteData(row._id)}><FontAwesomeIcon icon="trash" /></button>
+                      </>
+                    }
                     </>
                   }
                   
