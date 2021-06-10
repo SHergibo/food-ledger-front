@@ -66,9 +66,35 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     };
   }, [userHouseholdData, urlTo, socketRef]);
 
+  const findIndexData = (data, productId) => {
+    let arrayData = [...data];
+    let dataIndex = arrayData.findIndex(data => data._id === productId);
+    return {arrayData, dataIndex};
+  };
+
   const productIsEdited = useCallback((productId) => {
-      setData(data.map(data => data._id === productId ? {...data, isBeingEdited: !data.isBeingEdited} : data));
-    }, [data]);
+    let {arrayData, dataIndex} = findIndexData(data, productId);
+    if(dataIndex !== -1){
+      arrayData[dataIndex].isBeingEdited = !arrayData[dataIndex].isBeingEdited;
+      setData(arrayData);
+    }
+  }, [data]);
+
+  const updatedProduct = useCallback((productData) => {
+    let {arrayData, dataIndex} = findIndexData(data, productData._id);
+    arrayData[dataIndex] = productData;
+    setData(arrayData);
+  }, [data]);
+
+  const deletedProduct = useCallback((productId) => {
+    let arrayData = data.filter(data => data._id !== productId);
+    setData(arrayData);
+  }, [data]);
+
+  const addedProduct = useCallback((productData) => {
+    if(data.length >= pageSize || Object.keys(searchObject).length > 0 || pageIndex !== pageCount) return;
+    setData([...data, productData]);
+  }, [data, pageSize, searchObject, pageIndex, pageCount]);
 
   useEffect(() => {
     let socket = null;
@@ -78,9 +104,17 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       socket.on("productIsEdited", (productId) => {
         productIsEdited(productId);
       });
-  
-      socket.on("productIsNotEdited", (productId) => {
-        productIsEdited(productId);
+
+      socket.on("updatedProduct", (productData) => {
+        updatedProduct(productData);
+      });
+
+      socket.on("deletedProduct", (productId) => {
+        deletedProduct(productId);
+      });
+
+      socket.on("addedProduct", (productData) => {
+        addedProduct(productData);
       });
     }
 
@@ -88,9 +122,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       if(socket) {
         socket.off('productIsEdited');
         socket.off('productIsNotEdited');
+        socket.off('updatedProduct');
+        socket.off('deletedProduct');
+        socket.off('addedProduct');
       }
     }
-  }, [socketRef, productIsEdited]);
+  }, [socketRef, productIsEdited, updatedProduct, deletedProduct, addedProduct]);
 
   useEffect(() => {
     if(userOptionData){
