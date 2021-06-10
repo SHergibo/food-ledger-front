@@ -32,12 +32,12 @@ function EditProduct({ history }) {
     let socket = null;
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
+      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId, isEdited: true});
     }
 
     return () => {
-      if(socket && userHouseholdData){
-      socket.emit('productIsNotEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId});
+      if(socket){
+      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId, isEdited: false});
       }
     };
   }, [location, productId, userHouseholdData, socketRef]);
