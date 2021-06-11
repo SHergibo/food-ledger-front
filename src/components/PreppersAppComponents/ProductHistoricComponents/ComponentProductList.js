@@ -72,10 +72,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     return {arrayData, dataIndex};
   };
 
-  const productIsEdited = useCallback((productId) => {
+  const productIsEdited = useCallback((productId, isEdited) => {
     let {arrayData, dataIndex} = findIndexData(data, productId);
     if(dataIndex !== -1){
-      arrayData[dataIndex].isBeingEdited = !arrayData[dataIndex].isBeingEdited;
+      arrayData[dataIndex].isBeingEdited = isEdited;
       setData(arrayData);
     }
   }, [data]);
@@ -101,8 +101,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     if(socketRef.current){
       socket = socketRef.current;
-      socket.on("productIsEdited", (productId) => {
-        productIsEdited(productId);
+      socket.on("productIsEdited", ({productId, isEdited}) => {
+        productIsEdited(productId, isEdited);
       });
 
       socket.on("updatedProduct", (productData) => {
@@ -121,7 +121,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     return () => {
       if(socket) {
         socket.off('productIsEdited');
-        socket.off('productIsNotEdited');
         socket.off('updatedProduct');
         socket.off('deletedProduct');
         socket.off('addedProduct');
