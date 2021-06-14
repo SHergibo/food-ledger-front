@@ -30,17 +30,17 @@ function EditProduct({ history }) {
 
   useEffect(() => {
     let socket = null;
-    if(socketRef.current && userHouseholdData){
+    if(socketRef.current && userHouseholdData?._id && product?._id){
       socket = socketRef.current;
-      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId, isEdited: true});
+      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: product._id, isEdited: true});
     }
 
     return () => {
-      if(socket){
-      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: productId, isEdited: false});
+      if(socket && userHouseholdData?._id && product?._id){
+      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: product._id, isEdited: false});
       }
     };
-  }, [location, productId, userHouseholdData, socketRef]);
+  }, [location, product, userHouseholdData, socketRef]);
 
   const getProductData = useCallback(async () => {
     setErrorFetch(false);
