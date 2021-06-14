@@ -685,7 +685,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                     <>
                     {row.isBeingEdited ?
                       <>
-                        <button title="Une autre personne édite ce produit!" className="list-table-action-disabled" disabled><FontAwesomeIcon icon="edit" /></button>
+                        {userData?.role === "admin" ?
+                          <Link title="Attention, une autre personne édite ce produit, si vous cliquez sur ce bouton, la personne sera éjectée du formulaire d'édition et perdra toutes ses données!" className="list-table-action-warning" to={`/app/edition-${urlTo}/${row._id}`}><FontAwesomeIcon icon="edit" /></Link> :
+                          <button title="Une autre personne édite ce produit!" className="list-table-action-disabled" disabled><FontAwesomeIcon icon="edit" /></button>
+                        }
+                        {/* <button title="Une autre personne édite ce produit!" className="list-table-action-disabled" disabled><FontAwesomeIcon icon="edit" /></button> */}
                         <button title="Vous ne pouvez pas supprimer ce produit pendant qu'une personne l'édite!" className="list-table-action-disabled" disabled><FontAwesomeIcon icon="trash" /></button>
                       </> : 
                       <>
