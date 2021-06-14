@@ -37,10 +37,28 @@ function EditProduct({ history }) {
 
     return () => {
       if(socket && userHouseholdData?._id && product?._id){
-      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: product._id, isEdited: false});
+        socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: product._id, isEdited: false});
       }
     };
   }, [location, product, userHouseholdData, socketRef]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+      socket.on("kickProductIsEdited", () => {
+        let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
+        history.push(url);
+      });
+    }
+
+    return () => {
+      if(socket) {
+        socket.off('kickProductIsEdited');
+      }
+    }
+  }, [socketRef, requestUrl, history]);
 
   const getProductData = useCallback(async () => {
     setErrorFetch(false);
