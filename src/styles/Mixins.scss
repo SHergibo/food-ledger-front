@@ -314,7 +314,7 @@
   }
 }
 
-@mixin btn-action-title($font-size, $height-width, $margin-right : true, $disabled : false){
+@mixin btn-action-title($font-size, $height-width, $margin-right : true, $type : "normal"){
   position: relative;
   display: flex;
   justify-content: center;
@@ -327,10 +327,10 @@
     margin-right: .5rem;
   }
   color: $white;
-  @if $disabled {
+  @if $type == disabled {
     background-color: $grey-dark;
     cursor: not-allowed;
-  } @else {
+  } @else if $type == normal {
     background-color: $primary-color;
     &:after {
       content: "";
@@ -347,6 +347,27 @@
     }
     &:hover{
       background-color: $primary-color-hover;
+    }
+    &:hover::after{
+      transform: scale(1.15);
+    }
+  } @else if $type == warning {
+    background-color: $orange;
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      border-radius: 50%;
+      background-color: $orange;
+      opacity: 0.4;
+      z-index: 0;
+      transition: .2s ease-in-out;
+    }
+    &:hover{
+      background-color: $orange;
     }
     &:hover::after{
       transform: scale(1.15);
