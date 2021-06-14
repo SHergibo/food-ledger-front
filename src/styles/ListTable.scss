@@ -210,8 +210,15 @@
   }
 }
 
+.list-table-action-warning{
+  @include btn-action-title(1rem, 2rem, true, "warning");
+  &:last-child{
+    margin-right: 0rem;
+  }
+}
+
 .list-table-action-disabled{
-  @include btn-action-title(1rem, 2rem, true, true);
+  @include btn-action-title(1rem, 2rem, true, "disabled");
   &:last-child{
     margin-right: 0rem;
   }
@@ -222,7 +229,7 @@
 }
 
 .list-table-one-action-disabled{
-  @include btn-action-title(1rem, 2rem, false, true);
+  @include btn-action-title(1rem, 2rem, false, "disabled");
 }
 
 .pagination{
@@ -343,14 +350,14 @@
       flex-direction: row;
     }
   }
-  .list-table-action{
+  .list-table-action, .list-table-action-warning{
     &:first-child{
       margin-right: 1rem;
     }
   }
 
   .list-table-action-disabled{
-    @include btn-action-title(1rem, 2rem, true, true);
+    @include btn-action-title(1rem, 2rem, true, "disabled");
     &:first-child{
       margin-right: 1rem;
     }
