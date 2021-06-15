@@ -31,10 +31,16 @@ function ProductOptionProfile() {
   }, [successFormProduct]);
 
   useEffect(() => {
+    let timeOut;
     if(userOptionData){
-      if (userOptionData.warningExpirationDate) {
-        setValueFormProduct("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
-      }
+      timeOut = setTimeout(() => {
+        if (userOptionData.warningExpirationDate) {
+          setValueFormProduct("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
+        }
+      }, 300);
+    }
+    return () => {
+      clearTimeout(timeOut);
     }
   }, [userOptionData, setValueFormProduct]);
 
@@ -63,7 +69,7 @@ function ProductOptionProfile() {
   };
 
   return (
-    <form onSubmit={handleSubmitFormProduct(updateUserOptionProductData)}>
+    <form className="option-component" onSubmit={handleSubmitFormProduct(updateUserOptionProductData)}>
       {userOptionData && 
         <>
           <div className="input-form-container">
