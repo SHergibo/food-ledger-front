@@ -1,0 +1,24 @@
+.btn-option-container{
+  display: flex;
+}
+
+.fade-enter .option-component {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.fade-enter-active .option-component {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.fade-exit .option-component {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.fade-exit-active .option-component {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.fade-enter-active .option-component,
+.fade-exit-active .option-component {
+  transition: opacity 500ms, transform 500ms;
+}
