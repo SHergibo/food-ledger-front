@@ -19,13 +19,19 @@ function EmailOptionProfile() {
   });
 
   useEffect(() => {
+    let timeOut;
     if(userOptionData){
-      if (userOptionData.dateMailGlobal) {
-        setValueFormEmailing("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
-      }
-      if (userOptionData.dateMailGlobal) {
-        setValueFormEmailing("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
-      }
+      timeOut = setTimeout(() => {
+        if (userOptionData.dateMailGlobal) {
+          setValueFormEmailing("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
+        }
+        if (userOptionData.dateMailGlobal) {
+          setValueFormEmailing("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
+        }
+      }, 300);
+    }
+    return () => {
+      clearTimeout(timeOut);
     }
   }, [userOptionData, setValueFormEmailing]);
 
@@ -66,7 +72,7 @@ function EmailOptionProfile() {
   };
 
   return (
-    <form onSubmit={handleSubmitFormEmailing(updateUserOptionMailingData)}>
+    <form className="option-component" onSubmit={handleSubmitFormEmailing(updateUserOptionMailingData)}>
       {userOptionData && 
         <>
           <label className="container-checkbox-input" htmlFor="sendMailGlobal">Recevoir le mail d'information sur vos stocks : 
