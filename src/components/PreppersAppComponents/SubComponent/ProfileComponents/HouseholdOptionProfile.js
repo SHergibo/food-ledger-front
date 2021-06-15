@@ -402,7 +402,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   </>;
 
   return (
-    <>
+    <div className="option-component">
       {userHouseholdData && userData &&
         <>
           {userData.role === "admin" ?
@@ -537,7 +537,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           }
         </>
       }
-    </>
+    </div>
   )
 }
 

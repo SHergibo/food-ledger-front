@@ -61,7 +61,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   }
 
   return (
-    <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
+    <form className="form-inline option-component" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
       <div className="input-form-container-with-error">
         <label htmlFor="switchFamillyCode">{userData.householdId ? "Changer de famille *" : "Rejoindre une famille *"}</label>
         <input name="switchFamillyCode" className="input-form" type="text" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />

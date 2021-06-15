@@ -46,7 +46,7 @@ function CreateHouseholdForm() {
 
 
   return (
-    <form className="form-inline" onSubmit={handleSubmit(createdHousehold)}>
+    <form className="form-inline option-component" onSubmit={handleSubmit(createdHousehold)}>
       <div className="input-form-container-with-error">
         <label htmlFor="householdName">Créer une famille *</label>
         <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." onChange={clearErrorMessage} ref={register({ required : true })} />

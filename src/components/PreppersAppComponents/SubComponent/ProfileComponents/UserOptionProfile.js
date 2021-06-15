@@ -45,7 +45,7 @@ function UserOptionProfile() {
   };
 
   return (
-    <form onSubmit={handleSubmitFormUser(updateUserData)}>
+    <form className="option-component" onSubmit={handleSubmitFormUser(updateUserData)}>
       {userData && 
         <>
           <div className="input-form-container-with-error">

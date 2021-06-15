@@ -53,7 +53,7 @@ function ProductTableOptionProfile() {
   };
 
   return (
-    <form onSubmit={handleSubmitProductTable(updateUserOptionProductTableData)}>
+    <form className="option-component" onSubmit={handleSubmitProductTable(updateUserOptionProductTableData)}>
       {userOptionData && 
         <>
           <label className="container-checkbox-input" htmlFor="colorCodeDate">Afficher le code couleur pour les dates de péremption : 
