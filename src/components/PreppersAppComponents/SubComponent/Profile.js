@@ -13,9 +13,10 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
+import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
-function Profile({ history, location }) {
+function Profile({ history }) {
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
   const { notificationReceived } = useNotificationData();
@@ -24,18 +25,34 @@ function Profile({ history, location }) {
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
   const [ requestDelegateAdmin, setRequestDelegateAdmin ] = useState(false);
   const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
-  const householdOptions = useRef(null);
+  const [option, setOption] = useState('userOptions');
+  const [objectTitle, setObjectTitle] = useState({});
+  // const householdOptions = useRef(null);
   const isMounted = useRef(true);
 
   const { register : registerFormDelegateWhenDeleting, handleSubmit : handleSubmitFormDelegateWhenDeleting } = useForm({
     mode: "onChange"
   });
 
+  // useEffect(() => {
+  //   if(location.state && location.state.scrollDelegate && householdOptions.current){
+  //     householdOptions.current.scrollIntoView();
+  //   }
+  // }, [location]);
+
   useEffect(() => {
-    if(location.state && location.state.scrollDelegate && householdOptions.current){
-      householdOptions.current.scrollIntoView();
+    if(userData){
+      setObjectTitle({
+        userOptions : `Profil de ${userData.firstname} ${userData.lastname}`,
+        notification: 'Listes des notifications reçues/envoyées',
+        householdOptions : 'Gestion de votre Famille',
+        emailingOptions : 'Options e-mailing',
+        productOptions : 'Options produit',
+        productTableOptions : 'Options tableau de produits',
+        brandOptions : 'Gestion marque de produit',
+      })
     }
-  }, [location]);
+  }, [userData]);
 
   useEffect(() => {
     if(!openTitleMessage){
@@ -72,9 +89,9 @@ function Profile({ history, location }) {
     }
   }, []);
 
-  const scrollToHouseholdOptions = () =>{
-    householdOptions.current.scrollIntoView();
-  }
+  // const scrollToHouseholdOptions = () =>{
+  //   householdOptions.current.scrollIntoView();
+  // }
 
   const deleteUser = async (data) => {
     let deleteUserDataEndPoint;
@@ -169,12 +186,77 @@ function Profile({ history, location }) {
     }
   </>;
 
+  let btnOptionMenu = [
+    {title : 'Profil', option: 'userOptions'},
+    {title : 'Notification', option: 'notification'},
+    {title : 'Famille', option: 'householdOptions'},
+    {title : 'E-mailing', option: 'emailingOptions'},
+    {title : 'Produits', option: 'productOptions'},
+    {title : 'Tableau produits', option: 'productTableOptions'},
+    {title : 'Marques', option: 'brandOptions'},
+  ];
+
   return (
-    
     <div className="default-wrapper">
       {userData && 
         <>
-          <div className="default-title-container">
+          <div className="btn-option-container">
+            {btnOptionMenu.map((btn, index) => {
+              return <button key={`${btn.option}-${index}`} className="default-btn-action-form" onClick={() => setOption(btn.option)}>
+                {btn.title}
+              </button>
+            })}
+          </div>
+          
+          <div className="default-title-container delimiter-title">
+            <h1 className="default-h1">{objectTitle[option]}</h1>
+            {option === "userOptions" && 
+              <TitleButtonInteraction 
+                title={"Supprimer son compte"}
+                openTitleMessage={openTitleMessage}
+                setOpenTitleMessage={setOpenTitleMessage}
+                icon={<FontAwesomeIcon icon="trash" />}
+                contentDiv={contentTitleInteraction}
+              />
+            }
+          </div>
+
+          <SwitchTransition mode={'out-in'}>
+            <CSSTransition
+              key={option}
+              addEndListener={(node, done) => {
+                node.addEventListener("transitionend", done, false);
+              }}
+              classNames="fade"
+            >
+              <div>
+                {option === 'userOptions' && <UserOptionProfile />}
+                {option === 'notification' && 
+                  <NotificationOptionProfile 
+                    otherMemberEligible={otherMemberEligible}
+                  />
+                }
+                {option === 'householdOptions' && 
+                  <>
+                    {userData?.householdId ?
+                      <HouseholdOptionProfile 
+                        requestDelegateAdmin={requestDelegateAdmin}
+                        otherMemberEligible={otherMemberEligible}
+                      /> :
+                      <CreateHouseholdForm />
+                    }
+                    <SwitchFamillyForm 
+                      requestDelegateAdmin={requestDelegateAdmin}
+                    />
+                  </>
+                }
+                {option === 'emailingOptions' && <EmailOptionProfile />}
+                {option === 'productOptions' && <ProductOptionProfile />}
+                {option === 'productTableOptions' && <ProductTableOptionProfile />}
+              </div>
+            </CSSTransition>
+          </SwitchTransition>
+          {/* <div className="default-title-container">
             <h1 className="default-h1">Profil de {userData.firstname} {userData.lastname}</h1>
             <TitleButtonInteraction 
               title={"Supprimer son compte"}
@@ -228,7 +310,7 @@ function Profile({ history, location }) {
             <h1 className="default-h1">Options tableau de produits</h1>
           </div>
 
-          <ProductTableOptionProfile />
+          <ProductTableOptionProfile /> */}
         </>
       }
     </div>
