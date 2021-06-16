@@ -2,7 +2,6 @@
   position: relative;
   display: block;
   height: 100%;
-  overflow: hidden;
 }
 
 .container-column{
@@ -18,6 +17,7 @@
   .container-row{
     display: flex;
     justify-content: space-between;
+    overflow: hidden;
   }
   .container-prepper-app{
     display: flex;
