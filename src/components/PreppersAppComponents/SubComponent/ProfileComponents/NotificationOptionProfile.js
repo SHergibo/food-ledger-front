@@ -5,7 +5,7 @@ import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligible}) {
+function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligible}) {
   const { notificationReceived, notificationSended } = useNotificationData();
   const [notificationTable, setNotificationTable] = useState(true);
   const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
@@ -124,7 +124,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
                   <td>
                     <div className="div-list-table-action">
                       {notification.type === "need-switch-admin" &&
-                        <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button>
+                        <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button>
                       }
                       {(notification.type === "invitation-household-to-user" || notification.type === "invitation-user-to-household") &&
                         <button 
@@ -140,7 +140,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
                        <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
                       }
                       {(notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin") && otherMemberEligible ?
-                        <button title="Déléguer" type="button" className="list-table-action" onClick={scrollToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
+                        <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
                         notification.type === "information" ? <button title="Supprimer la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button> : <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
                       }
                     </div>
@@ -224,7 +224,7 @@ function NotificationOptionProfile({scrollToHouseholdOptions, otherMemberEligibl
 }
 
 NotificationOptionProfile.propTypes = {
-  // scrollToHouseholdOptions: PropTypes.func.isRequired,
+  switchToHouseholdOptions: PropTypes.func.isRequired,
   otherMemberEligible: PropTypes.bool.isRequired
 }
 
