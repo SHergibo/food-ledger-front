@@ -39,7 +39,7 @@ function SubContainer({history}) {
     history.push({
       pathname: '/app/profil',
       state: {
-        scrollDelegate: true
+        householdOptions: true 
       }
     })
   };
