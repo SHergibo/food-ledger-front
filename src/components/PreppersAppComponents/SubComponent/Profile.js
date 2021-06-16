@@ -236,7 +236,7 @@ function Profile({ history }) {
           
           <div className="default-title-container delimiter-title">
             <h1 className="default-h1">{objectTitle[option.value]}</h1>
-            {option === "userOptions" && 
+            {option.value === "userOptions" && 
               <TitleButtonInteraction 
                 title={"Supprimer son compte"}
                 openTitleMessage={openTitleMessage}
