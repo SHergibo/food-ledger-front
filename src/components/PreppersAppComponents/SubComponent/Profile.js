@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useUserData, useUserHouseHoldData, useNotificationData } from './../DataContext';
 import UserOptionProfile from './ProfileComponents/UserOptionProfile';
 import NotificationOptionProfile from './ProfileComponents/NotificationOptionProfile';
@@ -14,6 +14,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
+import Select from 'react-select';
 import PropTypes from 'prop-types';
 
 function Profile({ history }) {
@@ -25,8 +26,9 @@ function Profile({ history }) {
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
   const [ requestDelegateAdmin, setRequestDelegateAdmin ] = useState(false);
   const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
-  const [option, setOption] = useState('userOptions');
+  const [option, setOption] = useState({label : 'Profil', value: 'userOptions'});
   const [objectTitle, setObjectTitle] = useState({});
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // const householdOptions = useRef(null);
   const isMounted = useRef(true);
 
@@ -39,6 +41,17 @@ function Profile({ history }) {
   //     householdOptions.current.scrollIntoView();
   //   }
   // }, [location]);
+
+  const responsive = useCallback(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', responsive);
+    return () => {
+      window.removeEventListener('resize', responsive);
+    }
+  }, [responsive]);
 
   useEffect(() => {
     if(userData){
@@ -187,13 +200,13 @@ function Profile({ history }) {
   </>;
 
   let btnOptionMenu = [
-    {title : 'Profil', option: 'userOptions'},
-    {title : 'Notification', option: 'notification'},
-    {title : 'Famille', option: 'householdOptions'},
-    {title : 'E-mailing', option: 'emailingOptions'},
-    {title : 'Produits', option: 'productOptions'},
-    {title : 'Tableau produits', option: 'productTableOptions'},
-    {title : 'Marques', option: 'brandOptions'},
+    {label : 'Profil', value: 'userOptions'},
+    {label : 'Notification', value: 'notification'},
+    {label : 'Famille', value: 'householdOptions'},
+    {label : 'E-mailing', value: 'emailingOptions'},
+    {label : 'Produits', value: 'productOptions'},
+    {label : 'Tableau produits', value: 'productTableOptions'},
+    {label : 'Marques', value: 'brandOptions'},
   ];
 
   return (
@@ -201,15 +214,28 @@ function Profile({ history }) {
       {userData && 
         <>
           <div className="btn-option-container">
-            {btnOptionMenu.map((btn, index) => {
-              return <button key={`${btn.option}-${index}`} className="default-btn-action-form" onClick={() => setOption(btn.option)}>
-                {btn.title}
-              </button>
-            })}
+            {windowWidth <= 992 ?
+              <Select
+                className="select-option"
+                defaultValue={option}
+                options={btnOptionMenu}
+                onChange={(selectedOption)=> {
+                  setOption(selectedOption)
+                }}
+              /> :
+              <>
+              {btnOptionMenu.map((btn, index) => {
+                return <button key={`${btn.value}-${index}`} className="default-btn-action-form" onClick={() => setOption(btn)}>
+                  {btn.label}
+                </button>
+              })}
+            </>
+            }
+
           </div>
           
           <div className="default-title-container delimiter-title">
-            <h1 className="default-h1">{objectTitle[option]}</h1>
+            <h1 className="default-h1">{objectTitle[option.value]}</h1>
             {option === "userOptions" && 
               <TitleButtonInteraction 
                 title={"Supprimer son compte"}
@@ -223,20 +249,20 @@ function Profile({ history }) {
 
           <SwitchTransition mode={'out-in'}>
             <CSSTransition
-              key={option}
+              key={option.value}
               addEndListener={(node, done) => {
                 node.addEventListener("transitionend", done, false);
               }}
               classNames="fade"
             >
               <div>
-                {option === 'userOptions' && <UserOptionProfile />}
-                {option === 'notification' && 
+                {option.value === 'userOptions' && <UserOptionProfile />}
+                {option.value === 'notification' && 
                   <NotificationOptionProfile 
                     otherMemberEligible={otherMemberEligible}
                   />
                 }
-                {option === 'householdOptions' && 
+                {option.value === 'householdOptions' && 
                   <>
                     {userData?.householdId ?
                       <HouseholdOptionProfile 
@@ -250,9 +276,9 @@ function Profile({ history }) {
                     />
                   </>
                 }
-                {option === 'emailingOptions' && <EmailOptionProfile />}
-                {option === 'productOptions' && <ProductOptionProfile />}
-                {option === 'productTableOptions' && <ProductTableOptionProfile />}
+                {option.value === 'emailingOptions' && <EmailOptionProfile />}
+                {option.value === 'productOptions' && <ProductOptionProfile />}
+                {option.value === 'productTableOptions' && <ProductTableOptionProfile />}
               </div>
             </CSSTransition>
           </SwitchTransition>
