@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useLocation } from "react-router-dom";
 import { useUserData, useUserHouseHoldData, useNotificationData } from './../DataContext';
 import UserOptionProfile from './ProfileComponents/UserOptionProfile';
 import NotificationOptionProfile from './ProfileComponents/NotificationOptionProfile';
@@ -18,6 +19,7 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 
 function Profile({ history }) {
+  const location = useLocation();
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
   const { notificationReceived } = useNotificationData();
@@ -29,18 +31,18 @@ function Profile({ history }) {
   const [option, setOption] = useState({label : 'Profil', value: 'userOptions'});
   const [objectTitle, setObjectTitle] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  // const householdOptions = useRef(null);
   const isMounted = useRef(true);
 
   const { register : registerFormDelegateWhenDeleting, handleSubmit : handleSubmitFormDelegateWhenDeleting } = useForm({
     mode: "onChange"
   });
 
-  // useEffect(() => {
-  //   if(location.state && location.state.scrollDelegate && householdOptions.current){
-  //     householdOptions.current.scrollIntoView();
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    if(location?.state?.householdOptions){
+      setOption({label : 'Famille', value: 'householdOptions'});
+      document.getElementById('householdOptions').classList.add('btn-option-active');
+    }
+  }, [location]);
 
   const responsive = useCallback(() => {
     setWindowWidth(window.innerWidth);
@@ -101,10 +103,6 @@ function Profile({ history }) {
       isMounted.current = false;
     }
   }, []);
-
-  // const scrollToHouseholdOptions = () =>{
-  //   householdOptions.current.scrollIntoView();
-  // }
 
   const deleteUser = async (data) => {
     let deleteUserDataEndPoint;
@@ -213,8 +211,7 @@ function Profile({ history }) {
     setOption({label : 'Famille', value: 'householdOptions'});
     let oldActive = document.getElementsByClassName("btn-option-active")[0];
     if(oldActive) oldActive.classList.remove('btn-option-active');
-    let menuActive = document.getElementById('householdOptions');
-    menuActive.classList.add('btn-option-active');
+    document.getElementById('householdOptions').classList.add('btn-option-active');
   }
 
   return (
