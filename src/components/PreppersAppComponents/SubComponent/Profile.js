@@ -225,7 +225,13 @@ function Profile({ history }) {
               /> :
               <>
               {btnOptionMenu.map((btn, index) => {
-                return <button key={`${btn.value}-${index}`} className="default-btn-action-form" onClick={() => setOption(btn)}>
+                return <button key={`${btn.value}-${index}`} className="default-btn-action-form" onClick={(e) => {
+                  e.persist();
+                  let oldActive = document.getElementsByClassName("btn-option-active")[0];
+                  if(oldActive) oldActive.classList.remove('btn-option-active');
+                  e.target.classList.add('btn-option-active');
+                  setOption(btn)
+                  }}>
                   {btn.label}
                 </button>
               })}
