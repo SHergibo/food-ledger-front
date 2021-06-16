@@ -209,6 +209,14 @@ function Profile({ history }) {
     {label : 'Marques', value: 'brandOptions'},
   ];
 
+  let switchToHouseholdOptions = () => {
+    setOption({label : 'Famille', value: 'householdOptions'});
+    let oldActive = document.getElementsByClassName("btn-option-active")[0];
+    if(oldActive) oldActive.classList.remove('btn-option-active');
+    let menuActive = document.getElementById('householdOptions');
+    menuActive.classList.add('btn-option-active');
+  }
+
   return (
     <div className="default-wrapper">
       {userData && 
@@ -225,7 +233,7 @@ function Profile({ history }) {
               /> :
               <>
               {btnOptionMenu.map((btn, index) => {
-                return <button key={`${btn.value}-${index}`} className="default-btn-action-form" onClick={(e) => {
+                return <button id={`${btn.value}`} key={`${btn.value}-${index}`} className="default-btn-action-form" onClick={(e) => {
                   e.persist();
                   let oldActive = document.getElementsByClassName("btn-option-active")[0];
                   if(oldActive) oldActive.classList.remove('btn-option-active');
@@ -266,6 +274,7 @@ function Profile({ history }) {
                 {option.value === 'notification' && 
                   <NotificationOptionProfile 
                     otherMemberEligible={otherMemberEligible}
+                    switchToHouseholdOptions={switchToHouseholdOptions}
                   />
                 }
                 {option.value === 'householdOptions' && 
