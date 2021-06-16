@@ -2,6 +2,10 @@
   display: flex;
 }
 
+.select-option{
+  width: 100%;
+}
+
 .fade-enter .option-component {
   opacity: 0;
   transform: translateX(-100%);
