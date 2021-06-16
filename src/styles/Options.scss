@@ -2,6 +2,11 @@
   display: flex;
 }
 
+.btn-option-active{
+  background-color: $primary-color-hover;
+  border-color: $primary-color-hover;
+}
+
 .select-option{
   width: 100%;
 }
