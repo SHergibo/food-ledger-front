@@ -51,16 +51,16 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+      socket.emit('enterEditedRoom', {householdId: userHouseholdData._id, type: urlTo});
 
       socket.on("connect", () => {
-        socket.emit('enterProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+        socket.emit('enterEditedRoom', {householdId: userHouseholdData._id, type: urlTo});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveProductRoom', {householdId: userHouseholdData._id, type: urlTo});
+        socket.emit('leaveEditedRoom', {householdId: userHouseholdData._id, type: urlTo});
         socket.off('connect');
       }
     };
