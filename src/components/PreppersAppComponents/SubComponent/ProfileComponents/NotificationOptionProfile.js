@@ -112,9 +112,9 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
             </tr>
           </thead>
           <tbody>
-            {notificationReceived.map((notification, index) => {
+            {notificationReceived.map((notification) => {
               return (
-                <tr key={`memberTable-${index}`}>
+                <tr key={`notification-${notification._id}`}>
                   <td className="all-info">
                     {notification.message}
                   </td>
@@ -167,7 +167,7 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
         <tbody>
           {notificationSended.map((notification, index) => {
             return (
-              <tr key={`memberTable-${index}`}>
+              <tr key={`notificiation-${index}`}>
                 <td className="td-align-center">
                   {notificationSendedTypes(notification.type)}
                 </td>
