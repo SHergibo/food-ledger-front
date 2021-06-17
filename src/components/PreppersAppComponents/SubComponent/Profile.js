@@ -9,6 +9,7 @@ import SwitchFamillyForm from './ProfileComponents/SwitchHouseholdForm';
 import EmailOptionProfile from './ProfileComponents/EmailOptionProfile';
 import ProductOptionProfile from './ProfileComponents/ProductOptionProfile';
 import ProductTableOptionProfile from './ProfileComponents/ProductTableOptionProfile';
+import BrandOption from './ProfileComponents/BrandOption';
 import { useForm } from 'react-hook-form';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -40,7 +41,10 @@ function Profile({ history }) {
   useEffect(() => {
     if(location?.state?.householdOptions){
       setOption({label : 'Famille', value: 'householdOptions'});
-      document.getElementById('householdOptions').classList.add('btn-option-active');
+      let oldActive = document.getElementsByClassName("btn-option-active")[0];
+      if(oldActive) oldActive.classList.remove('btn-option-active');
+      let householdOptions = document.getElementById('householdOptions')
+      if(householdOptions) householdOptions.classList.add('btn-option-active');
     }
   }, [location]);
 
@@ -230,7 +234,7 @@ function Profile({ history }) {
               /> :
               <>
               {btnOptionMenu.map((btn, index) => {
-                return <button id={`${btn.value}`} key={`${btn.value}-${index}`} className="default-btn-action-form" onClick={(e) => {
+                return <button id={`${btn.value}`} key={`${btn.value}-${index}`} className={`default-btn-action-form ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
                   e.persist();
                   let oldActive = document.getElementsByClassName("btn-option-active")[0];
                   if(oldActive) oldActive.classList.remove('btn-option-active');
@@ -291,64 +295,10 @@ function Profile({ history }) {
                 {option.value === 'emailingOptions' && <EmailOptionProfile />}
                 {option.value === 'productOptions' && <ProductOptionProfile />}
                 {option.value === 'productTableOptions' && <ProductTableOptionProfile />}
+                {option.value === 'brandOptions' && <BrandOption />}
               </div>
             </CSSTransition>
           </SwitchTransition>
-          {/* <div className="default-title-container">
-            <h1 className="default-h1">Profil de {userData.firstname} {userData.lastname}</h1>
-            <TitleButtonInteraction 
-              title={"Supprimer son compte"}
-              openTitleMessage={openTitleMessage}
-              setOpenTitleMessage={setOpenTitleMessage}
-              icon={<FontAwesomeIcon icon="trash" />}
-              contentDiv={contentTitleInteraction}
-            />
-          </div>
-
-          <UserOptionProfile />
-
-          <div className="default-title-container delimiter-title">
-            <h1 className="default-h1">Listes des notifications reçues/envoyées</h1>
-          </div>
-
-          <NotificationOptionProfile 
-            scrollToHouseholdOptions = {scrollToHouseholdOptions}
-            otherMemberEligible={otherMemberEligible}
-          />
-
-          <div ref={householdOptions} className="default-title-container delimiter-title">
-            <h1 className="default-h1">Options Famille</h1>
-          </div>
-
-          {userData.householdId ?
-            <HouseholdOptionProfile 
-              requestDelegateAdmin={requestDelegateAdmin}
-              otherMemberEligible={otherMemberEligible}
-            /> :
-            <CreateHouseholdForm />
-          }
-          <SwitchFamillyForm 
-            requestDelegateAdmin={requestDelegateAdmin}
-          />
-          
-
-          <div className="default-title-container delimiter-title">
-            <h1 className="default-h1">Options e-mailing</h1>
-          </div>
-
-          <EmailOptionProfile />
-
-          <div className="default-title-container delimiter-title">
-            <h1 className="default-h1">Options produit</h1>
-          </div>
-
-          <ProductOptionProfile />
-
-          <div className="default-title-container delimiter-title">
-            <h1 className="default-h1">Options tableau de produits</h1>
-          </div>
-
-          <ProductTableOptionProfile /> */}
         </>
       }
     </div>
