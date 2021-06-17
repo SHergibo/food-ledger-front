@@ -10,6 +10,7 @@ import Statistics from './../SubComponent/Statistics';
 import ProductLog from './../SubComponent/ProductLog';
 import ShoppingList from './../SubComponent/ShoppingList';
 import SubContainer from './../PreppersAppUI/SubContainer'
+import EditBrand from '../SubComponent/ProfileComponents/EditBrand';
 
 function MainContainer() {
   return (
@@ -21,6 +22,7 @@ function MainContainer() {
       <HasHousehold path="/app/edition-historique/:id" component={EditProduct} />
       <HasHousehold path="/app/ajout-historique" component={AddProduct} />
       <Route path="/app/profil" component={Profile} />
+      <HasHousehold path="/app/edition-marque/:id" component={EditBrand} />
       <HasHousehold path="/app/statistiques" component={Statistics} />
       <HasHousehold path="/app/registre-produit" component={ProductLog} />
       <HasHousehold path="/app/liste-de-course" component={ShoppingList} />
