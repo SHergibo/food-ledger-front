@@ -177,7 +177,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   useEffect(() => {
     const loadOptions = async () => {
       let newArray = [];
-      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/${userData.householdId}`;
+      const getBrandListEndPoint = `${apiDomain}/api/${apiVersion}/brands/find-all/${userData.householdId}`;
       await axiosInstance.get(getBrandListEndPoint)
         .then((response) => {
           response.data.forEach(element => {
