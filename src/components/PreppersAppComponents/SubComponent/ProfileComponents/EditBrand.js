@@ -1,9 +1,12 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
-import { useUserHouseHoldData, useSocket } from './../../DataContext';
+import { useUserHouseHoldData, useSocket } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
-import slugUrl from './../../../../utils/slugify';
+import TitleButtonInteraction from '../../UtilitiesComponent/TitleButtonInteraction';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Loading from '../../UtilitiesComponent/Loading';
+import slugUrl from '../../../../utils/slugify';
 import PropTypes from 'prop-types';
 
 
@@ -16,6 +19,7 @@ function EditBrand({ history }) {
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [openTitleMessage, setOpenTitleMessage] = useState(false);
   let brandId = location.pathname.split('/')[3];
 
   useEffect(() => {
@@ -154,10 +158,119 @@ function EditBrand({ history }) {
     //   });
   }
 
+  const deleteBrand = async () => {
+    let deleteBrandEndPoint = `${apiDomain}/api/${apiVersion}/brands/${brandId}`;
+
+    await axiosInstance.delete(deleteBrandEndPoint)
+      .then((response) => {
+        if(response.status === 200){
+          history.push({
+            pathname: '/app/profile',
+          })
+        }
+      });
+  }
+
+  let contentTitleInteractionDeleteBrand = <>
+  {openTitleMessage && 
+    <div className="title-message-container-delete-action">
+      <p>Êtes-vous sur et certain de vouloir supprimer la marque {brand?.brandName?.label}?</p>
+      <div className="btn-delete-action-container">
+        <button 
+        className="btn-delete-action-yes"
+        onClick={()=>{deleteBrand()}}>
+          Oui
+        </button>
+        <button 
+        className="btn-delete-action-no" 
+        onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
+          Non
+        </button>
+      </div>
+    </div>
+  }
+</>;
+
   return (
-    <>
-    ici
-    </>
+   <div className="default-wrapper">
+      <div className="default-title-container">
+        <div className="title-and-return">
+          <button className="return-to"
+            onClick={() => {
+              history.push({
+                pathname: '/app/profil',
+                state: {
+                  brandOptions: true 
+                }
+              })
+            }}>
+            <FontAwesomeIcon icon="arrow-left" />
+          </button>
+          <h1 className="default-h1">Édition de la marque {brand?.brandName?.label}</h1>
+        </div>
+        {(brand.numberOfHistoric + brand.numberOfProduct) < 1 && 
+          <TitleButtonInteraction
+            title={`Supprimer la marque ${brand?.brandName?.label}!`}
+            openTitleMessage={openTitleMessage}
+            setOpenTitleMessage={setOpenTitleMessage}
+            icon={<FontAwesomeIcon icon="trash" />}
+            contentDiv={contentTitleInteractionDeleteBrand}
+          />
+        }
+      </div>
+      
+      <div className="container-loading">
+          <Loading
+            loading={loading}
+            errorFetch={errorFetch}
+            retryFetch={getBrand}
+          />
+        <div>
+          <div className="form-add-edit-product-container">
+            <form>
+              {/* {form} */}
+            </form>
+          </div>
+
+          {/* <div className="default-action-form-container">
+            <button className="default-btn-action-form" onClick={() => {
+              handleSubmit(handleFunction)();
+              expErrorMessageLogic();
+              }}>
+              {formType === "add" &&
+                <FontAwesomeIcon icon="plus" /> 
+              }
+              {formType === "edit" &&
+                <FontAwesomeIcon icon="pen" /> 
+              }
+              {button}
+            </button>
+            {success && number !== 0 &&
+              <InformationIcon 
+                className="success-icon"
+                icon={<FontAwesomeIcon icon="check" />}
+              />
+            }
+            {formType === "edit" && number === 0 && requestUrl === "products" &&
+              <InformationIcon 
+                className="warning-icon"
+                icon={<FontAwesomeIcon icon="exclamation" />}
+                message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre total de produits est égal à 0 !"
+              />
+            }
+            {formType === "edit" && number >= 1 && requestUrl === "historics" &&
+              <InformationIcon 
+                className="warning-icon"
+                icon={<FontAwesomeIcon icon="exclamation" />}
+                message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
+              />
+            }
+          </div> */}
+          
+        </div>
+      </div>
+      
+    </div>
   )
 }
 
