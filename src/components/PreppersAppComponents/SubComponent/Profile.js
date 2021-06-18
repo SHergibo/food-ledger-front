@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useLocation } from "react-router-dom";
 import { useUserData, useUserHouseHoldData, useNotificationData } from './../DataContext';
 import UserOptionProfile from './ProfileComponents/UserOptionProfile';
@@ -38,15 +38,32 @@ function Profile({ history }) {
     mode: "onChange"
   });
 
+  let btnOptionMenu = useMemo(() => {
+    return [
+      {label : 'Profil', value: 'userOptions'},
+      {label : 'Notification', value: 'notification'},
+      {label : 'Famille', value: 'householdOptions'},
+      {label : 'E-mailing', value: 'emailingOptions'},
+      {label : 'Produits', value: 'productOptions'},
+      {label : 'Tableau produits', value: 'productTableOptions'},
+      {label : 'Marques', value: 'brandOptions'},
+    ]
+  }, []);
+
+  const switchMenu = (menuId, optionObject) => {
+    let oldActive = document.getElementsByClassName("btn-option-active")[0];
+    if(oldActive) oldActive.classList.remove('btn-option-active');
+    let newActive = document.getElementById(menuId)
+    if(newActive) newActive.classList.add('btn-option-active');
+    setOption(optionObject);
+  };
+
   useEffect(() => {
-    if(location?.state?.householdOptions){
-      setOption({label : 'Famille', value: 'householdOptions'});
-      let oldActive = document.getElementsByClassName("btn-option-active")[0];
-      if(oldActive) oldActive.classList.remove('btn-option-active');
-      let householdOptions = document.getElementById('householdOptions')
-      if(householdOptions) householdOptions.classList.add('btn-option-active');
+    if(location?.state?.householdOptions || location?.state?.brandOptions){
+      switchMenu(Object.keys(location.state)[0], btnOptionMenu.find(option => option.value === Object.keys(location.state)[0]));
     }
-  }, [location]);
+    window.history.replaceState({}, document.title);
+  }, [location, btnOptionMenu]);
 
   const responsive = useCallback(() => {
     setWindowWidth(window.innerWidth);
@@ -201,21 +218,8 @@ function Profile({ history }) {
     }
   </>;
 
-  let btnOptionMenu = [
-    {label : 'Profil', value: 'userOptions'},
-    {label : 'Notification', value: 'notification'},
-    {label : 'Famille', value: 'householdOptions'},
-    {label : 'E-mailing', value: 'emailingOptions'},
-    {label : 'Produits', value: 'productOptions'},
-    {label : 'Tableau produits', value: 'productTableOptions'},
-    {label : 'Marques', value: 'brandOptions'},
-  ];
-
   let switchToHouseholdOptions = () => {
-    setOption({label : 'Famille', value: 'householdOptions'});
-    let oldActive = document.getElementsByClassName("btn-option-active")[0];
-    if(oldActive) oldActive.classList.remove('btn-option-active');
-    document.getElementById('householdOptions').classList.add('btn-option-active');
+    switchMenu('householdOptions',{label : 'Famille', value: 'householdOptions'}); 
   }
 
   return (
