@@ -95,7 +95,7 @@ function BrandOption() {
 
   useEffect(() => {
     const getBrand = async () => {
-      const getBrandEndPoint = `${apiDomain}/api/${apiVersion}/brands/pagination/${userHouseholdData._id}`;
+      const getBrandEndPoint = `${apiDomain}/api/${apiVersion}/brands/find-all/${userHouseholdData._id}`;
       await axiosInstance.get(getBrandEndPoint)
         .then(async (response) => {
           if(isMounted.current){
@@ -103,7 +103,9 @@ function BrandOption() {
           }
         });
     };
-    getBrand();
+    if(userHouseholdData){
+      getBrand();
+    }
   }, [userHouseholdData]);
 
   useEffect(() => {
