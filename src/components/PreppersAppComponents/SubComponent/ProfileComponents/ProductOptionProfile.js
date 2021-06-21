@@ -14,7 +14,7 @@ function ProductOptionProfile() {
   const [ successFormProduct, setSuccessFormProduct ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register : registerFormProduct, handleSubmit : handleSubmitFormProduct, errors : errorsFormProduct, setValue: setValueFormProduct, control: controlFormProduct } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, control } = useForm({
     mode: "onChange"
   });
 
@@ -35,14 +35,14 @@ function ProductOptionProfile() {
     if(userOptionData){
       timeOut = setTimeout(() => {
         if (userOptionData.warningExpirationDate) {
-          setValueFormProduct("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
+          setValue("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
         }
       }, 300);
     }
     return () => {
       clearTimeout(timeOut);
     }
-  }, [userOptionData, setValueFormProduct]);
+  }, [userOptionData, setValue]);
 
   useEffect(() => {
     return () => {
@@ -69,7 +69,7 @@ function ProductOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmitFormProduct(updateUserOptionProductData)}>
+    <form className="option-component" onSubmit={handleSubmit(updateUserOptionProductData)}>
       {userOptionData && 
         <>
           <div className="input-form-container">
@@ -83,19 +83,19 @@ function ProductOptionProfile() {
               isClearable={false}
               placeholder="Interval d'envoi..."
               arrayOptions={warningExpirationDate}
-              control={controlFormProduct}
+              control={control}
               defaultValue={""}
             />
           </div>
 
           <div className="input-form-container">
             <label htmlFor="minimalProductStockGlobal">Stock minimum global *</label>
-            <input className="input-form" name="minimalProductStockGlobal" type="number" id="minimalProductStockGlobal" placeholder="Stock minimum..." defaultValue={userOptionData.minimalProductStockGlobal} ref={registerFormProduct({required: true})} />
-            {errorsFormProduct.minimalProductStockGlobal && <span className="error-message-form">Ce champ est requis</span>}
+            <input className="input-form" name="minimalProductStockGlobal" type="number" id="minimalProductStockGlobal" placeholder="Stock minimum..." defaultValue={userOptionData.minimalProductStockGlobal} {...register("minimalProductStockGlobal", { required: true })} />
+            {errors.minimalProductStockGlobal && <span className="error-message-form">Ce champ est requis</span>}
           </div>
 
           <label className="container-checkbox-input" htmlFor="updateAllMinimalProductStock">Utiliser le stock global pour les stocks entrées manuellement : 
-            <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} ref={registerFormProduct()}/>
+            <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} {...register("updateAllMinimalProductStock")}/>
             <span className="checkmark-checkbox"></span>
           </label>
           <div className="default-action-form-container">

@@ -13,6 +13,7 @@ import InformationIcon from './../UtilitiesComponent/InformationIcons';
 import Loading from '../UtilitiesComponent/Loading';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import PropTypes from 'prop-types';
+import CreatableSelect from 'react-select/creatable';
 registerLocale("fr", fr);
 
 function AddEditProductForm({ history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
@@ -32,7 +33,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register, handleSubmit, errors, control, setValue, reset } = useForm();
+  const { register, handleSubmit, formState: { errors }, control, setValue, reset } = useForm();
 
   useEffect(() => {
     if(value && value.minimumInStock){
@@ -85,7 +86,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   }, [value, setValue]);
 
   useEffect(() => {
-    register({ name: "brand" }, {required : true});
+    register("brand", { required: true });
   }, [register]);
 
   useEffect(() => {
@@ -257,8 +258,8 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const form = <>
     <div className="input-form-container-with-error">
       <label htmlFor="name">Nom du produit *</label>
-      {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." ref={register({ required: true })} />}
-      {formType === "edit" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." defaultValue={value.name} ref={register({ required: true })} />}
+      {formType === "add" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." {...register("name", { required: true })} />}
+      {formType === "edit" && <input name="name" className="input-form" type="text" id="name" placeholder="Nom..." defaultValue={value.name} {...register("name", { required: true })} />}
       {errors.name && <span className="error-message-form">Ce champ est requis</span>}
     </div>
 
@@ -298,26 +299,26 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
 
     <div className="input-form-container-with-error">
       <label htmlFor="weight">Poids du produit (gr)</label>
-      {formType === "add" && <input className="input-form" name="weight" type="number" id="weight" placeholder="Poids..." ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="weight" type="number" id="weight" placeholder="Poids..." defaultValue={value.weight} ref={register()} />}
+      {formType === "add" && <input className="input-form" name="weight" type="number" id="weight" placeholder="Poids..." {...register("weight")} />}
+      {formType === "edit" && <input className="input-form" name="weight" type="number" id="weight" placeholder="Poids..." defaultValue={value.weight} {...register("weight")} />}
     </div>
     <div className="input-form-container-with-error">
       <label htmlFor="kcal">Valeur énergétique du produit (kcal)</label>
-      {formType === "add" && <input className="input-form" name="kcal" type="number" id="kcal" placeholder="Valeur énergetique..." ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="kcal" type="number" id="kcal" placeholder="Valeur énergetique..." defaultValue={value.kcal} ref={register()} />}
+      {formType === "add" && <input className="input-form" name="kcal" type="number" id="kcal" placeholder="Valeur énergetique..." {...register("kcal")} />}
+      {formType === "edit" && <input className="input-form" name="kcal" type="number" id="kcal" placeholder="Valeur énergetique..." defaultValue={value.kcal} {...register("kcal")} />}
     </div>
 
     <div className="input-form-container-with-error">
       <label htmlFor="location">Emplacement du produit</label>
-      {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." ref={register()} />}
-      {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} ref={register()} />}
+      {formType === "add" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." {...register("location")} />}
+      {formType === "edit" && <input className="input-form" name="location" type="text" id="location" placeholder="Emplacement..." defaultValue={value.location} {...register("location")} />}
     </div>
 
     {(requestUrl === "products" || (requestUrl === "historics" && arrayExpDate.length >= 1)) && 
       <>
         <div className="input-form-container-with-error">
           <label htmlFor="minimumInStock">Stock minimum {formType === "edit" && " *"} </label>
-          {(formType === "add" || (formType === "edit" && requestUrl === "historics")) && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." ref={register()} />}
+          {(formType === "add" || (formType === "edit" && requestUrl === "historics")) && <input className="input-form" name="minimumInStock" type="number" min={0} id="minimumInStock" placeholder="Stock minimum..." {...register("minimumInStock")} />}
           {formType === "edit" && value.minimumInStock && 
           <input 
             className="input-form" 
@@ -330,7 +331,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
             onChange={(e)=>{
               setMinStock(e.target.value);
             }} 
-            ref={register({ required: true })} 
+            {...register("minimumInStock", {required : true})}
           />}
           {errors.minimumInStock && <span className="error-message-form">Ce champ est requis</span>}
         </div>

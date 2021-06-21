@@ -13,7 +13,7 @@ function CreateHouseholdForm() {
   const [ messageError, setMessageError ] = useState("");
   const isMounted = useRef(true);
 
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     mode: "onChange"
   });
 
@@ -49,7 +49,7 @@ function CreateHouseholdForm() {
     <form className="form-inline option-component" onSubmit={handleSubmit(createdHousehold)}>
       <div className="input-form-container-with-error">
         <label htmlFor="householdName">Créer une famille *</label>
-        <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." onChange={clearErrorMessage} ref={register({ required : true })} />
+        <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." onChange={clearErrorMessage} {...register("householdName", { required: true })} />
         {errors.householdName && <span className="error-message-form">Ce champ est requis</span>}
       </div>
       <div className="default-action-form-container">

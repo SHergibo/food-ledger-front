@@ -201,7 +201,7 @@ function Profile({ history }) {
                       }
                       return (
                         <label key={`delMember-${index}`} className="container-radio-input" htmlFor={`delegateMemberDelete${index}`}>{member.userData.firstname} {member.userData.lastname} : 
-                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={member.userData._id} defaultChecked={defaultChecked} ref={registerFormDelegateWhenDeleting()}/>
+                          <input type="radio" name="delegateRadioInput" id={`delegateMemberDelete${index}`} value={member.userData._id} defaultChecked={defaultChecked} {...registerFormDelegateWhenDeleting("delegateRadioInput")} />
                           <span className="radio-checkmark"></span>
                         </label>
                       )

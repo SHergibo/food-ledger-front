@@ -14,7 +14,7 @@ function EmailOptionProfile() {
   const [ successFormEmailing, setSuccessFormEmailing ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register : registerFormEmailing, handleSubmit : handleSubmitFormEmailing, setValue : setValueFormEmailing, control : controlFormEmailing } = useForm({
+  const { register, handleSubmit, setValue, control } = useForm({
     mode: "onChange"
   });
 
@@ -23,17 +23,17 @@ function EmailOptionProfile() {
     if(userOptionData){
       timeOut = setTimeout(() => {
         if (userOptionData.dateMailGlobal) {
-          setValueFormEmailing("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
+          setValue("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
         }
         if (userOptionData.dateMailGlobal) {
-          setValueFormEmailing("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
+          setValue("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
         }
       }, 300);
     }
     return () => {
       clearTimeout(timeOut);
     }
-  }, [userOptionData, setValueFormEmailing]);
+  }, [userOptionData, setValue]);
 
   useEffect(() => {
     let timerSuccessFormEmailing;
@@ -72,11 +72,11 @@ function EmailOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmitFormEmailing(updateUserOptionMailingData)}>
+    <form className="option-component" onSubmit={handleSubmit(updateUserOptionMailingData)}>
       {userOptionData && 
         <>
           <label className="container-checkbox-input" htmlFor="sendMailGlobal">Recevoir le mail d'information sur vos stocks : 
-            <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} ref={registerFormEmailing()}/>
+            <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} {...register("sendMailGlobal")}/>
             <span className="checkmark-checkbox"></span>
           </label>
 
@@ -91,13 +91,13 @@ function EmailOptionProfile() {
               isClearable={false}
               placeholder="Interval d'envoi..."
               arrayOptions={dateSendMailGlobal}
-              control={controlFormEmailing}
+              control={control}
               defaultValue={""}
             />
           </div>
 
           <label className="container-checkbox-input" htmlFor="sendMailShoppingList">Recevoir le mail liste de course : 
-            <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" defaultChecked={userOptionData.sendMailShoppingList} ref={registerFormEmailing()}/>
+            <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" defaultChecked={userOptionData.sendMailShoppingList} {...register("sendMailShoppingList")}/>
             <span className="checkmark-checkbox"></span>
           </label>
 
@@ -112,7 +112,7 @@ function EmailOptionProfile() {
               isClearable={false}
               placeholder="Interval d'envoi..."
               arrayOptions={dateSendMailShoppingList}
-              control={controlFormEmailing}
+              control={control}
               defaultValue={""}
             />
           </div>

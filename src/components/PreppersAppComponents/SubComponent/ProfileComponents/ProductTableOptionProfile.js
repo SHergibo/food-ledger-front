@@ -12,7 +12,7 @@ function ProductTableOptionProfile() {
   const [ successFormProductTable, setSuccessFormProductTable ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register : registerFormProductTable, handleSubmit : handleSubmitProductTable } = useForm({
+  const { register, handleSubmit } = useForm({
     mode: "onChange"
   });
 
@@ -53,17 +53,17 @@ function ProductTableOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmitProductTable(updateUserOptionProductTableData)}>
+    <form className="option-component" onSubmit={handleSubmit(updateUserOptionProductTableData)}>
       {userOptionData && 
         <>
           <label className="container-checkbox-input" htmlFor="colorCodeDate">Afficher le code couleur pour les dates de péremption : 
-            <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormProductTable()}/>
+            <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} {...register("colorCodeDate")}/>
             <span className="checkmark-checkbox"></span>
           </label>
 
           <label className="container-checkbox-input" htmlFor="colorCodeStock">
             Afficher le code couleur pour les stock minimum de produits : 
-            <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} ref={registerFormProductTable()}/>
+            <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock}  {...register("colorCodeStock")}/>
             <span className="checkmark-checkbox"></span>
           </label>
 

@@ -11,7 +11,7 @@ function UserOptionProfile() {
   const [ successFormUser, setSuccessFormUser ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register : registerFormUser, handleSubmit : handleSubmitFormUser, errors : errorsFormUser } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     mode: "onChange"
   });
 
@@ -45,25 +45,25 @@ function UserOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmitFormUser(updateUserData)}>
+    <form className="option-component" onSubmit={handleSubmit(updateUserData)}>
       {userData && 
         <>
           <div className="input-form-container-with-error">
             <label htmlFor="firstname">Prénom *</label>
-            <input name="firstname" className="input-form" type="text" id="firstname" placeholder="Prénom..." defaultValue={userData.firstname} ref={registerFormUser({ required: true })} />
-            {errorsFormUser.firstname && <span className="error-message-form">Ce champ est requis</span>}
+            <input name="firstname" className="input-form" type="text" id="firstname" placeholder="Prénom..." defaultValue={userData.firstname} {...register("firstname", { required: true })} />
+            {errors.firstname && <span className="error-message-form">Ce champ est requis</span>}
           </div>
 
           <div className="input-form-container-with-error">
             <label htmlFor="lastname">Nom *</label>
-            <input name="lastname" className="input-form" type="text" id="lastname" placeholder="Nom..." defaultValue={userData.lastname} ref={registerFormUser({ required: true })} />
-            {errorsFormUser.lastname && <span className="error-message-form">Ce champ est requis</span>}
+            <input name="lastname" className="input-form" type="text" id="lastname" placeholder="Nom..." defaultValue={userData.lastname} {...register("lastname", { required: true })} />
+            {errors.lastname && <span className="error-message-form">Ce champ est requis</span>}
           </div>
 
           <div className="input-form-container-with-error">
             <label htmlFor="email">E-mail *</label>
-            <input name="email" className="input-form" type="mail" id="email" placeholder="Prénom..." defaultValue={userData.email} ref={registerFormUser({ required: true })} />
-            {errorsFormUser.email && <span className="error-message-form">Ce champ est requis</span>}
+            <input name="email" className="input-form" type="mail" id="email" placeholder="Prénom..." defaultValue={userData.email} {...register("email", { required: true })} />
+            {errors.email && <span className="error-message-form">Ce champ est requis</span>}
           </div>
 
           <div className="default-action-form-container">

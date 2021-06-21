@@ -31,15 +31,15 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const isMounted = useRef(true);
   const btnDelegateForm = useRef(null);
 
-  const { register : registerFormFamillyName, handleSubmit : handleSubmitFormFamillyName, errors : errorsFormFamillyName } = useForm({
+  const { register : registerFormFamillyName, handleSubmit : handleSubmitFormFamillyName, formState: { errors: errorsFormFamillyName } } = useForm({
     mode: "onChange"
   });
 
-  const { register : registerFormDelegateWhenSwitching, handleSubmit : handleSubmitFormDelegateWhenSwitching, errors : errorsFormDelegateWhenSwitching, control } = useForm({
+  const { register : registerFormDelegateWhenSwitching, handleSubmit : handleSubmitFormDelegateWhenSwitching, formState: { errors: errorsFormDelegateWhenSwitching }, control } = useForm({
     mode: "onChange"
   });
 
-  const { register : registerFormAddUser, handleSubmit : handleSubmitFormAddUser, errors : errorsFormAddUser} = useForm({
+  const { register : registerFormAddUser, handleSubmit : handleSubmitFormAddUser, formState: { errors: errorsFormAddUser }} = useForm({
     mode: "onChange"
   });
 
@@ -48,8 +48,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   });
 
   useEffect(() => {
-    if(showSelectHousehold) registerFormDelegateWhenSwitching({ name: "notifId" }, {required : true});
-    if(!showSelectHousehold) registerFormDelegateWhenSwitching({ name: "notifId" });
+    if(showSelectHousehold) registerFormDelegateWhenSwitching("notifId", { required: true });
+    if(!showSelectHousehold) registerFormDelegateWhenSwitching("notifId");
   }, [registerFormDelegateWhenSwitching, showSelectHousehold]);
 
   useEffect(() => {
@@ -338,7 +338,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                         {member.userData.role === "admin" &&
                           <td className="td-align-center"> 
                             <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} > 
-                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id} onChange={() => {enableSubmitBtn(member.userData.usercode)}} checked={defaultCheckedAdmin} ref={registerFormDelegateWhenSwitching()}/>
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id} onChange={() => {enableSubmitBtn(member.userData.usercode)}} checked={defaultCheckedAdmin} {...registerFormDelegateWhenSwitching("delegateRadioInput")}/>
                               <span className="radio-checkmark"></span>
                             </label>
                           </td>
@@ -346,7 +346,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                         {member.userData.role === "user" &&
                           <td className="td-align-center"> 
                             <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching${index}`} onClick={() => {enableSubmitBtn(member.userData.usercode)}}> 
-                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id}  disabled={requestAdminNotification} ref={registerFormDelegateWhenSwitching()} />
+                              <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching${index}`} value={member.userData._id}  disabled={requestAdminNotification} {...registerFormDelegateWhenSwitching("delegateRadioInput")} />
                               <span className="radio-checkmark"></span>
                             </label>
                           </td>
@@ -365,7 +365,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                         {member.userData.usercode !== userData.usercode && !member.isFlagged ?
                           <td className="td-align-center"> 
                             <label key={`delegateMember-${index}`} htmlFor={`delegateMember${index}`}> 
-                              <input type="radio" name="otherUserIdDidNotAcceptDelegate" id={`delegateMember${index}`} value={member.userData._id} defaultChecked={checkedRadioBtn} ref={registerRequestDelegateAdmin()}/>
+                              <input type="radio" name="otherUserIdDidNotAcceptDelegate" id={`delegateMember${index}`} value={member.userData._id} defaultChecked={checkedRadioBtn} {...registerRequestDelegateAdmin("otherUserIdDidNotAcceptDelegate")}/>
                               <span className="radio-checkmark"></span>
                             </label>
                           </td> :
@@ -387,7 +387,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                   <td></td>
                   <td className="td-align-center"> 
                     <label htmlFor={"no-delegate"} onClick={() => {enableSubmitBtn()}}> 
-                      <input type="radio" name="delegateRadioInput" id={"no-delegate"} value={""} disabled={requestAdminNotification} ref={registerFormDelegateWhenSwitching()}/>
+                      <input type="radio" name="delegateRadioInput" id={"no-delegate"} value={""} disabled={requestAdminNotification} {...registerFormDelegateWhenSwitching("delegateRadioInput")}/>
                       <span className="radio-checkmark"></span>
                     </label>
                   </td>
@@ -409,7 +409,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
               <div className="input-form-container-with-error">
                 <label htmlFor="householdName">Nom de la famille *</label>
-                <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} ref={registerFormFamillyName({ required: true })} />
+                <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." defaultValue={userHouseholdData.householdName} {...registerFormFamillyName("householdName", { required: true })} />
                 {errorsFormFamillyName.famillyName && <span className="error-message-form">Ce champ est requis</span>}
               </div>
               <div className="default-action-form-container">
@@ -488,7 +488,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
                 <div className="input-form-container-with-error">
                   <label htmlFor="addUserCode">Ajouter un membre *</label>
-                  <input name="addUserCode" className="input-form" type="text" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} ref={registerFormAddUser({ required: true })} />
+                  <input name="addUserCode" className="input-form" type="text" id="addUserCode" placeholder="Code utilisateur..." onChange={clearErrorMessage} {...registerFormAddUser("addUserCode", { required: true })} />
                   {errorsFormAddUser.addUserCode && <span className="error-message-form">Ce champ est requis</span>}
                 </div>
                 <div className="default-action-form-container">

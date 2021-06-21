@@ -10,7 +10,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState(false);
   const otherMemberInput = useRef(null);
-  const { handleSubmit, register, errors } = useForm({
+  const { handleSubmit, register, formState: { errors } } = useForm({
     defaultValues: state.yourDetails
   });
 
@@ -88,7 +88,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 name="householdCodeCheck"
                 type="checkbox"
                 onClick={pressHouseHoldCodeCheck}
-                ref={register()}
+                {...register("householdCodeCheck")}
               />
               <span className="checkmark-checkbox"></span>
             </label>
@@ -101,7 +101,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 id="householdCode"
                 placeholder="Code famille"
                 className="form-input"
-                ref={register({ required: "Ce champ est requis !" })}
+                {...register("householdCode", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="householdCode" className="form-label">Code famille *</label>
               <div className="error-message">
@@ -116,7 +116,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 name="householdNameCheck"
                 type="checkbox"
                 onClick={pressHouseHoldNameCheck}
-                ref={register()}
+                {...register("householdCodeCheck")}
               />
               <span className="checkmark-checkbox"></span>
             </label>
@@ -130,7 +130,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                   id="householdName"
                   placeholder="Nom de la famille"
                   className="form-input"
-                  ref={register({ required: "Ce champ est requis !" })}
+                  {...register("householdName", { required: "Ce champ est requis !" })}
                 />
                 <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
                 <div className="error-message">
@@ -143,7 +143,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                   name="otherMemberCheck"
                   type="checkbox"
                   onClick={pressOtherMemberCodeCheck}
-                  ref={register()}
+                  {...register("otherMemberCheck")}
                 />
                 <span className="checkmark-checkbox"></span>
               </label>

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
   const [errorMessage, setErrorMessage] = useState(false);
   const successMessage = useRef(null);
-  const { register, handleSubmit, errors} = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     mode: "onChange"
   });
 
@@ -54,7 +54,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
               id="email"
               placeholder="email"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              {...register("email", { required: "Ce champ est requis !" })}
             />
             <label htmlFor="email" className="form-label">Email *</label>
             <div className="error-message">
@@ -69,7 +69,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
               id="password"
               placeholder="password"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              {...register("password", { required: "Ce champ est requis !" })}
             />
             <label htmlFor="password" className="form-label">Mot de passe *</label>
             <div className="error-message">

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 function SignUpStep1({ setForm, returnToLogin }) {
   const { state, action } = useStateMachine(updateAction);
-  const { handleSubmit, errors, register, getValues } = useForm({
+  const { handleSubmit, formState: { errors }, register, getValues } = useForm({
     defaultValues: state.yourDetails
   });
 
@@ -32,7 +32,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 id="fistName"
                 placeholder="Prénom"
                 className="form-input"
-                ref={register({ required: "Ce champ est requis !" })}
+                {...register("firstName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="fistName" className="form-label">Prénom *</label>
               <div className="error-message">
@@ -47,7 +47,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 id="lastName"
                 placeholder="Nom"
                 className="form-input"
-                ref={register({ required: "Ce champ est requis !" })}
+                {...register("lastName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="lastName" className="form-label">Nom *</label>
               <div className="error-message">
@@ -63,7 +63,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
               id="email"
               placeholder="email"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              {...register("email", { required: "Ce champ est requis !" })}
             />
             <label htmlFor="email" className="form-label">Email *</label>
             <div className="error-message">
@@ -79,7 +79,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 id="password"
                 placeholder="Mot de passe"
                 className="form-input"
-                ref={register({ required: true, minLength: 7 })}
+                {...register("password", { required: true, minLength: 7 })}
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
               <div className="error-message">
@@ -95,7 +95,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 id="confirmPassword"
                 placeholder="Confirmer mot de passe"
                 className="form-input"
-                ref={register({
+                {...register("confirmPassword", {
                   validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
                 })}
               />

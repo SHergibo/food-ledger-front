@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 import { useStateMachine } from "little-state-machine";
@@ -15,7 +15,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
   const [passwordChanged, setPasswordChanged] = useState(false);
   const otherMemberInput = useRef(null);
   const otherMemberList = useRef([]);
-  const { handleSubmit, errors, register, getValues } = useForm({
+  const { handleSubmit, formState: { errors }, register, getValues } = useForm({
     defaultValues: state.yourDetails
   });
   const resetStore = () => {
@@ -141,7 +141,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 id="fistName"
                 placeholder="Prénom"
                 className="form-input"
-                ref={register({ required: "Ce champ est requis !" })}
+                {...register("firstName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="fistName" className="form-label">Prénom *</label>
               <div className="error-message">
@@ -156,7 +156,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 id="lastName"
                 placeholder="Nom"
                 className="form-input"
-                ref={register({ required: "Ce champ est requis !" })}
+                {...register("lastName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="lastName" className="form-label">Nom *</label>
               <div className="error-message">
@@ -173,7 +173,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
               id="email"
               placeholder="email"
               className="form-input"
-              ref={register({ required: "Ce champ est requis !" })}
+              {...register("email", { required: "Ce champ est requis !" })}
             />
             <label htmlFor="email" className="form-label">Email *</label>
             <div className="error-message">
@@ -189,7 +189,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 id="password"
                 placeholder="Mot de passe"
                 className="form-input"
-                ref={register({ required: true, minLength: 7 })}
+                {...register("password", { required: true, minLength: 7 })}
                 onChange={changePassword}
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
@@ -207,7 +207,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                   id="confirmPassword"
                   placeholder="Confirmer mot de passe"
                   className="form-input"
-                  ref={register({
+                  {...register("confirmPassword", {
                     validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
                   })}
                 />
@@ -228,7 +228,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 id="householdCode"
                 placeholder="Code famille"
                 className="form-input"
-                ref={register({ required: "Ce champ est requis !" })}
+                {...register("householdCode", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="householdCode" className="form-label">Code famille *</label>
               <div className="error-message">
@@ -238,7 +238,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
           )}
 
           {state.yourDetails.householdNameCheck === true && (
-            <Fragment>
+            <>
               <div className="input-group">
                 <input
                   name="householdName"
@@ -246,7 +246,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                   id="householdName"
                   placeholder="Nom de la famille"
                   className="form-input"
-                  ref={register({ required: "Ce champ est requis !" })}
+                  {...register("householdName", { required: "Ce champ est requis !" })}
                 />
                 <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
                 <div className="error-message">
@@ -254,7 +254,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 </div>
               </div>
               {state.yourDetails.otherMemberCheck === true && (
-                <Fragment>
+                <>
                   <div className="div-usercode">
                     <div className="input-group">
                       <input
@@ -284,9 +284,9 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                     </ul>
                   )}
 
-                </Fragment>
+                </>
               )}
-            </Fragment>
+            </>
           )}
           {errorBool && <span className="error-message">{errorMessage}</span>}
           <button type="submit" className="btn-form-sign-in">

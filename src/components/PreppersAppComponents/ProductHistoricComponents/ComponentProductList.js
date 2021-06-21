@@ -656,12 +656,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       <h4>Afficher code couleur : </h4>
       <label className="container-checkbox-input-interaction" htmlFor="colorCodeDate">
         Pour les dates de péremption : 
-        <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} ref={registerFormOption()}/>
+        <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} {...registerFormOption("colorCodeDate")}/>
         <span className="checkmark-checkbox"></span>
       </label>
       <label className="container-checkbox-input-interaction" htmlFor="colorCodeStock">
         Pour les stock minimum de produits : 
-        <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} ref={registerFormOption()}/>
+        <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} {...registerFormOption("colorCodeStock")}/>
         <span className="checkmark-checkbox"></span>
       </label>
       <button className="btn-action-form-interaction" type="submit">Mettre à jour</button>
@@ -858,7 +858,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
               {!showFilter &&
                 <form onSubmit={(e)=>populateSearchObjectQuickSearch(e)} onChange={(e)=>{resetQuickSearch(e)}}>
-                  <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} ref={register()} />
+                  <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} {...register("name")} />
                 </form>
               }
               <button title="Réinitialiser les filtres" className="reset-filter-table" onClick={resetAllSearch}>
@@ -875,7 +875,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           <form className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
             <div className="input-form-container">
               <label htmlFor="product-name">Nom du produit</label>
-              <input className="input-form" name="name" type="text" id="product-name" placeholder="Nom..." defaultValue={searchObject.name || ""} ref={register()} />
+              <input className="input-form" name="name" type="text" id="product-name" placeholder="Nom..." defaultValue={searchObject.name || ""} {...register("name")} />
             </div>
             
             <div className="input-form-container">
@@ -912,12 +912,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
             <div className="input-form-container">
               <label htmlFor="product-weight">Poids du produit (gr)</label>
-              <input className="input-form" name="weight" type="number" id="product-weight" placeholder="Poids..." defaultValue={searchObject.weight} ref={register()} />
+              <input className="input-form" name="weight" type="number" id="product-weight" placeholder="Poids..." defaultValue={searchObject.weight} {...register("weight")} />
             </div>
 
             <div className="input-form-container">
               <label htmlFor="product-kcal">Valeur énergétique du produit (kcal)</label>
-              <input className="input-form" name="kcal" type="number" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} ref={register()} />
+              <input className="input-form" name="kcal" type="number" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} {...register("kcal")} />
             </div>
 
             {requestTo === "products" &&
@@ -948,13 +948,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             
             <div className="input-form-container">
               <label htmlFor="product-location">Emplacement du produit</label>
-              <input className="input-form" name="location" type="text" id="product-location" placeholder="Emplacement..." defaultValue={searchObject.location} ref={register()} />
+              <input className="input-form" name="location" type="text" id="product-location" placeholder="Emplacement..." defaultValue={searchObject.location} {...register("location")}/>
             </div>
 
             {requestTo === "products" &&
               <div className="input-form-container">
                 <label htmlFor="product-number">Nombre de produit</label>
-                <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} ref={register()} />
+                <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} {...register("number")} />
               </div>
             }
 

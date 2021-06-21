@@ -14,7 +14,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   const [ successForm, setSuccessForm ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly, errors : errorsFormSwitchFamilly} = useForm({
+  const { register : registerFormSwitchFamilly, handleSubmit : handleSubmitFormSwitchFamilly, formState: { errors : errorsFormSwitchFamilly }} = useForm({
     mode: "onChange"
   });
 
@@ -64,7 +64,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
     <form className="form-inline option-component" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
       <div className="input-form-container-with-error">
         <label htmlFor="switchFamillyCode">{userData.householdId ? "Changer de famille *" : "Rejoindre une famille *"}</label>
-        <input name="switchFamillyCode" className="input-form" type="text" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} ref={registerFormSwitchFamilly({ required : true })} />
+        <input name="switchFamillyCode" className="input-form" type="text" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} {...registerFormSwitchFamilly("switchFamillyCode", { required: true })} />
         {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
       </div>
       <div className="default-action-form-container">
