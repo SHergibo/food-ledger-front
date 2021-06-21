@@ -108,7 +108,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
     <>
       <label
         htmlFor={inputId}
-        onMouseOver={() => {
+        onMouseOver={(e) => {
           document.getElementsByClassName(`${classNamePrefix}__control`)[0].style.borderColor = "#002651";
         }}
         onMouseLeave={() => {
@@ -125,50 +125,61 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
           {format === "select" && 
             <Controller
               name={name}
-              inputId={inputId}
-              classNamePrefix={classNamePrefix}
-              as={Select}
               isClearable
-              styles={customStyles}
-              placeholder={placeholder}
-              options={arrayOptions}
               control={control}
-              defaultValue={defaultValue}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  inputId={inputId}
+                  classNamePrefix={classNamePrefix}
+                  styles={customStyles}
+                  placeholder={placeholder}
+                  defaultValue={defaultValue}
+                  options={arrayOptions}
+                />
+              )}
             />
           }
-
           {format === "creatable" &&
-            <Controller
-              name={name}
-              inputId={inputId}
-              classNamePrefix={classNamePrefix}
-              as={CreatableSelect}
-              formatCreateLabel={formatCreateLabel}
-              isClearable
-              styles={customStyles}
-              placeholder={placeholder}
-              options={arrayOptions}
-              onCreateOption={onCreateOption}
-              control={control}
-              defaultValue={""}
-            />
+          <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+              <CreatableSelect
+                {...field}
+                options={arrayOptions}
+                inputId={inputId}
+                classNamePrefix={classNamePrefix}
+                styles={customStyles}
+                placeholder={placeholder}
+                defaultValue={""}
+                isClearable
+                formatCreateLabel={formatCreateLabel}
+                onCreateOption={onCreateOption}
+              />
+            )}
+          />
           }
         </>
       }
       {!isClearable &&
         <>
           {format === "select" && 
-              <Controller
-                name={name}
-                inputId={inputId}
-                classNamePrefix={classNamePrefix}
-                as={Select}
-                styles={customStyles}
-                placeholder={placeholder}
-                options={arrayOptions}
-                control={control}
-                defaultValue={defaultValue}
-              />
+            <Controller
+              name={name}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  inputId={inputId}
+                  classNamePrefix={classNamePrefix}
+                  styles={customStyles}
+                  placeholder={placeholder}
+                  defaultValue={defaultValue}
+                  options={arrayOptions}
+                />
+              )}
+            />
             }
         </>
       }
