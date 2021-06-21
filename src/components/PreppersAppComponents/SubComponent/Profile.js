@@ -33,6 +33,7 @@ function Profile({ history }) {
   const [objectTitle, setObjectTitle] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isMounted = useRef(true);
+  const btnMenuRef = useRef([]);
 
   const { register : registerFormDelegateWhenDeleting, handleSubmit : handleSubmitFormDelegateWhenDeleting } = useForm({
     mode: "onChange"
@@ -51,9 +52,9 @@ function Profile({ history }) {
   }, []);
 
   const switchMenu = (menuId, optionObject) => {
-    let oldActive = document.getElementsByClassName("btn-option-active")[0];
+    let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
     if(oldActive) oldActive.classList.remove('btn-option-active');
-    let newActive = document.getElementById(menuId)
+    let newActive = btnMenuRef.current.find((element) => element.attributes.id.value === menuId);
     if(newActive) newActive.classList.add('btn-option-active');
     setOption(optionObject);
   };
@@ -238,9 +239,9 @@ function Profile({ history }) {
               /> :
               <>
               {btnOptionMenu.map((btn, index) => {
-                return <button id={`${btn.value}`} key={`${btn.value}-${index}`} className={`default-btn-action-form ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
+                return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`default-btn-action-form ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
                   e.persist();
-                  let oldActive = document.getElementsByClassName("btn-option-active")[0];
+                  let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
                   if(oldActive) oldActive.classList.remove('btn-option-active');
                   e.target.classList.add('btn-option-active');
                   setOption(btn)
