@@ -926,7 +926,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 <Controller
                   control={control}
                   name="expirationDate"
-                  render={(props) => (
+                  render={({field}) => (
                     <DatePicker
                       className="input-form input-form-date-picker"
                       id="product-expirationDate"
@@ -935,8 +935,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                       isClearable
                       autoComplete="off"
                       placeholderText="Date d'expiration..."
-                      onChange={(e) => props.onChange(e)}
-                      selected={props.value}
+                      onChange={field.onChange}
+                      selected={field.value}
                     />
                   )}
                 />
