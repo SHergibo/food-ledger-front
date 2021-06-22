@@ -3,9 +3,11 @@ import { useLocation, withRouter } from "react-router-dom";
 import { useUserHouseHoldData, useSocket } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
+import { useForm } from 'react-hook-form';
 import TitleButtonInteraction from '../../UtilitiesComponent/TitleButtonInteraction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Loading from '../../UtilitiesComponent/Loading';
+import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 import slugUrl from '../../../../utils/slugify';
 import PropTypes from 'prop-types';
 
@@ -16,11 +18,19 @@ function EditBrand({ history }) {
   const { userHouseholdData } = useUserHouseHoldData();
   const { socketRef } = useSocket();
   const [brand, setBrand] = useState({});
+  const [brands, setBrands] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
   const [success, setSuccess] = useState(false);
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
   let brandId = location.pathname.split('/')[3];
+
+  const { register, handleSubmit, setError, formState: { errors } } = useForm({
+    mode: "onChange"
+  });
+
+  const brandName = register("brandName");
 
   useEffect(() => {
     if(userHouseholdData?.isWaiting){
@@ -84,10 +94,29 @@ function EditBrand({ history }) {
 
   useEffect(() => {
     getBrand();
+  }, [getBrand]);
+
+  const getBrands = useCallback(async () => {
+    const getBrandsEndPoint = `${apiDomain}/api/${apiVersion}/brands/find-all/${userHouseholdData._id}`;
+    await axiosInstance.get(getBrandsEndPoint)
+      .then((response) => {
+        if(isMounted.current){
+          setBrands(response.data);
+        }
+      })
+  }, [userHouseholdData]);
+
+  useEffect(() => {
+    if(userHouseholdData){
+      getBrands();
+    }
+  }, [userHouseholdData, getBrands]);
+
+  useEffect(() => {
     return () => {
       isMounted.current = false;
     }
-  }, [getBrand]);
+  }, []);
 
   useEffect(() => {
     let timerSuccess;
@@ -102,60 +131,31 @@ function EditBrand({ history }) {
     }
   }, [success]);
 
-
-
-  const EditBrand = async (data) => {
-    // data.brand.value = slugUrl(data.brand.value);
-    // let newData = {
-    //   kcal: data.kcal,
-    //   location: data.location,
-    //   name: data.name,
-    //   expirationDate: arrayExpDate,
-    //   weight: data.weight,
-    //   brand: data.brand,
-    //   type: data.type,
-    //   householdId: userHouseholdData._id
-    // }
-
-    // let totalNumber = 0;
-    // let emptyProductLinkedToExpDate = false;
-    // arrayExpDate.forEach(item => {
-    //   if(item.productLinkedToExpDate === ""){
-    //     emptyProductLinkedToExpDate = true;
-    //     return;
-    //   }
-    //   totalNumber = totalNumber + parseInt(item.productLinkedToExpDate);
-    // });
-
-    // if(emptyProductLinkedToExpDate) return;
-
-    // newData.number = totalNumber;
-
-    // if(data.minimumInStock === ""){
-    //   newData.minimumInStock = { minInStock : 0 };
-    // }else{
-    //   newData.minimumInStock = { minInStock : parseInt(data.minimumInStock), updatedBy: "user" };
-    // }
-
-    // const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
-    // await axiosInstance.patch(patchDataEndPoint, newData)
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       if (productId === response.data._id) {
-    //         setSuccess(true);
-    //       }
-    //       if (parseInt(newData.number) === 0 && newData.expirationDate.length === 0 && requestUrl === "products") {
-    //         history.push({
-    //           pathname: `/app/edition-historique/${response.data._id}`,
-    //         })
-    //       }
-    //       if (newData.number >= 1 && newData.expirationDate.length >= 1 && requestUrl === "historics") {
-    //         history.push({
-    //           pathname: `/app/edition-produit/${response.data._id}`,
-    //         })
-    //       }
-    //     }
-    //   });
+  const editBrand = async (data) => {
+    if(!data.brandName){
+      setError("brandName", {
+        type: "manual",
+        message: errorMessage
+      });
+      return;
+    }
+    let findOtherBrand = brands.find(brand => brand.brandName.value === slugUrl(data.brandName));
+    if(data.brandName.toLowerCase() !== brand.brandName.value && findOtherBrand){
+      setError('brandName', {
+        type:"manual",
+        message: errorMessage
+      });
+      return;
+    }
+    data.brandName = {label: data.brandName, value: slugUrl(data.brandName)};
+    
+    const patchBrandEndPoint = `${apiDomain}/api/${apiVersion}/brands/${brandId}`;
+    await axiosInstance.patch(patchBrandEndPoint, data)
+      .then((response) => {
+        if (response.status === 200) {
+          setSuccess(true);
+        }
+      });
   }
 
   const deleteBrand = async () => {
@@ -227,46 +227,51 @@ function EditBrand({ history }) {
           />
         <div>
           <div className="form-add-edit-product-container">
-            <form>
-              {/* {form} */}
-            </form>
-          </div>
+            <form className="option-component" onSubmit={handleSubmit(editBrand)}>
+                <>
+                  <div className="input-form-container-with-error">
+                    <label htmlFor="firstname">Marque *</label>
+                    <input 
+                      name="brandName" 
+                      className="input-form" 
+                      type="text" 
+                      placeholder="Marque" 
+                      defaultValue={brand?.brandName?.label}
+                      onChange={(e) => {
+                        brandName.onChange(e);
+                        let findOtherBrand = brands.find(brand => brand.brandName.value === slugUrl(e.target.value));
+                        if(e.target.value.toLowerCase() !== brand.brandName.value && findOtherBrand){
+                          setError('brandName', {
+                            type:"manual",
+                            message: "Cette marque existe déjà!"
+                          });
+                          setErrorMessage("Cette marque existe déjà!");
+                        }
+                        if(!e.target.value){
+                          setError('brandName', {
+                            type:"manual",
+                            message: "Ce champs est requis"
+                          });
+                          setErrorMessage("Ce champs est requis");
+                        }
+                      }
+                    }
+                    />
+                    {errors.brandName && <span className="error-message-form">{errors.brandName.message}</span>}
+                  </div>
 
-          {/* <div className="default-action-form-container">
-            <button className="default-btn-action-form" onClick={() => {
-              handleSubmit(handleFunction)();
-              expErrorMessageLogic();
-              }}>
-              {formType === "add" &&
-                <FontAwesomeIcon icon="plus" /> 
-              }
-              {formType === "edit" &&
-                <FontAwesomeIcon icon="pen" /> 
-              }
-              {button}
-            </button>
-            {success && number !== 0 &&
-              <InformationIcon 
-                className="success-icon"
-                icon={<FontAwesomeIcon icon="check" />}
-              />
-            }
-            {formType === "edit" && number === 0 && requestUrl === "products" &&
-              <InformationIcon 
-                className="warning-icon"
-                icon={<FontAwesomeIcon icon="exclamation" />}
-                message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des historiques car le nombre total de produits est égal à 0 !"
-              />
-            }
-            {formType === "edit" && number >= 1 && requestUrl === "historics" &&
-              <InformationIcon 
-                className="warning-icon"
-                icon={<FontAwesomeIcon icon="exclamation" />}
-                message="Attention, après édition de ce produit, ce produit se trouvera dans la liste des produits car le nombre total de produits est supérieur à 0 !"
-              />
-            }
-          </div> */}
-          
+                  <div className="default-action-form-container">
+                    <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
+                    {success && 
+                      <InformationIcon 
+                        className="success-icon"
+                        icon={<FontAwesomeIcon icon="check" />}
+                      />
+                    }
+                  </div>
+                </>
+            </form>
+          </div> 
         </div>
       </div>
       
