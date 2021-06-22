@@ -13,7 +13,6 @@ import InformationIcon from './../UtilitiesComponent/InformationIcons';
 import Loading from '../UtilitiesComponent/Loading';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import PropTypes from 'prop-types';
-import CreatableSelect from 'react-select/creatable';
 registerLocale("fr", fr);
 
 function AddEditProductForm({ history, handleFunction, formType, value, arrayExpDate, setArrayExpDate, requestUrl, success, loading, errorFetch, getProductData }) {
