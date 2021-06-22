@@ -69,6 +69,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   useEffect(() => {
     if(success && formType === "add"){
       reset();
+      reset({brand: null, type: null});
       setNumber(0);
       setArrayExpDate([]);
     }
