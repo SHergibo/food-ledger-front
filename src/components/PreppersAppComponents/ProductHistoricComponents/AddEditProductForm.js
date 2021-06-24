@@ -470,7 +470,13 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
               }
               {button}
             </button>
-            {success && number !== 0 &&
+            {success && number !== 0 && requestUrl === "products" &&
+              <InformationIcon 
+                className="success-icon"
+                icon={<FontAwesomeIcon icon="check" />}
+              />
+            }
+            {success && number === 0 && requestUrl === "historics" &&
               <InformationIcon 
                 className="success-icon"
                 icon={<FontAwesomeIcon icon="check" />}
