@@ -13,7 +13,7 @@ function EditProduct({ history }) {
   const location = useLocation();
   const { userHouseholdData } = useUserHouseHoldData();
   const { socketRef } = useSocket();
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState();
   const [arrayExpDate, setArrayExpDate] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
