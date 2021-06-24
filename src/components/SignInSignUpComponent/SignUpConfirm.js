@@ -71,16 +71,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
     };
 
     if (data.householdNameCheck && data.householdName) {
-      baseObject.role = "admin";
       baseObject.householdName = data.householdName;
     }
 
     if (data.otherMemberCheck && data.otherMemberArray.length >= 1) {
       baseObject.othermember = data.otherMemberArray;
-    }
-
-    if (data.householdCodeCheck && data.householdCode) {
-      baseObject.role = "user";
     }
 
     return baseObject;
