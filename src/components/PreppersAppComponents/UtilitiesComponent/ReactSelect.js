@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
-function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix, isClearable, placeholder, arrayOptions, setArrayOptions, control, defaultValue }) {
+function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix, isClearable, placeholder, arrayOptions, setArrayOptions, control, defaultValue, setValue, success, inputValue, clearErrors, formType }) {
+  const [value, setVal] = useState();
   const [customStyles, setCustomStyles] = useState(
     {
       control: (styles, { isFocused }) => (
@@ -41,6 +42,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
     }
   );
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const selectRef = useRef(null);
 
   const responsiveColumns = useCallback(() => {
     setWindowWidth(window.innerWidth);
@@ -93,11 +95,28 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
     }
   }, [customStyles, setCustomStyles, windowWidth]);
 
+  useEffect(() => {
+    if(formType === "add" && format === "creatable" && success){
+      setVal(null);
+    }
+  }, [formType, format, success]);
+
+  useEffect(() => {
+    if(inputValue && inputValue.brand){
+      setVal({ value: inputValue.brand.brandName.value, label: inputValue.brand.brandName.label });
+    }
+  }, [inputValue]);
+
   const onCreateOption = async (inputValue) => {
     let newOption = { value: inputValue, label: inputValue };
-    let newArray = arrayOptions
-    newArray.push(newOption)
-    setArrayOptions(newArray);
+    setVal(newOption);
+    setValue("brand", newOption);
+    setArrayOptions(arrayOptions => [...arrayOptions, newOption]);
+    clearErrors('brand');
+  }
+
+  const onChangeValue = async (inputValue) => {
+      setVal(inputValue);
   }
 
   let formatCreateLabel = inputValue => (
@@ -108,14 +127,14 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
     <>
       <label
         htmlFor={inputId}
-        onMouseOver={(e) => {
-          document.getElementsByClassName(`${classNamePrefix}__control`)[0].style.borderColor = "#002651";
+        onMouseOver={() => {
+          if(selectRef.current.select.controlRef) selectRef.current.select.controlRef.style.borderColor = "#002651";
         }}
         onMouseLeave={() => {
-          document.getElementsByClassName(`${classNamePrefix}__control`)[0].style.borderColor = null;
+          if(selectRef.current.select.controlRef) selectRef.current.select.controlRef.style.borderColor = null;
         }}
         onClick={() => {
-          document.getElementsByClassName(`${classNamePrefix}__control`)[0].style.borderColor = null;
+          if(selectRef.current.select.controlRef) selectRef.current.select.controlRef.style.borderColor = null;
         }}
       >
         {label}
@@ -136,6 +155,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
                   placeholder={placeholder}
                   defaultValue={defaultValue}
                   options={arrayOptions}
+                  ref={selectRef}
                 />
               )}
             />
@@ -144,6 +164,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
           <Controller
             name={name}
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
               <CreatableSelect
                 {...field}
@@ -153,9 +174,15 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
                 styles={customStyles}
                 placeholder={placeholder}
                 defaultValue={""}
+                value={value}
                 isClearable
                 formatCreateLabel={formatCreateLabel}
+                onChange={(e)=> {
+                  onChangeValue(e)
+                  field.onChange(e)
+                }}
                 onCreateOption={onCreateOption}
+                ref={selectRef}
               />
             )}
           />
@@ -177,6 +204,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
                   placeholder={placeholder}
                   defaultValue={defaultValue}
                   options={arrayOptions}
+                  ref={selectRef}
                 />
               )}
             />
@@ -200,6 +228,10 @@ ReactSelect.propTypes = {
   setArrayOptions: PropTypes.func,
   control: PropTypes.object.isRequired,
   defaultValue: PropTypes.string,
+  setValue: PropTypes.func,
+  success: PropTypes.bool,
+  clearErrors: PropTypes.func,
+  formType: PropTypes.string,
 }
 
 export default ReactSelect;
