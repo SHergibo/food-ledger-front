@@ -116,7 +116,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 name="householdNameCheck"
                 type="checkbox"
                 onClick={pressHouseHoldNameCheck}
-                {...register("householdCodeCheck")}
+                {...register("householdNameCheck")}
               />
               <span className="checkmark-checkbox"></span>
             </label>
