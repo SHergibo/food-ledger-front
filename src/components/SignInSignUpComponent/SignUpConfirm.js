@@ -15,7 +15,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
   const [passwordChanged, setPasswordChanged] = useState(false);
   const otherMemberInput = useRef(null);
   const otherMemberList = useRef([]);
-  const { handleSubmit, formState: { errors }, register, getValues } = useForm({
+  const { handleSubmit, formState: { errors }, register, getValues, setError } = useForm({
     defaultValues: state.yourDetails
   });
   const resetStore = () => {
@@ -119,6 +119,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
       } else if (response.status === 400) {
         setErrorBool(true);
         setErrorMessage('Code famille invalide!');
+      } else if (response.status === 409){
+        setError('email', {
+          type:"manual",
+          message: "Cette adresse mail existe déjà!"
+        });
       }
     });
   };
