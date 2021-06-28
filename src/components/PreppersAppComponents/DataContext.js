@@ -42,7 +42,7 @@ export function DataProvider({children}) {
     const getUserData = async () => {
       const getUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${localStorage.getItem('user_id')}`;
       await axiosInstance.get(getUserDataEndPoint)
-        .then(async (response) => {
+        .then((response) => {
           if(isMounted.current){
             setUserData(response.data);
             getUserHouseholdData(response.data.householdId);
