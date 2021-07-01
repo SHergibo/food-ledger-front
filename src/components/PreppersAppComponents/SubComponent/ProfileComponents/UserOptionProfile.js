@@ -9,9 +9,10 @@ import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 function UserOptionProfile() {
   const { userData, setUserData } = useUserData();
   const [ successFormUser, setSuccessFormUser ] = useState(false);
+  const [ changePasswordInput, setChangePasswordInput ] = useState(false);
   const isMounted = useRef(true);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, unregister, setError } = useForm({
     mode: "onChange"
   });
 
@@ -34,6 +35,17 @@ function UserOptionProfile() {
   }, []);
 
   const updateUserData = async (data) => {
+    if(data.newPassword && data.confirmPassword){
+      if(data.newPassword !== data.confirmPassword){
+        setError('confirmPassword', {
+          type:"manual",
+          message: "Mauvais mot de passe!"
+        });
+        return;
+      }
+    }
+    delete data.confirmPassword;
+    console.log(data)
     const patchUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
     await axiosInstance.patch(patchUserDataEndPoint, data)
       .then((response) => {
@@ -42,6 +54,11 @@ function UserOptionProfile() {
           setSuccessFormUser(true);
         }
       });
+  };
+
+  const showChangePassword = () => {
+    setChangePasswordInput(!changePasswordInput);
+    unregister(['newPassword', 'actualPassword', 'confirmPassword'])
   };
 
   return (
@@ -65,6 +82,69 @@ function UserOptionProfile() {
             <input name="email" className="input-form" type="mail" id="email" placeholder="Prénom..." defaultValue={userData.email} {...register("email", { required: true })} />
             {errors.email && <span className="error-message-form">Ce champ est requis</span>}
           </div>
+
+          <div className="change-password">
+            <p>Changer de mot de passe</p>
+            <button className="" type="button" onClick={showChangePassword}><FontAwesomeIcon icon="check" /></button>
+          </div>
+
+          {changePasswordInput &&
+            <>
+              <div className="input-form-container-with-error">
+                <label htmlFor="actualPassword">Mot de passe actuel *</label>
+                <input name="actualPassword" className="input-form" type="password" id="actualPassword" placeholder="Mot de passe actuel" {...register("actualPassword", { required: true })} />
+                {errors.actualPassword && <span className="error-message-form">Ce champ est requis</span>}
+              </div>
+
+              <div className="input-form-container-with-error">
+                <label htmlFor="newPassword">Nouveau mot de passe *</label>
+                <input 
+                name="newPassword" 
+                className="input-form" 
+                type="password" 
+                id="newPassword" 
+                placeholder="Nouveau mot de passe" 
+                {...register("newPassword", 
+                  {
+                    required: "Ce champ est requis",
+                    minLength: {
+                      value: 6,
+                      message: "Votre mot de passe doit contenir au minimum 6 caractères!"
+                    }
+                  }
+                )} />
+                {errors.newPassword && 
+                  <span className={errors.newPassword.type === "minLength" ? "error-message-form-double" : "error-message-form"}>
+                  {errors.newPassword.message}
+                  </span>
+                }
+              </div>
+
+              <div className="input-form-container-with-error">
+                <label htmlFor="confirmPassword">Confirmer nouveau mot de passe *</label>
+                <input 
+                name="confirmPassword" 
+                className="input-form" 
+                type="password" 
+                id="confirmPassword" 
+                placeholder="Confirmer nouveau mot de passe" 
+                {...register("confirmPassword", 
+                  { 
+                    required: "Ce champ est requis", 
+                    minLength: {
+                      value: 6,
+                      message: "Votre mot de passe doit contenir au minimum 6 caractères!"
+                    }
+                  }
+                )} />
+                {errors.confirmPassword && 
+                  <span className={errors.confirmPassword.type === "minLength" ? "error-message-form-double" : "error-message-form"}>
+                  {errors.confirmPassword.message}
+                  </span>
+                }
+              </div>
+            </>
+          }
 
           <div className="default-action-form-container">
             <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
