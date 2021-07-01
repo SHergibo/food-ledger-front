@@ -8,14 +8,19 @@
   position: relative;
   margin-bottom: .25rem;
   padding-bottom: .8rem;
-  .error-message-form {
-    position: absolute;
-    bottom: 0;
-    height: 1rem;
+  .error-message-form, .error-message-form-double{
     display: block;
     padding: 3px 0;
     font-size: 0.8rem;
     color: red;
+  }
+  .error-message-form {
+    position: absolute;
+    bottom: 0;
+    height: 1rem;
+  }
+  .error-message-form-double {
+    height: 1.3rem;
   }
 }
 
