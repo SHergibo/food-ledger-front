@@ -26,23 +26,38 @@ const loginIn = async (data) =>{
   return response;
 };
 
-const logout = async() =>{
+const logout = async(localData) =>{
   try {
+    let requestUrl = "logout";
+    let data = {
+      access_token : localStorage.getItem('access_token'),
+      refresh_token: localStorage.getItem('refresh_token'),
+      user_email: localStorage.getItem('user_email')
+    }
+    if(localData){
+      requestUrl = "logoutAndRefresh";
+      data = localData;
+    }
+
     const logout = Axios.create({
       baseURL: apiDomain,
       timeout: 15000,
       headers: {
         ContentType: 'applications/json',
         Accept: 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        Authorization: `Bearer ${data.access_token}`
       }
     });
-    await logout.post(`${apiDomain}/api/${apiVersion}/auth/logout`, {
-      token : localStorage.getItem('refresh_token'),
-      email : localStorage.getItem('user_email')
+    
+    await logout.post(`${apiDomain}/api/${apiVersion}/auth/${requestUrl}`, {
+      token : data.refresh_token,
+      email : data.user_email
     });
-    localStorage.clear();
-    sessionStorage.clear();
+
+    if(!localData){
+      localStorage.clear();
+      sessionStorage.clear();
+    }
 
   } catch (error) {
     console.log(error);
