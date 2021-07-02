@@ -91,6 +91,10 @@ export function DataProvider({children}) {
       socketRef.current.emit('setUserRoom', {userId: localStorage.getItem('user_id')});
     });
 
+    socketRef.current.on("refreshData", () => {
+      getUserData();
+    });
+
     socketRef.current.on("updateNotificationReceived", (notif) => {
       setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
     });
