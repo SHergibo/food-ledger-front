@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { loginIn } from './../../utils/Auth';
+import { loginIn, checkCredential } from './../../utils/Auth';
 import AlreadyLogged from './AlreadyLogged';
 import PropTypes from 'prop-types';
 
@@ -47,15 +47,14 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
       return;
     }
     if(localStore.access_token && localStore.refresh_token && localStore.user_id && localStore.user_email){
-      setLoginData(data);
-      return setAlreadyLogged(true);
+        let responseCheckCredential = await checkCredential(data);
+        if(responseCheckCredential === 401) return setErrorMessage(true);
+        setLoginData(data);
+        return setAlreadyLogged(true);
     }
     let responseLogin = await loginIn(data);
-    if (responseLogin !== 401) {
-      history.push("/app/liste-produit");
-    } else {
-      setErrorMessage(true);
-    }
+    if (responseLogin === 401) return setErrorMessage(true);
+    history.push("/app/liste-produit");
   };
 
   return (
