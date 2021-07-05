@@ -1,4 +1,5 @@
 import React, { useContext, useState, createContext, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import axiosInstance from './../../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 import { io } from "socket.io-client";
@@ -30,6 +31,7 @@ export function useSocket(){
 }
 
 export function DataProvider({children}) {
+  const history = useHistory();
   const [userData, setUserData] = useState();
   const [userHouseholdData, setUserHouseholdData] = useState();
   const [userOptionData, setUserOptionData] = useState();
@@ -86,56 +88,68 @@ export function DataProvider({children}) {
         });
     };
 
-    socketRef.current = io(apiDomain);
-    socketRef.current.on("connect", () => {
-      socketRef.current.emit('setUserRoom', {userId: localStorage.getItem('user_id')});
-    });
+    const connectSocketIo = () => {
+      socketRef.current = io(apiDomain);
+      socketRef.current.on("connect", () => {
+        socketRef.current.emit('setUserRoom', {userId: localStorage.getItem('user_id')});
+      });
 
-    socketRef.current.on("refreshData", () => {
-      if(JSON.parse(localStorage.getItem('needRefresh')) === true){
-        getUserData();
-        localStorage.removeItem('needRefresh');
-      }
-    });
+      socketRef.current.on("refreshData", () => {
+        if(JSON.parse(localStorage.getItem('needRefresh')) === true){
+          getUserData();
+          socketRef.current.disconnect();
+          connectSocketIo();
+          localStorage.removeItem('needRefresh');
+        }
+      });
+  
+      socketRef.current.on("updateNotificationReceived", (notif) => {
+        setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
+      });
+  
+      socketRef.current.on("updateNotificationSended", (notif) => {
+        setNotificationSended(notificationSended => [...notificationSended, notif]);
+      });
+  
+      socketRef.current.on("deleteNotificationSended", (notifId) => {
+        setNotificationSended(notificationSended => notificationSended.filter((notif) => notif._id !== notifId));
+      });
+  
+      socketRef.current.on("deleteNotificationReceived", (notifId) => {
+        setNotificationReceived(notificationReceived => notificationReceived.filter((notif) => notif._id !== notifId));
+      });
+  
+      socketRef.current.on("updateAllNotifications", (data) => {
+        setNotificationReceived(data.notificationsReceived);
+        setNotificationSended(data.notificationsSended);
+      });
+  
+      socketRef.current.on("updateAllNotificationsReceived", (allNotifReceived) => {
+        setNotificationReceived(allNotifReceived);
+      });
+  
+      socketRef.current.on("updateUserAndFamillyData", (data) => {
+        setUserData(data.userData);
+        setUserHouseholdData(data.householdData);
+      });
+  
+      socketRef.current.on("updateFamilly", (householdData) => {
+        setUserHouseholdData(householdData);
+      });
 
-    socketRef.current.on("updateNotificationReceived", (notif) => {
-      setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
-    });
+      socketRef.current.on("logoutSameNavigator", () => {
+        if(!localStorage.getItem('access_token')){
+          history.push('/');
+        }
+      });
+    }
 
-    socketRef.current.on("updateNotificationSended", (notif) => {
-      setNotificationSended(notificationSended => [...notificationSended, notif]);
-    });
-
-    socketRef.current.on("deleteNotificationSended", (notifId) => {
-      setNotificationSended(notificationSended => notificationSended.filter((notif) => notif._id !== notifId));
-    });
-
-    socketRef.current.on("deleteNotificationReceived", (notifId) => {
-      setNotificationReceived(notificationReceived => notificationReceived.filter((notif) => notif._id !== notifId));
-    });
-
-    socketRef.current.on("updateAllNotifications", (data) => {
-      setNotificationReceived(data.notificationsReceived);
-      setNotificationSended(data.notificationsSended);
-    });
-
-    socketRef.current.on("updateAllNotificationsReceived", (allNotifReceived) => {
-      setNotificationReceived(allNotifReceived);
-    });
-
-    socketRef.current.on("updateUserAndFamillyData", (data) => {
-      setUserData(data.userData);
-      setUserHouseholdData(data.householdData);
-    });
-
-    socketRef.current.on("updateFamilly", (householdData) => {
-      setUserHouseholdData(householdData);
-    });
+    connectSocketIo();
 
     return () => {
       socketRef.current.disconnect();
     };
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     return () => {
