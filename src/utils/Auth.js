@@ -34,9 +34,15 @@ const logout = async(localData) =>{
       refresh_token: localStorage.getItem('refresh_token'),
       user_email: localStorage.getItem('user_email')
     }
+    
     if(localData){
       requestUrl = "logoutAndRefresh";
       data = localData;
+    }
+
+    if(!localData){
+      localStorage.clear();
+      sessionStorage.clear();
     }
 
     const logout = Axios.create({
@@ -53,11 +59,6 @@ const logout = async(localData) =>{
       token : data.refresh_token,
       email : data.user_email
     });
-
-    if(!localData){
-      localStorage.clear();
-      sessionStorage.clear();
-    }
 
   } catch (error) {
     console.log(error);
