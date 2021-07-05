@@ -92,7 +92,10 @@ export function DataProvider({children}) {
     });
 
     socketRef.current.on("refreshData", () => {
-      getUserData();
+      if(JSON.parse(localStorage.getItem('needRefresh')) === true){
+        getUserData();
+        localStorage.removeItem('needRefresh');
+      }
     });
 
     socketRef.current.on("updateNotificationReceived", (notif) => {

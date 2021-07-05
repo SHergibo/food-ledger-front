@@ -15,6 +15,7 @@ function AlreadyLogged({history, loginData}) {
       user_email: localStorage.getItem('user_email')
     }
     let responseLogin = await loginIn(loginData);
+    localStorage.setItem('needRefresh', true);
     await logout(localStore);
     if (responseLogin !== 401) {
       history.push("/app/liste-produit");
