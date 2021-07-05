@@ -26,6 +26,19 @@ const loginIn = async (data) =>{
   return response;
 };
 
+const checkCredential = async (data) =>{
+  await Axios.post(`${apiDomain}/api/${apiVersion}/auth/check-credential`, data)
+  .then((res) =>{
+    if(res.status === 204){
+      response = res.status;
+    }
+  })
+  .catch(() =>{
+    response = 401;
+  })
+  return response;
+};
+
 const logout = async(localData) =>{
   try {
     let requestUrl = "logout";
@@ -109,4 +122,4 @@ const isAuthenticated = async() =>{
   return authenticated;
 };
 
-export { loginIn, logout, isAuthenticated, refreshToken };
+export { loginIn, checkCredential, logout, isAuthenticated, refreshToken };
