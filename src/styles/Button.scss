@@ -1,0 +1,28 @@
+@mixin primary-btn() {
+  display: flex;
+  align-items: center;
+  padding: calculRem(13px) calculRem(18px);
+  height: calculRem(53px);
+  font-family: 'Poppins', sans-serif;
+  font-size: calculRem(18px);
+  font-weight: 600;
+  border: none;
+  border-radius: calculRem(50px);
+  .btn-icon{
+    font-size: calculRem(25px);
+    margin-right: calculRem(11px);
+  }
+}
+
+.btn-purple{
+  @include primary-btn();
+  color: $white;
+  background-color: $new-primary-color;
+}
+
+.btn-white{
+  @include primary-btn();
+  color: $new-primary-color;
+  background-color: $white;
+}
+
