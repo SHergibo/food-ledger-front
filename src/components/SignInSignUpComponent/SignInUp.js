@@ -22,18 +22,18 @@ createStore({
 });
 
 function SignInUp() {
-  const [formTitle, setFormTitle] = useState("Bienvenue");
+  const [formTitle, setFormTitle] = useState("Connexion");
   const [successCreateAccount, setSuccessCreateAccount] = useState(false);
   const [form, setForm] = useState('login');
 
   const createUserForm = () => {
     setForm('step1');
-    setFormTitle('Création de votre compte');
+    setFormTitle('Créer un compte');
   }
 
   const returnToLogin = () => {
     setForm('login');
-    setFormTitle('Bienvenue');
+    setFormTitle('Connexion');
   }
 
   return (
@@ -41,60 +41,75 @@ function SignInUp() {
 
       <StateMachineProvider>
         <div className={`${form === "login" ? "container-sign-in": "container-sign-up"}`}>
-          <div className={`welcome-container ${form === "login" ? "welcome-container-login": ""}`}>
-            {form !== "login" && (
-              <FontAwesomeIcon icon="chevron-left" onClick={
-                () => {
-                  if (form === "step1") {
-                    returnToLogin();
-                  } else if (form === "step2") {
-                    setForm("step1");
-                  } else if (form === "confirm") {
-                    setForm("step2")
-                  }
-                }
-              } />
-            )}
-            <div className="welcome-title">
+          <div className="interactive-container">
+            <div className="title-container">
+              <div className="logo-container">
+                <div>Logo</div>
+                {form !== "login" && (
+                  <FontAwesomeIcon icon="chevron-left" onClick={
+                    () => {
+                      if (form === "step1") {
+                        returnToLogin();
+                      } else if (form === "step2") {
+                        setForm("step1");
+                      } else if (form === "confirm") {
+                        setForm("step2")
+                      }
+                    }
+                  }/>
+                )}
+              </div>
+              
               <h1>{formTitle}</h1>
             </div>
-          </div>
 
-          {form === "login" && (
-            <Fragment>
-              <Login
-                setSuccessCreateAccount={setSuccessCreateAccount}
-                successCreateAccount={successCreateAccount}
-                createUserForm={createUserForm}
-              />
-            </Fragment>
-          )}
-          {form === "step1" && (
-            <Fragment>
-              <Step1
-                setForm={setForm}
-                returnToLogin={returnToLogin}
-              />
-            </Fragment>
-          )}
-          {form === "step2" && (
-            <Fragment>
-              <Step2
-                setForm={setForm}
-                returnToLogin={returnToLogin}
-              />
-            </Fragment>
-          )}
-          {form === "confirm" && (
-            <Fragment>
-              <Result
-                setForm={setForm}
-                setFormTitle={setFormTitle}
-                setSuccessCreateAccount={setSuccessCreateAccount}
-                returnToLogin={returnToLogin}
-              />
-            </Fragment>
-          )}
+            {form === "login" && (
+              <Fragment>
+                <Login
+                  setSuccessCreateAccount={setSuccessCreateAccount}
+                  successCreateAccount={successCreateAccount}
+                  createUserForm={createUserForm}
+                />
+              </Fragment>
+            )}
+            {form === "step1" && (
+              <Fragment>
+                <Step1
+                  setForm={setForm}
+                  returnToLogin={returnToLogin}
+                />
+              </Fragment>
+            )}
+            {form === "step2" && (
+              <Fragment>
+                <Step2
+                  setForm={setForm}
+                  returnToLogin={returnToLogin}
+                />
+              </Fragment>
+            )}
+            {form === "confirm" && (
+              <Fragment>
+                <Result
+                  setForm={setForm}
+                  setFormTitle={setFormTitle}
+                  setSuccessCreateAccount={setSuccessCreateAccount}
+                  returnToLogin={returnToLogin}
+                />
+              </Fragment>
+            )}
+          </div>
+          
+          <div className="switch-form-container">
+            <div>
+              <p>Pas encore de compte ?</p>
+              <button className="btn-white" onClick={() => createUserForm()}>
+                <FontAwesomeIcon className="btn-icon" icon="user-plus" />
+                Créer un compte
+              </button>
+            </div>
+            
+          </div>
         </div>
       </StateMachineProvider>
     </div>

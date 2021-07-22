@@ -1,226 +1,268 @@
 .wrapper-sign-in-up{
+  font-family: 'Poppins', sans-serif;
   display: flex;
   justify-content: center;
   width: 100%;
   height: 100vh;
 }
 
-.container-sign-in, .container-sign-up{
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  background-color: $white;
-  width: inherit;
-  .welcome-container{
-    display: flex;
-    flex-direction: column;
-    padding:0 1rem;
-    height: 40%;
-    color: $primary-color;
-    .welcome-title{
-      display: flex;
-      align-items: center;
-      height: 100%;
-      h1{
-        font-size: 3rem;
-      }
-    }
-
-    svg{
-      margin-top: 1.5rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: .3s ease-in-out;
-      &:hover{
-        color: $blue;
-      }
-    }
+.container-sign-in{
+  .interactive-container, .switch-form-container{
+    padding: calculEm(34px);
   }
-  .welcome-container-login{
-    justify-content: center;
+  .interactive-container{
+    height: 70%;
   }
-  .form-container{
-    display: flex;
-    flex-direction: column;
-    color: $white;
-    .switch-form-container{
-      margin-top: 2rem;
-      padding: 0 2.5rem;
-      border-top: 1px solid $white;
-      text-align: center;
-      .switch-form{
-        margin: .5rem 0 1.5rem 0;
-        cursor: pointer;
-        transition: .3s ease-in-out;
-        &:hover{
-          color: $blue;
-        }
-      }
-    }
-  }
-}
-
-.form-sign-in{
-  @include form-sign-in($height: true);
-}
-
-.form-sign-up{
-  @include form-sign-in($height: false);
-}
-
-.container-checkbox-sign-form + .container-checkbox-sign-form{
-  margin-top: 1rem;
-}
-
-.container-checkbox-sign-form {
-  @include container-checkbox($white, $white, $primary-color, $blue);
-}
-
-.btn-form-sign-in{
-  display: flex;
-  justify-content: center;
-  margin: .8rem auto 0 auto;
-  padding: .8rem 1rem;
-  border: 1px solid $primary-color;
-  border-radius: 2.5rem;
-  color: $primary-color;
-  font-weight: 700;
-  font-size: 1.2rem;
-  transition: .3s ease-in-out;
-  &:hover{
-    background-color: $blue;
-    color: $white;
-  }
-  svg{
-    margin-left: 1rem;
-  }
-}
-
-.div-usercode{
-  display: flex;
-  align-items: baseline;
-  .input-group{
-    width: 90%;
-    margin-bottom: 1rem;
-  }
-  .btn-add-usercode{
+  .switch-form-container{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: .5rem;
-    width: 1.7rem;
-    height: 1.7rem;
-    background-color: $white;
-    font-size: 2rem;
-    color: $primary-color;
-    border: none;
-    border-radius: 5px;
-    transition: .2s ease-in-out;
-    &:hover{
-      background-color: $blue;
-      color: white;
-    }
-  }
-}
-
-.list-usercode{
-  list-style: none;
-  li{
-    display: flex;
-    align-items: center;
-    margin-bottom: .8rem;
+    background-color: $new-primary-color;
+    height: 30%;
     div{
-      width: calculRem(65px);
+      p{
+        color: $white;
+        font-size: calculRem(20px);
+        font-weight: 600;
+        margin-bottom: calculRem(22px);
+      }
+      button{
+        margin: 0 auto;
+      }
     }
   }
-  button{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 1.7rem;
-    height: 1.7rem;
-    margin-left: .5rem;
-    border: none;
-    border-radius: 100%;
-    font-size: 1.2rem;
-    color: $primary-color;
-    transition: .2s ease-in-out;
-    &:hover{
-      color: $red;
-    }
-  }
-}
-
-.bad-user-code{
-  color: $red;
-}
-
-.error-message {
-  height: 1rem;
-  font-size: 0.8rem;
-  color: $red;
-}
-
-.success-message {
-  opacity: 1;
-  font-size: .8rem;
-  height: .8rem;
-  color: $blue;
-  transition: 0.5s ease-in-out;
-}
-
-/*Media queries*/
-
-/*Tablet*/
-@media screen and (min-width: 640px) {
-  .wrapper-sign-in-up{
-    align-items: center;
-  }
-  .welcome-title{
-    margin: 1.5rem 0;
-  }
-  .container-sign-in{
-    width: 350px;
-  }
-  .container-sign-up{
-    width: 60%;
-    min-width: 600px;
-    .input-group{
-      width: 50%;
-      padding-right: 1em;
-    }
-
-    .input-flex-group{
+  .title-container{
+    margin-bottom: calculEm(20px);
+    .logo-container{
       display: flex;
-      .input-group + .input-group{
-        margin-left: 2em;
-        padding-right: 0;
-      }
-
-      .input-siblings{
-        padding-right: 0;
-      }
+      margin-bottom: calculEm(16px);
     }
-
-
-  }
-  .form-sign-in, .form-sign-up{
-    border-radius: 3rem;
-  }
-  .list-usercode{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    max-height: 200px;
+    h1{
+      color: $new-primary-color;
+      font-weight: 600;
+    }
   }
 }
 
-/*Full-screen*/
-@media screen and (min-width: 992px) {
-  .container-sign-up{
-    max-width: 800px;
-  }
-}
+
+
+
+// .container-sign-in, .container-sign-up{
+//   display: flex;
+//   justify-content: space-between;
+//   flex-direction: column;
+//   background-color: $white;
+//   width: inherit;
+//   .welcome-container{
+//     display: flex;
+//     flex-direction: column;
+//     padding:0 1rem;
+//     height: 40%;
+//     color: $primary-color;
+//     .welcome-title{
+//       display: flex;
+//       align-items: center;
+//       height: 100%;
+//       h1{
+//         font-size: 3rem;
+//       }
+//     }
+
+//     svg{
+//       margin-top: 1.5rem;
+//       font-size: 1.5rem;
+//       cursor: pointer;
+//       transition: .3s ease-in-out;
+//       &:hover{
+//         color: $blue;
+//       }
+//     }
+//   }
+//   .welcome-container-login{
+//     justify-content: center;
+//   }
+//   .form-container{
+//     display: flex;
+//     flex-direction: column;
+//     color: $white;
+//     .switch-form-container{
+//       margin-top: 2rem;
+//       padding: 0 2.5rem;
+//       border-top: 1px solid $white;
+//       text-align: center;
+//       .switch-form{
+//         margin: .5rem 0 1.5rem 0;
+//         cursor: pointer;
+//         transition: .3s ease-in-out;
+//         &:hover{
+//           color: $blue;
+//         }
+//       }
+//     }
+//   }
+// }
+
+// .form-sign-in{
+//   @include form-sign-in($height: true);
+// }
+
+// .form-sign-up{
+//   @include form-sign-in($height: false);
+// }
+
+// .container-checkbox-sign-form + .container-checkbox-sign-form{
+//   margin-top: 1rem;
+// }
+
+// .container-checkbox-sign-form {
+//   @include container-checkbox($white, $white, $primary-color, $blue);
+// }
+
+// .btn-form-sign-in{
+//   display: flex;
+//   justify-content: center;
+//   margin: .8rem auto 0 auto;
+//   padding: .8rem 1rem;
+//   border: 1px solid $primary-color;
+//   border-radius: 2.5rem;
+//   color: $primary-color;
+//   font-weight: 700;
+//   font-size: 1.2rem;
+//   transition: .3s ease-in-out;
+//   &:hover{
+//     background-color: $blue;
+//     color: $white;
+//   }
+//   svg{
+//     margin-left: 1rem;
+//   }
+// }
+
+// .div-usercode{
+//   display: flex;
+//   align-items: baseline;
+//   .input-group{
+//     width: 90%;
+//     margin-bottom: 1rem;
+//   }
+//   .btn-add-usercode{
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     margin-left: .5rem;
+//     width: 1.7rem;
+//     height: 1.7rem;
+//     background-color: $white;
+//     font-size: 2rem;
+//     color: $primary-color;
+//     border: none;
+//     border-radius: 5px;
+//     transition: .2s ease-in-out;
+//     &:hover{
+//       background-color: $blue;
+//       color: white;
+//     }
+//   }
+// }
+
+// .list-usercode{
+//   list-style: none;
+//   li{
+//     display: flex;
+//     align-items: center;
+//     margin-bottom: .8rem;
+//     div{
+//       width: calculRem(65px);
+//     }
+//   }
+//   button{
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     width: 1.7rem;
+//     height: 1.7rem;
+//     margin-left: .5rem;
+//     border: none;
+//     border-radius: 100%;
+//     font-size: 1.2rem;
+//     color: $primary-color;
+//     transition: .2s ease-in-out;
+//     &:hover{
+//       color: $red;
+//     }
+//   }
+// }
+
+// .bad-user-code{
+//   color: $red;
+// }
+
+// .error-message {
+//   height: 1rem;
+//   font-size: 0.8rem;
+//   color: $red;
+// }
+
+// .success-message {
+//   opacity: 1;
+//   font-size: .8rem;
+//   height: .8rem;
+//   color: $blue;
+//   transition: 0.5s ease-in-out;
+// }
+
+// /*Media queries*/
+
+// /*Tablet*/
+// @media screen and (min-width: 640px) {
+//   .wrapper-sign-in-up{
+//     align-items: center;
+//   }
+//   .welcome-title{
+//     margin: 1.5rem 0;
+//   }
+//   .container-sign-in{
+//     width: 350px;
+//   }
+//   .container-sign-up{
+//     width: 60%;
+//     min-width: 600px;
+//     .input-group{
+//       width: 50%;
+//       padding-right: 1em;
+//     }
+
+//     .input-flex-group{
+//       display: flex;
+//       .input-group + .input-group{
+//         margin-left: 2em;
+//         padding-right: 0;
+//       }
+
+//       .input-siblings{
+//         padding-right: 0;
+//       }
+//     }
+
+
+//   }
+//   .form-sign-in, .form-sign-up{
+//     border-radius: 3rem;
+//   }
+//   .list-usercode{
+//     display: flex;
+//     flex-wrap: wrap;
+//     flex-direction: column;
+//     max-height: 200px;
+//   }
+// }
+
+// /*Full-screen*/
+// @media screen and (min-width: 992px) {
+//   .container-sign-up{
+//     max-width: 800px;
+//   }
+// }
 
 
 
