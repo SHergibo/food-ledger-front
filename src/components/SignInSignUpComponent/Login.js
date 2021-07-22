@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { loginIn, checkCredential } from './../../utils/Auth';
 import AlreadyLogged from './AlreadyLogged';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
@@ -68,19 +69,16 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
       <div className="form-container">
         <form className="form-sign-in" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <h2>Login</h2>
-
             <div className="input-group">
               <input
                 name="email"
                 type="email"
                 id="email"
-                placeholder="email"
-                className="form-input"
+                className={`form-input ${errors.email  ? "error-input" : ""}`}
                 {...register("email", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="email" className="form-label">Email *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="email" as="span" />
               </div>
             </div>
@@ -90,27 +88,21 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount, createU
                 name="password"
                 type="password"
                 id="password"
-                placeholder="password"
-                className="form-input"
+                className={`form-input ${errors.password  ? "error-input" : ""}`}
                 {...register("password", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="password" as="span" />
               </div>
             </div>
 
             {errorMessage && <span className="error-message">Adresse mail ou mot de passe invalide !</span>}
             {successCreateAccount && <span ref={successMessage} className="success-message">Votre compte a été créé avec succés !</span>}
-            <button type="submit" className="btn-form-sign-in">
-              Connexion
+            <button type="submit" className="btn-purple">
+              <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+              Se connecter
             </button>
-          </div>
-
-          <div className="switch-form-container">
-            {/* <p className="switch-form" onClick={() => createUserForm()}>
-              Créer un compte
-            </p> */}
           </div>
         </form>
       </div>

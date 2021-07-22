@@ -1,59 +1,52 @@
 .input-group {
   position: relative;
-  padding: 13px 0 0;
+  padding: calculEm(7px) 0;
 }
 
 .form-input {
-  font-family: inherit;
   width: 100%;
-  border: 0;
-  border-bottom: 1px solid $white;
-  outline: 0;
-  font-size: 1.3rem;
-  color: $white;
-  padding: 7px 0;
+  padding: calculRem(13px) calculRem(20px);
+  border: 1px solid $new-primary-color;
+  border-color: $new-primary-color;
+  border-radius: calculRem(10px);
+  font-family: inherit;
+  font-size: calculRem(18px);
+  font-weight: 400;
+  color: $new-grey;
   background: transparent;
-  transition: border-color 0.2s;
+  transition: .25s ease-in-out;
+}
 
-  &::placeholder {
-    color: transparent;
-  }
-
-  &:placeholder-shown ~ .form-label {
-    font-size: 1rem;
-    cursor: text;
-    top: 20px;
-  }
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover, 
+.form-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: $new-grey;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .form-label {
   position: absolute;
-  top: 0;
+  top: calculRem(-3px);
+  left: calculRem(15px);
   display: block;
+  padding: 0 .3em;
   transition: 0.2s;
-  font-size: 1rem;
-  color: $white;
+  font-weight: 600;
+  color: $new-primary-color;
+  background-color: $white;
 }
 
-.form-input:focus {
-  ~ .form-label {
-    position: absolute;
-    top: 0;
-    display: block;
-    transition: 0.2s;
-    font-size: 0.7rem;
-    color: $blue;
-  }
-  padding-bottom: 6px;
-  border-width: 2px;
-  border-color: $blue;
+.error-input{
+  border-color: $new-red;
 }
 
-.form-input {
-  &:required,
-  &:invalid {
-    box-shadow: none;
-  }
+.error-message-input {
+  display: flex;
+  align-items: center;
+  height: calculRem(30px);
+  font-size: calculRem(14px);
+  font-weight: 500;
+  color: $new-red;
 }
 
 //Date picker
