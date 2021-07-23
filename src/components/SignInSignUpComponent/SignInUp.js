@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { StateMachineProvider, createStore } from "little-state-machine";
+import logo from "./../../images/foodledger_logo.png";
 import Login from "./Login";
 import Step1 from "./SignUpStep1";
 import Step2 from "./SignUpStep2";
@@ -44,7 +45,7 @@ function SignInUp() {
           <div className="interactive-container">
             <div className="title-container">
               <div className="logo-container">
-                <div>Logo</div>
+                <img src={logo} alt="food ledger logo"/>
                 {form !== "login" && (
                   <FontAwesomeIcon icon="chevron-left" onClick={
                     () => {
