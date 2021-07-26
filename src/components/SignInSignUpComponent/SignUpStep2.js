@@ -6,7 +6,7 @@ import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SignUpStep2({ setForm, returnToLogin }) {
+function SignUpStep2({ setForm }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState(false);
   const otherMemberInput = useRef(null);
@@ -80,9 +80,9 @@ function SignUpStep2({ setForm, returnToLogin }) {
     <div className="form-container">
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <h2>Création de compte : étape 2</h2>
+          <h2 className="sign-up-subtitle">Étape 2 : Infos famille</h2>
           {state.yourDetails.householdNameCheck !== true && (
-            <label className="container-checkbox-sign-form">
+            <label className="container-checkbox">
               Avez-vous un code famille ?
               <input
                 name="householdCodeCheck"
@@ -101,16 +101,17 @@ function SignUpStep2({ setForm, returnToLogin }) {
                 id="householdCode"
                 placeholder="Code famille"
                 className="form-input"
+                className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
                 {...register("householdCode", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="householdCode" className="form-label">Code famille *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="householdCode" as="span" />
               </div>
             </div>
           )}
           {state.yourDetails.householdCodeCheck !== true && (
-            <label className="container-checkbox-sign-form">
+            <label className="container-checkbox">
               Voulez-vous créer une famille ?
               <input
                 name="householdNameCheck"
@@ -129,15 +130,15 @@ function SignUpStep2({ setForm, returnToLogin }) {
                   type="text"
                   id="householdName"
                   placeholder="Nom de la famille"
-                  className="form-input"
+                  className={`form-input ${errors.householdName  ? "error-input" : ""}`}
                   {...register("householdName", { required: "Ce champ est requis !" })}
                 />
                 <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
-                <div className="error-message">
+                <div className="error-message-input">
                   <ErrorMessage errors={errors} name="householdName" as="span" />
                 </div>
               </div>
-              <label className="container-checkbox-sign-form">
+              <label className="container-checkbox">
                 Autre code utilisateur ?
               <input
                   name="otherMemberCheck"
@@ -149,7 +150,7 @@ function SignUpStep2({ setForm, returnToLogin }) {
               </label>
               {state.yourDetails.otherMemberCheck === true && (
                 <>
-                  <div className="div-usercode">
+                  <div className="container-usercode">
                     <div className="input-group">
                       <input
                         ref={otherMemberInput}
@@ -181,15 +182,10 @@ function SignUpStep2({ setForm, returnToLogin }) {
           {errorMessage === true && (
             <span className="error-message">Vous devez répondre à une de ces deux questions et remplir le formulaire.</span>
           )}
-          <button type="submit" className="btn-form-sign-in">
-            Étape suivante <FontAwesomeIcon icon="angle-right" />
+          <button type="submit" className="btn-purple">
+            <FontAwesomeIcon className="btn-icon" icon="angle-right" />
+            Étape suivante 
           </button>
-        </div>
-
-        <div className="switch-form-container">
-          <p className="switch-form" onClick={() => returnToLogin()}>
-            Connexion
-          </p>
         </div>
 
       </form>
@@ -199,7 +195,6 @@ function SignUpStep2({ setForm, returnToLogin }) {
 
 SignUpStep2.propTypes = {
   setForm : PropTypes.func.isRequired,
-  returnToLogin : PropTypes.func.isRequired,
 }
 
 export default SignUpStep2
