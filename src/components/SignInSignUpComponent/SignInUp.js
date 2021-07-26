@@ -46,19 +46,22 @@ function SignInUp() {
             <div className="title-container">
               <div className="logo-container">
                 <img src={logo} alt="food ledger logo"/>
-                {form !== "login" && (
-                  <FontAwesomeIcon icon="chevron-left" onClick={
-                    () => {
-                      if (form === "step1") {
-                        returnToLogin();
-                      } else if (form === "step2") {
-                        setForm("step1");
-                      } else if (form === "confirm") {
-                        setForm("step2")
+                {(form === "step2" || form === "confirm")  &&
+                  <div className="back-to-interaction">
+                    <FontAwesomeIcon className="btn-icon" icon="chevron-left" onClick={
+                      () => {
+                        if (form === "step2") {
+                          setForm("step1");
+                        }
+                        if (form === "confirm") {
+                          setForm("step2")
+                        }
                       }
-                    }
-                  }/>
-                )}
+                    }/>
+                    <p>Étape précédente</p>
+                  </div>
+                }
+              
               </div>
               
               <h1>{formTitle}</h1>
@@ -73,13 +76,11 @@ function SignInUp() {
             {form === "step1" && (
               <Step1
                 setForm={setForm}
-                returnToLogin={returnToLogin}
               />
             )}
             {form === "step2" && (
               <Step2
                 setForm={setForm}
-                returnToLogin={returnToLogin}
               />
             )}
             {form === "confirm" && (
@@ -100,7 +101,6 @@ function SignInUp() {
                 Créer un compte
               </button>
             </div>
-            
           </div>
         </div>
       </StateMachineProvider>
