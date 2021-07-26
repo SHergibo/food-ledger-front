@@ -1,3 +1,52 @@
+@mixin container-checkbox($color, $border-checkmark, $border-check){
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-weight: 600;
+  cursor: pointer;
+  color: $color;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  .checkmark-checkbox {
+    position: relative;
+    margin: 0 0.5rem;
+    min-height: 1.25rem;
+    min-width: 1.25rem;
+    border: 1px solid $border-checkmark;
+    border-radius: calculEm(5px);
+    transition: 0.3s ease-in-out;
+    &:after{
+      content: "";
+      position: absolute;
+      display: none;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 8px;
+      border: solid $border-check;
+      border-width: 0 2px 2px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+  input{
+    height: 0;
+    width: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    &:checked ~ .checkmark-checkbox {
+      background-color: transparent;
+    }
+    &:checked ~ .checkmark-checkbox:after {
+      display: block;
+    }
+  }
+}
+
 .input-group {
   position: relative;
   padding: calculEm(7px) 0;
@@ -36,11 +85,8 @@
   background-color: $white;
 }
 
-.container-checkbox{
-  display: flex;
-  align-items: center;
-  color: $new-primary-color;
-  font-weight: 600;
+.container-checkbox {
+  @include container-checkbox($new-primary-color, $new-primary-color, $new-primary-color);
 }
 
 .container-checkbox + .container-checkbox{
