@@ -8,7 +8,7 @@ import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnToLogin }) {
+function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorBool, setErrorBool] = useState(false);
@@ -131,7 +131,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
     <div className="form-container">
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <h2>Création de compte : Confirmation</h2>
+          <h2 className="sign-up-subtitle">Étape 3 : confirmation</h2>
 
           <div className="input-flex-group">
             <div className="input-group input-siblings">
@@ -139,12 +139,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 name="firstName"
                 type="text"
                 id="fistName"
-                placeholder="Prénom"
-                className="form-input"
+                className={`form-input ${errors.firstName  ? "error-input" : ""}`}
                 {...register("firstName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="fistName" className="form-label">Prénom *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="firstName" as="span" />
               </div>
             </div>
@@ -154,12 +153,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 name="lastName"
                 type="text"
                 id="lastName"
-                placeholder="Nom"
-                className="form-input"
+                className={`form-input ${errors.lastName  ? "error-input" : ""}`}
                 {...register("lastName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="lastName" className="form-label">Nom *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="lastName" as="span" />
               </div>
             </div>
@@ -171,12 +169,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
               name="email"
               type="email"
               id="email"
-              placeholder="email"
-              className="form-input"
+              className={`form-input ${errors.email  ? "error-input" : ""}`}
               {...register("email", { required: "Ce champ est requis !" })}
             />
-            <label htmlFor="email" className="form-label">Email *</label>
-            <div className="error-message">
+            <label htmlFor="email" className="form-label">E-mail *</label>
+            <div className="error-message-input">
               <ErrorMessage errors={errors} name="email" as="span" />
             </div>
           </div>
@@ -187,13 +184,12 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 name="password"
                 type="password"
                 id="password"
-                placeholder="Mot de passe"
-                className="form-input"
+                className={`form-input ${errors.password  ? "error-input" : ""}`}
                 {...register("password", { required: true, minLength: 7 })}
                 onChange={changePassword}
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
                 {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
               </div>
@@ -205,14 +201,13 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                   name="confirmPassword"
                   type="password"
                   id="confirmPassword"
-                  placeholder="Confirmer mot de passe"
-                  className="form-input"
+                  className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
                   {...register("confirmPassword", {
                     validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
                   })}
                 />
-                <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
-                <div className="error-message">
+                <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
+                <div className="error-message-input">
                   <ErrorMessage errors={errors} name="confirmPassword" as="span" />
                 </div>
               </div>
@@ -226,12 +221,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                 name="householdCode"
                 type="text"
                 id="householdCode"
-                placeholder="Code famille"
-                className="form-input"
+                className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
                 {...register("householdCode", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="householdCode" className="form-label">Code famille *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="householdCode" as="span" />
               </div>
             </div>
@@ -244,12 +238,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                   name="householdName"
                   type="text"
                   id="householdName"
-                  placeholder="Nom de la famille"
-                  className="form-input"
+                  className={`form-input ${errors.householdName  ? "error-input" : ""}`}
                   {...register("householdName", { required: "Ce champ est requis !" })}
                 />
                 <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
-                <div className="error-message">
+                <div className="error-message-input">
                   <ErrorMessage errors={errors} name="householdName" as="span" />
                 </div>
               </div>
@@ -262,7 +255,6 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
                         name="otherMember"
                         type="text"
                         id="otherMember"
-                        placeholder="Code utilisateur"
                         className="form-input"
                       />
                       <label htmlFor="otherMember" className="form-label">Code utilisateur *</label>
@@ -288,16 +280,11 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, returnT
               )}
             </>
           )}
-          {errorBool && <span className="error-message">{errorMessage}</span>}
-          <button type="submit" className="btn-form-sign-in">
+          {errorBool && <span className="error-message-input">{errorMessage}</span>}
+          <button type="submit" className="btn-purple">
+            <FontAwesomeIcon className="btn-icon" icon="user-plus" />
             Créer son compte
           </button>
-        </div>
-
-        <div className="switch-form-container">
-          <p className="switch-form" onClick={() => returnToLogin()}>
-            Connexion
-          </p>
         </div>
 
       </form>
@@ -309,7 +296,6 @@ SingUpConfirm.propTypes = {
   setForm : PropTypes.func.isRequired,
   setFormTitle : PropTypes.func.isRequired,
   setSuccessCreateAccount : PropTypes.func.isRequired,
-  returnToLogin : PropTypes.func.isRequired,
 }
 
 export default SingUpConfirm
