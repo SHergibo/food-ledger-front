@@ -36,6 +36,25 @@
   background-color: $white;
 }
 
+.container-checkbox{
+  display: flex;
+  align-items: center;
+  color: $new-primary-color;
+  font-weight: 600;
+}
+
+.container-checkbox + .container-checkbox{
+  margin-top: 1rem;
+}
+
+.container-checkbox + .btn-purple{
+  margin-top: 1rem;
+}
+
+.container-checkbox + .input-group{
+  margin-top: 1rem;
+}
+
 .error-input{
   border-color: $new-red;
 }
@@ -43,12 +62,11 @@
 .error-message-input {
   display: flex;
   align-items: center;
-  height: calculRem(30px);
+  min-height: calculRem(30px);
   font-size: calculRem(14px);
   font-weight: 500;
   color: $new-red;
 }
-
 //Date picker
 
 .react-datepicker__triangle{
