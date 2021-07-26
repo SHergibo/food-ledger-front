@@ -68,7 +68,6 @@ function SignInUp() {
               <Login
                 setSuccessCreateAccount={setSuccessCreateAccount}
                 successCreateAccount={successCreateAccount}
-                createUserForm={createUserForm}
               />
             )}
             {form === "step1" && (

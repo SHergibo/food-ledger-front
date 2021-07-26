@@ -7,7 +7,7 @@ import AlreadyLogged from './AlreadyLogged';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Login({ history, successCreateAccount, setSuccessCreateAccount, createUserForm }) {
+function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
   const [errorMessage, setErrorMessage] = useState(false);
   const [alreadyLogged, setAlreadyLogged] = useState(false);
   const [loginData, setLoginData] = useState({});
@@ -115,7 +115,6 @@ Login.propTypes = {
   history : PropTypes.object.isRequired,
   successCreateAccount : PropTypes.bool.isRequired,
   setSuccessCreateAccount : PropTypes.func.isRequired,
-  createUserForm : PropTypes.func.isRequired,
 }
 
 export default withRouter(Login);
