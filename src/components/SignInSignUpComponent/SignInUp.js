@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { StateMachineProvider, createStore } from "little-state-machine";
 import logo from "./../../images/foodledger_logo.png";
 import Login from "./Login";
@@ -65,39 +65,31 @@ function SignInUp() {
             </div>
 
             {form === "login" && (
-              <Fragment>
-                <Login
-                  setSuccessCreateAccount={setSuccessCreateAccount}
-                  successCreateAccount={successCreateAccount}
-                  createUserForm={createUserForm}
-                />
-              </Fragment>
+              <Login
+                setSuccessCreateAccount={setSuccessCreateAccount}
+                successCreateAccount={successCreateAccount}
+                createUserForm={createUserForm}
+              />
             )}
             {form === "step1" && (
-              <Fragment>
-                <Step1
-                  setForm={setForm}
-                  returnToLogin={returnToLogin}
-                />
-              </Fragment>
+              <Step1
+                setForm={setForm}
+                returnToLogin={returnToLogin}
+              />
             )}
             {form === "step2" && (
-              <Fragment>
-                <Step2
-                  setForm={setForm}
-                  returnToLogin={returnToLogin}
-                />
-              </Fragment>
+              <Step2
+                setForm={setForm}
+                returnToLogin={returnToLogin}
+              />
             )}
             {form === "confirm" && (
-              <Fragment>
-                <Result
-                  setForm={setForm}
-                  setFormTitle={setFormTitle}
-                  setSuccessCreateAccount={setSuccessCreateAccount}
-                  returnToLogin={returnToLogin}
-                />
-              </Fragment>
+              <Result
+                setForm={setForm}
+                setFormTitle={setFormTitle}
+                setSuccessCreateAccount={setSuccessCreateAccount}
+                returnToLogin={returnToLogin}
+              />
             )}
           </div>
           
