@@ -6,7 +6,7 @@ import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SignUpStep1({ setForm, returnToLogin }) {
+function SignUpStep1({ setForm }) {
   const { state, action } = useStateMachine(updateAction);
   const { handleSubmit, formState: { errors }, register, getValues } = useForm({
     defaultValues: state.yourDetails
@@ -22,7 +22,7 @@ function SignUpStep1({ setForm, returnToLogin }) {
 
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <h2>Création de compte : étape 1</h2>
+          <h2 className="sign-up-subtitle">Étape 1 : Infos utilisateur</h2>
 
           <div className="input-flex-group">
             <div className="input-group input-siblings">
@@ -30,12 +30,11 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 name="firstName"
                 type="text"
                 id="fistName"
-                placeholder="Prénom"
-                className="form-input"
+                className={`form-input ${errors.firstName  ? "error-input" : ""}`}
                 {...register("firstName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="fistName" className="form-label">Prénom *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="firstName" as="span" />
               </div>
             </div>
@@ -45,12 +44,11 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 name="lastName"
                 type="text"
                 id="lastName"
-                placeholder="Nom"
-                className="form-input"
+                className={`form-input ${errors.lastName  ? "error-input" : ""}`}
                 {...register("lastName", { required: "Ce champ est requis !" })}
               />
               <label htmlFor="lastName" className="form-label">Nom *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="lastName" as="span" />
               </div>
             </div>
@@ -61,12 +59,11 @@ function SignUpStep1({ setForm, returnToLogin }) {
               name="email"
               type="email"
               id="email"
-              placeholder="email"
-              className="form-input"
+              className={`form-input ${errors.email  ? "error-input" : ""}`}
               {...register("email", { required: "Ce champ est requis !" })}
             />
-            <label htmlFor="email" className="form-label">Email *</label>
-            <div className="error-message">
+            <label htmlFor="email" className="form-label">E-mail *</label>
+            <div className="error-message-input">
               <ErrorMessage errors={errors} name="email" as="span" />
             </div>
           </div>
@@ -77,12 +74,11 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 name="password"
                 type="password"
                 id="password"
-                placeholder="Mot de passe"
-                className="form-input"
+                className={`form-input ${errors.password  ? "error-input" : ""}`}
                 {...register("password", { required: true, minLength: 7 })}
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
-              <div className="error-message">
+              <div className="error-message-input">
                 {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
                 {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
               </div>
@@ -93,28 +89,22 @@ function SignUpStep1({ setForm, returnToLogin }) {
                 name="confirmPassword"
                 type="password"
                 id="confirmPassword"
-                placeholder="Confirmer mot de passe"
-                className="form-input"
+                className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
                 {...register("confirmPassword", {
                   validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
                 })}
               />
-              <label htmlFor="confirmPassword" className="form-label">Confirmation mot de passe *</label>
-              <div className="error-message">
+              <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
+              <div className="error-message-input">
                 <ErrorMessage errors={errors} name="confirmPassword" as="span" />
               </div>
             </div>
           </div>
 
-          <button type="submit" className="btn-form-sign-in">
-            Étape suivante <FontAwesomeIcon icon="angle-right" />
+          <button type="submit" className="btn-purple">
+            <FontAwesomeIcon className="btn-icon" icon="angle-right" />
+            Étape suivante 
           </button>
-        </div>
-
-        <div className="switch-form-container">
-          <p className="switch-form" onClick={() => returnToLogin()}>
-            Connexion
-          </p>
         </div>
 
       </form>
@@ -124,7 +114,6 @@ function SignUpStep1({ setForm, returnToLogin }) {
 
 SignUpStep1.propTypes = {
   setForm : PropTypes.func.isRequired,
-  returnToLogin : PropTypes.func.isRequired,
 }
 
 export default SignUpStep1
