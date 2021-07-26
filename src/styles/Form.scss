@@ -33,13 +33,13 @@
 }
 
 .container-checkbox-input {
-  @include container-checkbox($primary-color, $primary-color, $blue, $white);
+  @include container-checkbox($primary-color, $primary-color, $blue);
 }
 
 
 .container-checkbox-input-interaction{
   margin: .8rem 0;
-  @include container-checkbox($white, $white, $white, $primary-color-hover);
+  @include container-checkbox($white, $white, $white);
 }
 
 .container-radio-input + .container-radio-input{
