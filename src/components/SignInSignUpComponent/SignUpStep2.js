@@ -99,7 +99,6 @@ function SignUpStep2({ setForm }) {
                 name="householdCode"
                 type="text"
                 id="householdCode"
-                placeholder="Code famille"
                 className="form-input"
                 className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
                 {...register("householdCode", { required: "Ce champ est requis !" })}
@@ -129,7 +128,6 @@ function SignUpStep2({ setForm }) {
                   name="householdName"
                   type="text"
                   id="householdName"
-                  placeholder="Nom de la famille"
                   className={`form-input ${errors.householdName  ? "error-input" : ""}`}
                   {...register("householdName", { required: "Ce champ est requis !" })}
                 />
@@ -157,7 +155,6 @@ function SignUpStep2({ setForm }) {
                         name="otherMember"
                         type="text"
                         id="otherMember"
-                        placeholder="Code utilisateur"
                         className="form-input"
                       />
                       <label htmlFor="otherMember" className="form-label">Code utilisateur *</label>
