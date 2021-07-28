@@ -117,7 +117,7 @@ function SignUpStep2({ setForm }) {
                 type="text"
                 id="householdCode"
                 className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-                {...register("householdCode", { required: "Ce champ est requis !" })}
+                {...register("householdCode", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="householdCode" className="form-label">Code famille *</label>
               <div className="error-message-input">
@@ -145,7 +145,7 @@ function SignUpStep2({ setForm }) {
                   type="text"
                   id="householdName"
                   className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                  {...register("householdName", { required: "Ce champ est requis !" })}
+                  {...register("householdName", { required: "Ce champ est requis!" })}
                 />
                 <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
                 <div className="error-message-input">

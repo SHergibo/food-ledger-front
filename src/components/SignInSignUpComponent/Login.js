@@ -75,7 +75,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
                 type="email"
                 id="email"
                 className={`form-input ${errors.email  ? "error-input" : ""}`}
-                {...register("email", { required: "Ce champ est requis !" })}
+                {...register("email", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="email" className="form-label">Email *</label>
               <div className="error-message-input">
@@ -89,7 +89,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
                 type="password"
                 id="password"
                 className={`form-input ${errors.password  ? "error-input" : ""}`}
-                {...register("password", { required: "Ce champ est requis !" })}
+                {...register("password", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
               <div className="error-message-input">

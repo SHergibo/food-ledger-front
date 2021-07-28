@@ -31,7 +31,7 @@ function SignUpStep1({ setForm }) {
                 type="text"
                 id="fistName"
                 className={`form-input ${errors.firstName  ? "error-input" : ""}`}
-                {...register("firstName", { required: "Ce champ est requis !" })}
+                {...register("firstName", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="fistName" className="form-label">Prénom *</label>
               <div className="error-message-input">
@@ -45,7 +45,7 @@ function SignUpStep1({ setForm }) {
                 type="text"
                 id="lastName"
                 className={`form-input ${errors.lastName  ? "error-input" : ""}`}
-                {...register("lastName", { required: "Ce champ est requis !" })}
+                {...register("lastName", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="lastName" className="form-label">Nom *</label>
               <div className="error-message-input">
@@ -79,7 +79,7 @@ function SignUpStep1({ setForm }) {
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
               <div className="error-message-input">
-                {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
+                {errors.password?.type === "required" && <span>Ce champ est requis!</span>}
                 {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
               </div>
             </div>

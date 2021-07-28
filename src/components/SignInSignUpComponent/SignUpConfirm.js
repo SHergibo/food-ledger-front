@@ -156,7 +156,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
                 type="text"
                 id="fistName"
                 className={`form-input ${errors.firstName  ? "error-input" : ""}`}
-                {...register("firstName", { required: "Ce champ est requis !" })}
+                {...register("firstName", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="fistName" className="form-label">Prénom *</label>
               <div className="error-message-input">
@@ -170,7 +170,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
                 type="text"
                 id="lastName"
                 className={`form-input ${errors.lastName  ? "error-input" : ""}`}
-                {...register("lastName", { required: "Ce champ est requis !" })}
+                {...register("lastName", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="lastName" className="form-label">Nom *</label>
               <div className="error-message-input">
@@ -186,7 +186,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
               type="email"
               id="email"
               className={`form-input ${errors.email  ? "error-input" : ""}`}
-              {...register("email", { required: "Ce champ est requis !" })}
+              {...register("email", { required: "Ce champ est requis!" })}
             />
             <label htmlFor="email" className="form-label">E-mail *</label>
             <div className="error-message-input">
@@ -206,7 +206,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
               />
               <label htmlFor="password" className="form-label">Mot de passe *</label>
               <div className="error-message-input">
-                {errors.password?.type === "required" && <span>Ce champ est requis !</span>}
+                {errors.password?.type === "required" && <span>Ce champ est requis!</span>}
                 {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
               </div>
             </div>
@@ -239,7 +239,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
                 type="text"
                 id="householdCode"
                 className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-                {...register("householdCode", { required: "Ce champ est requis !" })}
+                {...register("householdCode", { required: "Ce champ est requis!" })}
               />
               <label htmlFor="householdCode" className="form-label">Code famille *</label>
               <div className="error-message-input">
@@ -256,7 +256,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
                   type="text"
                   id="householdName"
                   className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                  {...register("householdName", { required: "Ce champ est requis !" })}
+                  {...register("householdName", { required: "Ce champ est requis!" })}
                 />
                 <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
                 <div className="error-message-input">
