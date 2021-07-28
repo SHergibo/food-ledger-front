@@ -60,7 +60,7 @@ function SignUpStep1({ setForm }) {
               type="email"
               id="email"
               className={`form-input ${errors.email  ? "error-input" : ""}`}
-              {...register("email", { required: "Ce champ est requis !" })}
+              {...register("email", { required: "Ce champ est requis!" })}
             />
             <label htmlFor="email" className="form-label">E-mail *</label>
             <div className="error-message-input">
@@ -91,11 +91,13 @@ function SignUpStep1({ setForm }) {
                 id="confirmPassword"
                 className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
                 {...register("confirmPassword", {
+                  required: "Ce champ est requis!",
                   validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
                 })}
               />
               <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
               <div className="error-message-input">
+              {console.log(errors)}
                 <ErrorMessage errors={errors} name="confirmPassword" as="span" />
               </div>
             </div>

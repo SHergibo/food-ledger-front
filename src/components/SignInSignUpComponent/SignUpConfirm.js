@@ -219,6 +219,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
                   id="confirmPassword"
                   className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
                   {...register("confirmPassword", {
+                    required: "Ce champ est requis!",
                     validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
                   })}
                 />
