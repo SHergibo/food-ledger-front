@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 function SignUpStep2({ setForm }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState(false);
+  const [errorUsercode, setErrorUsercode] = useState(false);
+  const [errorUsercodeMessage, setErrorUsercodeMessage] = useState("");
   const otherMemberInput = useRef(null);
   const { handleSubmit, register, formState: { errors } } = useForm({
     defaultValues: state.yourDetails
@@ -34,11 +36,26 @@ function SignUpStep2({ setForm }) {
 
   const addOtherMember = (e) => {
     e.preventDefault();
+    setErrorUsercode(false);
+    setErrorUsercodeMessage("");
     let inputOtherMember = otherMemberInput.current;
-    if(inputOtherMember.value){
-      state.yourDetails.otherMemberArray.push(inputOtherMember.value);
+    let inputValue = inputOtherMember.value;
+    inputOtherMember.value = "";
+    if(inputValue){
+      let alreadyExist = state.yourDetails.otherMemberArray.find(usercode => usercode === inputValue);
+      if(alreadyExist) {
+        setErrorUsercode(true);
+        setErrorUsercodeMessage("Ce code existe déjà!");
+        return;
+      }
+      console.log(state.yourDetails.otherMemberArray.length)
+      if(state.yourDetails.otherMemberArray.length >= 6){
+        setErrorUsercode(true);
+        setErrorUsercodeMessage("Vous ne pouvez pas ajouter plus de 6 codes utilisateur!");
+        return;
+      }
+      state.yourDetails.otherMemberArray.push(inputValue);
       action(state.yourDetails);
-      inputOtherMember.value = "";
     }
   }
 
@@ -99,7 +116,6 @@ function SignUpStep2({ setForm }) {
                 name="householdCode"
                 type="text"
                 id="householdCode"
-                className="form-input"
                 className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
                 {...register("householdCode", { required: "Ce champ est requis !" })}
               />
@@ -148,7 +164,7 @@ function SignUpStep2({ setForm }) {
               </label>
               {state.yourDetails.otherMemberCheck === true && (
                 <>
-                  <div className="container-usercode">
+                  <div className="container-input-interaction">
                     <div className="input-group">
                       <input
                         ref={otherMemberInput}
@@ -157,16 +173,30 @@ function SignUpStep2({ setForm }) {
                         id="otherMember"
                         className="form-input"
                       />
-                      <label htmlFor="otherMember" className="form-label">Code utilisateur *</label>
+                      <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
+                      <div className="error-message-input">
+                        {errorUsercode && 
+                          <div className="error-message-input">
+                            <span>{errorUsercodeMessage}</span>
+                          </div>
+                        }
+                      </div>
                     </div>
-                    <button className="btn-add-usercode" onClick={addOtherMember}>+</button>
+                    <button className="btn-input-interaction" onClick={addOtherMember}>
+                      <FontAwesomeIcon className="btn-icon" icon="plus" />
+                    </button>
                   </div>
                   {state.yourDetails.otherMemberArray.length >= 1 && (
                     <ul className="list-usercode">
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
                           return (
-                          <li key={`userCode-${index}`}><div>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon="times" /></button></li>
+                          <li key={`userCode-${index}`}>
+                            <p>{item}</p> 
+                            <button onClick={(e) => deleteOtherMember(e, index)}>
+                              <FontAwesomeIcon className="btn-icon" icon="times" />
+                            </button>
+                          </li>
                           )
                         })
                       }

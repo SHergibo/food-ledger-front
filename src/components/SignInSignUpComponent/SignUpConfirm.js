@@ -11,6 +11,8 @@ import PropTypes from 'prop-types';
 function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState("");
+  const [errorUsercode, setErrorUsercode] = useState(false);
+  const [errorUsercodeMessage, setErrorUsercodeMessage] = useState("");
   const [errorBool, setErrorBool] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
   const otherMemberInput = useRef(null);
@@ -48,11 +50,25 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
 
   const addOtherMember = (e) => {
     e.preventDefault();
+    setErrorUsercode(false);
+    setErrorUsercodeMessage("");
     let inputOtherMember = otherMemberInput.current;
-    if(inputOtherMember.value){
-      state.yourDetails.otherMemberArray.push(inputOtherMember.value);
+    let inputValue = inputOtherMember.value;
+    inputOtherMember.value = "";
+    if(inputValue){
+      let alreadyExist = state.yourDetails.otherMemberArray.find(usercode => usercode === inputValue);
+      if(alreadyExist) {
+        setErrorUsercode(true);
+        setErrorUsercodeMessage("Ce code existe déjà!");
+        return;
+      }
+      if(state.yourDetails.otherMemberArray.length >= 6){
+        setErrorUsercode(true);
+        setErrorUsercodeMessage("Vous ne pouvez pas ajouter plus de 6 code utilisateur!");
+        return;
+      }
+      state.yourDetails.otherMemberArray.push(inputValue);
       action(state.yourDetails);
-      inputOtherMember.value = "";
     }
   }
 
@@ -248,7 +264,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
               </div>
               {state.yourDetails.otherMemberCheck === true && (
                 <>
-                  <div className="div-usercode">
+                  <div className="container-input-interaction">
                     <div className="input-group">
                       <input
                         ref={otherMemberInput}
@@ -257,19 +273,30 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
                         id="otherMember"
                         className="form-input"
                       />
-                      <label htmlFor="otherMember" className="form-label">Code utilisateur *</label>
+                      <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
+                      <div className="error-message-input">
+                        {errorUsercode && 
+                          <div className="error-message-input">
+                            <span>{errorUsercodeMessage}</span>
+                          </div>
+                        }
+                      </div>
                     </div>
-                    <button className="btn-add-usercode" onClick={addOtherMember}>+</button>
+                    <button className="btn-input-interaction" onClick={addOtherMember}>
+                      <FontAwesomeIcon className="btn-icon" icon="plus" />
+                    </button>
                   </div>
-                  {state.yourDetails.otherMemberArray.length === 0 && (
-                    <p>Aucun code utilisateur.</p>
-                  )}
                   {state.yourDetails.otherMemberArray.length >= 1 && (
                     <ul className="list-usercode">
                       {
                         state.yourDetails.otherMemberArray.map((item, index) => {
                           return (
-                            <li key={`userCode-${index}`}><div ref={(el) => (otherMemberList.current[index] = el)}>{item}</div> <button onClick={(e) => deleteOtherMember(e, index)}><FontAwesomeIcon icon="times" /></button></li>
+                            <li key={`userCode-${index}`}>
+                              <p ref={(el) => (otherMemberList.current[index] = el)}>{item}</p> 
+                              <button onClick={(e) => deleteOtherMember(e, index)}>
+                               <FontAwesomeIcon className="btn-icon" icon="times" />
+                              </button>
+                            </li>
                           )
                         })
                       }
