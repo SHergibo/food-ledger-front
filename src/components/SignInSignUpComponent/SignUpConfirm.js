@@ -307,7 +307,7 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
               )}
             </>
           )}
-          {errorBool && <span className="error-message-input">{errorMessage}</span>}
+          {errorBool && <p className="error-message">{errorMessage}</p>}
           <button type="submit" className="btn-purple">
             <FontAwesomeIcon className="btn-icon" icon="user-plus" />
             Créer son compte
