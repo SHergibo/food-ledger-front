@@ -97,8 +97,8 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
               </div>
             </div>
 
-            {errorMessage && <span className="error-message">Adresse mail ou mot de passe invalide !</span>}
-            {successCreateAccount && <span ref={successMessage} className="success-message">Votre compte a été créé avec succés !</span>}
+            {errorMessage && <p className="error-message">Adresse mail ou mot de passe invalide !</p>}
+            {successCreateAccount && <p ref={successMessage} className="success-message">Votre compte a été créé avec succès!</p>}
             <button type="submit" className="btn-purple">
               <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
               Se connecter

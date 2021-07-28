@@ -207,7 +207,7 @@ function SignUpStep2({ setForm }) {
             </>
           )}
           {errorMessage === true && (
-            <span className="error-message">Vous devez répondre à une de ces deux questions et remplir le formulaire.</span>
+            <p className="error-message">Vous devez répondre à une de ces deux questions et remplir le formulaire.</p>
           )}
           <button type="submit" className="btn-purple">
             <FontAwesomeIcon className="btn-icon" icon="angle-right" />
