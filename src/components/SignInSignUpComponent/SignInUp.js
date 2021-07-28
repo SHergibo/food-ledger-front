@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { StateMachineProvider, createStore } from "little-state-machine";
 import logo from "./../../images/foodledger_logo.png";
 import Login from "./Login";
@@ -24,17 +24,20 @@ createStore({
 
 function SignInUp() {
   const [formTitle, setFormTitle] = useState("Connexion");
+  const formRef = useRef(null);
   const [successCreateAccount, setSuccessCreateAccount] = useState(false);
   const [form, setForm] = useState('login');
 
   const createUserForm = () => {
     setForm('step1');
     setFormTitle('Créer un compte');
+    formRef.current.classList.add('active');
   }
 
   const returnToLogin = () => {
     setForm('login');
     setFormTitle('Connexion');
+    formRef.current.classList.remove('active');
   }
 
   return (
@@ -42,7 +45,7 @@ function SignInUp() {
 
       <StateMachineProvider>
         <div className={`${form === "login" ? "container-sign-in": "container-sign-up"}`}>
-          <div className="interactive-container">
+          <div ref={formRef} className="interactive-container">
             <div className="title-container">
               <div className="logo-container">
                 <img src={logo} alt="food ledger logo"/>
@@ -94,13 +97,24 @@ function SignInUp() {
           </div>
           
           <div className="switch-form-container">
-            <div>
-              <p>Pas encore de compte ?</p>
-              <button className="btn-white" onClick={() => createUserForm()}>
-                <FontAwesomeIcon className="btn-icon" icon="user-plus" />
-                Créer un compte
-              </button>
-            </div>
+            {form === "login" &&
+              <div>
+                <p>Pas encore de compte ?</p>
+                <button className="btn-white" onClick={() => createUserForm()}>
+                  <FontAwesomeIcon className="btn-icon" icon="user-plus" />
+                  Créer un compte
+                </button>
+              </div>
+            }
+            {form !== "login" &&
+              <div>
+                <p>Déjà un compte ?</p>
+                <button className="btn-white" onClick={() => returnToLogin()}>
+                  <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+                  Se connecter
+                </button>
+              </div>
+            }
           </div>
         </div>
       </StateMachineProvider>

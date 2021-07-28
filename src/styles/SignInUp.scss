@@ -5,12 +5,19 @@
 }
 
 .container-sign-in, .container-sign-up{
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  .active{
+    order: 1;
+  }
   .interactive-container, .switch-form-container{
+    display: flex;
+    flex-direction: column;
     padding: calculEm(24px);
   }
   .interactive-container{
-    min-height: 70%;
+    flex: auto;
     .sign-up-subtitle{
       font-size: calculRem(20px);
       font-weight: 600;
@@ -34,17 +41,18 @@
       }
     }
     .form-sign-up{
+      display: flex;
+      align-items: center;
       .container-usercode{
         margin: 1rem 0;
       }
     }
   }
   .switch-form-container{
-    display: flex;
     justify-content: center;
     align-items: center;
     background-color: $new-primary-color;
-    height: 30%;
+    min-height: calculEm(250px);
     div{
       p{
         color: $white;
