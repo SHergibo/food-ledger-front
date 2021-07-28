@@ -107,6 +107,14 @@
       font-weight: 600;
     }
   }
+  .success-message{
+    margin-bottom: 1rem;
+    color: $new-green;
+  }
+  .error-message{
+    margin-bottom: 1rem;
+    color: $new-red;
+  }
 }
 
 @media screen and (min-width: 340px) {
