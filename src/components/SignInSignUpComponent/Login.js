@@ -66,7 +66,7 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
         loginData={loginData}
       />
     :
-      <div className="form-container">
+      <div className="form-sign-in-container">
         <form className="form-sign-in" onSubmit={handleSubmit(onSubmit)}>
           <div className="input-group">
             <input

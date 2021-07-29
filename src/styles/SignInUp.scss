@@ -89,7 +89,7 @@
       height: calculEm(73px);
     }
     .title-interaction{
-      padding: 0 calculEm(9px);
+      padding-left: calculEm(18px);
       width: 100%;
       color: $new-primary-color;
       .back-to-interaction{
@@ -152,6 +152,12 @@
       h1{
         display: none;
       }
+    }
+    .form-sign-in-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
     }
   }
 }

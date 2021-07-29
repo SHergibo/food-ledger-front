@@ -48,7 +48,7 @@ function SignInUp() {
           <div ref={formRef} className="interactive-container">
             <div className="title-container">
               <div className="logo-container">
-                <img src={logo} alt="food ledger logo"/>
+                <img src={logo} alt="food ledger app logo"/>
                 <div className="title-interaction">
                   {(form === "step2" || form === "confirm")  &&
                     <div className="back-to-interaction">
