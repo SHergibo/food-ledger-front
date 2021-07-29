@@ -26,8 +26,6 @@
     }
 
     .form-sign-up{
-      display: flex;
-      align-items: center;
       .container-checkbox + .container-input-interaction{
         margin-top: 1rem;
       }
@@ -158,6 +156,31 @@
       justify-content: center;
       align-items: center;
       height: 100%;
+    }
+    .input-flex-group{
+      display: flex;
+      .input-group{
+        width: 100%;
+      }
+      .input-group + .input-group{
+        margin-left: 2em;
+      }
+    }
+    .container-input-interaction{
+      .input-group{
+        width: 100%;
+      }
+    }
+    .interactive-container{
+      .form-sign-up{
+        .list-usercode{
+          justify-content: flex-start;
+          li{
+            padding-right: 1.5rem;
+          }
+          
+        }
+      }
     }
   }
 }

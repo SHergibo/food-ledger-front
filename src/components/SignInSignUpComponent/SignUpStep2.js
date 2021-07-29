@@ -96,125 +96,122 @@ function SignUpStep2({ setForm }) {
   return (
     <div className="form-container">
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <h2 className="sign-up-subtitle">Étape 2 : Infos famille</h2>
-          {state.yourDetails.householdNameCheck !== true && (
-            <label className="container-checkbox">
-              Avez-vous un code famille ?
-              <input
-                name="householdCodeCheck"
-                type="checkbox"
-                onClick={pressHouseHoldCodeCheck}
-                {...register("householdCodeCheck")}
-              />
-              <span className="checkmark-checkbox"></span>
-            </label>
-          )}
-          {state.yourDetails.householdCodeCheck === true && (
+        <h2 className="sign-up-subtitle">Étape 2 : Infos famille</h2>
+        {state.yourDetails.householdNameCheck !== true && (
+          <label className="container-checkbox">
+            Avez-vous un code famille ?
+            <input
+              name="householdCodeCheck"
+              type="checkbox"
+              onClick={pressHouseHoldCodeCheck}
+              {...register("householdCodeCheck")}
+            />
+            <span className="checkmark-checkbox"></span>
+          </label>
+        )}
+        {state.yourDetails.householdCodeCheck === true && (
+          <div className="input-group">
+            <input
+              name="householdCode"
+              type="text"
+              id="householdCode"
+              className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
+              {...register("householdCode", { required: "Ce champ est requis!" })}
+            />
+            <label htmlFor="householdCode" className="form-label">Code famille *</label>
+            <div className="error-message-input">
+              <ErrorMessage errors={errors} name="householdCode" as="span" />
+            </div>
+          </div>
+        )}
+        {state.yourDetails.householdCodeCheck !== true && (
+          <label className="container-checkbox">
+            Voulez-vous créer une famille ?
+            <input
+              name="householdNameCheck"
+              type="checkbox"
+              onClick={pressHouseHoldNameCheck}
+              {...register("householdNameCheck")}
+            />
+            <span className="checkmark-checkbox"></span>
+          </label>
+        )}
+        {state.yourDetails.householdNameCheck === true && (
+          <>
             <div className="input-group">
               <input
-                name="householdCode"
+                name="householdName"
                 type="text"
-                id="householdCode"
-                className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-                {...register("householdCode", { required: "Ce champ est requis!" })}
+                id="householdName"
+                className={`form-input ${errors.householdName  ? "error-input" : ""}`}
+                {...register("householdName", { required: "Ce champ est requis!" })}
               />
-              <label htmlFor="householdCode" className="form-label">Code famille *</label>
+              <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
               <div className="error-message-input">
-                <ErrorMessage errors={errors} name="householdCode" as="span" />
+                <ErrorMessage errors={errors} name="householdName" as="span" />
               </div>
             </div>
-          )}
-          {state.yourDetails.householdCodeCheck !== true && (
             <label className="container-checkbox">
-              Voulez-vous créer une famille ?
-              <input
-                name="householdNameCheck"
+              Autre code utilisateur ?
+            <input
+                name="otherMemberCheck"
                 type="checkbox"
-                onClick={pressHouseHoldNameCheck}
-                {...register("householdNameCheck")}
+                onClick={pressOtherMemberCodeCheck}
+                {...register("otherMemberCheck")}
               />
               <span className="checkmark-checkbox"></span>
             </label>
-          )}
-          {state.yourDetails.householdNameCheck === true && (
-            <>
-              <div className="input-group">
-                <input
-                  name="householdName"
-                  type="text"
-                  id="householdName"
-                  className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                  {...register("householdName", { required: "Ce champ est requis!" })}
-                />
-                <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
-                <div className="error-message-input">
-                  <ErrorMessage errors={errors} name="householdName" as="span" />
-                </div>
-              </div>
-              <label className="container-checkbox">
-                Autre code utilisateur ?
-              <input
-                  name="otherMemberCheck"
-                  type="checkbox"
-                  onClick={pressOtherMemberCodeCheck}
-                  {...register("otherMemberCheck")}
-                />
-                <span className="checkmark-checkbox"></span>
-              </label>
-              {state.yourDetails.otherMemberCheck === true && (
-                <>
-                  <div className="container-input-interaction">
-                    <div className="input-group">
-                      <input
-                        ref={otherMemberInput}
-                        name="otherMember"
-                        type="text"
-                        id="otherMember"
-                        className="form-input"
-                      />
-                      <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
-                      <div className="error-message-input">
-                        {errorUsercode && 
-                          <div className="error-message-input">
-                            <span>{errorUsercodeMessage}</span>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                    <button className="btn-input-interaction" onClick={addOtherMember}>
-                      <FontAwesomeIcon className="btn-icon" icon="plus" />
-                    </button>
-                  </div>
-                  {state.yourDetails.otherMemberArray.length >= 1 && (
-                    <ul className="list-usercode">
-                      {
-                        state.yourDetails.otherMemberArray.map((item, index) => {
-                          return (
-                          <li key={`userCode-${index}`}>
-                            <p>{item}</p> 
-                            <button onClick={(e) => deleteOtherMember(e, index)}>
-                              <FontAwesomeIcon className="btn-icon" icon="times" />
-                            </button>
-                          </li>
-                          )
-                        })
+            {state.yourDetails.otherMemberCheck === true && (
+              <>
+                <div className="container-input-interaction">
+                  <div className="input-group">
+                    <input
+                      ref={otherMemberInput}
+                      name="otherMember"
+                      type="text"
+                      id="otherMember"
+                      className="form-input"
+                    />
+                    <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
+                    <div className="error-message-input">
+                      {errorUsercode && 
+                        <div className="error-message-input">
+                          <span>{errorUsercodeMessage}</span>
+                        </div>
                       }
-                    </ul>
-                  )}
-                </>
-              )}
-            </>
-          )}
-          {errorMessage === true && (
-            <p className="error-message">Vous devez répondre à une de ces deux questions et remplir le formulaire.</p>
-          )}
-          <button type="submit" className="btn-purple">
-            <FontAwesomeIcon className="btn-icon" icon="angle-right" />
-            Étape suivante 
-          </button>
-        </div>
-
+                    </div>
+                  </div>
+                  <button className="btn-input-interaction" onClick={addOtherMember}>
+                    <FontAwesomeIcon className="btn-icon" icon="plus" />
+                  </button>
+                </div>
+                {state.yourDetails.otherMemberArray.length >= 1 && (
+                  <ul className="list-usercode">
+                    {
+                      state.yourDetails.otherMemberArray.map((item, index) => {
+                        return (
+                        <li key={`userCode-${index}`}>
+                          <p>{item}</p> 
+                          <button onClick={(e) => deleteOtherMember(e, index)}>
+                            <FontAwesomeIcon className="btn-icon" icon="times" />
+                          </button>
+                        </li>
+                        )
+                      })
+                    }
+                  </ul>
+                )}
+              </>
+            )}
+          </>
+        )}
+        {errorMessage === true && (
+          <p className="error-message">Vous devez répondre à une de ces deux questions et remplir le formulaire.</p>
+        )}
+        <button type="submit" className="btn-purple">
+          <FontAwesomeIcon className="btn-icon" icon="angle-right" />
+          Étape suivante 
+        </button>
       </form>
     </div>
   )

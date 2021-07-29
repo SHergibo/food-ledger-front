@@ -146,175 +146,172 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
   return (
     <div className="form-container">
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <h2 className="sign-up-subtitle">Étape 3 : confirmation</h2>
+        <h2 className="sign-up-subtitle">Étape 3 : confirmation</h2>
 
-          <div className="input-flex-group">
-            <div className="input-group input-siblings">
-              <input
-                name="firstName"
-                type="text"
-                id="fistName"
-                className={`form-input ${errors.firstName  ? "error-input" : ""}`}
-                {...register("firstName", { required: "Ce champ est requis!" })}
-              />
-              <label htmlFor="fistName" className="form-label">Prénom *</label>
-              <div className="error-message-input">
-                <ErrorMessage errors={errors} name="firstName" as="span" />
-              </div>
-            </div>
-
-            <div className="input-group">
-              <input
-                name="lastName"
-                type="text"
-                id="lastName"
-                className={`form-input ${errors.lastName  ? "error-input" : ""}`}
-                {...register("lastName", { required: "Ce champ est requis!" })}
-              />
-              <label htmlFor="lastName" className="form-label">Nom *</label>
-              <div className="error-message-input">
-                <ErrorMessage errors={errors} name="lastName" as="span" />
-              </div>
+        <div className="input-flex-group">
+          <div className="input-group">
+            <input
+              name="firstName"
+              type="text"
+              id="fistName"
+              className={`form-input ${errors.firstName  ? "error-input" : ""}`}
+              {...register("firstName", { required: "Ce champ est requis!" })}
+            />
+            <label htmlFor="fistName" className="form-label">Prénom *</label>
+            <div className="error-message-input">
+              <ErrorMessage errors={errors} name="firstName" as="span" />
             </div>
           </div>
-
 
           <div className="input-group">
             <input
-              name="email"
-              type="email"
-              id="email"
-              className={`form-input ${errors.email  ? "error-input" : ""}`}
-              {...register("email", { required: "Ce champ est requis!" })}
+              name="lastName"
+              type="text"
+              id="lastName"
+              className={`form-input ${errors.lastName  ? "error-input" : ""}`}
+              {...register("lastName", { required: "Ce champ est requis!" })}
             />
-            <label htmlFor="email" className="form-label">E-mail *</label>
+            <label htmlFor="lastName" className="form-label">Nom *</label>
             <div className="error-message-input">
-              <ErrorMessage errors={errors} name="email" as="span" />
+              <ErrorMessage errors={errors} name="lastName" as="span" />
             </div>
           </div>
-
-          <div className="input-flex-group">
-            <div className={`input-group ${passwordChanged ? "input-siblings": ""}`}>
-              <input
-                name="password"
-                type="password"
-                id="password"
-                className={`form-input ${errors.password  ? "error-input" : ""}`}
-                {...register("password", { required: true, minLength: 7 })}
-                onChange={changePassword}
-              />
-              <label htmlFor="password" className="form-label">Mot de passe *</label>
-              <div className="error-message-input">
-                {errors.password?.type === "required" && <span>Ce champ est requis!</span>}
-                {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
-              </div>
-            </div>
-
-            {passwordChanged === true && (
-              <div className="input-group">
-                <input
-                  name="confirmPassword"
-                  type="password"
-                  id="confirmPassword"
-                  className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
-                  {...register("confirmPassword", {
-                    required: "Ce champ est requis!",
-                    validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
-                  })}
-                />
-                <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
-                <div className="error-message-input">
-                  <ErrorMessage errors={errors} name="confirmPassword" as="span" />
-                </div>
-              </div>
-            )}
-          </div>
-
-
-          {state.yourDetails.householdCodeCheck === true && (
-            <div className="input-group">
-              <input
-                name="householdCode"
-                type="text"
-                id="householdCode"
-                className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-                {...register("householdCode", { required: "Ce champ est requis!" })}
-              />
-              <label htmlFor="householdCode" className="form-label">Code famille *</label>
-              <div className="error-message-input">
-                <ErrorMessage errors={errors} name="householdCode" as="span" />
-              </div>
-            </div>
-          )}
-
-          {state.yourDetails.householdNameCheck === true && (
-            <>
-              <div className="input-group">
-                <input
-                  name="householdName"
-                  type="text"
-                  id="householdName"
-                  className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                  {...register("householdName", { required: "Ce champ est requis!" })}
-                />
-                <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
-                <div className="error-message-input">
-                  <ErrorMessage errors={errors} name="householdName" as="span" />
-                </div>
-              </div>
-              {state.yourDetails.otherMemberCheck === true && (
-                <>
-                  <div className="container-input-interaction">
-                    <div className="input-group">
-                      <input
-                        ref={otherMemberInput}
-                        name="otherMember"
-                        type="text"
-                        id="otherMember"
-                        className="form-input"
-                      />
-                      <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
-                      <div className="error-message-input">
-                        {errorUsercode && 
-                          <div className="error-message-input">
-                            <span>{errorUsercodeMessage}</span>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                    <button className="btn-input-interaction" onClick={addOtherMember}>
-                      <FontAwesomeIcon className="btn-icon" icon="plus" />
-                    </button>
-                  </div>
-                  {state.yourDetails.otherMemberArray.length >= 1 && (
-                    <ul className="list-usercode">
-                      {
-                        state.yourDetails.otherMemberArray.map((item, index) => {
-                          return (
-                            <li key={`userCode-${index}`}>
-                              <p ref={(el) => (otherMemberList.current[index] = el)}>{item}</p> 
-                              <button onClick={(e) => deleteOtherMember(e, index)}>
-                               <FontAwesomeIcon className="btn-icon" icon="times" />
-                              </button>
-                            </li>
-                          )
-                        })
-                      }
-                    </ul>
-                  )}
-
-                </>
-              )}
-            </>
-          )}
-          {errorBool && <p className="error-message">{errorMessage}</p>}
-          <button type="submit" className="btn-purple">
-            <FontAwesomeIcon className="btn-icon" icon="user-plus" />
-            Créer son compte
-          </button>
         </div>
 
+
+        <div className="input-group">
+          <input
+            name="email"
+            type="email"
+            id="email"
+            className={`form-input ${errors.email  ? "error-input" : ""}`}
+            {...register("email", { required: "Ce champ est requis!" })}
+          />
+          <label htmlFor="email" className="form-label">E-mail *</label>
+          <div className="error-message-input">
+            <ErrorMessage errors={errors} name="email" as="span" />
+          </div>
+        </div>
+
+        <div className="input-flex-group">
+          <div className={`input-group ${passwordChanged ? "input-siblings": ""}`}>
+            <input
+              name="password"
+              type="password"
+              id="password"
+              className={`form-input ${errors.password  ? "error-input" : ""}`}
+              {...register("password", { required: true, minLength: 7 })}
+              onChange={changePassword}
+            />
+            <label htmlFor="password" className="form-label">Mot de passe *</label>
+            <div className="error-message-input">
+              {errors.password?.type === "required" && <span>Ce champ est requis!</span>}
+              {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
+            </div>
+          </div>
+
+          {passwordChanged === true && (
+            <div className="input-group">
+              <input
+                name="confirmPassword"
+                type="password"
+                id="confirmPassword"
+                className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
+                {...register("confirmPassword", {
+                  required: "Ce champ est requis!",
+                  validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
+                })}
+              />
+              <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
+              <div className="error-message-input">
+                <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+              </div>
+            </div>
+          )}
+        </div>
+
+
+        {state.yourDetails.householdCodeCheck === true && (
+          <div className="input-group">
+            <input
+              name="householdCode"
+              type="text"
+              id="householdCode"
+              className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
+              {...register("householdCode", { required: "Ce champ est requis!" })}
+            />
+            <label htmlFor="householdCode" className="form-label">Code famille *</label>
+            <div className="error-message-input">
+              <ErrorMessage errors={errors} name="householdCode" as="span" />
+            </div>
+          </div>
+        )}
+
+        {state.yourDetails.householdNameCheck === true && (
+          <>
+            <div className="input-group">
+              <input
+                name="householdName"
+                type="text"
+                id="householdName"
+                className={`form-input ${errors.householdName  ? "error-input" : ""}`}
+                {...register("householdName", { required: "Ce champ est requis!" })}
+              />
+              <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
+              <div className="error-message-input">
+                <ErrorMessage errors={errors} name="householdName" as="span" />
+              </div>
+            </div>
+            {state.yourDetails.otherMemberCheck === true && (
+              <>
+                <div className="container-input-interaction">
+                  <div className="input-group">
+                    <input
+                      ref={otherMemberInput}
+                      name="otherMember"
+                      type="text"
+                      id="otherMember"
+                      className="form-input"
+                    />
+                    <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
+                    <div className="error-message-input">
+                      {errorUsercode && 
+                        <div className="error-message-input">
+                          <span>{errorUsercodeMessage}</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <button className="btn-input-interaction" onClick={addOtherMember}>
+                    <FontAwesomeIcon className="btn-icon" icon="plus" />
+                  </button>
+                </div>
+                {state.yourDetails.otherMemberArray.length >= 1 && (
+                  <ul className="list-usercode">
+                    {
+                      state.yourDetails.otherMemberArray.map((item, index) => {
+                        return (
+                          <li key={`userCode-${index}`}>
+                            <p ref={(el) => (otherMemberList.current[index] = el)}>{item}</p> 
+                            <button onClick={(e) => deleteOtherMember(e, index)}>
+                              <FontAwesomeIcon className="btn-icon" icon="times" />
+                            </button>
+                          </li>
+                        )
+                      })
+                    }
+                  </ul>
+                )}
+
+              </>
+            )}
+          </>
+        )}
+        {errorBool && <p className="error-message">{errorMessage}</p>}
+        <button type="submit" className="btn-purple">
+          <FontAwesomeIcon className="btn-icon" icon="user-plus" />
+          Créer son compte
+        </button>
       </form>
     </div>
   )
