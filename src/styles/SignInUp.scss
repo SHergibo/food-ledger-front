@@ -18,49 +18,51 @@
   }
   .interactive-container{
     flex: auto;
-    .sign-up-subtitle{
-      font-size: calculRem(20px);
-      font-weight: 600;
-      color: $new-primary-color;
-      margin-bottom: calculRem(20px);
-    }
+  }
 
-    .form-sign-up{
-      .container-checkbox + .container-input-interaction{
-        margin-top: 1rem;
-      }
-      .list-usercode{
+  .sign-up-subtitle{
+    font-size: calculRem(20px);
+    font-weight: 600;
+    color: $new-primary-color;
+    margin-bottom: calculRem(20px);
+  }
+
+  .form-sign-up{
+    .container-checkbox + .container-input-interaction{
+      margin-top: 1rem;
+    }
+    .list-usercode{
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      color: $new-primary-color;
+      margin-bottom: 1rem;
+      li{
         display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        color: $new-primary-color;
+        align-items: center;
         margin-bottom: 1rem;
-        li{
+        p{
+          font-size: calculRem(18px);
+          margin-right: calculRem(12px);
+        }
+        button{
+          all: unset;
           display: flex;
+          justify-content: center;
           align-items: center;
-          margin-bottom: 1rem;
-          p{
-            font-size: calculRem(18px);
-            margin-right: calculRem(12px);
-          }
-          button{
-            all: unset;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: calculRem(25px);
-            height: calculRem(25px);
-            background-color: $new-primary-color;
-            color: $white;
-            border-radius: calculRem(5px);
-            .btn-icon{
-              font-size: calculRem(20px);
-            }
+          width: calculRem(25px);
+          height: calculRem(25px);
+          background-color: $new-primary-color;
+          color: $white;
+          border-radius: calculRem(5px);
+          .btn-icon{
+            font-size: calculRem(20px);
           }
         }
       }
     }
   }
+
   .switch-form-container{
     justify-content: center;
     align-items: center;
@@ -171,14 +173,11 @@
         width: 100%;
       }
     }
-    .interactive-container{
-      .form-sign-up{
-        .list-usercode{
-          justify-content: flex-start;
-          li{
-            padding-right: 1.5rem;
-          }
-          
+    .form-sign-up{
+      .list-usercode{
+        justify-content: flex-start;
+        li{
+          padding-right: 1.5rem;
         }
       }
     }
