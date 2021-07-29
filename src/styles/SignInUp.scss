@@ -24,22 +24,7 @@
       color: $new-primary-color;
       margin-bottom: calculRem(20px);
     }
-    .back-to-interaction{
-      display: flex;
-      align-items: center;
-      padding: calculEm(15px) calculEm(9px);
-      height: calculEm(30px);
-      width: 100%;
-      color: $new-primary-color;
-      .btn-icon{
-        font-size: calculRem(20px);
-        margin-right: calculRem(9px);
-      }
-      p{
-        font-size: calculRem(20px);
-        font-weight: 600;
-      }
-    }
+
     .form-sign-up{
       display: flex;
       align-items: center;
@@ -101,6 +86,28 @@
     .logo-container{
       display: flex;
       margin-bottom: calculEm(16px);
+      height: calculEm(73px);
+    }
+    .title-interaction{
+      padding: 0 calculEm(9px);
+      width: 100%;
+      color: $new-primary-color;
+      .back-to-interaction{
+        display: flex;
+        align-items: center;
+        height: calculEm(30px);
+        .btn-icon{
+          font-size: calculRem(20px);
+          margin-right: calculRem(9px);
+        }
+        p{
+          font-size: calculRem(20px);
+          font-weight: 600;
+        }
+      }
+      h1{
+        display: none;
+      }
     }
     h1{
       color: $new-primary-color;
@@ -117,6 +124,7 @@
   }
 }
 
+/*Media queries*/
 @media screen and (min-width: 340px) {
   .container-sign-in, .container-sign-up{
     .interactive-container, .switch-form-container{
@@ -125,6 +133,28 @@
   }
 }
 
+/*Tablet*/
+@media screen and (min-width: 768px) {
+  .container-sign-in, .container-sign-up{
+    .title-container{
+      display: flex;
+      .logo-container{
+        margin-bottom: 0;
+      }
+      .title-interaction{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        h1{
+          display: block;
+        }
+      }
+      h1{
+        display: none;
+      }
+    }
+  }
+}
 
 
 
