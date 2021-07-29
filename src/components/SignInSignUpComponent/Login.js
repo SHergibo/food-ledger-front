@@ -68,42 +68,40 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
     :
       <div className="form-container">
         <form className="form-sign-in" onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <div className="input-group">
-              <input
-                name="email"
-                type="email"
-                id="email"
-                className={`form-input ${errors.email  ? "error-input" : ""}`}
-                {...register("email", { required: "Ce champ est requis!" })}
-              />
-              <label htmlFor="email" className="form-label">Email *</label>
-              <div className="error-message-input">
-                <ErrorMessage errors={errors} name="email" as="span" />
-              </div>
+          <div className="input-group">
+            <input
+              name="email"
+              type="email"
+              id="email"
+              className={`form-input ${errors.email  ? "error-input" : ""}`}
+              {...register("email", { required: "Ce champ est requis!" })}
+            />
+            <label htmlFor="email" className="form-label">Email *</label>
+            <div className="error-message-input">
+              <ErrorMessage errors={errors} name="email" as="span" />
             </div>
-
-            <div className="input-group">
-              <input
-                name="password"
-                type="password"
-                id="password"
-                className={`form-input ${errors.password  ? "error-input" : ""}`}
-                {...register("password", { required: "Ce champ est requis!" })}
-              />
-              <label htmlFor="password" className="form-label">Mot de passe *</label>
-              <div className="error-message-input">
-                <ErrorMessage errors={errors} name="password" as="span" />
-              </div>
-            </div>
-
-            {errorMessage && <p className="error-message">Adresse mail ou mot de passe invalide !</p>}
-            {successCreateAccount && <p ref={successMessage} className="success-message">Votre compte a été créé avec succès!</p>}
-            <button type="submit" className="btn-purple">
-              <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
-              Se connecter
-            </button>
           </div>
+
+          <div className="input-group">
+            <input
+              name="password"
+              type="password"
+              id="password"
+              className={`form-input ${errors.password  ? "error-input" : ""}`}
+              {...register("password", { required: "Ce champ est requis!" })}
+            />
+            <label htmlFor="password" className="form-label">Mot de passe *</label>
+            <div className="error-message-input">
+              <ErrorMessage errors={errors} name="password" as="span" />
+            </div>
+          </div>
+
+          {errorMessage && <p className="error-message">Adresse mail ou mot de passe invalide !</p>}
+          {successCreateAccount && <p ref={successMessage} className="success-message">Votre compte a été créé avec succès!</p>}
+          <button type="submit" className="btn-purple">
+            <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+            Se connecter
+          </button>
         </form>
       </div>
     }
