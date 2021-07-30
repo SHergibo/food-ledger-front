@@ -8,15 +8,18 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  .active{
-    order: 1;
-  }
   .interactive-container, .switch-form-container{
     display: flex;
     flex-direction: column;
     padding: calculEm(24px);
   }
+
+  .active{
+    order: 1;
+  }
+
   .interactive-container{
+    background-color: $white;
     flex: auto;
   }
 
@@ -159,7 +162,7 @@
       align-items: center;
       height: 100%;
     }
-    .input-flex-group{
+    .input-flex-group, .input-flex-group-password{
       display: flex;
       .input-group{
         width: 100%;
@@ -184,6 +187,63 @@
   }
 }
 
+/*Desktop*/
+@media (min-width: 1200px) {
+  .wrapper-sign-in-up{
+    align-items: center;
+  }
+  .container-sign-in, .container-sign-up{
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    min-height: calculEm(500px);
+    width: calculEm(1000px);
+    .interactive-container{
+      position: absolute;
+      left: 0;
+      height: 100%;
+      width: 70%;
+      background-color: $white;
+      border-radius: calculEm(20px);
+      box-shadow: 0px 1px 4px rgba(155, 155, 155, 0.25);
+      transition: left .5s ease-in-out;
+    }
+    .active{
+      left: 30%;
+    }
+    .active-step1{
+      height: calculEm(559px);
+    }
+    .active-step2{
+      height: calculEm(634px);
+    }
+    .active-confirm{
+      height: calculEm(559px);
+    }
+    .active-confirm-usercode{
+      height: calculEm(715px);
+    }
+    .form-sign-up-container{
+      display: flex;
+      align-items: center;
+      height: 100%;
+      .form-sign-up{
+        width: 100%;
+      }
+    }
+    .switch-form-container{
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      height: calculEm(420px);
+      border-radius: calculEm(20px);
+      box-shadow: 0px 1px 4px rgba(155, 155, 155, 0.25);
+      div{
+        width: calculEm(243px);
+      }
+    }
+  }
+}
 
 
 // .container-sign-in, .container-sign-up{
