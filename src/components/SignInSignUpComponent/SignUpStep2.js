@@ -6,7 +6,7 @@ import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SignUpStep2({ setForm }) {
+function SignUpStep2({ setForm, formRef }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState(false);
   const [errorUsercode, setErrorUsercode] = useState(false);
@@ -32,6 +32,7 @@ function SignUpStep2({ setForm }) {
   const pressOtherMemberCodeCheck = () => {
     let otherMemberCheck = {otherMemberCheck: !state.yourDetails.otherMemberCheck};
     action(otherMemberCheck);
+    state.yourDetails.otherMemberCheck ? formRef.classList.remove('active-step2') : formRef.classList.add('active-step2');
   };
 
   const addOtherMember = (e) => {
@@ -48,7 +49,6 @@ function SignUpStep2({ setForm }) {
         setErrorUsercodeMessage("Ce code existe déjà!");
         return;
       }
-      console.log(state.yourDetails.otherMemberArray.length)
       if(state.yourDetails.otherMemberArray.length >= 6){
         setErrorUsercode(true);
         setErrorUsercodeMessage("Vous ne pouvez pas ajouter plus de 6 codes utilisateur!");
@@ -87,14 +87,19 @@ function SignUpStep2({ setForm }) {
       }
       action(data);
       setForm('confirm');
+      if(data.otherMemberCheck){
+        formRef.classList.add('active-confirm-usercode');
+      } else{
+        formRef.classList.add('active-confirm');
+      }
+      formRef.classList.remove('active-step2');
     } else {
       setErrorMessage(true);
     }
-
   };
 
   return (
-    <div className="form-container">
+    <div className="form-sign-up-container">
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <h2 className="sign-up-subtitle">Étape 2 : Infos famille</h2>
         {state.yourDetails.householdNameCheck !== true && (
@@ -219,6 +224,7 @@ function SignUpStep2({ setForm }) {
 
 SignUpStep2.propTypes = {
   setForm : PropTypes.func.isRequired,
+  formRef : PropTypes.object.isRequired,
 }
 
 export default SignUpStep2

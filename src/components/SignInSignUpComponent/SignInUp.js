@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { StateMachineProvider, createStore } from "little-state-machine";
 import logo from "./../../images/foodledger_logo.png";
 import Login from "./Login";
@@ -23,21 +23,37 @@ createStore({
 });
 
 function SignInUp() {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [formTitle, setFormTitle] = useState("Connexion");
   const formRef = useRef(null);
   const [successCreateAccount, setSuccessCreateAccount] = useState(false);
   const [form, setForm] = useState('login');
 
+  const responsive = useCallback(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', responsive);
+    return () => {
+      window.removeEventListener('resize', responsive);
+    }
+  }, [responsive]);
+
   const createUserForm = () => {
     setForm('step1');
     setFormTitle('Créer un compte');
     formRef.current.classList.add('active');
+    formRef.current.classList.add('active-step1');
   }
 
   const returnToLogin = () => {
     setForm('login');
     setFormTitle('Connexion');
     formRef.current.classList.remove('active');
+    formRef.current.classList.remove('active-step1');
+    formRef.current.classList.remove('active-step2');
+    formRef.current.classList.remove('active-confirm');
   }
 
   return (
@@ -56,9 +72,14 @@ function SignInUp() {
                         () => {
                           if (form === "step2") {
                             setForm("step1");
+                            formRef.current.classList.add('active-step1');
+                            formRef.current.classList.remove('active-step2');
                           }
                           if (form === "confirm") {
-                            setForm("step2")
+                            setForm("step2");
+                            if(JSON.parse(sessionStorage.getItem("__STATE_MACHINE__")).yourDetails.otherMemberCheck) formRef.current.classList.add('active-step2');
+                            formRef.current.classList.remove('active-confirm');
+                            formRef.current.classList.remove('active-confirm-usercode');
                           }
                         }
                       }/>
@@ -81,11 +102,13 @@ function SignInUp() {
             {form === "step1" && (
               <Step1
                 setForm={setForm}
+                formRef={formRef.current}
               />
             )}
             {form === "step2" && (
               <Step2
                 setForm={setForm}
+                formRef={formRef.current}
               />
             )}
             {form === "confirm" && (
@@ -94,28 +117,50 @@ function SignInUp() {
                 setFormTitle={setFormTitle}
                 setSuccessCreateAccount={setSuccessCreateAccount}
                 returnToLogin={returnToLogin}
+                formRef={formRef.current}
               />
             )}
           </div>
           
           <div className="switch-form-container">
-            {form === "login" &&
-              <div>
-                <p>Pas encore de compte ?</p>
-                <button className="btn-white" onClick={() => createUserForm()}>
-                  <FontAwesomeIcon className="btn-icon" icon="user-plus" />
-                  Créer un compte
-                </button>
-              </div>
-            }
-            {form !== "login" &&
-              <div>
-                <p>Déjà un compte ?</p>
-                <button className="btn-white" onClick={() => returnToLogin()}>
-                  <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
-                  Se connecter
-                </button>
-              </div>
+            {windowWidth < 1200 ?
+              <>
+                {form === "login" &&
+                  <div>
+                    <p>Pas encore de compte ?</p>
+                    <button className="btn-white" onClick={() => createUserForm()}>
+                      <FontAwesomeIcon className="btn-icon" icon="user-plus" />
+                      Créer un compte
+                    </button>
+                  </div>
+                }
+                {form !== "login" &&
+                  <div>
+                    <p>Déjà un compte ?</p>
+                    <button className="btn-white" onClick={() => returnToLogin()}>
+                      <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+                      Se connecter
+                    </button>
+                  </div>
+                }
+              </> : 
+              <>
+                <div>
+                  <p>Déjà un compte ?</p>
+                  <button className="btn-white" onClick={() => returnToLogin()}>
+                    <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+                    Se connecter
+                  </button>
+                </div>
+
+                <div>
+                  <p>Pas encore de compte ?</p>
+                  <button className="btn-white" onClick={() => createUserForm()}>
+                    <FontAwesomeIcon className="btn-icon" icon="user-plus" />
+                    Créer un compte
+                  </button>
+                </div>
+              </>
             }
           </div>
         </div>

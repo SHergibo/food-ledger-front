@@ -6,7 +6,7 @@ import updateAction from "../../utils/updateAction";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SignUpStep1({ setForm }) {
+function SignUpStep1({ setForm, formRef }) {
   const { state, action } = useStateMachine(updateAction);
   const { handleSubmit, formState: { errors }, register, getValues } = useForm({
     defaultValues: state.yourDetails
@@ -15,10 +15,14 @@ function SignUpStep1({ setForm }) {
   const onSubmit = data => {
     action(data);
     setForm('step2');
+    formRef.classList.remove('active-step1');
+    if(data.otherMemberCheck){
+      formRef.classList.add('active-step2');
+    }
   };
 
   return (
-    <div className="form-container">
+    <div className="form-sign-up-container">
 
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <h2 className="sign-up-subtitle">Étape 1 : Infos utilisateur</h2>
@@ -96,7 +100,6 @@ function SignUpStep1({ setForm }) {
             />
             <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
             <div className="error-message-input">
-            {console.log(errors)}
               <ErrorMessage errors={errors} name="confirmPassword" as="span" />
             </div>
           </div>
@@ -113,6 +116,7 @@ function SignUpStep1({ setForm }) {
 
 SignUpStep1.propTypes = {
   setForm : PropTypes.func.isRequired,
+  formRef : PropTypes.object.isRequired,
 }
 
 export default SignUpStep1

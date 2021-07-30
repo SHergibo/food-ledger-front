@@ -8,7 +8,7 @@ import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
+function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef }) {
   const { state, action } = useStateMachine(updateAction);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorUsercode, setErrorUsercode] = useState(false);
@@ -21,23 +21,26 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
     defaultValues: state.yourDetails
   });
   const resetStore = () => {
-    const data = {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      householdCodeCheck: false,
-      householdCode: "",
-      householdNameCheck: false,
-      householdName: "",
-      otherMemberCheck: false,
-      otherMemberArray: [],
-    };
-    action(data);
+    // const data = {
+    //   firstName: "",
+    //   lastName: "",
+    //   email: "",
+    //   password: "",
+    //   confirmPassword: "",
+    //   householdCodeCheck: false,
+    //   householdCode: "",
+    //   householdNameCheck: false,
+    //   householdName: "",
+    //   otherMemberCheck: false,
+    //   otherMemberArray: [],
+    // };
+    // action(data);
     setSuccessCreateAccount(true);
     setForm('login');
-    setFormTitle('Sign In')
+    setFormTitle('Connexion');
+    formRef.classList.remove('active');
+    formRef.classList.remove('active-confirm');
+    formRef.classList.remove('active-confirm-usercode');
   };
 
   const changePassword = (e) => {
@@ -98,53 +101,54 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
   };
 
   const onSubmit = async (data) => {
-    action(data);
-    const finalState = updateAction(state, data);
+    resetStore();
+    // action(data);
+    // const finalState = updateAction(state, data);
     
-    const objectData = await finalData(finalState.yourDetails);
+    // const objectData = await finalData(finalState.yourDetails);
 
-    let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
+    // let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
 
-    if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
-      createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdCode=${state.yourDetails.householdCode}`;
-    }
-    await axios.post(createAccountEndPoint, objectData, {
-      validateStatus: function (status) {
-        return status < 500;
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        resetStore();
-        setErrorBool(false);
-        setErrorMessage('');
-      } else if (response.status === 404 && response.data.data) {
-        let responseDataArray = response.data.data;
-        responseDataArray.forEach(dataBadUserCode => {
-          const errorUserCodes = otherMemberList.current.filter(usercode => usercode.innerHTML === dataBadUserCode.usercode);
-          errorUserCodes.forEach(errorUserCode => {
-            errorUserCode.classList.add('bad-user-code');
-            errorUserCode.title = dataBadUserCode.errorType === "userCodeNotFound" ? "Ce code utilisateur n'existe pas!" : "Cet.te utilisateur.trice ne pas pas rejoindre votre famille pour le moment !"
-          });
-        });
-        setErrorBool(true);
-        if (response.data.data.length === 1) {
-          setErrorMessage('Il y a un problème avec un code utilisateur!');
-        } else {
-          setErrorMessage('Il y a un problème avec plusieurs codes utilisateur!');
-        }
-      } else if (response.status === 400) {
-        setErrorBool(true);
-        setErrorMessage('Code famille invalide!');
-      } else if (response.status === 409){
-        setError('email', {
-          type:"manual",
-          message: "Cette adresse mail existe déjà!"
-        });
-      }
-    });
+    // if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
+    //   createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdCode=${state.yourDetails.householdCode}`;
+    // }
+    // await axios.post(createAccountEndPoint, objectData, {
+    //   validateStatus: function (status) {
+    //     return status < 500;
+    //   }
+    // }).then((response) => {
+    //   if (response.status === 200) {
+    //     resetStore();
+    //     setErrorBool(false);
+    //     setErrorMessage('');
+    //   } else if (response.status === 404 && response.data.data) {
+    //     let responseDataArray = response.data.data;
+    //     responseDataArray.forEach(dataBadUserCode => {
+    //       const errorUserCodes = otherMemberList.current.filter(usercode => usercode.innerHTML === dataBadUserCode.usercode);
+    //       errorUserCodes.forEach(errorUserCode => {
+    //         errorUserCode.classList.add('bad-user-code');
+    //         errorUserCode.title = dataBadUserCode.errorType === "userCodeNotFound" ? "Ce code utilisateur n'existe pas!" : "Cet.te utilisateur.trice ne pas pas rejoindre votre famille pour le moment !"
+    //       });
+    //     });
+    //     setErrorBool(true);
+    //     if (response.data.data.length === 1) {
+    //       setErrorMessage('Il y a un problème avec un code utilisateur!');
+    //     } else {
+    //       setErrorMessage('Il y a un problème avec plusieurs codes utilisateur!');
+    //     }
+    //   } else if (response.status === 400) {
+    //     setErrorBool(true);
+    //     setErrorMessage('Code famille invalide!');
+    //   } else if (response.status === 409){
+    //     setError('email', {
+    //       type:"manual",
+    //       message: "Cette adresse mail existe déjà!"
+    //     });
+    //   }
+    // });
   };
   return (
-    <div className="form-container">
+    <div className="form-sign-up-container">
       <form className="form-sign-up" onSubmit={handleSubmit(onSubmit)}>
         <h2 className="sign-up-subtitle">Étape 3 : confirmation</h2>
 
@@ -178,19 +182,50 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
           </div>
         </div>
 
-
-        <div className="input-group">
-          <input
-            name="email"
-            type="email"
-            id="email"
-            className={`form-input ${errors.email  ? "error-input" : ""}`}
-            {...register("email", { required: "Ce champ est requis!" })}
-          />
-          <label htmlFor="email" className="form-label">E-mail *</label>
-          <div className="error-message-input">
-            <ErrorMessage errors={errors} name="email" as="span" />
+        <div className="input-flex-group">
+          <div className="input-group">
+            <input
+              name="email"
+              type="email"
+              id="email"
+              className={`form-input ${errors.email  ? "error-input" : ""}`}
+              {...register("email", { required: "Ce champ est requis!" })}
+            />
+            <label htmlFor="email" className="form-label">E-mail *</label>
+            <div className="error-message-input">
+              <ErrorMessage errors={errors} name="email" as="span" />
+            </div>
           </div>
+          {state.yourDetails.householdCodeCheck === true && (
+            <div className="input-group">
+              <input
+                name="householdCode"
+                type="text"
+                id="householdCode"
+                className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
+                {...register("householdCode", { required: "Ce champ est requis!" })}
+              />
+              <label htmlFor="householdCode" className="form-label">Code famille *</label>
+              <div className="error-message-input">
+                <ErrorMessage errors={errors} name="householdCode" as="span" />
+              </div>
+            </div>
+          )}
+          {state.yourDetails.householdNameCheck === true && (
+            <div className="input-group">
+              <input
+                name="householdName"
+                type="text"
+                id="householdName"
+                className={`form-input ${errors.householdName  ? "error-input" : ""}`}
+                {...register("householdName", { required: "Ce champ est requis!" })}
+              />
+              <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
+              <div className="error-message-input">
+                <ErrorMessage errors={errors} name="householdName" as="span" />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="input-flex-group">
@@ -230,38 +265,8 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount }) {
           )}
         </div>
 
-
-        {state.yourDetails.householdCodeCheck === true && (
-          <div className="input-group">
-            <input
-              name="householdCode"
-              type="text"
-              id="householdCode"
-              className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-              {...register("householdCode", { required: "Ce champ est requis!" })}
-            />
-            <label htmlFor="householdCode" className="form-label">Code famille *</label>
-            <div className="error-message-input">
-              <ErrorMessage errors={errors} name="householdCode" as="span" />
-            </div>
-          </div>
-        )}
-
         {state.yourDetails.householdNameCheck === true && (
           <>
-            <div className="input-group">
-              <input
-                name="householdName"
-                type="text"
-                id="householdName"
-                className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                {...register("householdName", { required: "Ce champ est requis!" })}
-              />
-              <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
-              <div className="error-message-input">
-                <ErrorMessage errors={errors} name="householdName" as="span" />
-              </div>
-            </div>
             {state.yourDetails.otherMemberCheck === true && (
               <>
                 <div className="container-input-interaction">
@@ -321,6 +326,7 @@ SingUpConfirm.propTypes = {
   setForm : PropTypes.func.isRequired,
   setFormTitle : PropTypes.func.isRequired,
   setSuccessCreateAccount : PropTypes.func.isRequired,
+  formRef : PropTypes.object.isRequired,
 }
 
 export default SingUpConfirm
