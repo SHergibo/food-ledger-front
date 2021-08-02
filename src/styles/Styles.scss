@@ -1,5 +1,7 @@
-@import 'Variables.scss';
-@import "Functions.scss";
+@import './utils/index';
+@import './globals/index';
+@import './components/index';
+
 @import 'Mixins.scss';
 @import 'App.scss';
 @import 'SignInUp.scss';
