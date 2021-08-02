@@ -1,8 +1,0 @@
-@function rem($size){
-  $remSize: $size/$font-size;
-  @return #{$remSize}rem;
-}
-@function em($size){
-  $emSize: $size/$font-size;
-  @return #{$emSize}em;
-}
