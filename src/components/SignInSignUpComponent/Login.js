@@ -22,7 +22,6 @@ function Login({ history, successCreateAccount, setSuccessCreateAccount }) {
     if (successCreateAccount) {
       timeOutStyle = setTimeout(() => {
         successMessage.current.style.opacity = 0;
-        successMessage.current.style.height = 0;
       }, 3000);
       timeOutSetSuccess = setTimeout(() => {
         setSuccessCreateAccount(false);
