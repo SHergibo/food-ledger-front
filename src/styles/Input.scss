@@ -21,10 +21,10 @@
       content: "";
       position: absolute;
       display: none;
-      left: 5px;
-      top: 2px;
-      width: 5px;
-      height: 8px;
+      left: em(6px);
+      top: em(3px);
+      width: em(5px);
+      height: em(10px);
       border: solid $border-check;
       border-width: 0 2px 2px 0;
       -webkit-transform: rotate(45deg);
