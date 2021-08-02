@@ -55,6 +55,7 @@ function SignInUp() {
     formRef.current.classList.remove('active-step1');
     formRef.current.classList.remove('active-step2');
     formRef.current.classList.remove('active-confirm');
+    formRef.current.classList.remove('active-confirm-usercode');
   }
 
   return (
