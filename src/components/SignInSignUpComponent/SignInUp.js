@@ -6,6 +6,7 @@ import Step1 from "./SignUpStep1";
 import Step2 from "./SignUpStep2";
 import Result from "./SignUpConfirm.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { SwitchTransition, CSSTransition } from 'react-transition-group';
 
 createStore({
   yourDetails: {
@@ -93,33 +94,46 @@ function SignInUp() {
               <h1>{formTitle}</h1>
             </div>
 
-            {form === "login" && (
-              <Login
-                setSuccessCreateAccount={setSuccessCreateAccount}
-                successCreateAccount={successCreateAccount}
-              />
-            )}
-            {form === "step1" && (
-              <Step1
-                setForm={setForm}
-                formRef={formRef.current}
-              />
-            )}
-            {form === "step2" && (
-              <Step2
-                setForm={setForm}
-                formRef={formRef.current}
-              />
-            )}
-            {form === "confirm" && (
-              <Result
-                setForm={setForm}
-                setFormTitle={setFormTitle}
-                setSuccessCreateAccount={setSuccessCreateAccount}
-                returnToLogin={returnToLogin}
-                formRef={formRef.current}
-              />
-            )}
+            <SwitchTransition mode={'out-in'}>
+              <CSSTransition
+                key={form}
+                addEndListener={(node, done) => {
+                  node.addEventListener("transitionend", done, false);
+                }}
+                classNames="fade"
+              >
+                <div className="fade-container">
+                  {form === "login" &&
+                    <Login
+                      setSuccessCreateAccount={setSuccessCreateAccount}
+                      successCreateAccount={successCreateAccount}
+                    />
+                  }
+                  {form === "step1" &&
+                    <Step1
+                      setForm={setForm}
+                      formRef={formRef.current}
+                    />
+                  }
+                  {form === "step2" &&
+                    <Step2
+                      setForm={setForm}
+                      formRef={formRef.current}
+                    />
+                  }
+                  {form === "confirm" &&
+                    <Result
+                      setForm={setForm}
+                      setFormTitle={setFormTitle}
+                      setSuccessCreateAccount={setSuccessCreateAccount}
+                      returnToLogin={returnToLogin}
+                      formRef={formRef.current}
+                    />
+                  }
+                </div>
+              </CSSTransition>
+            </SwitchTransition>
+            
           </div>
           
           <div className="switch-form-container">

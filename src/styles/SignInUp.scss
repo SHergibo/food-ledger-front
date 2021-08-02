@@ -131,6 +131,40 @@
     margin-bottom: 1rem;
     color: $new-red;
   }
+
+  .fade-container{
+    height: 100%;
+  }
+
+  .fade-enter{
+    .form-sign-in-container, .form-sign-up-container{
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+  }
+  .fade-enter-active{
+    .form-sign-in-container, .form-sign-up-container{
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+  .fade-exit{
+    .form-sign-in-container, .form-sign-up-container{
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+  .fade-exit-active{
+    .form-sign-in-container, .form-sign-up-container{
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+  .fade-enter-active, .fade-exit-active{
+    .form-sign-in-container, .form-sign-up-container{
+      transition: opacity 500ms, transform 500ms;
+    }
+  }
 }
 
 /*Media queries*/
@@ -215,7 +249,8 @@
       background-color: $white;
       border-radius: calculEm(20px);
       box-shadow: 0px 1px 4px rgba(155, 155, 155, 0.25);
-      transition: left .5s ease-in-out;
+      transition: .5s ease-in-out;
+      overflow: hidden;
     }
     .active{
       left: 30%;
@@ -235,7 +270,6 @@
     .form-sign-up-container{
       display: flex;
       align-items: center;
-      height: 100%;
       .form-sign-up{
         width: 100%;
       }
