@@ -55,13 +55,13 @@
 .form-input {
   width: 100%;
   padding: rem(13px) rem(20px);
-  border: 1px solid $new-primary-color;
-  border-color: $new-primary-color;
+  border: 1px solid var(--primary-color);
+  border-color: var(--primary-color);
   border-radius: rem(10px);
   font-family: inherit;
   font-size: rem(18px);
   font-weight: 400;
-  color: $new-grey;
+  color: var(--grey);
   background: transparent;
   transition: .25s ease-in-out;
 }
@@ -69,7 +69,7 @@
 .form-input:-webkit-autofill,
 .form-input:-webkit-autofill:hover, 
 .form-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: $new-grey;
+  -webkit-text-fill-color: var(--grey);
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -81,7 +81,7 @@
   padding: 0 .3em;
   transition: 0.2s;
   font-weight: 600;
-  color: $new-primary-color;
+  color: var(--primary-color);
   background-color: $white;
 }
 
@@ -95,7 +95,7 @@
     min-width: rem(50px);
     height: rem(55px);
     margin: 0.53em 0;
-    background-color: $new-primary-color;
+    background-color: var(--primary-color);
     border: none;
     border-top-right-radius: rem(10px);
     border-bottom-right-radius: rem(10px);
@@ -107,7 +107,7 @@
 }
 
 .container-checkbox {
-  @include container-checkbox($new-primary-color, $new-primary-color, $new-primary-color);
+  @include container-checkbox(var(--primary-color), var(--primary-color), var(--primary-color));
 }
 
 .container-checkbox + .container-checkbox{
@@ -123,7 +123,7 @@
 }
 
 .error-input{
-  border-color: $new-red;
+  border-color: var(--red);
 }
 
 .error-message-input {
@@ -132,7 +132,7 @@
   min-height: rem(30px);
   font-size: rem(14px);
   font-weight: 500;
-  color: $new-red;
+  color: var(--red);
 }
 //Date picker
 

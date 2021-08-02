@@ -26,7 +26,7 @@
   .sign-up-subtitle{
     font-size: rem(20px);
     font-weight: 600;
-    color: $new-primary-color;
+    color: var(--primary-color);
     margin-bottom: rem(20px);
   }
 
@@ -42,7 +42,7 @@
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
-      color: $new-primary-color;
+      color: var(--primary-color);
       margin-bottom: 1rem;
       li{
         display: flex;
@@ -59,7 +59,7 @@
           align-items: center;
           width: rem(25px);
           height: rem(25px);
-          background-color: $new-primary-color;
+          background-color: var(--primary-color);
           color: $white;
           border-radius: rem(5px);
           .btn-icon{
@@ -73,7 +73,7 @@
   .switch-form-container{
     justify-content: center;
     align-items: center;
-    background-color: $new-primary-color;
+    background-color: var(--primary-color);
     min-height: em(250px);
     div{
       p{
@@ -98,7 +98,7 @@
     .title-interaction{
       padding-left: em(18px);
       width: 100%;
-      color: $new-primary-color;
+      color: var(--primary-color);
       .back-to-interaction{
         display: flex;
         align-items: center;
@@ -117,19 +117,19 @@
       }
     }
     h1{
-      color: $new-primary-color;
+      color: var(--primary-color);
       font-weight: 600;
     }
   }
   .success-message{
     position: absolute;
     top: em(-27px);
-    color: $new-green;
+    color: var(--green);
     transition: .5s ease-in-out;
   }
   .error-message{
     margin-bottom: 1rem;
-    color: $new-red;
+    color: var(--red);
   }
 
   .fade-container{

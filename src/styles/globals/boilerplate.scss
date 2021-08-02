@@ -17,7 +17,7 @@ html{
 body {
   font-family: var(--font-poppins);
   line-height: 1.4;
-  background-color: $new-primary-background-color;
+  background-color: var(--grey-background);
 }
 
 html,

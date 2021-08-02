@@ -17,12 +17,12 @@
 .btn-purple{
   @include primary-btn();
   color: $white;
-  background-color: $new-primary-color;
+  background-color: var(--primary-color);
 }
 
 .btn-white{
   @include primary-btn();
-  color: $new-primary-color;
+  color: var(--primary-color);
   background-color: $white;
 }
 
