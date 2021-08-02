@@ -54,12 +54,12 @@
 
 .form-input {
   width: 100%;
-  padding: calculRem(13px) calculRem(20px);
+  padding: rem(13px) rem(20px);
   border: 1px solid $new-primary-color;
   border-color: $new-primary-color;
-  border-radius: calculRem(10px);
+  border-radius: rem(10px);
   font-family: inherit;
-  font-size: calculRem(18px);
+  font-size: rem(18px);
   font-weight: 400;
   color: $new-grey;
   background: transparent;
@@ -75,8 +75,8 @@
 
 .form-label {
   position: absolute;
-  top: calculRem(-3px);
-  left: calculRem(15px);
+  top: rem(-3px);
+  left: rem(15px);
   display: block;
   padding: 0 .3em;
   transition: 0.2s;
@@ -92,16 +92,16 @@
     border-top-right-radius: 0;
   }
   .btn-input-interaction{
-    min-width: calculRem(50px);
-    height: calculRem(55px);
+    min-width: rem(50px);
+    height: rem(55px);
     margin: 0.53em 0;
     background-color: $new-primary-color;
     border: none;
-    border-top-right-radius: calculRem(10px);
-    border-bottom-right-radius: calculRem(10px);
+    border-top-right-radius: rem(10px);
+    border-bottom-right-radius: rem(10px);
     color: $white;
     .btn-icon{
-      font-size: calculRem(25px);
+      font-size: rem(25px);
     }
   }
 }
@@ -129,8 +129,8 @@
 .error-message-input {
   display: flex;
   align-items: center;
-  min-height: calculRem(30px);
-  font-size: calculRem(14px);
+  min-height: rem(30px);
+  font-size: rem(14px);
   font-weight: 500;
   color: $new-red;
 }

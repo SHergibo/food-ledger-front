@@ -67,18 +67,18 @@
 /*Tablet*/
 @media screen and (min-width: 640px) {
   .input-form-container{
-    width: calculRem(230px);
+    width: rem(230px);
     margin-right: .5rem;
     label{
       font-size: .8rem;
     }
   }
   .input-form-container-with-error{
-    width: calculRem(230px);
+    width: rem(230px);
     margin-right: 1rem;
   }
   .input-form-date-picker{
-    width: calculRem(230px);
+    width: rem(230px);
   }
   .form-inline{
     display: flex;

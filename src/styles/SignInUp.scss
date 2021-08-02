@@ -24,10 +24,10 @@
   }
 
   .sign-up-subtitle{
-    font-size: calculRem(20px);
+    font-size: rem(20px);
     font-weight: 600;
     color: $new-primary-color;
-    margin-bottom: calculRem(20px);
+    margin-bottom: rem(20px);
   }
 
   .form-sign-in{
@@ -49,21 +49,21 @@
         align-items: center;
         margin-bottom: 1rem;
         p{
-          font-size: calculRem(18px);
-          margin-right: calculRem(12px);
+          font-size: rem(18px);
+          margin-right: rem(12px);
         }
         button{
           all: unset;
           display: flex;
           justify-content: center;
           align-items: center;
-          width: calculRem(25px);
-          height: calculRem(25px);
+          width: rem(25px);
+          height: rem(25px);
           background-color: $new-primary-color;
           color: $white;
-          border-radius: calculRem(5px);
+          border-radius: rem(5px);
           .btn-icon{
-            font-size: calculRem(20px);
+            font-size: rem(20px);
           }
         }
       }
@@ -78,10 +78,10 @@
     div{
       p{
         color: $white;
-        font-size: calculRem(20px);
+        font-size: rem(20px);
         font-weight: 600;
         text-align: center;
-        margin-bottom: calculRem(22px);
+        margin-bottom: rem(22px);
       }
       button{
         margin: 0 auto;
@@ -104,11 +104,11 @@
         align-items: center;
         height: calculEm(30px);
         .btn-icon{
-          font-size: calculRem(20px);
-          margin-right: calculRem(9px);
+          font-size: rem(20px);
+          margin-right: rem(9px);
         }
         p{
-          font-size: calculRem(20px);
+          font-size: rem(20px);
           font-weight: 600;
         }
       }
@@ -414,7 +414,7 @@
 //     align-items: center;
 //     margin-bottom: .8rem;
 //     div{
-//       width: calculRem(65px);
+//       width: rem(65px);
 //     }
 //   }
 //   button{
