@@ -11,7 +11,7 @@
   .interactive-container, .switch-form-container{
     display: flex;
     flex-direction: column;
-    padding: calculEm(24px);
+    padding: em(24px);
   }
 
   .active{
@@ -74,7 +74,7 @@
     justify-content: center;
     align-items: center;
     background-color: $new-primary-color;
-    min-height: calculEm(250px);
+    min-height: em(250px);
     div{
       p{
         color: $white;
@@ -89,20 +89,20 @@
     }
   }
   .title-container{
-    margin-bottom: calculEm(20px);
+    margin-bottom: em(20px);
     .logo-container{
       display: flex;
-      margin-bottom: calculEm(16px);
-      height: calculEm(73px);
+      margin-bottom: em(16px);
+      height: em(73px);
     }
     .title-interaction{
-      padding-left: calculEm(18px);
+      padding-left: em(18px);
       width: 100%;
       color: $new-primary-color;
       .back-to-interaction{
         display: flex;
         align-items: center;
-        height: calculEm(30px);
+        height: em(30px);
         .btn-icon{
           font-size: rem(20px);
           margin-right: rem(9px);
@@ -123,7 +123,7 @@
   }
   .success-message{
     position: absolute;
-    top: calculEm(-27px);
+    top: em(-27px);
     color: $new-green;
     transition: .5s ease-in-out;
   }
@@ -171,7 +171,7 @@
 @media screen and (min-width: 340px) {
   .container-sign-in, .container-sign-up{
     .interactive-container, .switch-form-container{
-      padding: calculEm(34px);
+      padding: em(34px);
     }
   }
 }
@@ -225,7 +225,7 @@
       }
     }
     .success-message{
-      top: calculEm(-45px);
+      top: em(-45px);
     }
   }
 }
@@ -239,15 +239,15 @@
     position: relative;
     flex-direction: row;
     align-items: center;
-    min-height: calculEm(500px);
-    width: calculEm(1000px);
+    min-height: em(500px);
+    width: em(1000px);
     .interactive-container{
       position: absolute;
       left: 0;
       height: 100%;
       width: 70%;
       background-color: $white;
-      border-radius: calculEm(20px);
+      border-radius: em(20px);
       box-shadow: 0px 1px 4px rgba(155, 155, 155, 0.25);
       transition: .5s ease-in-out;
       overflow: hidden;
@@ -256,16 +256,16 @@
       left: 30%;
     }
     .active-step1{
-      height: calculEm(559px);
+      height: em(559px);
     }
     .active-step2{
-      height: calculEm(634px);
+      height: em(634px);
     }
     .active-confirm{
-      height: calculEm(559px);
+      height: em(559px);
     }
     .active-confirm-usercode{
-      height: calculEm(715px);
+      height: em(715px);
     }
     .form-sign-up-container{
       display: flex;
@@ -278,11 +278,11 @@
       flex-direction: row;
       justify-content: space-between;
       width: 100%;
-      height: calculEm(420px);
-      border-radius: calculEm(20px);
+      height: em(420px);
+      border-radius: em(20px);
       box-shadow: 0px 1px 4px rgba(155, 155, 155, 0.25);
       div{
-        width: calculEm(243px);
+        width: em(243px);
       }
     }
   }

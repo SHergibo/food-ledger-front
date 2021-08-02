@@ -15,7 +15,7 @@
     min-height: 1.25rem;
     min-width: 1.25rem;
     border: 1px solid $border-checkmark;
-    border-radius: calculEm(5px);
+    border-radius: em(5px);
     transition: 0.3s ease-in-out;
     &:after{
       content: "";
@@ -49,7 +49,7 @@
 
 .input-group {
   position: relative;
-  padding: calculEm(7px) 0;
+  padding: em(7px) 0;
 }
 
 .form-input {
