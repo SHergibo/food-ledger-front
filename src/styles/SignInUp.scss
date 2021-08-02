@@ -30,6 +30,10 @@
     margin-bottom: calculRem(20px);
   }
 
+  .form-sign-in{
+    position: relative;
+  }
+
   .form-sign-up{
     .container-checkbox + .container-input-interaction{
       margin-top: 1rem;
@@ -118,8 +122,10 @@
     }
   }
   .success-message{
-    margin-bottom: 1rem;
+    position: absolute;
+    top: calculEm(-27px);
     color: $new-green;
+    transition: .5s ease-in-out;
   }
   .error-message{
     margin-bottom: 1rem;
@@ -183,6 +189,9 @@
           padding-right: 1.5rem;
         }
       }
+    }
+    .success-message{
+      top: calculEm(-45px);
     }
   }
 }
