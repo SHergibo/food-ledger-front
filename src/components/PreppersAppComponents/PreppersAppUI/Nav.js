@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import Logo from './Logo';
+import logo from "./../../../images/foodledger_logo.png";
 import { useUserData, useUserOptionData, useNotificationData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -54,6 +54,7 @@ function Nav({ history, logOut }) {
 
   const burgerMenu = () => {
     menuResp.current.classList.toggle('display-block');
+    menu.current.classList.toggle('border-menu-open');
 
     if(closedMenu){
       setClosedMenu(false);
@@ -100,22 +101,22 @@ function Nav({ history, logOut }) {
         <div className="svg-icon" onClick={interactMenu}>
           <FontAwesomeIcon id="svg-menu" icon="bars" />
         </div>
-        <Logo />
+        <img src={logo} alt="food ledger app logo"/>
       </div>
 
       <nav ref={menuResp} className="menu">
         <ul onClick={burgerMenu}>
           <li>
             <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
-              <div className="svg-icon">
+              <div className="svg-menu">
                 <FontAwesomeIcon id="svg-list" icon="list" />
               </div>
-              <span>Liste Produit</span>
+              <span>Liste des Produits</span>
             </Link>
           </li>
           <li>
             <Link to={{ pathname: '/app/liste-historique', search: sessionStorage.getItem('historicQueryParamsFilter') }}>
-              <div className="svg-icon">
+              <div className="svg-menu">
                 <FontAwesomeIcon id="svg-history" icon="history" />
               </div>
               <span>Historique</span>
@@ -123,15 +124,15 @@ function Nav({ history, logOut }) {
           </li>
           <li>
             <Link to="/app/liste-de-course">
-              <div className="svg-icon">
+              <div className="svg-menu">
                 <FontAwesomeIcon id="svg-shopping" icon="shopping-cart" />
               </div>
-              <span>Liste course</span>
+              <span>Liste des courses</span>
             </Link>
           </li>
           <li>
             <Link to="/app/statistiques">
-              <div className="svg-icon">
+              <div className="svg-menu">
                 <FontAwesomeIcon id="svg-stat" icon="chart-pie" />
               </div>
               <span>Statistique</span>
@@ -140,7 +141,7 @@ function Nav({ history, logOut }) {
           {(userData && userData.role === "admin") &&
             <li>
               <Link to="/app/registre-produit">
-                <div className="svg-icon">
+                <div className="svg-menu">
                   <FontAwesomeIcon id="svg-stat" icon="clipboard-list" />
                 </div>
                 <span>Registre</span>
@@ -149,15 +150,15 @@ function Nav({ history, logOut }) {
           }
           <li>
             <Link to="/app/profil">
-              <div className="svg-icon">
-                <FontAwesomeIcon id="svg-user" icon="user" />
+              <div className="svg-menu">
+                <FontAwesomeIcon id="svg-user" icon="cog" />
               </div>
-              <span>Profil</span>
+              <span>Options</span>
             </Link>
           </li>
           <li onClick={logOut}>
             <div className="div-logout">
-              <div className="svg-icon" >
+              <div className="svg-menu" >
                 <FontAwesomeIcon id="svg-logout" icon="sign-out-alt" />
               </div>
               <span>Déconnexion</span>
@@ -165,9 +166,9 @@ function Nav({ history, logOut }) {
           </li>
         </ul>
       </nav>
-      {windowWidth < 640 &&
+      {windowWidth <= 768 &&
         <div className="svg-icon-responsive-container">
-          <div className="svg-icon-responsive info-notification burger-menu-svg" onClick={goToNotification}>
+          <div className="svg-icon-responsive info-notification" onClick={goToNotification}>
             {hasNotif &&
               <div className="number-nofitication">{arrayNotifLength}</div>
             }
