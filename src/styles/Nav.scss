@@ -1,28 +1,50 @@
+@mixin svgIcon() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: em(21px);
+  cursor: pointer;
+}
+
+@mixin fontAwesomeIcon() {
+  color: var(--primary-color);
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: 0.2s ease-in-out;
+}
+
 .main-menu{
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  height: 5rem;
-  background-color: $primary-color;
-  ul{
-    padding: 0 0 1rem;
+  padding: em(12px) em(21px);
+  height: em(60px);
+  background-color: var(--white);
+  border-radius: em(15px);
+  box-shadow: 0px 1px 4px var(--drop-shadow);
+  img{
+    display: flex;
+    width: em(37px);
   }
   li{
     a, .div-logout{
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: .7rem 1rem .7rem;
-      font-size: 1.2rem;
-      font-weight: 500;
+      height: rem(68px);
+      font-size: rem(19px);
+      font-weight: 600;
       text-decoration: none;
-      color: $white;
+      text-transform: uppercase;
+      color: var(--grey);
       transition: .2s ease-in-out;
+      .svg-menu{
+        font-size: rem(24px);
+        margin: 0 rem(30px);
+      }
     }
     &:hover a{
-      color: $grey;
+      border-right: 3px solid var(--primary-color);
     }
     &:hover .div-logout{
       color: $grey;
@@ -32,11 +54,15 @@
 .menu{
   display: none;
   position: absolute;
-  top: 5rem;
+  top: em(60px);
   left: 0;
+  height: calc(100vh - 86px);
   width: 100%;
   z-index: 10;
-  background-color: $primary-color;
+  background-color: var(--white);
+  border-bottom-left-radius: em(15px);
+  border-bottom-right-radius: em(15px);
+  box-shadow: 0px 3px 4px var(--drop-shadow);
 }
 
 .svg-icon-responsive-container{
@@ -57,11 +83,39 @@
   }
 }
 
+.border-menu-open{
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .display-block{
   display: block;
 }
 
 /*Media queries*/
+
+
+/*Tablet*/
+@media screen and (min-width: 768px) {
+  .menu{
+    left: unset;
+    right: 0;
+    width: em(300px);
+    height: auto;
+    &:before{
+      content: "";
+      position: absolute;
+      top: 0;
+      left: em(-15px);
+      width: em(15px);
+      height: em(15px);
+      background: radial-gradient(circle at bottom left, transparent 15px, var(--white) 1px);
+    }
+  }
+  .border-menu-open{
+    border-bottom-left-radius: em(15px);
+  }
+}
 
 /*Full-screen*/
 @media screen and (min-width: 992px){
@@ -75,9 +129,6 @@
     width: 5rem;
     padding: 0 0 0 1rem;
     transition: width .2s ease-in-out;
-    ul{
-      padding: 0;
-    }
     li{
       a, .div-logout{
         display: flex;
