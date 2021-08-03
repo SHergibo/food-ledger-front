@@ -42,20 +42,20 @@ function SignInUp() {
   }, [responsive]);
 
   const createUserForm = () => {
-    setForm('step1');
-    setFormTitle('Créer un compte');
-    formRef.current.classList.add('active');
-    formRef.current.classList.add('active-step1');
+    // setForm('step1');
+    // setFormTitle('Créer un compte');
+    // formRef.current.classList.add('active');
+    // formRef.current.classList.add('active-step1');
   }
 
   const returnToLogin = () => {
-    setForm('login');
-    setFormTitle('Connexion');
-    formRef.current.classList.remove('active');
-    formRef.current.classList.remove('active-step1');
-    formRef.current.classList.remove('active-step2');
-    formRef.current.classList.remove('active-confirm');
-    formRef.current.classList.remove('active-confirm-usercode');
+    // setForm('login');
+    // setFormTitle('Connexion');
+    // formRef.current.classList.remove('active');
+    // formRef.current.classList.remove('active-step1');
+    // formRef.current.classList.remove('active-step2');
+    // formRef.current.classList.remove('active-confirm');
+    // formRef.current.classList.remove('active-confirm-usercode');
   }
 
   return (
@@ -152,7 +152,7 @@ function SignInUp() {
                 {form !== "login" &&
                   <div>
                     <p>Déjà un compte ?</p>
-                    <button className="btn-white" onClick={() => returnToLogin()}>
+                    <button title="La création d'un compte n'est pas disponible pour le moment." className="btn-white" onClick={() => returnToLogin()}>
                       <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
                       Se connecter
                     </button>
@@ -170,7 +170,7 @@ function SignInUp() {
 
                 <div>
                   <p>Pas encore de compte ?</p>
-                  <button className="btn-white" onClick={() => createUserForm()}>
+                  <button title="La création d'un compte n'est pas disponible pour le moment." className="btn-white" onClick={() => createUserForm()}>
                     <FontAwesomeIcon className="btn-icon" icon="user-plus" />
                     Créer un compte
                   </button>
