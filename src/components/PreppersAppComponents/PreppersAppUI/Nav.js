@@ -35,9 +35,9 @@ function Nav({ history, logOut }) {
     if(userOptionData){
       setStateMainMenu(userOptionData.openMenu);
       if(userOptionData.openMenu && windowWidth >= 992){
-        menu.current.style.width = '15rem';
+        menu.current.classList.add('main-menu-open');
       }else{
-        menu.current.style.removeProperty('width');
+        menu.current.classList.remove('main-menu-open');
       }
     }
   }, [userOptionData, windowWidth]);
@@ -77,11 +77,11 @@ function Nav({ history, logOut }) {
     if (stateMainMenu === false) {
       setStateMainMenu(true);
       patchOptionData({openMenu: true});
-      menu.current.style.width = '15rem';
+      menu.current.classList.remove('main-menu-open');
     } else {
       setStateMainMenu(false);
       patchOptionData({openMenu: false});
-      menu.current.style.removeProperty('width');
+      menu.current.classList.add('main-menu-open');
     }
   };
 
@@ -99,9 +99,11 @@ function Nav({ history, logOut }) {
     <div ref={menu} className="main-menu">
       <div className="interact-menu">
         <div className="svg-icon" onClick={interactMenu}>
-          <FontAwesomeIcon id="svg-menu" icon="bars" />
+          <FontAwesomeIcon id="svg-interaction" icon={userOptionData?.openMenu ? "angle-left" : "angle-right"} />
         </div>
-        <img src={logo} alt="food ledger app logo"/>
+        <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
+          <img src={logo} alt="food ledger app logo"/>
+        </Link>
       </div>
 
       <nav ref={menuResp} className="menu">
@@ -109,7 +111,7 @@ function Nav({ history, logOut }) {
           <li>
             <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
               <div className="svg-menu">
-                <FontAwesomeIcon id="svg-list" icon="list" />
+                <FontAwesomeIcon icon="list" />
               </div>
               <span>Liste des Produits</span>
             </Link>
@@ -117,7 +119,7 @@ function Nav({ history, logOut }) {
           <li>
             <Link to={{ pathname: '/app/liste-historique', search: sessionStorage.getItem('historicQueryParamsFilter') }}>
               <div className="svg-menu">
-                <FontAwesomeIcon id="svg-history" icon="history" />
+                <FontAwesomeIcon icon="history" />
               </div>
               <span>Historique</span>
             </Link>
@@ -125,7 +127,7 @@ function Nav({ history, logOut }) {
           <li>
             <Link to="/app/liste-de-course">
               <div className="svg-menu">
-                <FontAwesomeIcon id="svg-shopping" icon="shopping-cart" />
+                <FontAwesomeIcon icon="shopping-cart" />
               </div>
               <span>Liste des courses</span>
             </Link>
@@ -133,7 +135,7 @@ function Nav({ history, logOut }) {
           <li>
             <Link to="/app/statistiques">
               <div className="svg-menu">
-                <FontAwesomeIcon id="svg-stat" icon="chart-pie" />
+                <FontAwesomeIcon icon="chart-pie" />
               </div>
               <span>Statistique</span>
             </Link>
@@ -142,7 +144,7 @@ function Nav({ history, logOut }) {
             <li>
               <Link to="/app/registre-produit">
                 <div className="svg-menu">
-                  <FontAwesomeIcon id="svg-stat" icon="clipboard-list" />
+                  <FontAwesomeIcon icon="clipboard-list" />
                 </div>
                 <span>Registre</span>
               </Link>
@@ -151,7 +153,7 @@ function Nav({ history, logOut }) {
           <li>
             <Link to="/app/profil">
               <div className="svg-menu">
-                <FontAwesomeIcon id="svg-user" icon="cog" />
+                <FontAwesomeIcon icon="cog" />
               </div>
               <span>Options</span>
             </Link>
@@ -159,14 +161,14 @@ function Nav({ history, logOut }) {
           <li onClick={logOut}>
             <div className="div-logout">
               <div className="svg-menu" >
-                <FontAwesomeIcon id="svg-logout" icon="sign-out-alt" />
+                <FontAwesomeIcon icon="sign-out-alt" />
               </div>
               <span>Déconnexion</span>
             </div>
           </li>
         </ul>
       </nav>
-      {windowWidth <= 768 &&
+      {windowWidth < 992 &&
         <div className="svg-icon-responsive-container">
           <div className="svg-icon-responsive info-notification" onClick={goToNotification}>
             {hasNotif &&
@@ -184,12 +186,12 @@ function Nav({ history, logOut }) {
           }
         </div>
       }
-      
     </div>
   )
 }
 
 Nav.propTypes = {
+  history: PropTypes.object.isRequired,
   logOut: PropTypes.func.isRequired,
 }
 

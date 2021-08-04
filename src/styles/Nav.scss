@@ -6,8 +6,8 @@
   cursor: pointer;
 }
 
-@mixin fontAwesomeIcon() {
-  color: var(--primary-color);
+@mixin fontAwesomeIcon($color: var(--primary-color)) {
+  color: $color;
   width: 1.5rem;
   height: 1.5rem;
   transition: 0.2s ease-in-out;
@@ -29,6 +29,7 @@
   }
   li{
     a, .div-logout{
+      position: relative;
       display: flex;
       align-items: center;
       height: rem(68px);
@@ -37,17 +38,36 @@
       text-decoration: none;
       text-transform: uppercase;
       color: var(--grey);
+      border-right: 0px solid var(--primary-color);
+      background: linear-gradient(270deg, var(--white) 0%, var(--white) 100%);
+      z-index: 1;
       transition: .2s ease-in-out;
+      &:before{
+        position: absolute;
+        content: "";
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(270deg, var(--gradient-menu-one) 0%, var(--gradient-menu-two) 100%);
+        z-index: -1;
+        transition: opacity 0.5s linear;
+        opacity: 0;
+      }
+      &:hover{
+        color: var(--primary-color);
+        border-right: 5px solid var(--primary-color);
+      }
+      &:hover::before{
+        opacity: 1;
+      }
       .svg-menu{
         font-size: rem(24px);
         margin: 0 rem(30px);
       }
     }
-    &:hover a{
-      border-right: 3px solid var(--primary-color);
-    }
-    &:hover .div-logout{
-      color: $grey;
+    .div-logout{
+      cursor: pointer;
     }
   }
 }
@@ -124,48 +144,98 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    height: inherit;
-    min-height: 100vh;
-    width: 5rem;
-    padding: 0 0 0 1rem;
-    transition: width .2s ease-in-out;
-    li{
-      a, .div-logout{
-        display: flex;
-        justify-content: flex-start;
-        padding: .35rem 0;
-        margin-right: 1rem;
-        cursor: pointer;
+    min-height: calc(100vh - 96px);
+    width: em(95px);
+    min-width: em(95px);
+    padding: 0;
+    margin-right: em(55px);
+    overflow: hidden;
+    border-radius: em(35px);
+    transition: min-width .2s ease-in-out;
+    .interact-menu{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-direction: column;
+      padding: em(40px) 0;
+      width: 100%;
+      img{
+        width: em(73px);
+        margin-left: em(11px);
       }
-      &:hover{
-        #svg-home, #svg-list, #svg-history, #svg-shopping, #svg-user, #svg-stat, #svg-logout{
-          color: $primary-light;
+      .svg-icon{
+        @include svgIcon();
+        border: em(2px) solid var(--grey);
+        border-radius: em(5px);
+        order: 0;
+        margin: 0 0 em(21px) em(29.5px);
+        #svg-interaction{
+          @include fontAwesomeIcon(var(--grey));
+          height: 2rem;
+          width: 2rem;
         }
+      }
+    }
+    ul{
+      width: em(95px);
+    }
+    a, .div-logout{
+      justify-content: center;
+      .svg-menu{
+        margin: 0;
+      }
+      span{
+        display: none;
       }
     }
   }
 
-  .interact-menu{
-    display: flex;
-    align-items: center;
+  .main-menu-open{
+    min-width: 18.75em;
+    .interact-menu{
+      align-items: center;
+      flex-direction: row;
+      padding: em(40px) em(30px);
+      .svg-icon{
+        margin: 0;
+        order: 1;
+      }
+    }
+    ul{
+      width: 100%;
+    }
+    a, .div-logout{
+      justify-content: unset;
+      .svg-menu{
+        margin: unset;
+      }
+      span{
+        display: block;
+      }
+    }
   }
 
   .menu{
     position: unset;
     display: flex;
     justify-content: flex-start;
-    overflow: hidden;
+    box-shadow: none;
+    &:before{
+      all: unset
+    }
   }
 
-  .svg-icon{
-    @include svgIcon();
-    &:hover{
-      #svg-menu{
-        color: $primary-light;
-      }
-    }
-    #svg-menu, #svg-home, #svg-list, #svg-history, #svg-shopping, #svg-user, #svg-stat, #svg-logout{
-      @include fontAwesomeIcon();
-    }
-  }
+
+
+  // .svg-icon{
+  //   @include svgIcon();
+  //   &:hover{
+  //     #svg-menu{
+  //       color: $primary-light;
+  //     }
+  //   }
+  //   #svg-menu, #svg-home, #svg-list, #svg-history, #svg-shopping, #svg-user, #svg-stat, #svg-logout{
+  //     @include fontAwesomeIcon();
+  //   }
+  // }
 }
