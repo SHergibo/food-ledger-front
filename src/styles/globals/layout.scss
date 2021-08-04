@@ -23,6 +23,9 @@
 
 /*Full-screen*/
 @media screen and (min-width: 992px){
+  .container-prepper-app{
+    margin: em(48px);
+  }
   .container-row{
     display: flex;
     justify-content: space-between;
