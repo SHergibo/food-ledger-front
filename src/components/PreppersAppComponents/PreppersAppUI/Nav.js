@@ -99,7 +99,7 @@ function Nav({ history, logOut }) {
     <div ref={menu} className="main-menu">
       <div className="interact-menu">
         <div className="svg-icon" onClick={interactMenu}>
-          <FontAwesomeIcon id="svg-interaction" icon={userOptionData?.openMenu ? "angle-left" : "angle-right"} />
+          <FontAwesomeIcon icon={userOptionData?.openMenu ? "angle-left" : "angle-right"} />
         </div>
         <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
           <img src={logo} alt="food ledger app logo"/>
@@ -174,14 +174,14 @@ function Nav({ history, logOut }) {
             {hasNotif &&
               <div className="number-nofitication">{arrayNotifLength}</div>
             }
-            <FontAwesomeIcon id="svg-notification" icon="bell" />
+            <FontAwesomeIcon icon="bell" />
           </div>
           {!closedMenu ? 
             <div className="svg-icon-responsive" onClick={burgerMenu}>
-              <FontAwesomeIcon id="svg-burger" icon="bars" />
+              <FontAwesomeIcon icon="bars" />
             </div> :
             <div className="svg-icon-responsive" onClick={burgerMenu}>
-              <FontAwesomeIcon id="svg-close" icon="times" />
+              <FontAwesomeIcon icon="times" />
             </div>
           }
         </div>
