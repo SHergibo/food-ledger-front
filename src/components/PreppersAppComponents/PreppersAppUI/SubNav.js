@@ -33,7 +33,6 @@ function SubNav({ showNotif }) {
           {hasNotif &&
             <div className="number-nofitication">{arrayNotifLength}</div>
           }
-          <div className="number-nofitication">5</div>
           <FontAwesomeIcon icon="bell" />
         </div>
         <Link className="user-profile-link" to="/app/profil">
