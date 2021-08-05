@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SubNav({ showNotif, logOut }) {
+function SubNav({ showNotif }) {
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
   const [firstChar, setFirstChar] = useState("P"); //TODO download l'image si l'user a une image de profil???
@@ -27,28 +27,25 @@ function SubNav({ showNotif, logOut }) {
 
   return (
     <div className="container-subnav">
+      <h1>Liste des produits</h1>
       <div className="interaction-sub-menu">
         <div className="svg-icon info-notification" onClick={showNotif}>
           {hasNotif &&
             <div className="number-nofitication">{arrayNotifLength}</div>
           }
-          <FontAwesomeIcon id="svg-bell" icon="bell" />
+          <div className="number-nofitication">5</div>
+          <FontAwesomeIcon icon="bell" />
         </div>
         <Link className="user-profile-link" to="/app/profil">
           <span>{firstChar}</span>
         </Link>
-        <div className="svg-icon svg-no-margin" onClick={logOut}>
-          <FontAwesomeIcon id="svg-logout-sub-menu" icon="sign-out-alt" />
-        </div>
-
       </div>
     </div>
   )
 }
 
 SubNav.propTypes = {
-  showNotif: PropTypes.func.isRequired,
-  logOut: PropTypes.func.isRequired
+  showNotif: PropTypes.func.isRequired
 }
 
 export default SubNav
