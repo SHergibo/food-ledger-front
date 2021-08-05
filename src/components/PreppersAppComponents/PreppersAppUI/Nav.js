@@ -129,7 +129,7 @@ function Nav({ history, logOut }) {
               <div className="svg-menu">
                 <FontAwesomeIcon icon="shopping-cart" />
               </div>
-              <span>Liste des courses</span>
+              <span>Liste de courses</span>
             </Link>
           </li>
           <li>
