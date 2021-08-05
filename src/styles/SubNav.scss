@@ -39,8 +39,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: em(95px);
-    min-height: 4rem;
+    max-height: em(95px);
     padding: em(21px) em(33px);
     background-color: var(--white);
     color: var(--primary-color);
