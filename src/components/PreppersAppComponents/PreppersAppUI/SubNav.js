@@ -1,15 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useUserData, useNotificationData } from './../DataContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useLocation } from "react-router-dom";
 import PropTypes from 'prop-types';
 
 function SubNav({ showNotif }) {
+  const location = useLocation();
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
   const [firstChar, setFirstChar] = useState("P"); //TODO download l'image si l'user a une image de profil???
   const [hasNotif, setHasNotif] = useState(false);
+  const [subTitle, setSubTitle] = useState("");
   const [arrayNotifLength, setArrayNotifLength] = useState(0);
+
+  let pathNameArray = useMemo(() => {
+    return {
+      "liste-produit" : "Liste des produits",
+      "ajout-produit" : "Ajouter un produit",
+      "edition-produit" : "Édition produit",
+      "liste-historique" : "Liste des historiques",
+      "ajout-historique" : "Ajouter un historique",
+      "edition-historique" : "Édition historique",
+      "liste-de-course" : "Liste de courses",
+      "statistiques" : "Statistiques des stocks",
+      "registre-produit" : "Registre des produits",
+      "profil" : "Options / profil utilisateur",
+      "edition-marque" : "Édition marque",
+    }
+  }, []);
+
+  useEffect(() => {
+    let pathName  = location.pathname.split("/")[2];
+    setSubTitle(pathNameArray[pathName]);
+  }, [location, pathNameArray])
   
   useEffect(() => {
     if (userData) {
@@ -27,7 +51,7 @@ function SubNav({ showNotif }) {
 
   return (
     <div className="container-subnav">
-      <h1>Liste des produits</h1>
+      <h1>{subTitle}</h1>
       <div className="interaction-sub-menu">
         <div className="svg-icon info-notification" onClick={showNotif}>
           {hasNotif &&
