@@ -18,8 +18,8 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: -.5rem;
-    right: -.5rem;
+    top: -.6rem;
+    right: -.6rem;
     width: 1.2rem;
     height: 1.2rem;
     background-color: var(--red);
@@ -36,42 +36,65 @@
 @media screen and (min-width: 992px){
   .container-subnav{
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
+    height: em(95px);
     min-height: 4rem;
-    padding: 0 1rem;
-    background-color: $primary-color;
-    color: $white;
-  }
-
-  .svg-icon{
-    #svg-logout-sub-menu, #svg-bell{
-      @include fontAwesomeIcon();
+    padding: em(21px) em(33px);
+    background-color: var(--white);
+    color: var(--primary-color);
+    border-radius: em(20px);
+    box-shadow: 0px 1px 4px var(--drop-shadow);
+    h1{
+      font-size: rem(35px);
+      font-weight: 700;
     }
-    &:hover{
-      #svg-logout-sub-menu, #svg-bell{
-        color: $primary-light;
+    .svg-icon{
+      display: flex;
+      align-items: center;
+      height: 2.3em;
+      width: 2.3em;
+      svg{
+        color: var(--primary-color);
+        font-size: 2.3rem;
+        transition: 0.2s ease-in-out;
+        cursor: pointer;
+      }
+    }
+
+    .info-notification{
+      margin-right: rem(35px);
+      .number-nofitication{
+        top: -.9rem;
+        right: -.4rem;
+        width: 1.65rem;
+        height: 1.65rem;
+        font-size: 1rem;
       }
     }
   }
 
-  .svg-no-margin{
-    margin: 0;
+  .interaction-sub-menu{
+    justify-content: center;
+    align-items: center;
   }
 
   .user-profile-link{
-    @include svgIcon();
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: em(69px);
+    height: em(69px);
+    background-color: var(--grey-profile);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 1px 4px var(--drop-shadow);
     span{
-      color: $primary-color;
+      font-size: rem(40px);
+      font-weight: 600;
+      color: var(--primary-color);
       transition: .2s ease-in-out;
     }
-    &:hover span{
-      color: $primary-light;
-    }
   }
-
 }
