@@ -44,6 +44,15 @@ function SubContainer({history}) {
     })
   };
 
+  const goToNotification = () => {
+    history.push({
+      pathname: '/app/profil',
+      state: {
+        notification: true 
+      }
+    })
+  };
+
   const deleteNotification = async (id) => {
     const deleteNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${id}`;
     await axiosInstance.delete(deleteNotificationEndPoint);
@@ -51,36 +60,45 @@ function SubContainer({history}) {
 
   return (
     <div className="container-sub">
-      {notificationReceived.length <= 0 ?
-        <p className="zero-notification">Pas de notification !</p> :
-        <>
-        {notificationReceived.map((notif) => {
-          return(
-            <div className="notification" key={notif._id}>
-              <div className="notification-message">
-                {notif.message}
-              </div>
-              <div className="notification-interaction">
-                {notif.type !== "information" ? 
-                  <>
-                    {notif.type === "need-switch-admin" ? 
-                      <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> :
-                      <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
-                    }
-                    {notif.type === "request-delegate-admin" || notif.type === "last-chance-request-delegate-admin" ? 
-                      <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> : 
-                      <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
-                    }
-                    
-                  </> :
-                  <button className="notif-one-interaction" onClick={()=>deleteNotification(notif._id)}>Supprimer</button>
-                }
-              </div>
+      <div className="container-notification">
+        {notificationReceived.length <= 0 ?
+          <p className="zero-notification">Pas de notification !</p> :
+          <>
+            <div>
+              {notificationReceived.map((notif) => {
+                return(
+                  <div className="notification" key={notif._id}>
+                    <div className="notification-message">
+                      {notif.message}
+                    </div>
+                    <div className="notification-interaction">
+                      {notif.type !== "information" ? 
+                        <>
+                          {notif.type === "need-switch-admin" ? 
+                            <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> :
+                            <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                          }
+                          {notif.type === "request-delegate-admin" || notif.type === "last-chance-request-delegate-admin" ? 
+                            <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> : 
+                            <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
+                          }
+                        </> :
+                        <button className="notif-one-interaction" onClick={()=>deleteNotification(notif._id)}>Supprimer</button>
+                      }
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-          )
-        })}
-      </>
-      }
+            <div className="all-notif" >
+            <button onClick={goToNotification}>
+              Voir toutes les notifications
+            </button>
+              
+            </div>
+          </>
+        }
+      </div>
     </div>
   )
 }
