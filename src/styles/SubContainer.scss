@@ -67,8 +67,12 @@
     margin-top: 1rem;
     padding-top: em(12px);
     border-top: 1px solid var(--primary-color);
-    font-weight: 500;
-    cursor: pointer;
+    button{
+      font-weight: 500;
+      color: var(--primary-color);
+      background-color: var(--white);
+      cursor: pointer;
+    }
   }
 }
 
