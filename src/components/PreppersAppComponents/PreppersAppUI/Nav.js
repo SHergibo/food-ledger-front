@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import logo from "./../../../images/foodledger_logo.png";
 import { useUserData, useUserOptionData, useNotificationData } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function Nav({ history, logOut }) {
+  const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
@@ -32,6 +33,16 @@ function Nav({ history, logOut }) {
   }, [responsive]);
 
   useEffect(() => {
+    if(location.pathname.split("/")[2] === "notification"){
+      menu.current.classList.add('border-menu-open')
+    }else{
+      if(!menuResp.current.classList.contains('display-block')){
+        menu.current.classList.remove('border-menu-open')
+      }
+    }
+  }, [location])
+
+  useEffect(() => {
     if(userOptionData){
       setStateMainMenu(userOptionData.openMenu);
       if(userOptionData.openMenu && windowWidth >= 992){
@@ -54,8 +65,8 @@ function Nav({ history, logOut }) {
 
   const burgerMenu = () => {
     menuResp.current.classList.toggle('display-block');
-    menu.current.classList.toggle('border-menu-open');
-
+    if(location.pathname.split("/")[2] !== "notification") menu.current.classList.toggle('border-menu-open');
+    
     if(closedMenu){
       setClosedMenu(false);
     }else{
