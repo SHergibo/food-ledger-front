@@ -60,7 +60,7 @@ function Profile({ history }) {
   };
 
   useEffect(() => {
-    if(location?.state?.householdOptions || location?.state?.brandOptions){
+    if(location?.state?.householdOptions || location?.state?.brandOptions || location?.state?.notification){
       switchMenu(Object.keys(location.state)[0], btnOptionMenu.find(option => option.value === Object.keys(location.state)[0]));
     }
     window.history.replaceState({}, document.title);
