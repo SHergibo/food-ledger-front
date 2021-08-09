@@ -21,11 +21,11 @@ function SubContainer({history}) {
 
   //TODO créer une route comme protected.route pour gérer la route notification hors responsive mobile
   useEffect(() => {
-      if(windowWidth > 640 && history.location.pathname === "/app/notification" && history.length <= 2){
+      if(windowWidth >= 768 && history.location.pathname === "/app/notification" && history.length <= 2){
         history.push({
           pathname: '/app/liste-produit',
         })
-      }else if (windowWidth > 640 && history.location.pathname === "/app/notification" && history.length > 2){
+      }else if (windowWidth >= 768 && history.location.pathname === "/app/notification" && history.length > 2){
         history.goBack();
       }
   }, [windowWidth, history]);
@@ -91,10 +91,9 @@ function SubContainer({history}) {
               })}
             </div>
             <div className="all-notif" >
-            <button onClick={goToNotification}>
-              Voir toutes les notifications
-            </button>
-              
+              <button onClick={goToNotification}>
+                Voir toutes les notifications
+              </button>
             </div>
           </>
         }
