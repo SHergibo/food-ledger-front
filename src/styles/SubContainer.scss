@@ -82,7 +82,7 @@
 /*Media queries*/
 
 /*Tablet*/
-@media screen and (min-width: 640px) {
+@media screen and (min-width: 768px) {
   .anim-container-sub-enter {
     right: -25rem;
   }
@@ -105,8 +105,8 @@
 
   .container-sub{
     position: absolute;
+    top: 0;
     z-index: 10;
-    left: unset;
     width: 25rem;
     min-height: calc(100vh - 4rem);
     height: inherit;
