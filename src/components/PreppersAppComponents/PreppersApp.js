@@ -36,6 +36,7 @@ function PreppersApp({ history }) {
         <Nav
           history={history}
           logOut={logOut}
+          showNotif={showNotif}
         />
         <div className="container-column">
           <SubNav
