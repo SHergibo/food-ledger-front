@@ -108,8 +108,33 @@
     top: 0;
     z-index: 10;
     width: 25rem;
-    min-height: calc(100vh - 4rem);
-    height: inherit;
-    overflow-y: auto;
+    min-height: auto;
+    max-height: 100%;
+    &:before{
+      content: "";
+      position: absolute;
+      top: 0;
+      left: em(-15px);
+      width: em(15px);
+      height: em(15px);
+      background: radial-gradient(circle at bottom left, transparent 15px, var(--white) 1px);
+    }
+  }
+}
+@media screen and (min-width: 992px) {
+  .anim-container-sub-enter-done {
+    right: 10px;
+    display: block;
+  }
+  .anim-container-sub-enter-active {
+    right: 10px;
+    transition: right 0.5s ease-in-out;
+  }
+  .anim-container-sub-exit {
+    right: 10px;
+  }
+  .anim-container-sub-exit-active {
+    right: -25rem;
+    transition: right 0.5s ease-in-out;
   }
 }
