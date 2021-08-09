@@ -38,9 +38,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
     max-height: em(95px);
     padding: em(21px) em(33px);
+    margin: 0 em(10px);
     background-color: var(--white);
     color: var(--primary-color);
     border-radius: em(20px);
