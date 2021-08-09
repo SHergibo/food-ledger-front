@@ -5,7 +5,7 @@
 .container-row{
   position: relative;
   display: block;
-  height: 100%;
+  min-height: calc(100vh - 5.4375rem);
 }
 
 .container-column{
@@ -22,6 +22,11 @@
 /*Media queries*/
 
 /*Full-screen*/
+@media screen and (min-width: 768px){
+  .container-row{
+    overflow: hidden;
+  }
+}
 @media screen and (min-width: 992px){
   .container-prepper-app{
     margin: em(48px);
@@ -29,7 +34,6 @@
   .container-row{
     display: flex;
     justify-content: space-between;
-    overflow: hidden;
   }
   .container-prepper-app{
     display: flex;
