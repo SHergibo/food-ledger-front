@@ -7,7 +7,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Nav({ history, logOut }) {
+function Nav({ history, logOut, showNotif }) {
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
@@ -181,7 +181,7 @@ function Nav({ history, logOut }) {
       </nav>
       {windowWidth < 992 &&
         <div className="svg-icon-responsive-container">
-          <div className="svg-icon-responsive info-notification" onClick={goToNotification}>
+          <div className="svg-icon-responsive info-notification" onClick={windowWidth >= 768 ? showNotif : goToNotification}>
             {hasNotif &&
               <div className="number-nofitication">{arrayNotifLength}</div>
             }
@@ -204,6 +204,7 @@ function Nav({ history, logOut }) {
 Nav.propTypes = {
   history: PropTypes.object.isRequired,
   logOut: PropTypes.func.isRequired,
+  showNotif: PropTypes.func.isRequired,
 }
 
 export default Nav;
