@@ -192,7 +192,7 @@ function Nav({ history, logOut }) {
               <FontAwesomeIcon icon="bars" />
             </div> :
             <div className="svg-icon-responsive" onClick={burgerMenu}>
-              <FontAwesomeIcon icon="times" />
+              <FontAwesomeIcon id="svg-responsive-times" icon="times" />
             </div>
           }
         </div>
