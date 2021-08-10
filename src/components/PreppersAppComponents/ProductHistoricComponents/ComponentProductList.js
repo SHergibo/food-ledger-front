@@ -808,10 +808,51 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   return (
     <div className="default-wrapper">
 
-      <div className="header-list-table">
-        <div className="default-title-container">
-          <h1 className="default-h1">{title}</h1>
-          <div className="multiple-button-interaction">
+      <div className="sub-header">
+        <div className="sub-interaction">
+          {(hasProduct || Object.keys(searchObject).length > 0) && 
+            <>
+              {userHouseholdData?.isWaiting ? 
+                <button className="default-btn-disabled" disabled><FontAwesomeIcon className="btn-icon" icon="plus" />Ajouter un produit</button> :
+                <Link className="btn-purple" to={`/app/ajout-${urlTo}`}><FontAwesomeIcon className="btn-icon" icon="plus" />Ajouter un produit</Link>
+              }
+              <button className="btn-purple" onClick={() => {
+                showFilter ? setShowFilter(false) : setShowFilter(true);
+              }}>
+                <FontAwesomeIcon className="btn-icon" icon="filter" />
+                {!showFilter &&
+                  <>
+                    Filtres avancés
+                  </>
+                }
+
+                {showFilter &&
+                  <>
+                    Fermer
+                  </>
+                }
+              </button>
+
+              {!showFilter &&
+                <form onSubmit={(e)=>populateSearchObjectQuickSearch(e)} onChange={(e)=>{resetQuickSearch(e)}}>
+                  <label className="quick-search" htmlFor="name">
+                    <span>
+                      <FontAwesomeIcon className="input-icon" icon="search" />
+                    </span>
+                    <input  name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} {...register("name")} />
+                  </label>
+                </form>
+              }
+              <button title="Réinitialiser les filtres" className="btn-purple" onClick={resetAllSearch}>
+                <FontAwesomeIcon className="btn-icon" icon="undo" />
+                <span className="reset-filter-text">Réinitialiser les filtres</span>
+              </button>
+            </>
+          }
+        </div>
+        <div className="sub-option">
+          <h1>{title}</h1>
+          <div className="multiple-button-option">
             {hasProduct &&
               <button 
                 className="btn-action-title"
@@ -830,43 +871,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               />
             }
           </div>
-        </div>
-
-        <div>
-          {(hasProduct || Object.keys(searchObject).length > 0) && 
-            <>
-              {userHouseholdData?.isWaiting ? 
-                <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
-                <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit  <FontAwesomeIcon icon="plus" /></Link>
-              }
-              <button className="default-btn-white" onClick={() => {
-                showFilter ? setShowFilter(false) : setShowFilter(true);
-              }}>
-                {!showFilter &&
-                  <>
-                    Filtres avancés
-                  </>
-                }
-
-                {showFilter &&
-                  <>
-                    Fermer
-                  </>
-                }
-                <FontAwesomeIcon icon="filter" />
-              </button>
-
-              {!showFilter &&
-                <form onSubmit={(e)=>populateSearchObjectQuickSearch(e)} onChange={(e)=>{resetQuickSearch(e)}}>
-                  <input className="quick-search" name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} {...register("name")} />
-                </form>
-              }
-              <button title="Réinitialiser les filtres" className="reset-filter-table" onClick={resetAllSearch}>
-                <span className="reset-filter-text">Réinitialiser les filtres</span>
-                <FontAwesomeIcon icon="undo" />
-              </button>
-            </>
-          }
         </div>
       </div>
 
