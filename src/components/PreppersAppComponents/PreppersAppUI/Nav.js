@@ -7,7 +7,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Nav({ history, logOut, showNotif }) {
+function Nav({ history, logOut, showNotif, showNotification }) {
   const location = useLocation();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
@@ -64,6 +64,10 @@ function Nav({ history, logOut, showNotif }) {
   }, [userData, notificationReceived]);
 
   const burgerMenu = () => {
+    if(showNotification && windowWidth >= 768){
+      showNotif();
+      menu.current.classList.toggle('border-menu-open');
+    }
     menuResp.current.classList.toggle('display-block');
     if(location.pathname.split("/")[2] !== "notification") menu.current.classList.toggle('border-menu-open');
     
@@ -95,6 +99,17 @@ function Nav({ history, logOut, showNotif }) {
       menu.current.classList.add('main-menu-open');
     }
   };
+
+  const interactNotif = () => {
+    showNotif();
+    if(menuResp.current.classList.contains('display-block')) menuResp.current.classList.remove('display-block');
+    setClosedMenu(false);
+    if(showNotification){
+      if(menu.current.classList.contains('border-menu-open')) menu.current.classList.remove('border-menu-open');
+    }else{
+      if(!menu.current.classList.contains('border-menu-open')) menu.current.classList.add('border-menu-open');
+    }
+  }
 
   const goToNotification = () => {
     if(history.location.pathname === "/app/notification"){
@@ -181,7 +196,7 @@ function Nav({ history, logOut, showNotif }) {
       </nav>
       {windowWidth < 992 &&
         <div className="svg-icon-responsive-container">
-          <div className="svg-icon-responsive info-notification" onClick={windowWidth >= 768 ? showNotif : goToNotification}>
+          <div className="svg-icon-responsive info-notification" onClick={windowWidth >= 768 ? interactNotif : goToNotification}>
             {hasNotif &&
               <div className="number-nofitication">{arrayNotifLength}</div>
             }
@@ -205,6 +220,7 @@ Nav.propTypes = {
   history: PropTypes.object.isRequired,
   logOut: PropTypes.func.isRequired,
   showNotif: PropTypes.func.isRequired,
+  showNotification: PropTypes.bool.isRequired,
 }
 
 export default Nav;
