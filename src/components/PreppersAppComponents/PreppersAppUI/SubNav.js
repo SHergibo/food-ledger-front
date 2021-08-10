@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useUserData, useNotificationData } from './../DataContext';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,7 @@ function SubNav({ showNotif }) {
   const [hasNotif, setHasNotif] = useState(false);
   const [subTitle, setSubTitle] = useState("");
   const [arrayNotifLength, setArrayNotifLength] = useState(0);
+  const subNavContainerRef = useRef(null);
 
   let pathNameArray = useMemo(() => {
     return {
@@ -48,11 +49,16 @@ function SubNav({ showNotif }) {
     }
   }, [userData, notificationReceived]);
 
+  const interactNotif = () => {
+    showNotif();
+    subNavContainerRef.current.classList.toggle('border-menu-open-subnav');
+  }
+
   return (
-    <div className="container-subnav">
+    <div ref={subNavContainerRef} className="container-subnav">
       <h1>{subTitle}</h1>
       <div className="interaction-sub-menu">
-        <div className="svg-icon info-notification" onClick={showNotif}>
+        <div className="svg-icon info-notification" onClick={interactNotif}>
           {hasNotif &&
             <div className="number-nofitication">{arrayNotifLength}</div>
           }
