@@ -64,7 +64,7 @@ function SubContainer({history}) {
         {notificationReceived.length <= 0 ?
           <p className="zero-notification">Pas de notification !</p> :
           <>
-            <div>
+            <div className="scrollable-container-notif">
               {notificationReceived.map((notif) => {
                 return(
                   <div className="notification" key={notif._id}>
