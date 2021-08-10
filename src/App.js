@@ -40,7 +40,8 @@ import {
   faDownload,
   faExchangeAlt,
   faDoorOpen,
-  faRandom
+  faRandom,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -76,7 +77,8 @@ library.add(
   faDownload,
   faExchangeAlt,
   faDoorOpen,
-  faRandom
+  faRandom,
+  faSearch
 );
 
 function App() {
