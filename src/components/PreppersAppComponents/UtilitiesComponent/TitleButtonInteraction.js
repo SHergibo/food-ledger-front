@@ -12,8 +12,9 @@ function TitleButtonInteraction({title, openTitleMessage, setOpenTitleMessage, i
         {icon}
       </button>
       {openTitleMessage && 
-        <div className="title-message">
-          <div className="header-title-message">
+        <div className="title-interact-container">
+        <div className="inner-title-interact-container">
+          <div className="header-title-interact-message">
             <h3>{title}</h3>
             <button 
             className="btn-close-title-message" 
@@ -23,6 +24,8 @@ function TitleButtonInteraction({title, openTitleMessage, setOpenTitleMessage, i
           </div>
           
           {contentDiv}
+        </div>
+          
         </div>
       }
     </>
