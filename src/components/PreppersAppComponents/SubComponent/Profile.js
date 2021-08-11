@@ -156,13 +156,13 @@ function Profile({ history }) {
             }
             <div className="btn-delete-action-container">
               <button 
-              className={requestDelegateAdmin ? "btn-delete-action-disabled" : 'btn-delete-action-yes'}
+              className={requestDelegateAdmin ? "small-btn-disabled" : 'small-btn-red'}
               disabled={requestDelegateAdmin}
               onClick={()=>{deleteUser()}}>
                 Oui
               </button>
               <button 
-              className="btn-delete-action-no" 
+              className="small-btn-purple" 
               onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
                 Non
               </button>
@@ -177,12 +177,12 @@ function Profile({ history }) {
                 <p>Si vous ne déléguez pas vos droits d'administrations, la famille sera supprimée définitivement !</p>
                 <div className="btn-delete-action-container">
                   <button 
-                  className="btn-delete-action-no"
+                  className="small-btn-red"
                   onClick={()=>{setDelegate(true)}}>
                     Oui
                   </button>
                   <button 
-                  className="btn-delete-action-yes" 
+                  className="small-btn-purple" 
                   onClick={() => {setdidNoTAcceptDelegate(true)}}>
                     Non
                   </button>
@@ -209,7 +209,7 @@ function Profile({ history }) {
                       return null
                     }
                   })}
-                  <button className="btn-delete-action-yes" type="submit">Déléguer les droits et supprimer son compte !</button>
+                  <button className="small-btn-red" type="submit">Déléguer les droits et supprimer son compte !</button>
                 </form>
               </>
             }
