@@ -650,21 +650,21 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     })
   };
 
-  let contentTitleInteraction = <form className="form-standard" onSubmit={handleSubmitFormOption(udpateUserOptionDate)}>
+  let contentTitleInteraction = <form className="form-title-interact" onSubmit={handleSubmitFormOption(udpateUserOptionDate)}>
     {userOptionData &&
     <>
       <h4>Afficher code couleur : </h4>
-      <label className="container-checkbox-input-interaction" htmlFor="colorCodeDate">
+      <label className="container-checkbox" htmlFor="colorCodeDate">
         Pour les dates de péremption : 
         <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} {...registerFormOption("colorCodeDate")}/>
         <span className="checkmark-checkbox"></span>
       </label>
-      <label className="container-checkbox-input-interaction" htmlFor="colorCodeStock">
+      <label className="container-checkbox" htmlFor="colorCodeStock">
         Pour les stock minimum de produits : 
         <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock} {...registerFormOption("colorCodeStock")}/>
         <span className="checkmark-checkbox"></span>
       </label>
-      <button className="btn-action-form-interaction" type="submit">Mettre à jour</button>
+      <button className="small-btn-purple" type="submit">Mettre à jour</button>
     </>
     }
   </form>;
