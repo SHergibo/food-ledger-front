@@ -47,7 +47,7 @@
 }
 
 .container-radio-input{
-  @include container-radio($primary-light, $primary-light-hover, $primary-light, $white);
+  @include container-radio();
 }
 
 .small-input-form-container{
