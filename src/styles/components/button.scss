@@ -15,6 +15,25 @@
   }
 }
 
+@mixin small-btn($bgColor: var(--primary-color), $disabled: false) {
+  display: flex;
+  align-items: center;
+  padding: 0 .8rem;
+  height: rem(30px);
+  font-weight: 500;
+  color: var(--white);
+  border-radius: em(5px);
+  @if $disabled {
+    background-color: var(--grey);
+    cursor: not-allowed;
+  } @else{
+    background-color: $bgColor;
+  }
+  .btn-icon{
+    margin-right: rem(11px);
+  }
+}
+
 .btn-purple{
   @include primary-btn();
   color: $white;
@@ -28,14 +47,15 @@
 }
 
 .small-btn-purple{
-  display: flex;
-  align-items: center;
-  padding: 0 .8rem;
-  height: rem(30px);
-  color: var(--white);
-  font-weight: 500;
-  background-color: var(--primary-color);
-  border-radius: em(5px);
+  @include small-btn();
+}
+
+.small-btn-red{
+  @include small-btn(var(--red));
+}
+
+.small-btn-disabled{
+  @include small-btn(null, true);
 }
 
 .btn-action-title{
