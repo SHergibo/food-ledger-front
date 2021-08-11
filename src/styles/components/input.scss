@@ -39,10 +39,11 @@
     opacity: 0;
     cursor: pointer;
     &:checked ~ .checkmark-checkbox {
-      background-color: transparent;
+      background-color: var(--primary-color);
     }
     &:checked ~ .checkmark-checkbox:after {
       display: block;
+      border-color: var(--white);
     }
   }
 }
