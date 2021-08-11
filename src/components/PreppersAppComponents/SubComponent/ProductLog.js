@@ -246,17 +246,19 @@ function ProductLog({ history }) {
   
   return (
     <div className="default-wrapper">
-      <div className="default-title-container">
-        <h1 className="default-h1">Registre des produits</h1>
-        {productLog.length >= 1 &&
-          <TitleButtonInteraction
-            title={"Supprimer tout le registre"} 
-            openTitleMessage={openTitleMessage}
-            setOpenTitleMessage={setOpenTitleMessage}
-            icon={<FontAwesomeIcon icon="trash" />}
-            contentDiv={contentTitleInteraction}
-          />
-        }
+      <div className="sub-header only-option-interation">
+        <div className="sub-option">
+          <h1>Registre des produits</h1>
+          {productLog.length >= 1 &&
+            <TitleButtonInteraction
+              title={"Supprimer tout le registre"} 
+              openTitleMessage={openTitleMessage}
+              setOpenTitleMessage={setOpenTitleMessage}
+              icon={<FontAwesomeIcon icon="trash" />}
+              contentDiv={contentTitleInteraction}
+            />
+          }
+        </div>
       </div>
 
       <div className="container-loading">
