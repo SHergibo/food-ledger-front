@@ -236,8 +236,10 @@ function Statistics() {
 
   return (
     <div className="default-wrapper">
-      <div className="default-title-container">
-        <h1 className="default-h1">Statistiques des stocks</h1>
+      <div className="sub-header">
+        <div className="sub-option">
+          <h1>Statistiques des stocks</h1>
+        </div>
       </div>
 
       <div className="container-loading">
