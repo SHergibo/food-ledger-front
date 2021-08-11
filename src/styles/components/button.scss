@@ -38,3 +38,15 @@
   border-radius: em(5px);
 }
 
+.btn-action-title{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem(39px);
+  height: rem(39px);
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-radius: 50%;
+  font-size: rem(18px);
+}
+
