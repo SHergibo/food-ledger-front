@@ -115,12 +115,12 @@ function ProductLog({ history }) {
       <p>Êtes-vous sur et certain de vouloir supprimer tout le registre? Tous les registres seront perdus !</p>
       <div className="btn-delete-action-container">
         <button 
-        className="btn-delete-action-yes"
+        className="small-btn-red"
         onClick={()=>{deleteAllProductLog()}}>
           Oui
         </button>
         <button 
-        className="btn-delete-action-no" 
+        className="small-btn-purple" 
         onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
           Non
         </button>
