@@ -27,3 +27,14 @@
   background-color: $white;
 }
 
+.small-btn-purple{
+  display: flex;
+  align-items: center;
+  padding: 0 .8rem;
+  height: rem(30px);
+  color: var(--white);
+  font-weight: 500;
+  background-color: var(--primary-color);
+  border-radius: em(5px);
+}
+
