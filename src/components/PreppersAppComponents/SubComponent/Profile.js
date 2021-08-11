@@ -227,44 +227,47 @@ function Profile({ history }) {
     <div className="default-wrapper">
       {userData && 
         <>
-          <div className="btn-option-container">
-            {windowWidth <= 992 ?
-              <Select
-                className="select-option"
-                defaultValue={option}
-                options={btnOptionMenu}
-                onChange={(selectedOption)=> {
-                  setOption(selectedOption)
-                }}
-              /> :
-              <>
-              {btnOptionMenu.map((btn, index) => {
-                return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`default-btn-action-form ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
-                  e.persist();
-                  let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
-                  if(oldActive) oldActive.classList.remove('btn-option-active');
-                  e.target.classList.add('btn-option-active');
-                  setOption(btn)
-                  }}>
-                  {btn.label}
-                </button>
-              })}
-            </>
-            }
+          <div className="sub-header">
+            <div className="sub-interaction">
+              <div className="btn-option-container">
+                {windowWidth <= 992 ?
+                  <Select
+                    className="select-option"
+                    defaultValue={option}
+                    options={btnOptionMenu}
+                    onChange={(selectedOption)=> {
+                      setOption(selectedOption)
+                    }}
+                  /> :
+                  <>
+                  {btnOptionMenu.map((btn, index) => {
+                    return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`default-btn-action-form ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
+                      e.persist();
+                      let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
+                      if(oldActive) oldActive.classList.remove('btn-option-active');
+                      e.target.classList.add('btn-option-active');
+                      setOption(btn)
+                      }}>
+                      {btn.label}
+                    </button>
+                  })}
+                </>
+                }
 
-          </div>
-          
-          <div className="default-title-container delimiter-title">
-            <h1 className="default-h1">{objectTitle[option.value]}</h1>
-            {option.value === "userOptions" && 
-              <TitleButtonInteraction 
-                title={"Supprimer son compte"}
-                openTitleMessage={openTitleMessage}
-                setOpenTitleMessage={setOpenTitleMessage}
-                icon={<FontAwesomeIcon icon="trash" />}
-                contentDiv={contentTitleInteraction}
-              />
-            }
+              </div>
+            </div>
+            <div className="sub-option">
+              <h1>{objectTitle[option.value]}</h1>
+              {option.value === "userOptions" && 
+                <TitleButtonInteraction 
+                  title={"Supprimer son compte"}
+                  openTitleMessage={openTitleMessage}
+                  setOpenTitleMessage={setOpenTitleMessage}
+                  icon={<FontAwesomeIcon icon="trash" />}
+                  contentDiv={contentTitleInteraction}
+                />
+              }
+            </div>
           </div>
 
           <SwitchTransition mode={'out-in'}>
