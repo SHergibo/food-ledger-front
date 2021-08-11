@@ -306,51 +306,51 @@ function ShoppingList() {
   
   return (
     <div className="default-wrapper">
-      <div className="default-title-container">
-        {shoppingList.length > 1 &&
-          <h1 className="default-h1">Liste de courses</h1>
-        }
-        {shoppingList.length <= 1 &&
-          <h1 className="default-h1">Liste de course</h1>
-        }
-        
-        {shoppingList.length >= 1 &&
-        <>
-          {windowWidth >= 992 &&
-            <div className="multiple-button-interaction">
-              <button 
-                className="btn-action-title"
-                title="Télécharger la liste"
-                onClick={downloadShoppingList}>
-                <FontAwesomeIcon icon="download" />
-              </button>
-              <button 
-                className="btn-action-title" 
-                title="Envoyer la liste par mail"
-                onClick={sendShoppingListEmail}>
-                <FontAwesomeIcon icon="envelope" />
-              </button>
-              <TitleButtonInteraction
-                title={"Supprimer toute la liste !"}
-                openTitleMessage={openTitleMessage}
-                setOpenTitleMessage={setOpenTitleMessage}
-                icon={<FontAwesomeIcon icon="trash" />}
-                contentDiv={contentTitleInteractionFullScreen}
-              />
-            </div>
+      <div className="sub-header only-option-interation">
+        <div className="sub-option">
+          {shoppingList.length > 1 &&
+            <h1>Liste de courses</h1>
           }
-          {windowWidth < 992 &&
-            <TitleButtonInteraction
-              title={"Actions liste de course"}
-              openTitleMessage={openTitleMessage}
-              setOpenTitleMessage={closeAllTitleMessage}
-              icon={<FontAwesomeIcon icon="cog" />}
-              contentDiv={contentTitleInteractionSmartPhone}
-            />
+          {shoppingList.length <= 1 &&
+            <h1>Liste de course</h1>
           }
-        </>
-
-        }
+          {shoppingList.length >= 1 &&
+            <>
+              {windowWidth >= 992 &&
+                <div className="multiple-button-option">
+                  <button 
+                    className="btn-action-title"
+                    title="Télécharger la liste"
+                    onClick={downloadShoppingList}>
+                    <FontAwesomeIcon icon="download" />
+                  </button>
+                  <button 
+                    className="btn-action-title" 
+                    title="Envoyer la liste par mail"
+                    onClick={sendShoppingListEmail}>
+                    <FontAwesomeIcon icon="envelope" />
+                  </button>
+                  <TitleButtonInteraction
+                    title={"Supprimer toute la liste !"}
+                    openTitleMessage={openTitleMessage}
+                    setOpenTitleMessage={setOpenTitleMessage}
+                    icon={<FontAwesomeIcon icon="trash" />}
+                    contentDiv={contentTitleInteractionFullScreen}
+                  />
+                </div>
+              }
+              {windowWidth < 992 &&
+                <TitleButtonInteraction
+                  title={"Actions liste de course"}
+                  openTitleMessage={openTitleMessage}
+                  setOpenTitleMessage={closeAllTitleMessage}
+                  icon={<FontAwesomeIcon icon="cog" />}
+                  contentDiv={contentTitleInteractionSmartPhone}
+                />
+              }
+            </>
+          }
+        </div>
       </div>
 
       <div className="container-loading">
