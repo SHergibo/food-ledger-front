@@ -139,19 +139,19 @@ function ShoppingList() {
      {!deleteAllMessage &&
         <div className="multiple-action-container">
           <button 
-          className="btn-delete-action-no" 
+          className="small-btn-purple" 
           onClick={() => {}}>
-            <FontAwesomeIcon icon="download" /> Télécharger la liste de course
+            <FontAwesomeIcon className="btn-icon" icon="download" /> Télécharger la liste
           </button>
           <button 
-          className="btn-delete-action-no" 
+          className="small-btn-purple" 
           onClick={sendShoppingListEmail}>
-            <FontAwesomeIcon icon="envelope" /> Envoyer la liste de course par mail
+            <FontAwesomeIcon className="btn-icon" icon="envelope" /> Envoyer la liste par mail
           </button>
           <button 
-          className="btn-delete-action-yes"
+          className="small-btn-red"
           onClick={()=> {setDeleteAllMessage(!deleteAllMessage)}}>
-            <FontAwesomeIcon icon="trash" /> Supprimer tout le registe !
+            <FontAwesomeIcon className="btn-icon" icon="trash" /> Supprimer la liste!
           </button>
         </div>
      }
@@ -160,12 +160,13 @@ function ShoppingList() {
         <p>Êtes-vous sur et certain de vouloir supprimer toute la liste de course? Toutes les courses seront perdues !</p>
         <div className="btn-delete-action-container">
           <button 
-          className="btn-delete-action-yes"
-          onClick={()=>{deleteAllShoppingList()}}>
+          className={userHouseholdData.isWaiting ? "small-btn-disabled" : "small-btn-red"}
+          onClick={()=>{deleteAllShoppingList()}}
+          disabled={userHouseholdData.isWaiting}>
             Oui
           </button>
           <button 
-          className="btn-delete-action-no" 
+          className="small-btn-purple" 
           onClick={() => {setDeleteAllMessage(!deleteAllMessage)}}>
             Non
           </button>
@@ -185,13 +186,13 @@ function ShoppingList() {
         }
         <div className="btn-delete-action-container">
           <button 
-          className={userHouseholdData.isWaiting ? "btn-delete-action-disabled" : "btn-delete-action-yes"}
+          className={userHouseholdData.isWaiting ? "small-btn-disabled" : "small-btn-red"}
           onClick={()=>{deleteAllShoppingList()}}
           disabled={userHouseholdData.isWaiting}>
             Oui
           </button>
           <button 
-          className="btn-delete-action-no" 
+          className="small-btn-purple" 
           onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
             Non
           </button>
