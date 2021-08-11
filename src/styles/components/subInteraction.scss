@@ -44,6 +44,44 @@
   }
 }
 
+/*Full-screen*/
+@media screen and (min-width: 992px){
+  .sub-header{
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: em(29px);
+    .btn-purple{
+      height: rem(53px);
+      margin-bottom: 0;
+      margin-right: rem(19px);
+      .btn-icon{
+        font-size: rem(25px);
+      }
+    }
+  }
+  .sub-interaction{
+    align-items: center;
+    flex-direction: row;
+    order: 0;
+  }
+  .sub-option{
+    order: 1;
+    h1{
+      display: none;
+    }
+    .multiple-button-option{
+      .btn-action-title{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: rem(53px);
+        height: rem(53px);
+        font-size: rem(25px);
+      }
+    }
+  }
+}
+
 
 
 
