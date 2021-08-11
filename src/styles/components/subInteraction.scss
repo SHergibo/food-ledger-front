@@ -22,6 +22,7 @@
   justify-content: space-between;
   align-items: center;
   order: 0;
+  min-height: em(65px);
   padding: em(13px) 0;
   h1{
     font-size: rem(25px);
@@ -135,6 +136,7 @@
     order: 0;
   }
   .sub-option{
+    min-height: 100%;
     order: 1;
     h1{
       display: none;
