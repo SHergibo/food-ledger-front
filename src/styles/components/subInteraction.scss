@@ -1,4 +1,5 @@
 .sub-header{
+  position: relative;
   display: flex;
   flex-direction: column;
   .btn-purple{
@@ -17,6 +18,7 @@
 }
 
 .sub-option{
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,6 +36,9 @@
       margin-left: rem(11px);
     }
     .btn-action-title{
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: rem(39px);
       height: rem(39px);
       background-color: var(--primary-color);
@@ -41,6 +46,58 @@
       border-radius: 50%;
       font-size: rem(18px);
     }
+  }
+  .title-interact-container{
+    display: block;
+    position: absolute;
+    top: em(13px);
+    right: 0;
+    z-index: 30;
+    width: 100%;
+    padding: rem(10px);
+    background-color: var(--white);
+    color: var(--primary-color);
+    border-radius: em(15px);
+    box-shadow: 0px 1px 4px var(--drop-shadow);
+    .inner-title-interact-container{
+      padding: em(14px);
+      background-color: var(--purple-light);
+      border-radius: em(15px);
+    }
+    .header-title-interact-message{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: rem(18px);
+    }
+    .btn-close-title-message{
+      font-size: rem(23px);
+      color: var(--primary-color);
+      background-color: transparent;
+    }
+    .form-title-interact{
+      h4, label{
+        font-weight: 500;
+      }
+      h4{
+        margin: em(14px) 0;
+      }
+      label{
+        color: var(--primary-color);
+      }
+      .small-btn-purple{
+        margin-top: em(14px);
+      }
+    }
+  }
+}
+
+/*Media queries*/
+
+/*Tablet*/
+@media screen and (min-width: 768px) {
+  .title-interact-container{
+    max-width: em(460px);
   }
 }
 
@@ -71,9 +128,6 @@
     }
     .multiple-button-option{
       .btn-action-title{
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: rem(53px);
         height: rem(53px);
         font-size: rem(25px);
