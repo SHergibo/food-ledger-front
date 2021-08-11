@@ -77,6 +77,11 @@
         margin-top: em(14px);
       }
     }
+    .form-delegate{
+      label{
+        color: var(--primary-color);
+      }
+    }
     .title-message-container-delete-action{
       p{
         margin: em(14px) 0;
