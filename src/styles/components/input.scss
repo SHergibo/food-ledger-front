@@ -229,19 +229,20 @@
     &:-webkit-autofill:hover, 
     &:-webkit-autofill:focus {
       -webkit-text-fill-color: var(--grey);
-      // font-size: 16px;
       transition: background-color 5000s ease-in-out 0s;
     }
   }
-
 }
 
 
-/*Tablet*/
-
-@media screen and (min-width: 699px) {
+/*Full-screen*/
+@media screen and (min-width: 992px){
   .quick-search {
-    width: unset;
-    margin-right: .8rem;
+    input{
+      width: rem(240px);
+      height: rem(53px);
+      margin-right: rem(19px);
+      margin-bottom: 0;
+    }
   }
 }
