@@ -18,7 +18,6 @@
 }
 
 .sub-option{
-  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -76,6 +75,23 @@
       }
       .small-btn-purple{
         margin-top: em(14px);
+      }
+    }
+    .title-message-container-delete-action{
+      p{
+        margin: em(14px) 0;
+      }
+      .btn-delete-action-container{
+        display: flex;
+        align-items: center;
+        button + button{
+          margin-left: em(13px);
+        }
+      }
+    }
+    .multiple-action-container{
+      button{
+        margin: .5em 0;
       }
     }
   }
