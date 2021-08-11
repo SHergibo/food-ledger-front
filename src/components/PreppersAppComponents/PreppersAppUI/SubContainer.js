@@ -75,12 +75,12 @@ function SubContainer({history}) {
                       {notif.type !== "information" ? 
                         <>
                           {notif.type === "need-switch-admin" ? 
-                            <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> :
-                            <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
+                            <button className="small-btn-purple" onClick={delegateNotification}>Déléguer</button> :
+                            <button className="small-btn-purple" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "yes")}>Accepter</button>
                           }
                           {notif.type === "request-delegate-admin" || notif.type === "last-chance-request-delegate-admin" ? 
-                            <button className="notif-two-interactions" onClick={delegateNotification}>Déléguer</button> : 
-                            <button className="notif-two-interactions" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
+                            <button className="small-btn-purple" onClick={delegateNotification}>Déléguer</button> : 
+                            <button className="small-btn-purple" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
                           }
                         </> :
                         <button className="notif-one-interaction" onClick={()=>deleteNotification(notif._id)}>Supprimer</button>
