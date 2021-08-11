@@ -35,17 +35,6 @@
     .btn-action-title + .btn-action-title{
       margin-left: rem(11px);
     }
-    .btn-action-title{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: rem(39px);
-      height: rem(39px);
-      background-color: var(--primary-color);
-      color: var(--white);
-      border-radius: 50%;
-      font-size: rem(18px);
-    }
   }
   .title-interact-container{
     display: block;
@@ -115,6 +104,9 @@
         font-size: rem(25px);
       }
     }
+  }
+  .only-option-interation{
+    justify-content: flex-end;
   }
   .sub-interaction{
     align-items: center;
