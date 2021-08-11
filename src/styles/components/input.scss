@@ -48,6 +48,53 @@
   }
 }
 
+@mixin container-radio(){
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: em(12px);
+  color: var(--white);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    &:checked ~ .radio-checkmark {
+      background-color: var(--primary-color);
+    }
+    &:checked ~ .radio-checkmark:after {
+      display: block;
+    }
+  }
+  .radio-checkmark {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: em(26px);
+    width: em(26px);
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    transition: .2s ease-in-out;
+    &:after{
+      content: "";
+      position: absolute;
+      display: none;
+      top: em(6px);
+      left: em(6px);
+      width: em(14px);
+      height: em(14px);
+      border-radius: 50%;
+      background: var(--white);
+    }
+  }
+}
+
 .input-group {
   position: relative;
   padding: em(7px) 0;
