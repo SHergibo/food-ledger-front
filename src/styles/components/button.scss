@@ -50,3 +50,12 @@
   font-size: rem(18px);
 }
 
+/*Full-screen*/
+@media screen and (min-width: 992px){
+  .btn-action-title{
+    width: rem(53px);
+    height: rem(53px);
+    font-size: rem(25px);
+  }
+}
+
