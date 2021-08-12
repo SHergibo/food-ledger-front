@@ -13,7 +13,6 @@ import { productType } from "../../../utils/localData";
 import Table from './../UtilitiesComponent/Table';
 import { transformDate, addMonths } from '../../../helpers/transformDate.helper';
 import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -877,12 +876,20 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       {showFilter &&
         <>
           <form className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
-            <div className="input-form-container">
-              <label htmlFor="product-name">Nom du produit</label>
-              <input className="input-form" name="name" type="text" id="product-name" placeholder="Nom..." defaultValue={searchObject.name || ""} {...register("name")} />
+
+            <div className="input-group">
+              <input
+                name="name"
+                type="text"
+                id="product-name"
+                className="form-input"
+                defaultValue={searchObject.name || ""}
+                {...register("name")}
+              />
+              <label htmlFor="product-name" className="form-label-grey">Nom du produit</label>
             </div>
             
-            <div className="input-form-container">
+            <div className="input-group">
               <ReactSelect
                 format="select"
                 label="Marque du produit"
@@ -891,14 +898,13 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 inputId="product-brand"
                 classNamePrefix="select-brand"
                 isClearable={true}
-                placeholder="Marque..."
                 arrayOptions={arrayOptions}
                 control={control}
                 defaultValue={""}
               />
             </div>
 
-            <div className="input-form-container">
+            <div className="input-group">
               <ReactSelect
                 format="select"
                 label="Type de produit"
@@ -907,38 +913,50 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 inputId="product-type"
                 classNamePrefix="select-type"
                 isClearable={true}
-                placeholder="Type..."
                 arrayOptions={productType}
                 control={control}
                 defaultValue={""}
               />
             </div>
 
-            <div className="input-form-container">
-              <label htmlFor="product-weight">Poids du produit (gr)</label>
-              <input className="input-form" name="weight" type="number" id="product-weight" placeholder="Poids..." defaultValue={searchObject.weight} {...register("weight")} />
+            <div className="input-group">
+              <input
+                name="weight"
+                type="number"
+                id="product-weight"
+                className="form-input"
+                defaultValue={searchObject.weight}
+                {...register("weight")}
+              />
+              <label htmlFor="product-weight" className="form-label-grey">Poids du produit (gr)</label>
             </div>
 
-            <div className="input-form-container">
-              <label htmlFor="product-kcal">Valeur énergétique du produit (kcal)</label>
-              <input className="input-form" name="kcal" type="number" id="product-kcal" placeholder="Kcal..." defaultValue={searchObject.kcal} {...register("kcal")} />
+            <div className="input-group">
+              <input
+                name="kcal"
+                type="number"
+                id="product-kcal"
+                className="form-input"
+                defaultValue={searchObject.kcal}
+                {...register("kcal")}
+              />
+              <label htmlFor="product-kcal" className="form-label-grey">Valeur énergétique du produit (kcal)</label>
             </div>
 
             {requestTo === "products" &&
-              <div className="input-form-container">
-                <label htmlFor="product-expirationDate">Date d'expiration du produit</label>
+              <div className="input-group">
+                <label className="form-label-grey" htmlFor="product-expirationDate">Date d'expiration du produit</label>
                 <Controller
                   control={control}
                   name="expirationDate"
                   render={({field}) => (
                     <DatePicker
-                      className="input-form input-form-date-picker"
+                      className="form-input"
                       id="product-expirationDate"
                       dateFormat="dd/MM/yyyy"
                       locale="fr"
                       isClearable
                       autoComplete="off"
-                      placeholderText="Date d'expiration..."
                       onChange={field.onChange}
                       selected={field.value}
                     />
@@ -948,23 +966,34 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               </div>
             }
 
-
-            
-            <div className="input-form-container">
-              <label htmlFor="product-location">Emplacement du produit</label>
-              <input className="input-form" name="location" type="text" id="product-location" placeholder="Emplacement..." defaultValue={searchObject.location} {...register("location")}/>
+            <div className="input-group">
+              <input
+                name="location"
+                type="text"
+                id="product-location"
+                className="form-input"
+                defaultValue={searchObject.location}
+                {...register("location")}
+              />
+              <label htmlFor="product-location" className="form-label-grey">Emplacement du produit</label>
             </div>
 
             {requestTo === "products" &&
-              <div className="input-form-container">
-                <label htmlFor="product-number">Nombre de produit</label>
-                <input className="input-form" name="number" type="number" id="product-number" placeholder="Nombre..." defaultValue={searchObject.number} {...register("number")} />
+              <div className="input-group">
+                <input
+                  name="number"
+                  type="number"
+                  id="product-number"
+                  className="form-input"
+                  defaultValue={searchObject.number}
+                  {...register("number")}
+                />
+                <label htmlFor="product-number" className="form-label-grey">Nombre de produit</label>
               </div>
             }
 
             <div className="default-action-form-container">
-              <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="filter" />Filtrer</button>
-              
+              <button className="btn-purple" type="submit"><FontAwesomeIcon icon="filter" />Filtrer</button>
             </div>
             
           </form>
