@@ -21,13 +21,15 @@
 
 /*Media queries*/
 
-/*Full-screen*/
+/*Tablet*/
 @media screen and (min-width: 768px){
   .container-row{
     padding: 0 10px;
     overflow: hidden;
   }
 }
+
+/*Full-screen*/
 @media screen and (min-width: 992px){
   .container-prepper-app{
     margin: em(48px);
