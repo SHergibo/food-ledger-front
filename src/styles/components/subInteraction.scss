@@ -103,12 +103,30 @@
   }
 }
 
+.form-filter-table{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  .form-input{
+    padding: rem(7px) rem(20px);
+    margin-bottom: 1rem;
+  }
+}
+
 /*Media queries*/
 
 /*Tablet*/
 @media screen and (min-width: 768px) {
   .title-interact-container{
     max-width: em(460px);
+  }
+  .form-filter-table{
+    .action-form-filter{
+      margin-bottom: .5rem;
+    }
+    .form-input{
+      padding: rem(13px) rem(20px);
+    }
   }
 }
 
