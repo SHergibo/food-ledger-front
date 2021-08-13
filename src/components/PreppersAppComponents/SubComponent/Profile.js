@@ -19,6 +19,57 @@ import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
 
+const customStyles = {
+  control: (styles) => (
+    {
+      ...styles,
+      width: '100%',
+      marginRight: '0.5rem',
+      padding: '2.5px 10px',
+      transition: '.2s ease-in-out',
+      outline: 'none',
+      boxShadow: 'none',
+      backgroundColor: 'transparent',
+      color: 'hsl(0, 0%, 35%)',
+      borderColor: 'hsl(257, 63%, 52%)',
+      borderRadius: '0.625rem',
+      '@media (min-width: 768px)': {
+        width: '340px',
+        padding: '8.5px 10px'
+      }
+    }),
+  option: (styles, { isFocused, isSelected }) => (
+    {
+      ...styles,
+      color: (isSelected || isFocused) ? '#fff' : 'hsl(0, 0%, 35%)',
+      backgroundColor: (isSelected || isFocused) ? 'hsl(257, 63%, 52%)' : '#fff', 
+    }),
+  singleValue: styles => (
+    {
+      ...styles,
+      color: 'hsl(0, 0%, 35%)',
+      fontSize: '1.125rem'
+    }),
+  menu: styles => (
+    {
+      ...styles,
+      marginTop: '1px',
+      borderRadius: '0.625rem',
+      overflow: 'hidden',
+      zIndex: "11"
+    }),
+  dropdownIndicator: styles => (
+    {
+      ...styles,
+      color: 'hsl(257, 63%, 52%)'
+    }),
+  indicatorSeparator: styles => (
+    {
+      ...styles,
+      backgroundColor: 'transparent'
+    }),
+};
+
 function Profile({ history }) {
   const location = useLocation();
   const { userData } = useUserData();
@@ -230,18 +281,24 @@ function Profile({ history }) {
           <div className="sub-header">
             <div className="sub-interaction">
               <div className="btn-option-container">
-                {windowWidth <= 992 ?
-                  <Select
-                    className="select-option"
-                    defaultValue={option}
-                    options={btnOptionMenu}
-                    onChange={(selectedOption)=> {
-                      setOption(selectedOption)
-                    }}
-                  /> :
+                {windowWidth <= 768 ?
+                  <div className="input-group">
+                    <label className="form-label-grey" htmlFor="menuOption">
+                      Menu options
+                    </label>
+                    <Select
+                      inputId="menuOption"
+                      styles={customStyles}
+                      defaultValue={option}
+                      options={btnOptionMenu}
+                      onChange={(selectedOption)=> {
+                        setOption(selectedOption)
+                      }}
+                    />
+                  </div> :
                   <>
                   {btnOptionMenu.map((btn, index) => {
-                    return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`default-btn-action-form ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
+                    return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`btn-purple ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
                       e.persist();
                       let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
                       if(oldActive) oldActive.classList.remove('btn-option-active');
