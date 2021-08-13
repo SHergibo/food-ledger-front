@@ -37,7 +37,7 @@ function SubContainer({history}) {
 
   const delegateNotification = () => {
     history.push({
-      pathname: '/app/profil',
+      pathname: '/app/options',
       state: {
         householdOptions: true 
       }
@@ -46,7 +46,7 @@ function SubContainer({history}) {
 
   const goToNotification = () => {
     history.push({
-      pathname: '/app/profil',
+      pathname: '/app/options',
       state: {
         notification: true 
       }

@@ -177,7 +177,7 @@ function Nav({ history, logOut, showNotif, showNotification }) {
             </li>
           }
           <li>
-            <Link to="/app/profil">
+            <Link to="/app/options">
               <div className="svg-menu">
                 <FontAwesomeIcon icon="cog" />
               </div>

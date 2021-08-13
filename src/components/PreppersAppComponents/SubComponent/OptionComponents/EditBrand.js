@@ -34,7 +34,7 @@ function EditBrand({ history }) {
 
   useEffect(() => {
     if(userHouseholdData?.isWaiting){
-      history.push("/app/profil");
+      history.push("/app/options");
     }
   }, [userHouseholdData, history]);
 
@@ -58,7 +58,7 @@ function EditBrand({ history }) {
     if(socketRef.current){
       socket = socketRef.current;
       socket.on("kickBrandIsEdited", () => {
-        history.push("/app/profil");
+        history.push("/app/options");
       });
     }
 
@@ -165,7 +165,7 @@ function EditBrand({ history }) {
       .then((response) => {
         if(response.status === 200){
           history.push({
-            pathname: '/app/profile',
+            pathname: '/app/options',
           })
         }
       });
@@ -198,7 +198,7 @@ function EditBrand({ history }) {
           <button className="return-to"
             onClick={() => {
               history.push({
-                pathname: '/app/profil',
+                pathname: '/app/options',
                 state: {
                   brandOptions: true 
                 }

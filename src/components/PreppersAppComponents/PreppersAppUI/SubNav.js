@@ -64,7 +64,7 @@ function SubNav({ showNotif }) {
           }
           <FontAwesomeIcon icon="bell" />
         </div>
-        <Link className="user-profile-link" to="/app/profil">
+        <Link className="user-profile-link" to="/app/options">
           <span>{firstChar}</span>
         </Link>
       </div>
