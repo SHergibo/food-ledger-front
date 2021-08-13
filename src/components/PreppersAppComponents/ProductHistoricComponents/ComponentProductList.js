@@ -896,7 +896,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 Controller={Controller}
                 name="brand"
                 inputId="product-brand"
-                classNamePrefix="select-brand"
                 isClearable={true}
                 arrayOptions={arrayOptions}
                 control={control}
@@ -911,7 +910,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 Controller={Controller}
                 name="type"
                 inputId="product-type"
-                classNamePrefix="select-type"
                 isClearable={true}
                 arrayOptions={productType}
                 control={control}
