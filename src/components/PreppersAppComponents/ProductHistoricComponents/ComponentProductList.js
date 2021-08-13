@@ -991,7 +991,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             }
 
             <div className="default-action-form-container">
-              <button className="btn-purple" type="submit"><FontAwesomeIcon icon="filter" />Filtrer</button>
+              <button className="btn-purple" type="submit"><FontAwesomeIcon className="btn-icon" icon="filter" />Filtrer</button>
             </div>
             
           </form>
