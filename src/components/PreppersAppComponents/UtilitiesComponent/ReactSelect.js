@@ -1,76 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
-function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix, isClearable, arrayOptions, setArrayOptions, control, defaultValue, setValue, success, inputValue, clearErrors, formType }) {
+function ReactSelect({ format, label, Controller, name, inputId, isClearable, arrayOptions, setArrayOptions, control, defaultValue, setValue, success, inputValue, clearErrors, formType }) {
   const [value, setVal] = useState();
-  const [customStyles, setCustomStyles] = useState(
-    {
-      control: (styles) => (
-        {
-          ...styles,
-          width: '100%',
-          marginRight: '0.5rem',
-          padding: '2.5px 10px',
-          transition: '.2s ease-in-out',
-          outline: 'none',
-          boxShadow: 'none',
-          backgroundColor: 'transparent',
-          color: 'hsl(0, 0%, 35%)',
-          borderColor: 'hsl(257, 63%, 52%)',
-          borderRadius: '0.625rem',
-        }),
-      option: (styles, { isFocused, isSelected }) => (
-        {
-          ...styles,
-          color: (isSelected || isFocused) ? '#fff' : 'hsl(0, 0%, 35%)',
-          backgroundColor: (isSelected || isFocused) ? 'hsl(257, 63%, 52%)' : '#fff', 
-        }),
-      singleValue: styles => (
-        {
-          ...styles,
-          color: 'hsl(0, 0%, 35%)',
-        }),
-      menu: styles => (
-        {
-          ...styles,
-          marginTop: '1px',
-          borderRadius: '0.625rem',
-          overflow: 'hidden',
-          zIndex: "11"
-        }),
-      dropdownIndicator: styles => (
-        {
-          ...styles,
-          color: 'hsl(257, 63%, 52%)'
-        }),
-      indicatorSeparator: styles => (
-        {
-          ...styles,
-          backgroundColor: 'transparent'
-        }),
-    }
-  );
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const selectRef = useRef(null);
-
-  const responsiveColumns = useCallback(() => {
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
-    return () => {
-      window.removeEventListener('resize', responsiveColumns);
-    }
-  }, [responsiveColumns]);
-
-  useEffect(() => {
-    let responsibeStyles;
-    if (windowWidth < 768) {
-      responsibeStyles = customStyles;
-      responsibeStyles.control = (styles) => (
+  const customStyles = {
+    control: (styles) => (
       {
         ...styles,
         width: '100%',
@@ -83,28 +20,42 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
         color: 'hsl(0, 0%, 35%)',
         borderColor: 'hsl(257, 63%, 52%)',
         borderRadius: '0.625rem',
-      });
-      setCustomStyles(responsibeStyles)
-    }
-    if (windowWidth >= 768) {
-      responsibeStyles = customStyles;
-      responsibeStyles.control = (styles) => (
+        '@media (min-width: 768px)': {
+          width: '340px',
+          padding: '8.5px 10px'
+        }
+      }),
+    option: (styles, { isFocused, isSelected }) => (
       {
         ...styles,
-        width: '230px',
-        marginRight: '0.5rem',
-        padding: '2.5px 10px',
-        transition: '.2s ease-in-out',
-        outline: 'none',
-        boxShadow: 'none',
-        backgroundColor: 'transparent',
+        color: (isSelected || isFocused) ? '#fff' : 'hsl(0, 0%, 35%)',
+        backgroundColor: (isSelected || isFocused) ? 'hsl(257, 63%, 52%)' : '#fff', 
+      }),
+    singleValue: styles => (
+      {
+        ...styles,
         color: 'hsl(0, 0%, 35%)',
-        borderColor: 'hsl(257, 63%, 52%)',
+        fontSize: '1.125rem'
+      }),
+    menu: styles => (
+      {
+        ...styles,
+        marginTop: '1px',
         borderRadius: '0.625rem',
-      });
-      setCustomStyles(responsibeStyles)
-    }
-  }, [customStyles, setCustomStyles, windowWidth]);
+        overflow: 'hidden',
+        zIndex: "11"
+      }),
+    dropdownIndicator: styles => (
+      {
+        ...styles,
+        color: 'hsl(257, 63%, 52%)'
+      }),
+    indicatorSeparator: styles => (
+      {
+        ...styles,
+        backgroundColor: 'transparent'
+      }),
+  };
 
   useEffect(() => {
     if(formType === "add" && format === "creatable" && success){
@@ -136,19 +87,7 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
 
   return (
     <>
-      <label
-        className="form-label-grey"
-        htmlFor={inputId}
-        // onMouseOver={() => {
-        //   if(selectRef.current.select.controlRef) selectRef.current.select.controlRef.style.borderColor = "#002651";
-        // }}
-        // onMouseLeave={() => {
-        //   if(selectRef.current.select.controlRef) selectRef.current.select.controlRef.style.borderColor = null;
-        // }}
-        // onClick={() => {
-        //   if(selectRef.current.select.controlRef) selectRef.current.select.controlRef.style.borderColor = null;
-        // }}
-      >
+      <label className="form-label-grey" htmlFor={inputId}>
         {label}
       </label>
       {isClearable &&
@@ -162,7 +101,6 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
                 <Select
                   {...field}
                   inputId={inputId}
-                  classNamePrefix={classNamePrefix}
                   styles={customStyles}
                   placeholder={""}
                   defaultValue={defaultValue}
@@ -182,7 +120,6 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
                 {...field}
                 options={arrayOptions}
                 inputId={inputId}
-                classNamePrefix={classNamePrefix}
                 styles={customStyles}
                 placeholder={""}
                 defaultValue={""}
@@ -211,7 +148,6 @@ function ReactSelect({ format, label, Controller, name, inputId, classNamePrefix
                 <Select
                   {...field}
                   inputId={inputId}
-                  classNamePrefix={classNamePrefix}
                   styles={customStyles}
                   placeholder={""}
                   defaultValue={defaultValue}
@@ -233,7 +169,6 @@ ReactSelect.propTypes = {
   Controller: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   inputId: PropTypes.string.isRequired,
-  classNamePrefix: PropTypes.string.isRequired,
   isClearable: PropTypes.bool.isRequired,
   arrayOptions: PropTypes.array.isRequired,
   setArrayOptions: PropTypes.func,
