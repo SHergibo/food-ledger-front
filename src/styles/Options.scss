@@ -3,8 +3,8 @@
 }
 
 .btn-option-active{
-  background-color: $primary-color-hover;
-  border-color: $primary-color-hover;
+  background-color: var(--purple-light);
+  color: var(--primary-color);
 }
 
 .select-option{
