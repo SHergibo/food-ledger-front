@@ -113,6 +113,12 @@
   .form-input{
     padding: rem(7px) rem(20px);
   }
+  .default-action-form-container{
+    width: 100%;
+    .btn-purple{
+      width: 100%;
+    }
+  }
 }
 
 /*Media queries*/
