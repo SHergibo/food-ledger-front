@@ -132,6 +132,10 @@
     .action-form-filter{
       margin-bottom: .5rem;
     }
+    .input-group{
+      width: em(340px);
+      margin-right: em(19px);
+    }
     .form-input{
       padding: rem(13px) rem(20px);
     }
@@ -166,6 +170,17 @@
     order: 1;
     h1{
       display: none;
+    }
+  }
+  .form-filter-table{
+    .default-action-form-container{
+      display: flex;
+      align-items: flex-start;
+      width: unset;
+      height: em(69px);
+      .btn-purple{
+        width: 100%;
+      }
     }
   }
 }
