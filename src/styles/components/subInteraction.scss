@@ -158,6 +158,9 @@
         font-size: rem(25px);
       }
     }
+    .btn-purple:not(:last-child){
+      margin-bottom: 0;
+    }
   }
   .only-option-interation{
     justify-content: flex-end;
