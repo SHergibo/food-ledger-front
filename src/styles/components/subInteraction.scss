@@ -4,10 +4,12 @@
   flex-direction: column;
   .btn-purple{
     height: rem(37px);
-    margin-bottom: rem(13px);
     .btn-icon{
       font-size: rem(21px);
     }
+  }
+  .btn-purple:not(:last-child){
+    margin-bottom: rem(13px);
   }
 }
 
