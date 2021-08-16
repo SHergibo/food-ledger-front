@@ -367,7 +367,7 @@
   }
 
   .list-table-action-disabled{
-    @include btn-action-title(1rem, 2rem, true, "disabled");
+    @include btn-action(1rem, 2rem, true, "disabled");
     &:first-child{
       margin-right: 1rem;
     }
