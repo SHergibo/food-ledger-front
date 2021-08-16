@@ -38,7 +38,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   let btnSortRef = useRef([]);
   const [pageIndex, setPageIndex] = useState(parseInt(queryParsed.page) || 1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 14;
+  const pageSize = 12;
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
 
