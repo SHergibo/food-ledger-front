@@ -36,7 +36,7 @@ function Loading({ loading, errorFetch, retryFetch }) {
           {!errorFetch &&
             <div className="loader">
               <ScaleLoader
-                color={"#002651"}
+                color={"#6337d2"}
                 loading={animLoading}
               />
               <p>Chargement des données</p>
