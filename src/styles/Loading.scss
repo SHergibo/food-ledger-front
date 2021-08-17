@@ -9,14 +9,15 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  z-index: 1;
+  z-index: 20;
   height: 100%;
-  background-color: $white;
+  background-color: var(--white);
   top: 0;
-  left: -3px;
-  right: -3px;
+  left: em(-3px);
+  right: em(-3px);
   bottom: 0;
   opacity: 1;
+  border-radius: 1.25em;
   transition: .5s ease-in-out;
   .loader{
     display: flex;
@@ -25,7 +26,7 @@
     align-items: center;
     p{
       font-size: 1.5rem;
-      color: $primary-color;
+      color: var(--primary-color);
       margin-bottom: 1rem;
     }
   }
