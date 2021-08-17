@@ -246,7 +246,7 @@ function ShoppingList() {
           }
           if (column.id === "name") {
             return (
-              <td key={`${column.id}-${index}`}>
+              <td key={`${column.id}-${index}`} className="ellipsis-info">
                 {row[objectPropertyName].name}
               </td>
             )
