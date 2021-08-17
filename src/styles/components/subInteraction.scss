@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  margin-bottom: 1.8125em;
   .btn-purple{
     height: rem(37px);
     .btn-icon{
@@ -149,7 +150,6 @@
   .sub-header{
     flex-direction: row;
     justify-content: space-between;
-    margin-top: em(29px);
     .btn-purple{
       height: rem(53px);
       margin-bottom: 0;
