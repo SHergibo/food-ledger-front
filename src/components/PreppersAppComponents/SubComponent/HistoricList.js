@@ -20,11 +20,11 @@ function HistoricList() {
   useEffect(() => {
     setColumns(columnsHistoricMobile);
 
-    if(windowWidth >= 992){
+    if(windowWidth >= 768){
       setColumns(columnsHistoricTablet)
     }
 
-    if(windowWidth >= 1312){
+    if(windowWidth >= 992){
       setColumns(columnsHistoricFullScreen)
     }
   }, [setColumns, windowWidth]);
