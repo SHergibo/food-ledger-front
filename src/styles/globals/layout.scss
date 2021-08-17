@@ -2,28 +2,20 @@
   margin: em(13px);
 }
 
-.container-row{
+.container{
   position: relative;
-  display: block;
-  min-height: calc(100vh - 5.4375rem);
-}
-
-.container-column{
   display: flex;
   flex-direction: column;
   width: 100%;
-}
-
-.default-wrapper{
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  min-height: calc(100vh - 6rem);
 }
 
 /*Media queries*/
 
 /*Tablet*/
 @media screen and (min-width: 768px){
-  .container-row{
+  .container{
     padding: 0 10px;
     overflow: hidden;
   }
@@ -34,15 +26,9 @@
   .container-prepper-app{
     margin: em(48px);
   }
-  .container-row{
-    display: flex;
-    justify-content: space-between;
-  }
+
   .container-prepper-app{
     display: flex;
-  }
-  .default-wrapper{
-    width: 100%;
   }
 }
 
