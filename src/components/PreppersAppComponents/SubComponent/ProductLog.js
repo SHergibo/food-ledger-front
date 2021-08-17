@@ -163,7 +163,7 @@ function ProductLog({ history }) {
           }
           if (column.id !== "user" && column.id !== "createdAt" && column.id !== "infoProduct") {
             return (
-              <td key={`${column.id}-${index}`}>
+              <td key={`${column.id}-${index}`} className="ellipsis-info">
                 {row[column.id]}
               </td>
             )
