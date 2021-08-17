@@ -306,7 +306,7 @@ function ShoppingList() {
 
   
   return (
-    <div className="default-wrapper">
+    <>
       <div className="sub-header only-option-interation">
         <div className="sub-option">
           {shoppingList.length > 1 &&
@@ -379,7 +379,7 @@ function ShoppingList() {
 
       </div>
 
-    </div>
+    </>
   )
 }
 

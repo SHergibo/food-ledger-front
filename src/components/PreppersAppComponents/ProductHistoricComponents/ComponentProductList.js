@@ -805,8 +805,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   }
 
   return (
-    <div className="default-wrapper">
-
+    <>
       <div className="sub-header">
         <div className="sub-interaction">
           {(hasProduct || Object.keys(searchObject).length > 0) && 
@@ -1032,7 +1031,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         }
 
       </div>
-    </div>
+    </>
   )
 }
 

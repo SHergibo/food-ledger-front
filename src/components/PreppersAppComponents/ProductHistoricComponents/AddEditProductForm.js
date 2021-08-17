@@ -347,7 +347,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   </>;
 
   return (
-    <div className="default-wrapper">
+    <>
       <div className="default-title-container">
         <div className="title-and-return">
           <button className="return-to"
@@ -501,7 +501,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         </div>
       </div>
       
-    </div>
+    </>
   )
 }
 

@@ -275,7 +275,7 @@ function Profile({ history }) {
   }
 
   return (
-    <div className="default-wrapper">
+    <>
       {userData && 
         <>
           <div className="sub-header">
@@ -366,7 +366,7 @@ function Profile({ history }) {
           </SwitchTransition>
         </>
       }
-    </div>
+    </>
   )
 }
 

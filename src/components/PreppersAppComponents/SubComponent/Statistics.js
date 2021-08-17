@@ -235,7 +235,7 @@ function Statistics() {
 
 
   return (
-    <div className="default-wrapper">
+    <>
       <div className="sub-header">
         <div className="sub-option">
           <h1>Statistiques des stocks</h1>
@@ -316,7 +316,7 @@ function Statistics() {
           </div>
         }
       </div>
-    </div>
+    </>
   )
 }
 

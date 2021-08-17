@@ -245,7 +245,7 @@ function ProductLog({ history }) {
 
   
   return (
-    <div className="default-wrapper">
+    <>
       <div className="sub-header only-option-interation">
         <div className="sub-option">
           <h1>Registre des produits</h1>
@@ -286,7 +286,7 @@ function ProductLog({ history }) {
 
       </div>
 
-    </div>
+    </>
   )
 }
 
