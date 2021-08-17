@@ -39,21 +39,19 @@ function PreppersApp({ history }) {
           showNotification={showNotification}
           showNotif={showNotif}
         />
-        <div className="container-column">
+        <div className="container">
           <SubNav
             showNotif={showNotif}
           />
-          <div className="container-row">
-            <MainContainer />
-            <CSSTransition
-              in={showNotification}
-              timeout={500}
-              classNames="anim-container-sub"
-              unmountOnExit
-            >
-              <SubContainer />
-            </CSSTransition>
-          </div>
+          <MainContainer />
+          <CSSTransition
+            in={showNotification}
+            timeout={500}
+            classNames="anim-container-sub"
+            unmountOnExit
+          >
+            <SubContainer />
+          </CSSTransition>
         </div>
       </div>
     </DataProvider>
