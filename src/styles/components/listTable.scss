@@ -110,7 +110,6 @@
 }
 
 .container-list-table{
-  margin-top: em(29px);
   background-color: var(--white);
   box-shadow: 0px 1px 4px var(--drop-shadow);
   border-radius: em(20px);
@@ -310,7 +309,7 @@
 /*Media queries*/
 
 /*Tablet*/
-@media screen and (min-width: 699px) {
+@media screen and (min-width: 768px) {
   .container-btn-switch-notification-table{
     display: flex;
     justify-content: flex-start;
@@ -344,7 +343,7 @@
     }
     tbody{
       tr{
-        height: 3.1rem;
+        height: 3rem;
         .all-info{
           max-width: 10rem;
         }
@@ -357,7 +356,6 @@
         padding-left: 1rem;
       }
     }
-
   }
   
   .list-table-action, .list-table-action-warning{
@@ -378,5 +376,20 @@
 @media screen and (min-width: 992px){
   .list-table-profile{
     width: 50%;
+  }
+  .list-table{
+    thead{
+      tr{
+        height: calc(calc(100vh - 18.875rem) / 14);
+      }
+    }
+    tbody{
+      tr{
+        height: calc(calc(100vh - 18.875rem) / 14);
+      }
+    }
+  }
+  .pagination{
+    height: calc(calc(100vh - 18.875rem) / 14);
   }
 }
