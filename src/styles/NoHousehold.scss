@@ -2,8 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 5rem);
+  height: calc(100vh - 6.375rem);
   width: 100%;
+  margin-top: 1rem;
+  background-color: var(--white);
+  border-radius: em(20px);
+  box-shadow: 0px 1px 4px var(--drop-shadow);
   .no-household-content{
     display: flex;
     align-items: center;
@@ -17,7 +21,7 @@
   p{
     text-align: center;
     font-size: 1.5rem;
-    color: $primary-color;
+    color: var(--primary-color);
     margin-bottom: 1rem;
   }
 }
@@ -28,5 +32,7 @@
 @media screen and (min-width: 992px){
   .no-household-container{
     height: 100%;
+    height: calc(100vh - 13.90rem);
+    margin-top: 0;
   }
 }
