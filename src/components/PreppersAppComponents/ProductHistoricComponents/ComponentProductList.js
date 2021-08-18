@@ -724,12 +724,12 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             )
           }
           if (column.id === "name") {
-            let title = {}
+            let tdProps = {}
             if(row[column.id].length >= 24){
-              title = {title : `${row[column.id]}`}
+              tdProps = {title : `${row[column.id]}`, className : "ellipsis-info"}
             }
             return (
-              <td key={`${column.id}-${index}`} {...title} className="ellipsis-info">
+              <td key={`${column.id}-${index}`} {...tdProps}>
                 {row[column.id]}
               </td>
             )

@@ -245,8 +245,12 @@ function ShoppingList() {
             )
           }
           if (column.id === "name") {
+            let tdProps = {}
+            if(row[objectPropertyName].name.length >= 24){
+              tdProps = {title : `${row[objectPropertyName].name}`, className : "ellipsis-info"}
+            }
             return (
-              <td key={`${column.id}-${index}`} className="ellipsis-info">
+              <td key={`${column.id}-${index}`} {...tdProps}>
                 {row[objectPropertyName].name}
               </td>
             )

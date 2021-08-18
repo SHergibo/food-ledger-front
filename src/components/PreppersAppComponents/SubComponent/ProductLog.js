@@ -162,11 +162,23 @@ function ProductLog({ history }) {
             )
           }
           if (column.id !== "user" && column.id !== "createdAt" && column.id !== "infoProduct") {
-            return (
-              <td key={`${column.id}-${index}`} className="ellipsis-info">
+            if(column.id === "productName"){
+              let tdProps = {}
+              if(row[column.id].length >= 24){
+                tdProps = {title : `${row[column.id]}`, className : "ellipsis-info"}
+              }
+              return (
+                <td key={`${column.id}-${index}`} {...tdProps}>
+                  {row[column.id]}
+                </td>
+              )
+            }else{
+              return (
+              <td key={`${column.id}-${index}`}>
                 {row[column.id]}
               </td>
-            )
+              )
+            }
           }
           if (column.id === "user") {
             return (
