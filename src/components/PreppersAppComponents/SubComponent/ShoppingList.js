@@ -311,7 +311,7 @@ function ShoppingList() {
   
   return (
     <>
-      <div className="sub-header only-option-interation">
+      <div className="sub-header only-option-interaction">
         <div className="sub-option">
           {shoppingList.length > 1 &&
             <h1>Liste de courses</h1>
