@@ -226,7 +226,7 @@ function EditBrand({ history }) {
             retryFetch={getBrand}
           />
         <div>
-          <div className="form-add-edit-product-container">
+          <div className="form-add-edit-product">
             <form className="option-component" onSubmit={handleSubmit(editBrand)}>
                 <>
                   <div className="input-form-container-with-error">
