@@ -1,4 +1,10 @@
-.form-add-edit-product-container{
+.container-form-add-edit-product{
+  padding: em(34px);
+  background-color: var(--white);
+  border-radius: em(20px);
+}
+
+.form-add-edit-product{
   display: flex;
   flex-direction: column;
 }
@@ -38,8 +44,8 @@
 }
 
 /*Tablet*/
-@media screen and (min-width: 640px) {
-  .form-add-edit-product-container{
+@media screen and (min-width: 768px) {
+  .form-add-edit-product{
     flex-direction: row;
   }
 
@@ -55,3 +61,12 @@
     height: rem(490px);
   }
 }
+
+/*Full-screen*/
+@media screen and (min-width: 768px) {
+  .input-group{
+    width: em(340px);
+  }
+}
+
+
