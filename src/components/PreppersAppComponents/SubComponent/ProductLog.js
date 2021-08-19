@@ -258,7 +258,7 @@ function ProductLog({ history }) {
   
   return (
     <>
-      <div className="sub-header only-option-interation">
+      <div className="sub-header only-option-interaction">
         <div className="sub-option">
           <h1>Registre des produits</h1>
           {productLog.length >= 1 &&
