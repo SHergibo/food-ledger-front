@@ -2,7 +2,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.8125em;
   .btn-purple{
     height: rem(37px);
     .btn-icon{
@@ -11,6 +10,9 @@
   }
   .btn-purple:not(:last-child){
     margin-bottom: rem(13px);
+  }
+  .btn-purple:last-child{
+    margin-bottom: 1.2rem;
   }
 }
 
@@ -150,6 +152,7 @@
   .sub-header{
     flex-direction: row;
     justify-content: space-between;
+    margin-bottom: 1.8125em;
     .btn-purple{
       height: rem(53px);
       margin-bottom: 0;
@@ -158,11 +161,11 @@
         font-size: rem(25px);
       }
     }
-    .btn-purple:not(:last-child){
+    .btn-purple:not(:last-child), .btn-purple:last-child{
       margin-bottom: 0;
     }
   }
-  .only-option-interation{
+  .only-option-interaction{
     justify-content: flex-end;
   }
   .sub-interaction{
@@ -179,6 +182,10 @@
     .title-interact-container{
       top: 0;
     }
+  }
+
+  .sub-option-product{
+    width: 100%;
   }
 
   .form-filter-table{
