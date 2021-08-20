@@ -64,58 +64,6 @@
   }
 }
 
-@mixin info-icon($bg-color) {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  color: $white;
-  border-radius: 50%;
-  background-color: $bg-color;
-  transition: 0.2s ease-in-out;
-  svg {
-    z-index: 1;
-  }
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    border-radius: 50%;
-    background-color: $bg-color;
-    opacity: 0.4;
-    z-index: 0;
-    animation: pulse 2000ms infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-}
-
-@mixin message-box-info-warning($border-color) {
-  position: absolute;
-  bottom: 2.1rem;
-  left: -4rem;
-  width: 16.5rem;
-  padding: 0.5rem;
-  background-color: $grey;
-  color: $primary-color;
-  border: 1px solid $border-color;
-  border-radius: 10px;
-}
 
 @mixin input-form-container($width : 100%, $input-height : 2.25rem) {
   display: flex;
