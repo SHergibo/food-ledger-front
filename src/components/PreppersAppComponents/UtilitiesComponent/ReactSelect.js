@@ -3,7 +3,7 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
-function ReactSelect({ format, label, Controller, name, inputId, isClearable, arrayOptions, setArrayOptions, control, defaultValue, setValue, success, inputValue, clearErrors, formType }) {
+function ReactSelect({ format, label, labelBackWhite, Controller, name, inputId, isClearable, arrayOptions, control, defaultValue, success, inputValue, formType }) {
   const [value, setVal] = useState();
   const selectRef = useRef(null);
   const customStyles = {
@@ -69,14 +69,6 @@ function ReactSelect({ format, label, Controller, name, inputId, isClearable, ar
     }
   }, [inputValue]);
 
-  const onCreateOption = async (inputValue) => {
-    let newOption = { value: inputValue, label: inputValue };
-    setVal(newOption);
-    setValue("brand", newOption);
-    setArrayOptions(arrayOptions => [...arrayOptions, newOption]);
-    clearErrors('brand');
-  }
-
   const onChangeValue = async (inputValue) => {
       setVal(inputValue);
   }
@@ -87,7 +79,7 @@ function ReactSelect({ format, label, Controller, name, inputId, isClearable, ar
 
   return (
     <>
-      <label className="form-label-grey" htmlFor={inputId}>
+      <label className={`${labelBackWhite? 'form-label' : 'form-label-grey' }`} htmlFor={inputId}>
         {label}
       </label>
       {isClearable &&
@@ -130,7 +122,6 @@ function ReactSelect({ format, label, Controller, name, inputId, isClearable, ar
                   onChangeValue(e)
                   field.onChange(e)
                 }}
-                onCreateOption={onCreateOption}
                 ref={selectRef}
               />
             )}
@@ -166,17 +157,15 @@ function ReactSelect({ format, label, Controller, name, inputId, isClearable, ar
 ReactSelect.propTypes = {
   format: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  labelBackWhite: PropTypes.bool,
   Controller: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   inputId: PropTypes.string.isRequired,
   isClearable: PropTypes.bool.isRequired,
   arrayOptions: PropTypes.array.isRequired,
-  setArrayOptions: PropTypes.func,
   control: PropTypes.object.isRequired,
   defaultValue: PropTypes.string,
-  setValue: PropTypes.func,
   success: PropTypes.bool,
-  clearErrors: PropTypes.func,
   formType: PropTypes.string,
 }
 
