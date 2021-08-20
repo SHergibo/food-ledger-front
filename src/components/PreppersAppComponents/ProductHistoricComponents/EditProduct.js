@@ -107,7 +107,9 @@ function EditProduct({ history }) {
 
 
   const EditProduct = async (data) => {
-    data.brand.value = slugUrl(data.brand.value);
+    if(data.brand?.brandName?.value) data.brand.value = slugUrl(data.brand.brandName.value);
+    if(data.brand?.value) data.brand.value = slugUrl(data.brand.value);
+   
     let newData = {
       kcal: data.kcal,
       location: data.location,
