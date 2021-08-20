@@ -1,0 +1,108 @@
+@mixin info-icon($bg-color) {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: $white;
+  border-radius: 50%;
+  background-color: $bg-color;
+  transition: 0.2s ease-in-out;
+  svg {
+    z-index: 1;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border-radius: 50%;
+    background-color: $bg-color;
+    opacity: 0.4;
+    z-index: 0;
+    animation: pulse 2000ms infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+@mixin message-box-info-warning($border-color) {
+  position: absolute;
+  bottom: 2.1rem;
+  left: -4rem;
+  width: 16.5rem;
+  padding: 0.5rem;
+  background-color: $grey;
+  color: $primary-color;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+}
+
+.multiple-button-interaction{
+  display: flex;
+  button:not(:first-child){
+    margin-left: .5rem;
+  }
+}
+
+.info-icon-container{
+  position: relative;
+  margin-left: 1rem
+}
+
+.success-icon{
+  @include info-icon(var(--primary-color));
+}
+
+.warning-icon{
+  @include info-icon(var(--orange));
+  cursor: pointer;
+}
+
+.error-icon{
+  @include info-icon(var(--red));
+  cursor: pointer;
+}
+
+.hide-icon-pulse{
+  &:after{
+    display: none;
+  }
+}
+
+.message-box-info-warning{
+  @include message-box-info-warning(var(--orange));
+}
+
+.message-box-info-error{
+  @include message-box-info-warning(var(--red));
+}
+
+.close-message-box-info{
+  position: absolute;
+  top: .15rem;
+  right: .5rem;
+  color: var(--primary-color);
+}
+
+/*Tablet*/
+@media screen and (min-width: 688px) {
+  .message-box-info-warning,
+  .message-box-info-error{
+    bottom: 1.5rem;
+    left: 1.5rem;
+  }
+}
