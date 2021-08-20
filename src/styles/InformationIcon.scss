@@ -7,19 +7,20 @@
 
 .info-icon-container{
   position: relative;
+  margin-left: 1rem
 }
 
 .success-icon{
-  @include info-icon($primary-light);
+  @include info-icon(var(--primary-color));
 }
 
 .warning-icon{
-  @include info-icon($orange);
+  @include info-icon(var(--orange));
   cursor: pointer;
 }
 
 .error-icon{
-  @include info-icon($red);
+  @include info-icon(var(--red));
   cursor: pointer;
 }
 
@@ -30,18 +31,18 @@
 }
 
 .message-box-info-warning{
-  @include message-box-info-warning($orange);
+  @include message-box-info-warning(var(--orange));
 }
 
 .message-box-info-error{
-  @include message-box-info-warning($red);
+  @include message-box-info-warning(var(--red));
 }
 
 .close-message-box-info{
   position: absolute;
   top: .15rem;
   right: .5rem;
-  color: $primary-color;
+  color: var(--primary-color);
 }
 
 /*Tablet*/
