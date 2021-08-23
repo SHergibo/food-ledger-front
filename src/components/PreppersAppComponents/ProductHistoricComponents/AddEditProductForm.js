@@ -278,6 +278,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
       <ReactSelect
         format="creatable"
         label="Marque du produit *"
+        respSelect={true}
         labelBackWhite={true}
         Controller={Controller}
         name="brand"
@@ -299,6 +300,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
       <ReactSelect
         format="select"
         label="Type de produit"
+        respSelect={true}
         labelBackWhite={true}
         Controller={Controller}
         name="type"
