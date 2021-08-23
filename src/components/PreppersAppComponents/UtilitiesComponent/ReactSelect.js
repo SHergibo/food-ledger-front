@@ -23,6 +23,9 @@ function ReactSelect({ format, label, labelBackWhite, Controller, name, inputId,
         '@media (min-width: 768px)': {
           width: '340px',
           padding: '8.5px 10px'
+        },
+        '&:hover' : {
+          borderColor: 'hsl(257, 63%, 52%)'
         }
       }),
     option: (styles, { isFocused, isSelected }) => (
@@ -54,7 +57,7 @@ function ReactSelect({ format, label, labelBackWhite, Controller, name, inputId,
       {
         ...styles,
         backgroundColor: 'transparent'
-      }),
+      })
   };
 
   useEffect(() => {
