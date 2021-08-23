@@ -8,6 +8,15 @@
 .form-add-edit-product{
   display: flex;
   flex-direction: column;
+  form{
+    margin-bottom: em(30px);
+  }
+  .expiration-date{
+    .input-group{
+      width: 100%;
+      padding: 0;
+    }
+  }
   .btn-input-interaction{
     margin: 0;
   }
@@ -24,10 +33,6 @@
     height: 2.25rem;
     width: 2.25rem;
   }
-}
-
-.list-exp-date{
-  margin-bottom: em(30px);
 }
 
 .expiration-date{
@@ -55,7 +60,7 @@
     justify-content: flex-end;
   }
   &:not(:last-child){
-    margin-bottom: .5rem;
+    margin-bottom: .7rem;
   }
 }
 
@@ -68,12 +73,6 @@
   .expiration-date{
     width: rem(340px);
   }
-
-  .list-exp-date{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-  }
 }
 
 /*Full-screen*/
@@ -82,25 +81,20 @@
     height: calc(100vh - 19rem);
   }
   .form-add-edit-product{
-    // flex-direction: column;
     justify-content: space-between;
     height: 100%;
     .input-group{
       width: em(340px);
     }
-    .expiration-date{
-      .input-group{
-        width: 100%;
-        padding: 0;
-      }
-    }
     form{
       display: flex;
       flex-wrap: wrap;
       flex-direction: column;
+      column-gap: em(64px);
       height: calc(100% - 5.4375rem);
       width: 50%;
       min-width: 50%;
+      margin-bottom: 0;
       .error-message-input {
         min-height: 1.375rem;
       }
