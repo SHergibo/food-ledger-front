@@ -434,68 +434,64 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
           <div className="form-add-edit-product">
             <form>
               {form}
-              <div>
-                {showDateList &&
-                  <>
-                    <div className="input-group">
-                      {formType === "add" && <label className="form-label" htmlFor="expirationDate">Date d'expiration du produit *</label>}
-                      {formType === "edit" && <label className="form-label" htmlFor="expirationDate">Date d'expiration du produit</label>}
-                      <div className="container-input-interaction">
-                        <DatePicker
-                          className="form-input"
-                          id="expirationDate"
-                          isClearable
-                          dateFormat="dd/MM/yyyy"
-                          locale="fr"
-                          autoComplete="off"
-                          minDate={new Date()}
-                          showDisabledMonthNavigation
-                          selected={expDate}
-                          onChange={val => {
-                            setExpDate(val);
-                          }}
-                        />
-                        <button className="btn-input-interaction" type="button" onClick={addExpDate}><FontAwesomeIcon className="btn-icon" icon="plus" /></button>
-                      </div>
-                      <div className="error-message-input">
-                        {errorExpDate && <span>Minimum une date d'expiration requise !</span>}
-                        {errorExpDateEmpty && <span>Minimum un produit lié à une date !</span>}
-                      </div>
+              {showDateList &&
+                <>
+                  <div className="input-group">
+                    {formType === "add" && <label className="form-label" htmlFor="expirationDate">Date d'expiration du produit *</label>}
+                    {formType === "edit" && <label className="form-label" htmlFor="expirationDate">Date d'expiration du produit</label>}
+                    <div className="container-input-interaction">
+                      <DatePicker
+                        className="form-input"
+                        id="expirationDate"
+                        isClearable
+                        dateFormat="dd/MM/yyyy"
+                        locale="fr"
+                        autoComplete="off"
+                        minDate={new Date()}
+                        showDisabledMonthNavigation
+                        selected={expDate}
+                        onChange={val => {
+                          setExpDate(val);
+                        }}
+                      />
+                      <button className="btn-input-interaction" type="button" onClick={addExpDate}><FontAwesomeIcon className="btn-icon" icon="plus" /></button>
                     </div>
+                    <div className="error-message-input">
+                      {errorExpDate && <span>Minimum une date d'expiration requise !</span>}
+                      {errorExpDateEmpty && <span>Minimum un produit lié à une date !</span>}
+                    </div>
+                  </div>
 
-                    {arrayExpDate.length >= 1 &&
-                      <>
-                        <ul className="list-exp-date">
-                          {arrayExpDate.map((date, index) => {
-                            if(userOptionData){
-                              let cssDateColor;
-                              let title;
-                              if(date.expDate <= addMonths(userOptionData.warningExpirationDate.value)){
-                                cssDateColor = "color-code-red";
-                                title = "Date d'expiration proche !";
-                              }else if(date.expDate > addMonths(userOptionData.warningExpirationDate.value) && date.expDate <= addMonths(userOptionData.warningExpirationDate.value + 1)){
-                                cssDateColor = "color-code-orange";
-                                title = "Date d'expiration moyennement proche !";
-                              }
-                              return <li className="expiration-date" key={`expirationDate-${index}`}>
-                              <span title={title}>{`${index+1})`} <span className={cssDateColor}>{`${transformDate(date.expDate)}`}</span></span>
-                                <div className="container-input-interaction">
-                                  <div className="input-group">
-                                    <input type="number" className="form-input" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
-                                    <button className="btn-input-interaction" type="button" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon="times" /></button>
-                                  </div>
-                                </div>
-                              </li>
-                            }else{
-                              return null;
-                            }
-                          })}
-                        </ul>
-                      </>
-                    }
-                  </>
-                }
-              </div>
+                  {arrayExpDate.length >= 1 &&
+                    <>
+                      {arrayExpDate.map((date, index) => {
+                        if(userOptionData){
+                          let cssDateColor;
+                          let title;
+                          if(date.expDate <= addMonths(userOptionData.warningExpirationDate.value)){
+                            cssDateColor = "color-code-red";
+                            title = "Date d'expiration proche !";
+                          }else if(date.expDate > addMonths(userOptionData.warningExpirationDate.value) && date.expDate <= addMonths(userOptionData.warningExpirationDate.value + 1)){
+                            cssDateColor = "color-code-orange";
+                            title = "Date d'expiration moyennement proche !";
+                          }
+                          return <div className="expiration-date" key={`expirationDate-${index}`}>
+                          <span title={title}>{`${index+1})`} <span className={cssDateColor}>{`${transformDate(date.expDate)}`}</span></span>
+                            <div className="container-input-interaction">
+                              <div className="input-group">
+                                <input type="number" className="form-input" min={1} name="" id={`numberOfExpDate-${index}`} value={date.productLinkedToExpDate} onChange={(e) => { updateExpDate(e, index) }} />
+                                <button className="btn-input-interaction" type="button" onClick={() => { deleteExpDate(index) }}><FontAwesomeIcon icon="times" /></button>
+                              </div>
+                            </div>
+                          </div>
+                        }else{
+                          return null;
+                        }
+                      })}
+                    </>
+                  }
+                </>
+              }
             </form>
             <div className="btn-action-container">
               <button className="btn-purple" onClick={() => {
