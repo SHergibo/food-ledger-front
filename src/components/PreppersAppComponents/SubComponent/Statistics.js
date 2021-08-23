@@ -252,7 +252,7 @@ function Statistics() {
           <div className="no-data">
             <p>Pas de statistiques disponibles !</p>
             <p>Ajoutez au minimum un produit pour avoir des statistiques !</p>
-            <Link className="default-btn-blue" to={`/app/ajout-produit`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
+            <Link className="btn-purple" to={`/app/ajout-produit`}><FontAwesomeIcon className="btn-icon" icon="plus" /> Ajouter un produit</Link>
           </div>
         }
 

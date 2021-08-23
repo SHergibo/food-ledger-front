@@ -1009,7 +1009,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
               <>
                 {userHouseholdData && userHouseholdData?.isWaiting ? 
                   <button className="default-btn-disabled" disabled>Ajouter un produit <FontAwesomeIcon icon="plus" /></button> :
-                  <Link className="default-btn-blue" to={`/app/ajout-${urlTo}`}>Ajouter un produit <FontAwesomeIcon icon="plus" /></Link>
+                  <Link className="btn-purple" to={`/app/ajout-${urlTo}`}><FontAwesomeIcon className="btn-icon" icon="plus" /> Ajouter un produit</Link>
                 }
               </>
             }
