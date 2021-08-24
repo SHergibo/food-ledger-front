@@ -13,12 +13,13 @@
   height: 100%;
   background-color: var(--white);
   top: 0;
-  left: em(-3px);
-  right: em(-3px);
+  left: 0;
+  right: 0;
   bottom: 0;
   opacity: 1;
   border-radius: 1.25em;
   transition: .5s ease-in-out;
+  box-shadow: 0px 1px 4px var(--drop-shadow);
   .loader{
     display: flex;
     justify-content: center;
