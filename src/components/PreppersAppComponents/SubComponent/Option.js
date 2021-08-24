@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useLocation } from "react-router-dom";
-import { useUserData, useUserHouseHoldData, useNotificationData } from '../DataContext';
+import { useUserData, useUserHouseHoldData, useNotificationData, useWindowWidth } from '../DataContext';
 import UserOptionProfile from './OptionComponents/UserOptionProfile';
 import NotificationOptionProfile from './OptionComponents/NotificationOptionProfile';
 import HouseholdOptionProfile from './OptionComponents/HouseholdOptionProfile';
@@ -75,6 +75,7 @@ function Profile({ history }) {
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
   const { notificationReceived } = useNotificationData();
+  const { windowWidth } = useWindowWidth();
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const [ delegate, setDelegate ] = useState(false);
   const [ didNoTAcceptDelegate, setdidNoTAcceptDelegate ] = useState(false);
@@ -82,7 +83,6 @@ function Profile({ history }) {
   const [ otherMemberEligible, setOtherMemberEligible ] = useState(false);
   const [option, setOption] = useState({label : 'Profil', value: 'userOptions'});
   const [objectTitle, setObjectTitle] = useState({});
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isMounted = useRef(true);
   const btnMenuRef = useRef([]);
 
@@ -116,17 +116,6 @@ function Profile({ history }) {
     }
     window.history.replaceState({}, document.title);
   }, [location, btnOptionMenu]);
-
-  const responsive = useCallback(() => {
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsive);
-    return () => {
-      window.removeEventListener('resize', responsive);
-    }
-  }, [responsive]);
 
   useEffect(() => {
     if(userData){

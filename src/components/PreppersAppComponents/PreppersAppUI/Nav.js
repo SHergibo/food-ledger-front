@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from "./../../../images/foodledger_logo.png";
-import { useUserData, useUserOptionData, useNotificationData } from './../DataContext';
+import { useUserData, useUserOptionData, useNotificationData, useWindowWidth } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,9 +9,9 @@ import PropTypes from 'prop-types';
 
 function Nav({ history, logOut, showNotif, showNotification }) {
   const location = useLocation();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
+  const { windowWidth } = useWindowWidth();
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [stateMainMenu, setStateMainMenu] = useState();
   const [closedMenu, setClosedMenu] = useState(false);
@@ -20,17 +20,6 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   const menuResp = useRef(null);
   const menu = useRef(null);
   const isMounted = useRef(true);
-
-  const responsive = useCallback(() => {
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsive);
-    return () => {
-      window.removeEventListener('resize', responsive);
-    }
-  }, [responsive]);
 
   useEffect(() => {
     if(location.pathname.split("/")[2] === "notification"){

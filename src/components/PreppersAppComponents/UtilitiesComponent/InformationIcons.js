@@ -1,25 +1,15 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
+import { useWindowWidth } from './../DataContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function InformationIcons({className, icon, message}) {
+  const { windowWidth } = useWindowWidth();
   const iconRef = useRef(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [attrProps, setAttrProps] = useState({});
   const [isEntered, setIsEntered] = useState(false);
   const [messagePopUp, setMessagePopPup] = useState(false);
   const [showCloseIcon, setShowCloseIcon] = useState(true);
-
-  const responsiveColumns = useCallback(() => {
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
-    return () => {
-      window.removeEventListener('resize', responsiveColumns);
-    }
-  }, [responsiveColumns]);
 
   useEffect(() => {
     if (windowWidth < 640) {

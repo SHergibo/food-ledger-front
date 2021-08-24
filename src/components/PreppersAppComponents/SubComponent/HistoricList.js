@@ -1,21 +1,11 @@
-import React, { Fragment, useEffect, useCallback, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useWindowWidth } from './../DataContext';
 import ComponentProductList from '../ProductHistoricComponents/ComponentProductList';
 import {columnsHistoricMobile, columnsHistoricTablet, columnsHistoricFullScreen} from "./../../../utils/localData";
 
 function HistoricList() {
+  const { windowWidth } = useWindowWidth();
   const [columns, setColumns] = useState([]);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  const responsiveColumns = useCallback(() =>{
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
-    return () =>{
-      window.removeEventListener('resize', responsiveColumns);
-    }
-  }, [responsiveColumns]);
 
   useEffect(() => {
     setColumns(columnsHistoricMobile);

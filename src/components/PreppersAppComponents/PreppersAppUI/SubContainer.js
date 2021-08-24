@@ -1,23 +1,12 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect} from 'react';
 import { withRouter } from "react-router-dom";
-import { useNotificationData } from './../DataContext';
+import { useNotificationData, useWindowWidth } from './../DataContext';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 
 function SubContainer({history}) {
   const { notificationReceived } = useNotificationData();
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  const responsive = useCallback(() => {
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsive);
-    return () => {
-      window.removeEventListener('resize', responsive);
-    }
-  }, [responsive]);
+  const { windowWidth } = useWindowWidth();
 
   //TODO créer une route comme protected.route pour gérer la route notification hors responsive mobile
   useEffect(() => {
