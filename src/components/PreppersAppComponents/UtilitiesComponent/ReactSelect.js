@@ -3,7 +3,7 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
-function ReactSelect({ format, label, respSelect, labelBackWhite, Controller, name, inputId, isClearable, arrayOptions, control, defaultValue, success, inputValue, formType }) {
+function ReactSelect({ format, label, respSelect, errorBorderColor, labelBackWhite, Controller, name, inputId, isClearable, arrayOptions, control, defaultValue, success, inputValue, formType }) {
   const [value, setVal] = useState();
   const selectRef = useRef(null);
   let padding = !respSelect ? '2.5px 10px' : '8.5px 10px';
@@ -11,6 +11,7 @@ function ReactSelect({ format, label, respSelect, labelBackWhite, Controller, na
     width: '340px',
     padding: '8.5px 10px'
   } : {};
+  let borderColor = !errorBorderColor ? 'hsl(257, 63%, 52%)' : 'hsl(0, 86%, 70%)';
   const customStyles = {
     control: (styles) => (
       {
@@ -23,11 +24,11 @@ function ReactSelect({ format, label, respSelect, labelBackWhite, Controller, na
         boxShadow: 'none',
         backgroundColor: 'transparent',
         color: 'hsl(0, 0%, 35%)',
-        borderColor: 'hsl(257, 63%, 52%)',
+        borderColor: borderColor,
         borderRadius: '0.625rem',
         '@media (min-width: 768px)': mediaQuery,
         '&:hover' : {
-          borderColor: 'hsl(257, 63%, 52%)'
+          borderColor: borderColor
         }
       }),
     option: (styles, { isFocused, isSelected }) => (
@@ -163,6 +164,7 @@ ReactSelect.propTypes = {
   format: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   respSelect: PropTypes.bool,
+  errorBorderColor: PropTypes.object,
   labelBackWhite: PropTypes.bool,
   Controller: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
