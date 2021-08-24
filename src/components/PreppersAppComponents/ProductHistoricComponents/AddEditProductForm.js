@@ -279,6 +279,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         format="creatable"
         label="Marque du produit *"
         respSelect={true}
+        errorBorderColor={errors.brand}
         labelBackWhite={true}
         Controller={Controller}
         name="brand"
@@ -443,7 +444,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                     {formType === "edit" && <label className="form-label" htmlFor="expirationDate">Date d'expiration du produit</label>}
                     <div className="container-input-interaction">
                       <DatePicker
-                        className="form-input"
+                        className={`form-input ${(errorExpDate || errorExpDateEmpty)  ? "error-input" : ""}`}
                         id="expirationDate"
                         isClearable
                         dateFormat="dd/MM/yyyy"
