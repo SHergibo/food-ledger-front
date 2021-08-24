@@ -42,13 +42,14 @@
 @mixin message-box-info-warning($border-color) {
   position: absolute;
   bottom: 2.1rem;
-  left: -4rem;
+  left: -4.5rem;
   width: 16.5rem;
   padding: 0.5rem;
-  background-color: $grey;
-  color: $primary-color;
+  background-color: var(--purple-light);
+  color: var(--primary-color);
   border: 1px solid $border-color;
-  border-radius: 10px;
+  border-radius: em(10px);
+  z-index: 30;
 }
 
 .multiple-button-interaction{
