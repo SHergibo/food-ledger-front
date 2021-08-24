@@ -1,4 +1,4 @@
-import React, { useContext, useState, createContext, useEffect, useRef } from 'react';
+import React, { useContext, useState, createContext, useEffect, useRef, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import axiosInstance from './../../utils/axiosInstance';
 import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
@@ -9,6 +9,7 @@ const UserHouseholdDataContext = createContext();
 const UserOptionContext = createContext();
 const NotificationContext = createContext();
 const SocketContext = createContext();
+const WindowWidthContext = createContext();
 
 export function useUserData(){
   return useContext(UserDataContext);
@@ -30,6 +31,10 @@ export function useSocket(){
   return useContext(SocketContext);
 }
 
+export function useWindowWidth(){
+  return useContext(WindowWidthContext);
+}
+
 export function DataProvider({children}) {
   const history = useHistory();
   const [userData, setUserData] = useState();
@@ -37,6 +42,7 @@ export function DataProvider({children}) {
   const [userOptionData, setUserOptionData] = useState();
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationSended, setNotificationSended] = useState([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isMounted = useRef(true);
   const socketRef = useRef();
 
@@ -151,6 +157,18 @@ export function DataProvider({children}) {
     };
   }, [history]);
 
+
+  const responsiveColumns = useCallback(() =>{
+    setWindowWidth(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', responsiveColumns);
+    return () =>{
+      window.removeEventListener('resize', responsiveColumns);
+    }
+  }, [responsiveColumns]);
+
   useEffect(() => {
     return () => {
       isMounted.current = false;
@@ -163,7 +181,9 @@ export function DataProvider({children}) {
         <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
           <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationSended, setNotificationSended }}>
             <SocketContext.Provider value={{socketRef}}>
-              {children}
+              <WindowWidthContext.Provider value={{windowWidth}}>
+                {children}
+              </WindowWidthContext.Provider>
             </SocketContext.Provider>
           </NotificationContext.Provider>
         </UserOptionContext.Provider>
