@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useUserData } from './../DataContext';
+import { useUserData, useWindowWidth } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -16,6 +16,7 @@ function ProductLog({ history }) {
   const isMounted = useRef(true);
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const { userData } = useUserData();
+  const { windowWidth } = useWindowWidth();
   const [productLog, setProductLog] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -32,18 +33,6 @@ function ProductLog({ history }) {
   }, [userData, history]);
 
   const [columns, setColumns] = useState([]);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  const responsiveColumns = useCallback(() =>{
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
-    return () =>{
-      window.removeEventListener('resize', responsiveColumns);
-    }
-  }, [responsiveColumns]);
 
   useEffect(() => {
     setColumns(columnsLogMobile);
@@ -139,8 +128,8 @@ function ProductLog({ history }) {
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
         setProductLog(response.data.arrayData);
-        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-        if(response.data.totalProduct >= 1){
+        setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
+        if(response.data.totalProductLog >= 1){
           setHasProduct(true);
         }else{
           setHasProduct(false);
@@ -258,20 +247,22 @@ function ProductLog({ history }) {
   
   return (
     <>
-      <div className="sub-header only-option-interaction">
-        <div className="sub-option">
-          <h1>Registre des produits</h1>
-          {productLog.length >= 1 &&
-            <TitleButtonInteraction
-              title={"Supprimer tout le registre"} 
-              openTitleMessage={openTitleMessage}
-              setOpenTitleMessage={setOpenTitleMessage}
-              icon={<FontAwesomeIcon icon="trash" />}
-              contentDiv={contentTitleInteraction}
-            />
-          }
+      {(windowWidth < 992 || (windowWidth >= 992 && productLog.length >= 1)) &&
+        <div className="sub-header only-option-interaction">
+          <div className="sub-option">
+            <h1>Registre des produits</h1>
+            {productLog.length >= 1 &&
+              <TitleButtonInteraction
+                title={"Supprimer tout le registre"} 
+                openTitleMessage={openTitleMessage}
+                setOpenTitleMessage={setOpenTitleMessage}
+                icon={<FontAwesomeIcon icon="trash" />}
+                contentDiv={contentTitleInteraction}
+              />
+            }
+          </div>
         </div>
-      </div>
+      }
 
       <div className="container-loading">
         <Loading
