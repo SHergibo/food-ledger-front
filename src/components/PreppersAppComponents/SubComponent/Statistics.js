@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { useUserData } from './../DataContext';
+import { useUserData, useWindowWidth } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 function Statistics() {
   const { userData } = useUserData();
+  const { windowWidth } = useWindowWidth();
   const isMounted = useRef(true);
   const [hasStat, setHasStat] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -236,11 +237,13 @@ function Statistics() {
 
   return (
     <>
-      <div className="sub-header">
-        <div className="sub-option">
-          <h1>Statistiques des stocks</h1>
+      {(windowWidth < 992 || (windowWidth >= 992 && hasStat)) &&
+        <div className="sub-header">
+          <div className="sub-option">
+            <h1>Statistiques des stocks</h1>
+          </div>
         </div>
-      </div>
+      }
 
       <div className="container-loading">
         <Loading
