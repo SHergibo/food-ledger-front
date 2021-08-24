@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import { useWindowWidth } from './../../components/PreppersAppComponents/DataContext';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { StateMachineProvider, createStore } from "little-state-machine";
 import logo from "./../../images/foodledger_logo.png";
 import Login from "./Login";
@@ -25,11 +24,22 @@ createStore({
 });
 
 function SignInUp() {
-  const { windowWidth } = useWindowWidth();
   const [formTitle, setFormTitle] = useState("Connexion");
   const formRef = useRef(null);
   const [successCreateAccount, setSuccessCreateAccount] = useState(false);
   const [form, setForm] = useState('login');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const responsiveColumns = useCallback(() =>{
+    setWindowWidth(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', responsiveColumns);
+    return () =>{
+      window.removeEventListener('resize', responsiveColumns);
+    }
+  }, [responsiveColumns]);
 
   const createUserForm = () => {
     // setForm('step1');
