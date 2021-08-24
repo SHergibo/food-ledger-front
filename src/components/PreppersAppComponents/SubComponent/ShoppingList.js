@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useUserData, useUserHouseHoldData } from './../DataContext';
+import { useUserData, useUserHouseHoldData, useWindowWidth } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -18,6 +18,7 @@ function ShoppingList() {
   const [ deleteAllMessage, setDeleteAllMessage ] = useState(false);
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
+  const { windowWidth } = useWindowWidth();
   const [shoppingList, setShoppingList] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -26,18 +27,6 @@ function ShoppingList() {
   const [hasProduct, setHasProduct] = useState(false);
 
   const [columns, setColumns] = useState([]);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  const responsiveColumns = useCallback(() =>{
-    setWindowWidth(window.innerWidth);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
-    return () =>{
-      window.removeEventListener('resize', responsiveColumns);
-    }
-  }, [responsiveColumns]);
 
   useEffect(() => {
     setColumns(columnsShoppingListMobile);
@@ -311,52 +300,54 @@ function ShoppingList() {
   
   return (
     <>
-      <div className="sub-header only-option-interaction">
-        <div className="sub-option">
-          {shoppingList.length > 1 &&
-            <h1>Liste de courses</h1>
-          }
-          {shoppingList.length <= 1 &&
-            <h1>Liste de course</h1>
-          }
-          {shoppingList.length >= 1 &&
-            <>
-              {windowWidth >= 992 &&
-                <div className="multiple-button-option">
-                  <button 
-                    className="btn-action-title"
-                    title="Télécharger la liste"
-                    onClick={downloadShoppingList}>
-                    <FontAwesomeIcon icon="download" />
-                  </button>
-                  <button 
-                    className="btn-action-title" 
-                    title="Envoyer la liste par mail"
-                    onClick={sendShoppingListEmail}>
-                    <FontAwesomeIcon icon="envelope" />
-                  </button>
+      {(windowWidth < 992 || (windowWidth >= 992 && shoppingList.length >= 1)) &&
+        <div className="sub-header only-option-interaction">
+          <div className="sub-option">
+            {shoppingList.length > 1 &&
+              <h1>Liste de courses</h1>
+            }
+            {shoppingList.length <= 1 &&
+              <h1>Liste de course</h1>
+            }
+            {shoppingList.length >= 1 &&
+              <>
+                {windowWidth >= 992 &&
+                  <div className="multiple-button-option">
+                    <button 
+                      className="btn-action-title"
+                      title="Télécharger la liste"
+                      onClick={downloadShoppingList}>
+                      <FontAwesomeIcon icon="download" />
+                    </button>
+                    <button 
+                      className="btn-action-title" 
+                      title="Envoyer la liste par mail"
+                      onClick={sendShoppingListEmail}>
+                      <FontAwesomeIcon icon="envelope" />
+                    </button>
+                    <TitleButtonInteraction
+                      title={"Supprimer toute la liste !"}
+                      openTitleMessage={openTitleMessage}
+                      setOpenTitleMessage={setOpenTitleMessage}
+                      icon={<FontAwesomeIcon icon="trash" />}
+                      contentDiv={contentTitleInteractionFullScreen}
+                    />
+                  </div>
+                }
+                {windowWidth < 992 &&
                   <TitleButtonInteraction
-                    title={"Supprimer toute la liste !"}
+                    title={"Actions liste de course"}
                     openTitleMessage={openTitleMessage}
-                    setOpenTitleMessage={setOpenTitleMessage}
-                    icon={<FontAwesomeIcon icon="trash" />}
-                    contentDiv={contentTitleInteractionFullScreen}
+                    setOpenTitleMessage={closeAllTitleMessage}
+                    icon={<FontAwesomeIcon icon="cog" />}
+                    contentDiv={contentTitleInteractionSmartPhone}
                   />
-                </div>
-              }
-              {windowWidth < 992 &&
-                <TitleButtonInteraction
-                  title={"Actions liste de course"}
-                  openTitleMessage={openTitleMessage}
-                  setOpenTitleMessage={closeAllTitleMessage}
-                  icon={<FontAwesomeIcon icon="cog" />}
-                  contentDiv={contentTitleInteractionSmartPhone}
-                />
-              }
-            </>
-          }
+                }
+              </>
+            }
+          </div>
         </div>
-      </div>
+      }
 
       <div className="container-loading">
         <Loading
