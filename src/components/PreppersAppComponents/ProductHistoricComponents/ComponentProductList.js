@@ -720,7 +720,10 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           if (column.id === "type") {
             return (
               <td key={`${column.id}-${index}`}>
-                {row[column.id].label}
+                {row[column.id]?.label ? 
+                  `${row[column.id].label}` : 
+                  ""
+                }
               </td>
             )
           }
