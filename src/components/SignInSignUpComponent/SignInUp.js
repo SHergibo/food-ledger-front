@@ -30,16 +30,16 @@ function SignInUp() {
   const [form, setForm] = useState('login');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const responsiveColumns = useCallback(() =>{
+  const responsiveWidth = useCallback(() =>{
     setWindowWidth(window.innerWidth);
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
+    window.addEventListener('resize', responsiveWidth);
     return () =>{
-      window.removeEventListener('resize', responsiveColumns);
+      window.removeEventListener('resize', responsiveWidth);
     }
-  }, [responsiveColumns]);
+  }, [responsiveWidth]);
 
   const createUserForm = () => {
     // setForm('step1');

@@ -158,16 +158,16 @@ export function DataProvider({children}) {
   }, [history]);
 
 
-  const responsiveColumns = useCallback(() =>{
+  const responsiveWidth = useCallback(() =>{
     setWindowWidth(window.innerWidth);
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', responsiveColumns);
+    window.addEventListener('resize', responsiveWidth);
     return () =>{
-      window.removeEventListener('resize', responsiveColumns);
+      window.removeEventListener('resize', responsiveWidth);
     }
-  }, [responsiveColumns]);
+  }, [responsiveWidth]);
 
   useEffect(() => {
     return () => {
