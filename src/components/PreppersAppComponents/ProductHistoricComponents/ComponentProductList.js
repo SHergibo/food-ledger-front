@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useUserData, useUserOptionData, useUserHouseHoldData, useSocket } from './../DataContext';
+import { useUserData, useUserOptionData, useUserHouseHoldData, useSocket, useWindowWidth } from './../DataContext';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import QueryString from 'query-string';
 import ReactSelect from './../UtilitiesComponent/ReactSelect';
@@ -25,6 +25,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const { userHouseholdData } = useUserHouseHoldData();
   const { socketRef } = useSocket();
+  const { windowWidth } = useWindowWidth();
   const location = useLocation();
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
   const [data, setData] = useState([]);
@@ -806,71 +807,73 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   return (
     <>
-      <div className="sub-header">
-        <div className="sub-interaction">
-          {(hasProduct || Object.keys(searchObject).length > 0) && 
-            <>
-              {userHouseholdData?.isWaiting ? 
-                <button className="default-btn-disabled" disabled><FontAwesomeIcon className="btn-icon" icon="plus" />Ajouter un produit</button> :
-                <Link className="btn-purple" to={`/app/ajout-${urlTo}`}><FontAwesomeIcon className="btn-icon" icon="plus" />Ajouter un produit</Link>
-              }
-              <button className="btn-purple" onClick={() => {
-                showFilter ? setShowFilter(false) : setShowFilter(true);
-              }}>
-                <FontAwesomeIcon className="btn-icon" icon="filter" />
+      {(windowWidth < 992 || (windowWidth >= 992 && hasProduct)) &&
+        <div className="sub-header">
+          <div className="sub-interaction">
+            {(hasProduct || Object.keys(searchObject).length > 0) && 
+              <>
+                {userHouseholdData?.isWaiting ? 
+                  <button className="default-btn-disabled" disabled><FontAwesomeIcon className="btn-icon" icon="plus" />Ajouter un produit</button> :
+                  <Link className="btn-purple" to={`/app/ajout-${urlTo}`}><FontAwesomeIcon className="btn-icon" icon="plus" />Ajouter un produit</Link>
+                }
+                <button className="btn-purple" onClick={() => {
+                  showFilter ? setShowFilter(false) : setShowFilter(true);
+                }}>
+                  <FontAwesomeIcon className="btn-icon" icon="filter" />
+                  {!showFilter &&
+                    <>
+                      Filtres avancés
+                    </>
+                  }
+
+                  {showFilter &&
+                    <>
+                      Fermer
+                    </>
+                  }
+                </button>
+
                 {!showFilter &&
-                  <>
-                    Filtres avancés
-                  </>
+                  <form onSubmit={(e)=>populateSearchObjectQuickSearch(e)} onChange={(e)=>{resetQuickSearch(e)}}>
+                    <label className="quick-search" htmlFor="name">
+                      <span>
+                        <FontAwesomeIcon className="input-icon" icon="search" />
+                      </span>
+                      <input  name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} {...register("name")} />
+                    </label>
+                  </form>
                 }
-
-                {showFilter &&
-                  <>
-                    Fermer
-                  </>
-                }
-              </button>
-
-              {!showFilter &&
-                <form onSubmit={(e)=>populateSearchObjectQuickSearch(e)} onChange={(e)=>{resetQuickSearch(e)}}>
-                  <label className="quick-search" htmlFor="name">
-                    <span>
-                      <FontAwesomeIcon className="input-icon" icon="search" />
-                    </span>
-                    <input  name="name" type="text" id="product-name" placeholder="Recherche rapide" defaultValue={searchObject.name || ""} {...register("name")} />
-                  </label>
-                </form>
-              }
-              <button title="Réinitialiser les filtres" className="btn-purple" onClick={resetAllSearch}>
-                <FontAwesomeIcon className="btn-icon" icon="undo" />
-                <span className="reset-filter-text">Réinitialiser les filtres</span>
-              </button>
-            </>
-          }
-        </div>
-        <div className="sub-option">
-          <h1>{title}</h1>
-          <div className="multiple-button-option">
-            {hasProduct &&
-              <button 
-                className="btn-action-title"
-                title="Télécharger la liste"
-                onClick={downloadList}>
-                <FontAwesomeIcon icon="download" />
-              </button>
-            }
-            {requestTo === "products" &&
-              <TitleButtonInteraction
-                title={"Options du tableau"}
-                openTitleMessage={openTitleMessage}
-                setOpenTitleMessage={setOpenTitleMessage}
-                icon={<FontAwesomeIcon icon="cog" />}
-                contentDiv={contentTitleInteraction}
-              />
+                <button title="Réinitialiser les filtres" className="btn-purple" onClick={resetAllSearch}>
+                  <FontAwesomeIcon className="btn-icon" icon="undo" />
+                  <span className="reset-filter-text">Réinitialiser les filtres</span>
+                </button>
+              </>
             }
           </div>
+          <div className="sub-option">
+            <h1>{title}</h1>
+            <div className="multiple-button-option">
+              {hasProduct &&
+                <button 
+                  className="btn-action-title"
+                  title="Télécharger la liste"
+                  onClick={downloadList}>
+                  <FontAwesomeIcon icon="download" />
+                </button>
+              }
+              {requestTo === "products" &&
+                <TitleButtonInteraction
+                  title={"Options du tableau"}
+                  openTitleMessage={openTitleMessage}
+                  setOpenTitleMessage={setOpenTitleMessage}
+                  icon={<FontAwesomeIcon icon="cog" />}
+                  contentDiv={contentTitleInteraction}
+                />
+              }
+            </div>
+          </div>
         </div>
-      </div>
+      }
 
       {showFilter &&
         <>
