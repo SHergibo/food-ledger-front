@@ -9,7 +9,16 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  min-height: calc(100vh - 6rem);
+  min-height: calc(100vh - 5.375rem);
+  
+}
+
+.container-data{
+  padding: 1rem;
+  background-color: var(--white);
+  border-radius: em(20px);
+  box-shadow: 0px 1px 4px var(--drop-shadow);
+  overflow: hidden;
 }
 
 /*Media queries*/
@@ -19,11 +28,16 @@
   .container{
     overflow: hidden;
   }
+
+  .container-data{
+    padding: em(34px);
+  }
 }
 
 /*Full-screen*/
 @media screen and (min-width: 992px){
   .container{
+    min-height: calc(100vh - 6rem);
     padding: 0 10px;
   }
 
@@ -33,6 +47,10 @@
 
   .container-prepper-app{
     display: flex;
+  }
+
+  .container-data{
+    height: calc(100vh - 19rem);
   }
 }
 
