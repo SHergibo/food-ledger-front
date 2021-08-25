@@ -433,7 +433,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
             retryFetch={getProductData}
           />
         }
-        <div className="container-form-add-edit-product">
+        <div className="container-data">
           <div className="form-add-edit-product">
             <form>
               {form}
