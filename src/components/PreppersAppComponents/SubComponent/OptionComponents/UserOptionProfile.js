@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useUserData } from '../../DataContext';
 import { useForm } from 'react-hook-form';
 import axiosInstance from '../../../../utils/axiosInstance';
@@ -11,10 +11,22 @@ function UserOptionProfile() {
   const [ successFormUser, setSuccessFormUser ] = useState(false);
   const [ changePasswordInput, setChangePasswordInput ] = useState(false);
   const isMounted = useRef(true);
+  const valueRef = useRef({});
 
-  const { register, handleSubmit, formState: { errors }, unregister, setError } = useForm({
-    mode: "onChange"
+  const { register, handleSubmit, formState: { errors }, unregister, setError, reset } = useForm({
+    defaultValues: useMemo(() => {
+      return userData
+    }, [userData])
   });
+
+  useEffect(() => {
+    valueRef.current = {
+      firstname: userData?.firstname,
+      lastname: userData?.lastname,
+      email: userData?.email,
+    }
+    reset(valueRef.current)
+  }, [reset, userData]);
 
   useEffect(() => {
     let timerSuccessFormUser;
@@ -45,14 +57,11 @@ function UserOptionProfile() {
       }
     }
     delete data.confirmPassword;
-    console.log(data)
     const patchUserDataEndPoint = `${apiDomain}/api/${apiVersion}/users/${userData._id}`;
     await axiosInstance.patch(patchUserDataEndPoint, data)
       .then((response) => {
-        if(isMounted.current){
-          setUserData(response.data);
-          setSuccessFormUser(true);
-        }
+        setUserData(response.data);
+        setSuccessFormUser(true);
       });
   };
 
@@ -62,102 +71,138 @@ function UserOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmit(updateUserData)}>
-      {userData && 
-        <>
-          <div className="input-form-container-with-error">
-            <label htmlFor="firstname">Prénom *</label>
-            <input name="firstname" className="input-form" type="text" id="firstname" placeholder="Prénom..." defaultValue={userData.firstname} {...register("firstname", { required: true })} />
-            {errors.firstname && <span className="error-message-form">Ce champ est requis</span>}
-          </div>
-
-          <div className="input-form-container-with-error">
-            <label htmlFor="lastname">Nom *</label>
-            <input name="lastname" className="input-form" type="text" id="lastname" placeholder="Nom..." defaultValue={userData.lastname} {...register("lastname", { required: true })} />
-            {errors.lastname && <span className="error-message-form">Ce champ est requis</span>}
-          </div>
-
-          <div className="input-form-container-with-error">
-            <label htmlFor="email">E-mail *</label>
-            <input name="email" className="input-form" type="mail" id="email" placeholder="Prénom..." defaultValue={userData.email} {...register("email", { required: true })} />
-            {errors.email && <span className="error-message-form">Ce champ est requis</span>}
-          </div>
-
-          <div className="change-password">
-            <p>Changer de mot de passe</p>
-            <button className="" type="button" onClick={showChangePassword}><FontAwesomeIcon icon="check" /></button>
-          </div>
-
-          {changePasswordInput &&
+    <div className="container-data container-option">
+      <div className="form-profile option-component">
+        <form>
+          {userData && 
             <>
-              <div className="input-form-container-with-error">
-                <label htmlFor="actualPassword">Mot de passe actuel *</label>
-                <input name="actualPassword" className="input-form" type="password" id="actualPassword" placeholder="Mot de passe actuel" {...register("actualPassword", { required: true })} />
-                {errors.actualPassword && <span className="error-message-form">Ce champ est requis</span>}
+              <div className="input-group">
+                <input
+                  name="firstname"
+                  type="text"
+                  id="firstname"
+                  className={`form-input ${errors.firstname  ? "error-input" : ""}`}
+                  {...register("firstname", { required: true })}
+                />
+                <label htmlFor="firstname" className="form-label">Prénom *</label>
+                <div className="error-message-input">
+                  {errors.firstname && <span>Ce champ est requis</span>}
+                </div>
               </div>
 
-              <div className="input-form-container-with-error">
-                <label htmlFor="newPassword">Nouveau mot de passe *</label>
-                <input 
-                name="newPassword" 
-                className="input-form" 
-                type="password" 
-                id="newPassword" 
-                placeholder="Nouveau mot de passe" 
-                {...register("newPassword", 
-                  {
-                    required: "Ce champ est requis",
-                    minLength: {
-                      value: 6,
-                      message: "Votre mot de passe doit contenir au minimum 6 caractères!"
-                    }
-                  }
-                )} />
-                {errors.newPassword && 
-                  <span className={errors.newPassword.type === "minLength" ? "error-message-form-double" : "error-message-form"}>
-                  {errors.newPassword.message}
-                  </span>
-                }
+              <div className="input-group">
+                <input
+                  name="lastname"
+                  type="text"
+                  id="lastname"
+                  className={`form-input ${errors.lastname  ? "error-input" : ""}`}
+                  {...register("lastname", { required: true })}
+                />
+                <label htmlFor="lastname" className="form-label">Nom *</label>
+                <div className="error-message-input">
+                  {errors.lastname && <span>Ce champ est requis</span>}
+                </div>
               </div>
 
-              <div className="input-form-container-with-error">
-                <label htmlFor="confirmPassword">Confirmer nouveau mot de passe *</label>
-                <input 
-                name="confirmPassword" 
-                className="input-form" 
-                type="password" 
-                id="confirmPassword" 
-                placeholder="Confirmer nouveau mot de passe" 
-                {...register("confirmPassword", 
-                  { 
-                    required: "Ce champ est requis", 
-                    minLength: {
-                      value: 6,
-                      message: "Votre mot de passe doit contenir au minimum 6 caractères!"
-                    }
-                  }
-                )} />
-                {errors.confirmPassword && 
-                  <span className={errors.confirmPassword.type === "minLength" ? "error-message-form-double" : "error-message-form"}>
-                  {errors.confirmPassword.message}
-                  </span>
-                }
+              <div className="input-group">
+                <input
+                  name="email"
+                  type="mail"
+                  id="email"
+                  className={`form-input ${errors.email  ? "error-input" : ""}`}
+                  {...register("email", { required: true })}
+                />
+                <label htmlFor="email" className="form-label">E-mail *</label>
+                <div className="error-message-input">
+                  {errors.email && <span>Ce champ est requis</span>}
+                </div>
               </div>
+
+              <label className="container-checkbox" htmlFor="changedPwd">
+                Changer de mot de passe : 
+                <input type="checkbox" name="changedPwd" id="changedPwd" onClick={showChangePassword}/>
+                <span className="checkmark-checkbox"></span>
+              </label>
+
+              {changePasswordInput &&
+                <div>
+                  <div className="input-group">
+                    <input
+                      name="actualPassword"
+                      type="password"
+                      id="actualPassword"
+                      className={`form-input ${errors.actualPassword  ? "error-input" : ""}`}
+                      {...register("actualPassword", { required: true })}
+                    />
+                    <label htmlFor="actualPassword" className="form-label">Mot de passe actuel *</label>
+                    <div className="error-message-input">
+                      {errors.actualPassword && <span >Ce champ est requis</span>}
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <input
+                      name="newPassword"
+                      type="password"
+                      id="newPassword"
+                      className={`form-input ${errors.newPassword  ? "error-input" : ""}`}
+                      {...register("newPassword", 
+                        { 
+                          required: "Ce champ est requis" ,
+                          minLength: {
+                            value: 6,
+                            message: "Votre mot de passe doit contenir au minimum 6 caractères!"
+                          }
+                        }
+                      )}
+                    />
+                    <label htmlFor="newPassword" className="form-label">Nouveau mot de passe *</label>
+                    <div className="error-message-input">
+                      {errors.newPassword && <span>{errors.newPassword.message}</span>}
+                    </div>
+                  </div>
+
+                  <div className="input-group">
+                    <input
+                      name="confirmPassword"
+                      type="password"
+                      id="confirmPassword"
+                      className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
+                      {...register("confirmPassword", 
+                        { 
+                          required: "Ce champ est requis" ,
+                          minLength: {
+                            value: 6,
+                            message: "Votre mot de passe doit contenir au minimum 6 caractères!"
+                          }
+                        }
+                      )}
+                    />
+                    <label htmlFor="confirmPassword" className="form-label">Confirmer nouveau mot de passe *</label>
+                    <div className="error-message-input">
+                      {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
+                    </div>
+                  </div>
+                </div>
+              }
             </>
           }
-
-          <div className="default-action-form-container">
-            <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-            {successFormUser && 
-              <InformationIcon 
-                className="success-icon"
-                icon={<FontAwesomeIcon icon="check" />}
-              />
-            }
-          </div>
-        </>
-      }
-    </form>
+        </form>
+        <div className="btn-action-container" >
+          <button className="btn-purple" onClick={() => {
+            handleSubmit(updateUserData)();
+          }}>
+          <FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer
+          </button>
+          {successFormUser && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon="check" />}
+            />
+          }
+        </div>
+      </div>
+    </div>
   )
 }
 
