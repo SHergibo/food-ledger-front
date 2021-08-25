@@ -25,7 +25,7 @@ function SubNav({ showNotif }) {
       "liste-de-course" : "Liste de courses",
       "statistiques" : "Statistiques des stocks",
       "registre-produit" : "Registre des produits",
-      "profil" : "Options / profil utilisateur",
+      "options" : "Options / profil utilisateur",
       "edition-marque" : "Édition marque",
     }
   }, []);
