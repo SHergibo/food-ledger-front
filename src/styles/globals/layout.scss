@@ -1,5 +1,6 @@
 .container-prepper-app{
-  margin: em(13px);
+  min-height: 100vh;
+  padding: em(13px);
 }
 
 .container{
@@ -27,7 +28,7 @@
   }
 
   .container-prepper-app{
-    margin: em(48px);
+    padding: em(48px);
   }
 
   .container-prepper-app{
