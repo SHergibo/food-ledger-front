@@ -98,7 +98,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-height: calc(100vh - 13.75rem);
+  min-height: calc(100vh - 9.4375rem);
   font-size: 2rem;
   color: var(--primary-color);
   background-color: var(--white);
@@ -395,5 +395,8 @@
   }
   .pagination{
     height: calc(calc(100vh - 18.875rem) / 14);
+  }
+  .no-data{
+    min-height: calc(100vh - 13.75rem);
   }
 }
