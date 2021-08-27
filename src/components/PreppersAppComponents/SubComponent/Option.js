@@ -5,7 +5,6 @@ import UserOptionProfile from './OptionComponents/UserOptionProfile';
 import NotificationOptionProfile from './OptionComponents/NotificationOptionProfile';
 import HouseholdOptionProfile from './OptionComponents/HouseholdOptionProfile';
 import CreateHouseholdForm from './OptionComponents/CreateHouseholdForm';
-import SwitchFamillyForm from './OptionComponents/SwitchHouseholdForm';
 import EmailOptionProfile from './OptionComponents/EmailOptionProfile';
 import ProductOptionProfile from './OptionComponents/ProductOptionProfile';
 import ProductTableOptionProfile from './OptionComponents/ProductTableOptionProfile';
@@ -339,11 +338,10 @@ function Profile({ history }) {
                         requestDelegateAdmin={requestDelegateAdmin}
                         otherMemberEligible={otherMemberEligible}
                       /> :
-                      <CreateHouseholdForm />
+                      <CreateHouseholdForm 
+                        requestDelegateAdmin={requestDelegateAdmin}
+                      />
                     }
-                    <SwitchFamillyForm 
-                      requestDelegateAdmin={requestDelegateAdmin}
-                    />
                   </>
                 }
                 {option.value === 'emailingOptions' && <EmailOptionProfile />}
