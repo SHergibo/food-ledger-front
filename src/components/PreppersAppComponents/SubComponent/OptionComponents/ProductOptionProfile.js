@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useUserData, useUserOptionData } from '../../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import ReactSelect from '../../UtilitiesComponent/ReactSelect';
@@ -13,10 +13,22 @@ function ProductOptionProfile() {
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [ successFormProduct, setSuccessFormProduct ] = useState(false);
   const isMounted = useRef(true);
+  const valueRef = useRef({});
 
-  const { register, handleSubmit, formState: { errors }, setValue, control } = useForm({
-    mode: "onChange"
+  const { register, handleSubmit, formState: { errors }, control, reset } = useForm({
+    defaultValues: useMemo(() => {
+      return userOptionData
+    }, [userOptionData])
   });
+
+  useEffect(() => {
+    valueRef.current = {
+      warningExpirationDate: userOptionData?.warningExpirationDate,
+      minimalProductStockGlobal: userOptionData?.minimalProductStockGlobal,
+      updateAllMinimalProductStock: userOptionData?.updateAllMinimalProductStock,
+    }
+    reset(valueRef.current)
+  }, [reset, userOptionData]);
 
   useEffect(() => {
     let timerSuccessFormProduct;
@@ -29,20 +41,6 @@ function ProductOptionProfile() {
       clearTimeout(timerSuccessFormProduct);
     }
   }, [successFormProduct]);
-
-  useEffect(() => {
-    let timeOut;
-    if(userOptionData){
-      timeOut = setTimeout(() => {
-        if (userOptionData.warningExpirationDate) {
-          setValue("warningExpirationDate", { value: userOptionData.warningExpirationDate.value, label: userOptionData.warningExpirationDate.label });
-        }
-      }, 300);
-    }
-    return () => {
-      clearTimeout(timeOut);
-    }
-  }, [userOptionData, setValue]);
 
   useEffect(() => {
     return () => {
@@ -69,48 +67,66 @@ function ProductOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmit(updateUserOptionProductData)}>
-      {userOptionData && 
-        <>
-          <div className="input-form-container">
-            <ReactSelect
-              format="select"
-              label="Prévenir date de péremption proche"
-              Controller={Controller}
-              name="warningExpirationDate"
-              inputId="warning-expiration-date"
-              classNamePrefix="warning-expiration-date"
-              isClearable={false}
-              placeholder="Interval d'envoi..."
-              arrayOptions={warningExpirationDate}
-              control={control}
-              defaultValue={""}
+    <div className="container-data container-option">
+      <div className="form-product option-component">
+        <form>
+          {userOptionData && 
+            <>
+              <div className="input-group">
+                <ReactSelect
+                  format="select"
+                  label="Prévenir date de péremption proche"
+                  labelBackWhite={true}
+                  respSelect={true}
+                  Controller={Controller}
+                  name="warningExpirationDate"
+                  inputId="warning-expiration-date"
+                  isClearable={false}
+                  arrayOptions={warningExpirationDate}
+                  control={control}
+                  defaultValue={""}
+                />
+              </div>
+
+              <div className="input-group">
+                <input
+                  name="minimalProductStockGlobal"
+                  type="number"
+                  id="minimalProductStockGlobal"
+                  className={`form-input ${errors.minimalProductStockGlobal  ? "error-input" : ""}`}
+                  {...register("minimalProductStockGlobal", { required: true })}
+                />
+                <label htmlFor="minimalProductStockGlobal" className="form-label">Stock minimum global *</label>
+                <div className="error-message-input">
+                  {errors.minimalProductStockGlobal && <span >Ce champ est requis</span>}
+                </div>
+              </div>
+
+              <label className="container-checkbox" htmlFor="updateAllMinimalProductStock">
+                Utiliser le stock global pour les stocks entrées manuellement : 
+                <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" {...register("updateAllMinimalProductStock")} />
+                <span className="checkmark-checkbox"></span>
+              </label>
+
+            </>
+          }
+        </form>
+        <div className="btn-action-container">
+          <button className="btn-purple" type="submit" onClick={() => {
+            handleSubmit(updateUserOptionProductData)();
+          }}>
+            <FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer
+          </button>
+          {successFormProduct && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon="check" />}
             />
-          </div>
-
-          <div className="input-form-container">
-            <label htmlFor="minimalProductStockGlobal">Stock minimum global *</label>
-            <input className="input-form" name="minimalProductStockGlobal" type="number" id="minimalProductStockGlobal" placeholder="Stock minimum..." defaultValue={userOptionData.minimalProductStockGlobal} {...register("minimalProductStockGlobal", { required: true })} />
-            {errors.minimalProductStockGlobal && <span className="error-message-form">Ce champ est requis</span>}
-          </div>
-
-          <label className="container-checkbox-input" htmlFor="updateAllMinimalProductStock">Utiliser le stock global pour les stocks entrées manuellement : 
-            <input type="checkbox" name="updateAllMinimalProductStock" id="updateAllMinimalProductStock" defaultChecked={userOptionData.updateAllMinimalProductStock} {...register("updateAllMinimalProductStock")}/>
-            <span className="checkmark-checkbox"></span>
-          </label>
-          <div className="default-action-form-container">
-            <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-            {successFormProduct && 
-              <InformationIcon 
-                className="success-icon"
-                icon={<FontAwesomeIcon icon="check" />}
-              />
-            }
-          </div>
-        </>
-      }
-    </form>
+          }
+        </div>
+      </div>
+    </div>
   )
 }
 
-export default ProductOptionProfile
+export default ProductOptionProfile;
