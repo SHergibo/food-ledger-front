@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useUserData, useUserOptionData } from '../../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import ReactSelect from '../../UtilitiesComponent/ReactSelect';
@@ -13,27 +13,23 @@ function EmailOptionProfile() {
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [ successFormEmailing, setSuccessFormEmailing ] = useState(false);
   const isMounted = useRef(true);
+  const valueRef = useRef({});
 
-  const { register, handleSubmit, setValue, control } = useForm({
-    mode: "onChange"
+  const { register, handleSubmit, control, reset } = useForm({
+    defaultValues: useMemo(() => {
+      return userOptionData
+    }, [userOptionData])
   });
 
   useEffect(() => {
-    let timeOut;
-    if(userOptionData){
-      timeOut = setTimeout(() => {
-        if (userOptionData.dateMailGlobal) {
-          setValue("dateMailGlobal", { value: userOptionData.dateMailGlobal.value, label: userOptionData.dateMailGlobal.label });
-        }
-        if (userOptionData.dateMailGlobal) {
-          setValue("dateMailShoppingList", { value: userOptionData.dateMailShoppingList.value, label: userOptionData.dateMailShoppingList.label });
-        }
-      }, 300);
+    valueRef.current = {
+      dateMailGlobal: userOptionData?.dateMailGlobal,
+      dateMailShoppingList: userOptionData?.dateMailShoppingList,
+      sendMailGlobal: userOptionData?.sendMailGlobal,
+      sendMailShoppingList: userOptionData?.sendMailShoppingList,
     }
-    return () => {
-      clearTimeout(timeOut);
-    }
-  }, [userOptionData, setValue]);
+    reset(valueRef.current)
+  }, [reset, userOptionData]);
 
   useEffect(() => {
     let timerSuccessFormEmailing;
@@ -72,63 +68,72 @@ function EmailOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmit(updateUserOptionMailingData)}>
-      {userOptionData && 
-        <>
-          <label className="container-checkbox-input" htmlFor="sendMailGlobal">Recevoir le mail d'information sur vos stocks : 
-            <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} {...register("sendMailGlobal")}/>
-            <span className="checkmark-checkbox"></span>
-          </label>
+    <div className="container-data container-option">
+      <div className="form-email option-component">
+        <form>
+          {userOptionData && 
+            <>
+              <label className="container-checkbox" htmlFor="sendMailGlobal">
+                Recevoir le mail d'information sur vos stocks : 
+                <input type="checkbox" name="sendMailGlobal" id="sendMailGlobal" defaultChecked={userOptionData.sendMailGlobal} {...register("sendMailGlobal")} />
+                <span className="checkmark-checkbox"></span>
+              </label>
 
-          <div className="input-form-container">
-            <ReactSelect
-              format="select"
-              label="Interval d'envoi du mail d'information"
-              Controller={Controller}
-              name="dateMailGlobal"
-              inputId="date-mail-global"
-              classNamePrefix="date-mail-global"
-              isClearable={false}
-              placeholder="Interval d'envoi..."
-              arrayOptions={dateSendMailGlobal}
-              control={control}
-              defaultValue={""}
+              <div className="input-group">
+                <ReactSelect
+                  format="select"
+                  label="Interval d'envoi du mail d'information"
+                  labelBackWhite={true}
+                  respSelect={true}
+                  Controller={Controller}
+                  name="dateMailGlobal"
+                  inputId="date-mail-global"
+                  isClearable={false}
+                  arrayOptions={dateSendMailGlobal}
+                  control={control}
+                  defaultValue={""}
+                />
+              </div>
+
+              <label className="container-checkbox" htmlFor="sendMailShoppingList">
+                Recevoir le mail liste de course : 
+                <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" {...register("sendMailShoppingList")} />
+                <span className="checkmark-checkbox"></span>
+              </label>
+
+              <div className="input-group">
+                <ReactSelect
+                  format="select"
+                  label="Interval d'envoi du mail liste de course"
+                  labelBackWhite={true}
+                  respSelect={true}
+                  Controller={Controller}
+                  name="dateMailShoppingList"
+                  inputId="date-mail-shopping-list"
+                  isClearable={false}
+                  arrayOptions={dateSendMailShoppingList}
+                  control={control}
+                  defaultValue={""}
+                />
+              </div>
+            </>
+          }
+        </form>
+        <div className="btn-action-container">
+          <button className="btn-purple" onClick={() => {
+            handleSubmit(updateUserOptionMailingData)();
+          }}>
+            <FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer
+          </button>
+          {successFormEmailing && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon="check" />}
             />
-          </div>
-
-          <label className="container-checkbox-input" htmlFor="sendMailShoppingList">Recevoir le mail liste de course : 
-            <input type="checkbox" name="sendMailShoppingList" id="sendMailShoppingList" defaultChecked={userOptionData.sendMailShoppingList} {...register("sendMailShoppingList")}/>
-            <span className="checkmark-checkbox"></span>
-          </label>
-
-          <div className="input-form-container">
-            <ReactSelect
-              format="select"
-              label="Interval d'envoi du mail liste de course"
-              Controller={Controller}
-              name="dateMailShoppingList"
-              inputId="date-mail-shopping-list"
-              classNamePrefix="date-mail-shopping-list"
-              isClearable={false}
-              placeholder="Interval d'envoi..."
-              arrayOptions={dateSendMailShoppingList}
-              control={control}
-              defaultValue={""}
-            />
-          </div>
-
-          <div className="default-action-form-container">
-            <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-            {successFormEmailing && 
-              <InformationIcon 
-                className="success-icon"
-                icon={<FontAwesomeIcon icon="check" />}
-              />
-            }
-          </div>
-        </>
-      }
-    </form>
+          }
+        </div>
+      </div>
+    </div>
   )
 }
 
