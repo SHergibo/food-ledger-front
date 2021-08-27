@@ -61,34 +61,47 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   }
 
   return (
-    <form className="form-inline option-component" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
-      <div className="input-form-container-with-error">
-        <label htmlFor="switchFamillyCode">{userData.householdId ? "Changer de famille *" : "Rejoindre une famille *"}</label>
-        <input name="switchFamillyCode" className="input-form" type="text" id="switchFamillyCode" placeholder="Code famille..." onChange={clearErrorMessage} {...registerFormSwitchFamilly("switchFamillyCode", { required: true })} />
-        {errorsFormSwitchFamilly.switchFamillyCode && <span className="error-message-form">Ce champ est requis</span>}
-      </div>
-      <div className="default-action-form-container">
-        <button 
-        className={requestDelegateAdmin ? "default-btn-disabled-form" : "default-btn-action-form"}
-        disabled={requestDelegateAdmin}
-        type="submit">
-          <FontAwesomeIcon icon="exchange-alt" /> {userData.householdId ? "Changer": "Demander"}
-        </button> 
-        {successForm && !errorMessage &&
-          <InformationIcon 
-            className="success-icon"
-            icon={<FontAwesomeIcon icon="check" />}
+    <div className="form-familly">
+      <form className="form-inline option-component" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
+        <div className="input-group">
+          <input
+            name="switchFamillyCode"
+            type="text"
+            id="switchFamillyCode"
+            className={`form-input ${errorsFormSwitchFamilly.switchFamillyCode  ? "error-input" : ""}`}
+            onChange={clearErrorMessage}
+            {...registerFormSwitchFamilly("switchFamillyCode", { required: true })}
           />
-        }
-        {errorMessage &&
-          <InformationIcon 
-            className="error-icon"
-            icon={<FontAwesomeIcon icon="times" />}
-            message={messageError}
-          />
-        }
-      </div>
-    </form>
+          <label htmlFor="switchFamillyCode" className="form-label">{userData.householdId ? "Changer de famille *" : "Rejoindre une famille *"}</label>
+          <div className="error-message-input">
+            {errorsFormSwitchFamilly.switchFamillyCode && <span >Ce champ est requis</span>}
+          </div>
+        </div>
+
+
+        <div className="btn-action-container">
+          <button 
+          className={requestDelegateAdmin ? "btn-disabled" : "btn-purple"}
+          disabled={requestDelegateAdmin}
+          type="submit">
+            <FontAwesomeIcon className="btn-icon" icon="exchange-alt" /> {userData.householdId ? "Changer": "Demander"}
+          </button> 
+          {successForm && !errorMessage &&
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon="check" />}
+            />
+          }
+          {errorMessage &&
+            <InformationIcon 
+              className="error-icon"
+              icon={<FontAwesomeIcon icon="times" />}
+              message={messageError}
+            />
+          }
+        </div>
+      </form>
+    </div>
   )
 }
 
