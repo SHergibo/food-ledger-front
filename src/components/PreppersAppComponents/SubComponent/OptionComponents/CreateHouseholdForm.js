@@ -4,9 +4,11 @@ import { useForm } from 'react-hook-form';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SwitchFamillyForm from './../OptionComponents/SwitchHouseholdForm';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
+import PropTypes from 'prop-types';
 
-function CreateHouseholdForm() {
+function CreateHouseholdForm({ requestDelegateAdmin }) {
   const { setUserHouseholdData } = useUserHouseHoldData();
   const { setUserData } = useUserData();
   const [ errorMessage, setErrorMessage ] = useState(false);
@@ -46,28 +48,47 @@ function CreateHouseholdForm() {
 
 
   return (
-    <form className="form-inline option-component" onSubmit={handleSubmit(createdHousehold)}>
-      <div className="input-form-container-with-error">
-        <label htmlFor="householdName">Créer une famille *</label>
-        <input name="householdName" className="input-form" type="text" id="householdName" placeholder="Nom de la famille..." onChange={clearErrorMessage} {...register("householdName", { required: true })} />
-        {errors.householdName && <span className="error-message-form">Ce champ est requis</span>}
-      </div>
-      <div className="default-action-form-container">
-        <button 
-        className={"default-btn-action-form"}
-        type="submit">
-          <FontAwesomeIcon icon="plus" /> Créer
-        </button> 
-        {errorMessage &&
-          <InformationIcon 
-            className="error-icon"
-            icon={<FontAwesomeIcon icon="times" />}
-            message={messageError}
+    <div className="container-data container-option form-familly">
+      <form className="form-inline option-component" onSubmit={handleSubmit(createdHousehold)}>
+        <div className="input-group">
+          <input
+            name="householdName"
+            type="text"
+            id="householdName"
+            className={`form-input ${errors.householdName  ? "error-input" : ""}`}
+            onChange={clearErrorMessage}
+            {...register("householdName", { required: true })}
           />
-        }
-      </div>
-    </form>
+          <label htmlFor="householdName" className="form-label">Créer une famille *</label>
+          <div className="error-message-input">
+            {errors.householdName && <span >Ce champ est requis</span>}
+          </div>
+        </div>
+
+        <div className="btn-action-container">
+          <button 
+          className="btn-purple"
+          type="submit">
+            <FontAwesomeIcon className="btn-icon" icon="plus" /> Créer
+          </button> 
+          {errorMessage &&
+            <InformationIcon 
+              className="error-icon"
+              icon={<FontAwesomeIcon icon="times" />}
+              message={messageError}
+            />
+          }
+        </div>
+      </form>
+      <SwitchFamillyForm 
+        requestDelegateAdmin={requestDelegateAdmin}
+      />
+    </div>
   )
+}
+
+CreateHouseholdForm.propTypes = {
+  requestDelegateAdmin: PropTypes.bool.isRequired
 }
 
 export default CreateHouseholdForm;
