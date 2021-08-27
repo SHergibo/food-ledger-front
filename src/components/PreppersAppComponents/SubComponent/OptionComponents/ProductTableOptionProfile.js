@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useUserData, useUserOptionData } from '../../DataContext';
 import { useForm } from 'react-hook-form';
 import axiosInstance from '../../../../utils/axiosInstance';
@@ -11,10 +11,21 @@ function ProductTableOptionProfile() {
   const { userOptionData, setUserOptionData } = useUserOptionData();
   const [ successFormProductTable, setSuccessFormProductTable ] = useState(false);
   const isMounted = useRef(true);
+  const valueRef = useRef({});
 
-  const { register, handleSubmit } = useForm({
-    mode: "onChange"
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: useMemo(() => {
+      return userOptionData
+    }, [userOptionData])
   });
+
+  useEffect(() => {
+    valueRef.current = {
+      colorCodeDate: userOptionData?.colorCodeDate,
+      colorCodeStock: userOptionData?.colorCodeStock,
+    }
+    reset(valueRef.current)
+  }, [reset, userOptionData]);
 
   useEffect(() => {
     let timerSuccessProductTable;
@@ -53,32 +64,40 @@ function ProductTableOptionProfile() {
   };
 
   return (
-    <form className="option-component" onSubmit={handleSubmit(updateUserOptionProductTableData)}>
-      {userOptionData && 
-        <>
-          <label className="container-checkbox-input" htmlFor="colorCodeDate">Afficher le code couleur pour les dates de péremption : 
-            <input type="checkbox" name="colorCodeDate" id="colorCodeDate" defaultChecked={userOptionData.colorCodeDate} {...register("colorCodeDate")}/>
-            <span className="checkmark-checkbox"></span>
-          </label>
+    <div className="container-data container-option">
+      <div className="form-table-product option-component">
+        <form>
+          {userOptionData && 
+            <>
+              <label className="container-checkbox" htmlFor="colorCodeDate">
+                Afficher le code couleur pour les dates de péremption :
+                <input type="checkbox" name="colorCodeDate" id="colorCodeDate" {...register("colorCodeDate")} />
+                <span className="checkmark-checkbox"></span>
+              </label>
 
-          <label className="container-checkbox-input" htmlFor="colorCodeStock">
-            Afficher le code couleur pour les stock minimum de produits : 
-            <input type="checkbox" name="colorCodeStock" id="colorCodeStock" defaultChecked={userOptionData.colorCodeStock}  {...register("colorCodeStock")}/>
-            <span className="checkmark-checkbox"></span>
-          </label>
-
-          <div className="default-action-form-container">
-            <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-            {successFormProductTable && 
-              <InformationIcon 
-                className="success-icon"
-                icon={<FontAwesomeIcon icon="check" />}
-              />
-            }
-          </div>
-        </>
-      }
-    </form>
+              <label className="container-checkbox" htmlFor="colorCodeStock">
+                Afficher le code couleur pour les stock minimum de produits : 
+                <input type="checkbox" name="colorCodeStock" id="colorCodeStock" {...register("colorCodeStock")} />
+                <span className="checkmark-checkbox"></span>
+              </label>
+            </>
+          }
+        </form>
+        <div className="btn-action-container">
+          <button className="btn-purple" type="submit"onClick={() => {
+            handleSubmit(updateUserOptionProductTableData)();
+          }}>
+            <FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer
+          </button>
+          {successFormProductTable && 
+            <InformationIcon 
+              className="success-icon"
+              icon={<FontAwesomeIcon icon="check" />}
+            />
+          }
+        </div>
+      </div>
+    </div>
   )
 }
 
