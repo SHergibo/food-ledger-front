@@ -1,4 +1,4 @@
-@mixin primary-btn() {
+@mixin primary-btn($bgColor: var(--primary-color), $color:var(--white), $disabled: false) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,6 +9,14 @@
   border: none;
   border-radius: rem(50px);
   box-shadow: 0px 1px 4px var(--drop-shadow);
+  @if $disabled {
+    background-color: var(--grey);
+    color: var(--white);
+    cursor: not-allowed;
+  } @else{
+    background-color: $bgColor;
+    color: $color;
+  }
   .btn-icon{
     font-size: rem(25px);
     margin-right: rem(11px);
@@ -41,14 +49,14 @@
 
 .btn-purple{
   @include primary-btn();
-  color: $white;
-  background-color: var(--primary-color);
 }
 
 .btn-white{
-  @include primary-btn();
-  color: var(--primary-color);
-  background-color: $white;
+  @include primary-btn(var(--white), var(--primary-color));
+}
+
+.btn-disabled{
+  @include primary-btn(null, null, true);
 }
 
 .small-btn-purple{
