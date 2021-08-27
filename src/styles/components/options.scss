@@ -36,13 +36,46 @@
   min-height: calc(100vh - 13.75rem);
 }
 
-.form-profile{
+.form-profile, .form-email, .form-product, .form-table-product{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: calc(100vh - 15.3125rem);
+}
+
+.form-profile{
   .container-checkbox{
     margin-bottom: 2rem;
+  }
+}
+
+.form-email{
+  .input-group{
+    margin: 1.5rem 0;
+  }
+}
+
+.form-product{
+  .input-group:first-child{
+    margin-bottom: 1.5rem;
+  }
+}
+
+.form-familly{
+  .familly-name{
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  h2{
+    color: var(--primary-color);
+  }
+  .form-inline{
+    margin-bottom: 1.5rem;
+  }
+  .form-inline:last-child{
+    margin-bottom: 0;
   }
 }
 
@@ -75,8 +108,26 @@
 
 /*Tablet*/
 @media screen and (min-width: 768px) {
-  .form-profile{
+  .form-profile, .form-email, .form-product, .form-table-product{
     min-height: calc(100vh - 18rem);
+  }
+  .form-familly{
+    .form-inline{
+      display: flex;
+      margin: 0;
+      .input-group{
+        width: em(340px);
+        margin-right: 1rem;
+      }
+      .btn-action-container{
+        height: em(55px);
+        margin-top: .40em;
+        margin-bottom: 0;
+      }
+      .btn-purple{
+        height: rem(55px);
+      }
+    }
   }
   .container-btn-switch-notification-table{
     display: flex;
@@ -87,7 +138,7 @@
 
 /*Full-screen*/
 @media screen and (min-width: 992px) {
-  .form-profile{
+  .form-profile, .form-email, .form-product, .form-table-product{
     min-height: unset;
     height: 100%;
     form{
