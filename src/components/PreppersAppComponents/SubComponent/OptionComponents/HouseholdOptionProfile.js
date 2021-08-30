@@ -444,7 +444,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
             {userData.role === "admin" &&
               <>
-                <form className="form-profile-list-table" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
+                <form className="table-familly-member" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
                   {tableMemberFamilly}
                   {showSelectHousehold &&
                     <div className="input-group">
