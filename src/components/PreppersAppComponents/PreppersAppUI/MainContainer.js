@@ -11,8 +11,9 @@ import ProductLog from './../SubComponent/ProductLog';
 import ShoppingList from './../SubComponent/ShoppingList';
 import SubContainer from './../PreppersAppUI/SubContainer'
 import EditBrand from '../SubComponent/OptionComponents/EditBrand';
+import PropTypes from 'prop-types';
 
-function MainContainer() {
+function MainContainer({setOptionSubTitle}) {
   return (
     <>
       <HasHousehold exact path="/app/liste-produit" component={ProductList} />
@@ -21,7 +22,7 @@ function MainContainer() {
       <HasHousehold path="/app/liste-historique" component={HistoricList} />
       <HasHousehold path="/app/edition-historique/:id" component={EditProduct} />
       <HasHousehold path="/app/ajout-historique" component={AddProduct} />
-      <Route path="/app/options" component={Option} />
+      <Route path="/app/options" component={() => <Option setOptionSubTitle={setOptionSubTitle}/>} />
       <HasHousehold path="/app/edition-marque/:id" component={EditBrand} />
       <HasHousehold path="/app/statistiques" component={Statistics} />
       <HasHousehold path="/app/registre-produit" component={ProductLog} />
@@ -29,6 +30,10 @@ function MainContainer() {
       <Route path="/app/notification" component={SubContainer} />
     </>
   )
+}
+
+MainContainer.propTypes = {
+  setOptionSubTitle: PropTypes.func.isRequired,
 }
 
 export default memo(MainContainer)
