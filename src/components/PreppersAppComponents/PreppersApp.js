@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 
 function PreppersApp({ history }) {
   const [showNotification, setShowNotification] = useState(false);
+  const [optionSubTitle, setOptionSubTitle] = useState("");
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(() => {
@@ -42,8 +43,11 @@ function PreppersApp({ history }) {
         <div className="container">
           <SubNav
             showNotif={showNotif}
+            optionSubTitle={optionSubTitle}
           />
-          <MainContainer />
+          <MainContainer
+            setOptionSubTitle={setOptionSubTitle}
+          />
           <CSSTransition
             in={showNotification}
             timeout={500}
