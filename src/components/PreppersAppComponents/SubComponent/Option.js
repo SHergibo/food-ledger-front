@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { useUserData, useUserHouseHoldData, useNotificationData, useWindowWidth } from '../DataContext';
 import UserOptionProfile from './OptionComponents/UserOptionProfile';
 import NotificationOptionProfile from './OptionComponents/NotificationOptionProfile';
@@ -68,8 +68,9 @@ const customStyles = {
     }),
 };
 
-function Profile({ history }) {
+function Option({ setOptionSubTitle }) {
   const location = useLocation();
+  const history = useHistory();
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
   const { notificationReceived } = useNotificationData();
@@ -109,11 +110,16 @@ function Profile({ history }) {
   };
 
   useEffect(() => {
+    setOptionSubTitle("Profil");
+  }, [setOptionSubTitle])
+
+  useEffect(() => {
     if(location?.state?.householdOptions || location?.state?.brandOptions || location?.state?.notification){
       switchMenu(Object.keys(location.state)[0], btnOptionMenu.find(option => option.value === Object.keys(location.state)[0]));
+      setOptionSubTitle(btnOptionMenu.find(option => option.value === Object.keys(location.state)[0]).label);
     }
     window.history.replaceState({}, document.title);
-  }, [location, btnOptionMenu]);
+  }, [location, btnOptionMenu, setOptionSubTitle]);
 
   useEffect(() => {
     if(userData){
@@ -291,6 +297,7 @@ function Profile({ history }) {
                       if(oldActive) oldActive.classList.remove('btn-option-active');
                       e.target.classList.add('btn-option-active');
                       setOption(btn)
+                      setOptionSubTitle(btn.label)
                       }}>
                       {btn.label}
                     </button>
@@ -356,9 +363,8 @@ function Profile({ history }) {
   )
 }
 
-Profile.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+Option.propTypes = {
+  setOptionSubTitle: PropTypes.func.isRequired,
 }
 
-export default Profile;
+export default Option;
