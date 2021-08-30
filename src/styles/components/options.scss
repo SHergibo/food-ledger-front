@@ -69,6 +69,7 @@
     color: var(--primary-color);
   }
   h2{
+    margin-bottom: 1rem;
     color: var(--primary-color);
   }
   .form-inline{
@@ -76,6 +77,12 @@
   }
   .form-inline:last-child{
     margin-bottom: 0;
+  }
+}
+
+.table-familly-member{
+  .btn-action-container{
+    margin-bottom: 2rem;
   }
 }
 
