@@ -27,7 +27,7 @@
   justify-content: space-between;
   align-items: center;
   order: 0;
-  min-height: em(65px);
+  min-height: em(70px);
   h1{
     font-size: rem(25px);
     font-weight: 700;
@@ -138,6 +138,9 @@
 
 /*Tablet*/
 @media screen and (min-width: 768px) {
+  .sub-option{
+    min-height: em(65px);
+  }
   .title-interact-container{
     max-width: em(460px);
   }
