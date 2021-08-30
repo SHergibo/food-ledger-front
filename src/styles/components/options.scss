@@ -1,5 +1,8 @@
 .btn-option-container{
   display: flex;
+  .input-group{
+    margin-bottom: .5rem;
+  }
 }
 
 .btn-option-active{
@@ -33,14 +36,14 @@
 }
 
 .container-option{
-  min-height: calc(100vh - 13.75rem);
+  min-height: calc(100vh - 13.813rem);
 }
 
 .form-profile, .form-email, .form-product, .form-table-product{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: calc(100vh - 15.3125rem);
+  min-height: calc(100vh - 15.8125rem);
 }
 
 .form-profile{
@@ -115,8 +118,11 @@
 
 /*Tablet*/
 @media screen and (min-width: 768px) {
+  .container-option{
+    min-height: calc(100vh - 14.25rem);
+  }
   .form-profile, .form-email, .form-product, .form-table-product{
-    min-height: calc(100vh - 18rem);
+    min-height: calc(100vh - 18.5rem);
   }
   .form-familly{
     .form-inline{
