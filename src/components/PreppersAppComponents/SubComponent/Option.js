@@ -33,7 +33,6 @@ const customStyles = {
       borderColor: 'hsl(257, 63%, 52%)',
       borderRadius: '0.625rem',
       '@media (min-width: 768px)': {
-        width: '340px',
         padding: '8.5px 10px'
       }
     }),
