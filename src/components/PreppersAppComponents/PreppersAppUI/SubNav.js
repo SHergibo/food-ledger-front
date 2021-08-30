@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function SubNav({ showNotif }) {
+function SubNav({ showNotif, optionSubTitle }) {
   const location = useLocation();
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
@@ -25,7 +25,7 @@ function SubNav({ showNotif }) {
       "liste-de-course" : "Liste de courses",
       "statistiques" : "Statistiques des stocks",
       "registre-produit" : "Registre des produits",
-      "options" : "Options / profil utilisateur",
+      "options" : "Options / ",
       "edition-marque" : "Édition marque",
     }
   }, []);
@@ -56,7 +56,10 @@ function SubNav({ showNotif }) {
 
   return (
     <div ref={subNavContainerRef} className="container-subnav">
-      <h1>{subTitle}</h1>
+    {location.pathname.split("/")[2] === "options" ?
+      <h1>{subTitle}{optionSubTitle}</h1> : 
+      <h1>{subTitle}</h1> 
+    }
       <div className="interaction-sub-menu">
         <div className="svg-icon info-notification" onClick={interactNotif}>
           {hasNotif &&
@@ -73,7 +76,8 @@ function SubNav({ showNotif }) {
 }
 
 SubNav.propTypes = {
-  showNotif: PropTypes.func.isRequired
+  showNotif: PropTypes.func.isRequired,
+  optionSubTitle: PropTypes.string.isRequired
 }
 
 export default SubNav
