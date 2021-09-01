@@ -583,20 +583,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     setUrlPageQueryParam(page);
   };
 
-  const previousPage = () => {
-    if (pageIndex > 1) {
-      setPageIndex(currPageIndex => currPageIndex - 1);
-      setUrlPageQueryParam(pageIndex - 1);
-    }
-  };
-
-  const nextPage = async () => {
-    if (pageIndex < pageCount) {
-      setPageIndex(currPageIndex => parseInt(currPageIndex) + 1);
-      setUrlPageQueryParam(parseInt(pageIndex) + 1);
-    }
-  };
-
   const deleteData = async (rowId) => {
 
     if(data.length === 1 && pageIndex > 1){
@@ -794,19 +780,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       </tr>
     )
   });
-
-  let inputPagination = (e) => {
-    if(e.target.value > pageCount){
-      setPageIndex(pageCount);
-      setUrlPageQueryParam(pageCount);
-    } else if (e.target.value <= 0 || e.target.value === ""){
-      setPageIndex(null);
-      setUrlPageQueryParam(null);
-    } else {
-      setPageIndex(e.target.value);
-      setUrlPageQueryParam(e.target.value);
-    }
-  }
 
   return (
     <>
@@ -1029,10 +1002,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
             btnSortRef={btnSortRef}
             sortObject={sortObject}
             populateSortObject={populateSortObject}
+            setUrlPageQueryParam={setUrlPageQueryParam}
             trTable={trTable}
             pagination={true}
-            paginationInfo={{pageIndex, pageCount}}
-            paginationFunction={{gotoPage, previousPage, nextPage, inputPagination}}
+            paginationInfo={{pageIndex, setPageIndex, pageCount}}
+            goToPageUrl={gotoPage}
           />
         }
 
