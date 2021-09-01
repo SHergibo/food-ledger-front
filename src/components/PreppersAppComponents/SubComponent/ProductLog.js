@@ -20,8 +20,7 @@ function ProductLog({ history }) {
   const [productLog, setProductLog] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 14;
-  let btnSortRef = useRef([]);
+  const pageSize = 12;
   const [hasProduct, setHasProduct] = useState(false);
 
   useEffect(() => {
@@ -218,31 +217,31 @@ function ProductLog({ history }) {
     )
   });
 
-  const gotoPage = (page) => {
-    setPageIndex(page);
-  };
+  // const gotoPage = (page) => {
+  //   setPageIndex(page);
+  // };
 
-  const previousPage = () => {
-    if (pageIndex > 1) {
-      setPageIndex(currPageIndex => currPageIndex - 1);
-    }
-  };
+  // const previousPage = () => {
+  //   if (pageIndex > 1) {
+  //     setPageIndex(currPageIndex => currPageIndex - 1);
+  //   }
+  // };
 
-  const nextPage = async () => {
-    if (pageIndex < pageCount) {
-      setPageIndex(currPageIndex => parseInt(currPageIndex) + 1);
-    }
-  };
+  // const nextPage = async () => {
+  //   if (pageIndex < pageCount) {
+  //     setPageIndex(currPageIndex => parseInt(currPageIndex) + 1);
+  //   }
+  // };
 
-  let inputPagination = (e) => {
-    if(e.target.value > pageCount){
-      setPageIndex(pageCount);
-    } else if (e.target.value <= 0 || e.target.value === ""){
-      setPageIndex("");
-    } else {
-      setPageIndex(e.target.value);
-    }
-  }
+  // let inputPagination = (e) => {
+  //   if(e.target.value > pageCount){
+  //     setPageIndex(pageCount);
+  //   } else if (e.target.value <= 0 || e.target.value === ""){
+  //     setPageIndex("");
+  //   } else {
+  //     setPageIndex(e.target.value);
+  //   }
+  // }
 
   
   return (
@@ -279,11 +278,10 @@ function ProductLog({ history }) {
         {hasProduct &&
           <Table 
             columns={columns}
-            btnSortRef={btnSortRef}
             trTable={trTable}
             pagination={true}
-            paginationInfo={{pageIndex, pageCount}}
-            paginationFunction={{gotoPage, previousPage, nextPage, inputPagination}}
+            paginationInfo={{pageIndex, setPageIndex, pageCount}}
+            //paginationFunction={{gotoPage, previousPage, nextPage, inputPagination}}
           />
         }
 
