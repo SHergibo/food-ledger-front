@@ -314,6 +314,25 @@ export const columnsShoppingListFullScreen = [
   }
 ];
 
+export const columnsBrandOption = [
+  {
+    Header: 'Nom',
+    id: 'brandName'
+  },
+  {
+    Header: 'N° de produit lié',
+    id: 'numberOfProduct'
+  },
+  {
+    Header: "N° d'historique lié",
+    id: 'numberOfHistoric'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
+  }
+];
+
 export const productType = [
   { value: 'boisson', label: 'Boisson' },
   { value: 'produit-sucre', label: 'Produit sucré' },
