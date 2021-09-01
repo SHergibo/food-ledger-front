@@ -2,8 +2,8 @@ import React, { useCallback} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, trTable, pagination, paginationInfo, paginationFunction }) {
-
+function Table({ columns, sorting, btnSortRef, sortObject, populateSortObject, setUrlPageQueryParam, trTable, pagination, paginationInfo, goToPageUrl }) {
+  const { pageIndex, setPageIndex, pageCount } = paginationInfo;
 
   let btnSortLogic = useCallback((btnSort, index) => {
     let svgSort = <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"></path></svg>;
@@ -33,6 +33,37 @@ function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, tr
 
     return buttonSort;
   },[sortObject, btnSortRef]);
+
+  const gotoPage = (page) => {
+    goToPageUrl ? goToPageUrl(page) : setPageIndex(page);
+  };
+
+  const previousPage = () => {
+    if (pageIndex > 1) {
+      setPageIndex(currPageIndex => currPageIndex - 1);
+      if(setUrlPageQueryParam) setUrlPageQueryParam(pageIndex - 1);
+    }
+  };
+
+  const nextPage = async () => {
+    if (pageIndex < pageCount) {
+      setPageIndex(currPageIndex => parseInt(currPageIndex) + 1);
+      if(setUrlPageQueryParam) setUrlPageQueryParam(parseInt(pageIndex) + 1);
+    }
+  };
+
+  const inputPagination = (e) => {
+    if(e.target.value > pageCount){
+      setPageIndex(pageCount);
+      if(setUrlPageQueryParam) setUrlPageQueryParam(pageCount);
+    } else if (e.target.value <= 0 || e.target.value === ""){
+      setPageIndex("");
+      if(setUrlPageQueryParam) setUrlPageQueryParam("");
+    } else {
+      setPageIndex(e.target.value);
+      if(setUrlPageQueryParam) setUrlPageQueryParam(e.target.value);
+    }
+  }
 
   return (
     <div className="container-list-table">
@@ -72,10 +103,10 @@ function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, tr
       {pagination && 
         <div className="pagination">
           <div className="action-pagination">
-            <button onClick={() => paginationFunction.gotoPage(1)}>
+            <button onClick={() => gotoPage(1)}>
               <FontAwesomeIcon icon="angle-double-left" />
             </button>
-            <button onClick={() => paginationFunction.previousPage()}>
+            <button onClick={() => previousPage()}>
               <FontAwesomeIcon icon="angle-left" />
             </button>
               <span>Page
@@ -84,13 +115,13 @@ function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, tr
                 value={paginationInfo.pageIndex}
                 min={1}
                 max={paginationInfo.pageCount}
-                onChange={(e) => {paginationFunction.inputPagination(e)}}/>
+                onChange={(e) => {inputPagination(e)}}/>
                 sur {paginationInfo.pageCount}
               </span>
-            <button onClick={() => paginationFunction.nextPage()}>
+            <button onClick={() => nextPage()}>
               <FontAwesomeIcon icon="angle-right" />
             </button>
-            <button onClick={() => paginationFunction.gotoPage(paginationInfo.pageCount)}>
+            <button onClick={() => gotoPage(paginationInfo.pageCount)}>
               <FontAwesomeIcon icon="angle-double-right" />
             </button>
           </div>
@@ -103,21 +134,17 @@ function Table({ columns, sorting,btnSortRef, sortObject, populateSortObject, tr
 Table.propTypes = {
   columns: PropTypes.array.isRequired,
   sorting: PropTypes.bool,
-  btnSortRef: PropTypes.object.isRequired,
+  btnSortRef: PropTypes.object,
   sortObject: PropTypes.object,
   populateSortObject: PropTypes.func,
   trTable: PropTypes.array.isRequired,
   pagination: PropTypes.bool,
   paginationInfo: PropTypes.shape({
     pageIndex: PropTypes.number,
+    setPageIndex: PropTypes.func,
     pageCount: PropTypes.number
   }),
-  paginationFunction: PropTypes.shape({
-    gotoPage: PropTypes.func,
-    previousPage: PropTypes.func,
-    nextPage: PropTypes.func,
-    inputPagination: PropTypes.func
-  }),
+  goToPageUrl: PropTypes.func,
 }
 
 export default Table;
