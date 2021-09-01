@@ -22,8 +22,7 @@ function ShoppingList() {
   const [shoppingList, setShoppingList] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 14;
-  let btnSortRef = useRef([]);
+  const pageSize = 12;
   const [hasProduct, setHasProduct] = useState(false);
 
   const [columns, setColumns] = useState([]);
@@ -271,33 +270,6 @@ function ShoppingList() {
     )
   });
 
-  const gotoPage = (page) => {
-    setPageIndex(page);
-  };
-
-  const previousPage = () => {
-    if (pageIndex > 1) {
-      setPageIndex(currPageIndex => currPageIndex - 1);
-    }
-  };
-
-  const nextPage = async () => {
-    if (pageIndex < pageCount) {
-      setPageIndex(currPageIndex => parseInt(currPageIndex) + 1);
-    }
-  };
-
-  let inputPagination = (e) => {
-    if(e.target.value > pageCount){
-      setPageIndex(pageCount);
-    } else if (e.target.value <= 0 || e.target.value === ""){
-      setPageIndex("");
-    } else {
-      setPageIndex(e.target.value);
-    }
-  }
-
-  
   return (
     <>
       {(windowWidth < 992 || (windowWidth >= 992 && shoppingList.length >= 1)) &&
@@ -364,19 +336,14 @@ function ShoppingList() {
         {hasProduct &&
           <Table 
             columns={columns}
-            btnSortRef={btnSortRef}
             trTable={trTable}
             pagination={true}
-            paginationInfo={{pageIndex, pageCount}}
-            paginationFunction={{gotoPage, previousPage, nextPage, inputPagination}}
+            paginationInfo={{pageIndex, setPageIndex, pageCount}}
           />
         }
-
       </div>
-
     </>
   )
 }
 
 export default ShoppingList;
-
