@@ -13,12 +13,16 @@
   
 }
 
-.container-data{
+.container-data, .container-brand{
   padding: 1rem;
   background-color: var(--white);
   border-radius: em(20px);
   box-shadow: 0px 1px 4px var(--drop-shadow);
   overflow: hidden;
+}
+
+.container-brand{
+  padding: 0;
 }
 
 /*Media queries*/
@@ -32,6 +36,7 @@
   .container-data{
     padding: em(34px);
   }
+
 }
 
 /*Full-screen*/
