@@ -233,6 +233,7 @@ function BrandOption() {
         {hasBrand &&
           <Table 
             columns={columnsBrandOption}
+            customTableClass={{customThead: "centered-thead"}}
             trTable={trTable}
             pagination={true}
             paginationInfo={{pageIndex, setPageIndex, pageCount}}
