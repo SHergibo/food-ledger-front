@@ -83,6 +83,13 @@
   }
 }
 
+.form-edit-brand{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100vh - 11.75rem);
+}
+
 .table-familly-member{
   .btn-action-container{
     margin-bottom: 2rem;
@@ -142,6 +149,9 @@
       }
     }
   }
+  .form-edit-brand{
+    min-height: calc(100vh - 13.75rem);
+  }
   .container-btn-switch-notification-table{
     display: flex;
     justify-content: flex-start;
@@ -151,7 +161,7 @@
 
 /*Full-screen*/
 @media screen and (min-width: 992px) {
-  .form-profile, .form-email, .form-product, .form-table-product{
+  .form-profile, .form-email, .form-product, .form-table-product, .form-edit-brand{
     min-height: unset;
     height: 100%;
     form{
