@@ -1,13 +1,16 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { useUserHouseHoldData, useSocket, useUserData } from '../../DataContext';
 import Table from './../../UtilitiesComponent/Table';
 import { columnsBrandOption } from "./../../../../utils/localData";
+import Loading from './../../UtilitiesComponent/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function BrandOption() {
+  const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
   const [brands, setBrands] = useState([]);
   const [hasBrand, setHasBrand] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
@@ -99,24 +102,36 @@ function BrandOption() {
     }
   }, [socketRef, brandIsEdited, updatedBrand, deletedBrand, addedBrand]);
 
-  useEffect(() => {
-    const getBrand = async () => {
-      const getBrandEndPoint = `${apiDomain}/api/${apiVersion}/brands/pagination/${userHouseholdData._id}?page=${pageIndex - 1}`;
-      await axiosInstance.get(getBrandEndPoint)
-        .then(async (response) => {
-          if(isMounted.current){
-            setBrands(response.data.arrayData);
-            setPageCount(Math.ceil(response.data.totalBrand / pageSize));
-            setHasBrand(true);
-          }else{
-            setHasBrand(false);
+  const getBrand = useCallback(async () => {
+    setErrorFetch(false);
+    setLoading(true);
+    const getBrandEndPoint = `${apiDomain}/api/${apiVersion}/brands/pagination/${userHouseholdData._id}?page=${pageIndex - 1}`;
+    await axiosInstance.get(getBrandEndPoint)
+      .then(async (response) => {
+        if(isMounted.current){
+          setBrands(response.data.arrayData);
+          setPageCount(Math.ceil(response.data.totalBrand / pageSize));
+          setHasBrand(true);
+        }else{
+          setHasBrand(false);
+        }
+        setLoading(false);
+      })
+      .catch((error)=> {
+        let jsonError = JSON.parse(JSON.stringify(error));
+        if(isMounted.current){
+          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+            setErrorFetch(true);
           }
-        });
-    };
+        }
+      });
+  }, [userHouseholdData, pageIndex]);
+
+  useEffect(() => {
     if(userHouseholdData){
       getBrand();
     }
-  }, [userHouseholdData, pageIndex]);
+  }, [userHouseholdData, getBrand]);
 
   useEffect(() => {
     return () => {
@@ -222,23 +237,31 @@ function BrandOption() {
   });
 
   return (
-    <div className="container-brand">
-      <div className="option-component">
-        {!hasBrand &&
-          <div className="no-data-option">
-            <p>Pas de marque disponible !</p>
-          </div>
-        }
-        
-        {hasBrand &&
-          <Table 
-            columns={columnsBrandOption}
-            customTableClass={{customThead: "centered-thead"}}
-            trTable={trTable}
-            pagination={true}
-            paginationInfo={{pageIndex, setPageIndex, pageCount}}
-          />
-        }
+    <div className="container-loading">
+      <Loading
+        loading={loading}
+        errorFetch={errorFetch}
+        retryFetch={getBrand}
+      />
+
+      <div className="container-brand">
+        <div className="option-component">
+          {!hasBrand &&
+            <div className="no-data-option">
+              <p>Pas de marque disponible !</p>
+            </div>
+          }
+          
+          {hasBrand &&
+            <Table 
+              columns={columnsBrandOption}
+              customTableClass={{customThead: "centered-thead"}}
+              trTable={trTable}
+              pagination={true}
+              paginationInfo={{pageIndex, setPageIndex, pageCount}}
+            />
+          }
+        </div>
       </div>
     </div>
   )
