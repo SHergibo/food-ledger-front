@@ -388,7 +388,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   return (
     <>
       <div className="sub-header">
-        <div className="sub-option sub-option-product">
+        <div className="sub-option sub-option-return">
         <div className="title-return">
           <button 
             className="btn-action-title"
