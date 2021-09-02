@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
+import React, { useEffect, useCallback, useState, useRef, useMemo } from 'react';
 import { useLocation, withRouter } from "react-router-dom";
 import { useUserHouseHoldData, useSocket } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
@@ -25,12 +25,22 @@ function EditBrand({ history }) {
   const [success, setSuccess] = useState(false);
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
   let brandId = location.pathname.split('/')[3];
+  const valueRef = useRef({});
 
-  const { register, handleSubmit, setError, formState: { errors } } = useForm({
-    mode: "onChange"
+  const { register, handleSubmit, setError, formState: { errors }, reset } = useForm({
+    defaultValues: useMemo(() => {
+      return brand
+    }, [brand])
   });
 
   const brandName = register("brandName");
+
+  useEffect(() => {
+    valueRef.current = {
+      brandName: brand?.brandName?.label,
+    }
+    reset(valueRef.current)
+  }, [reset, brand]);
 
   useEffect(() => {
     if(userHouseholdData?.isWaiting){
@@ -177,12 +187,12 @@ function EditBrand({ history }) {
       <p>Êtes-vous sur et certain de vouloir supprimer la marque {brand?.brandName?.label}?</p>
       <div className="btn-delete-action-container">
         <button 
-        className="btn-delete-action-yes"
+        className="small-btn-red"
         onClick={()=>{deleteBrand()}}>
           Oui
         </button>
         <button 
-        className="btn-delete-action-no" 
+        className="small-btn-purple" 
         onClick={() => {setOpenTitleMessage(!openTitleMessage)}}>
           Non
         </button>
@@ -193,30 +203,32 @@ function EditBrand({ history }) {
 
   return (
    <>
-      <div className="default-title-container">
-        <div className="title-and-return">
-          <button className="return-to"
-            onClick={() => {
-              history.push({
-                pathname: '/app/options',
-                state: {
-                  brandOptions: true 
-                }
-              })
-            }}>
-            <FontAwesomeIcon icon="arrow-left" />
-          </button>
-          <h1 className="default-h1">Édition de la marque {brand?.brandName?.label}</h1>
+      <div className="sub-header">
+        <div className="sub-option sub-option-return">
+          <div className="title-return">
+            <button className="btn-action-title"
+              onClick={() => {
+                history.push({
+                  pathname: '/app/options',
+                  state: {
+                    brandOptions: true 
+                  }
+                })
+              }}>
+              <FontAwesomeIcon className="btn-icon" icon="arrow-left" />
+            </button>
+            <h1>Édition de marque</h1>
+          </div>
+          {(brand.numberOfHistoric + brand.numberOfProduct) < 1 && 
+            <TitleButtonInteraction
+              title={`Supprimer la marque ${brand?.brandName?.label}!`}
+              openTitleMessage={openTitleMessage}
+              setOpenTitleMessage={setOpenTitleMessage}
+              icon={<FontAwesomeIcon icon="trash" />}
+              contentDiv={contentTitleInteractionDeleteBrand}
+            />
+          }
         </div>
-        {(brand.numberOfHistoric + brand.numberOfProduct) < 1 && 
-          <TitleButtonInteraction
-            title={`Supprimer la marque ${brand?.brandName?.label}!`}
-            openTitleMessage={openTitleMessage}
-            setOpenTitleMessage={setOpenTitleMessage}
-            icon={<FontAwesomeIcon icon="trash" />}
-            contentDiv={contentTitleInteractionDeleteBrand}
-          />
-        }
       </div>
       
       <div className="container-loading">
@@ -225,56 +237,53 @@ function EditBrand({ history }) {
             errorFetch={errorFetch}
             retryFetch={getBrand}
           />
-        <div>
-          <div className="form-add-edit-product">
-            <form className="option-component" onSubmit={handleSubmit(editBrand)}>
-                <>
-                  <div className="input-form-container-with-error">
-                    <label htmlFor="firstname">Marque *</label>
-                    <input 
-                      name="brandName" 
-                      className="input-form" 
-                      type="text" 
-                      placeholder="Marque" 
-                      defaultValue={brand?.brandName?.label}
-                      onChange={(e) => {
-                        brandName.onChange(e);
-                        let findOtherBrand = brands.find(brand => brand.brandName.value === slugUrl(e.target.value));
-                        if(e.target.value.toLowerCase() !== brand.brandName.value && findOtherBrand){
-                          setError('brandName', {
-                            type:"manual",
-                            message: "Cette marque existe déjà!"
-                          });
-                          setErrorMessage("Cette marque existe déjà!");
-                        }
-                        if(!e.target.value){
-                          setError('brandName', {
-                            type:"manual",
-                            message: "Ce champs est requis"
-                          });
-                          setErrorMessage("Ce champs est requis");
-                        }
-                      }
+        <div className="container-data container-option">
+          <form className="option-component form-edit-brand" onSubmit={handleSubmit(editBrand)}>
+            <div className="input-group">
+              <input
+                name="brandName"
+                type="text"
+                id="brandName"
+                className={`form-input ${errors.brandName  ? "error-input" : ""}`}
+                defaultValue={brand?.brandName?.label}
+                onChange={(e) => {
+                    brandName.onChange(e);
+                    let findOtherBrand = brands.find(brand => brand.brandName.value === slugUrl(e.target.value));
+                    if(e.target.value.toLowerCase() !== brand.brandName.value && findOtherBrand){
+                      setError('brandName', {
+                        type:"manual",
+                        message: "Cette marque existe déjà!"
+                      });
+                      setErrorMessage("Cette marque existe déjà!");
                     }
-                    />
-                    {errors.brandName && <span className="error-message-form">{errors.brandName.message}</span>}
-                  </div>
+                    if(!e.target.value){
+                      setError('brandName', {
+                        type:"manual",
+                        message: "Ce champs est requis"
+                      });
+                      setErrorMessage("Ce champs est requis");
+                    }
+                  }
+                }
+              />
+              <label htmlFor="brandName" className="form-label">Marque *</label>
+              <div className="error-message-input">
+                {errors.brandName && <span>{errors.brandName.message}</span>}
+              </div>
+            </div>
 
-                  <div className="default-action-form-container">
-                    <button className="default-btn-action-form" type="submit"><FontAwesomeIcon icon="pen" /> Éditer</button>
-                    {success && 
-                      <InformationIcon 
-                        className="success-icon"
-                        icon={<FontAwesomeIcon icon="check" />}
-                      />
-                    }
-                  </div>
-                </>
-            </form>
-          </div> 
+            <div className="btn-action-container">
+              <button className="btn-purple" type="submit"><FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer</button>
+              {success && 
+                <InformationIcon 
+                  className="success-icon"
+                  icon={<FontAwesomeIcon icon="check" />}
+                />
+              }
+            </div>
+          </form>
         </div>
       </div>
-      
     </>
   )
 }
