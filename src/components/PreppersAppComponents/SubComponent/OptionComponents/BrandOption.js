@@ -173,7 +173,7 @@ function BrandOption() {
                       </>
                       :
                       <>
-                      {brands.isBeingEdited ?
+                      {row.isBeingEdited ?
                         <>
                         {userData.role === "admin" ?
                           <>
