@@ -2,7 +2,7 @@ import React, { useCallback} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
-function Table({ columns, sorting, btnSortRef, sortObject, populateSortObject, setUrlPageQueryParam, trTable, pagination, paginationInfo, goToPageUrl }) {
+function Table({ columns, customTableClass, sorting, btnSortRef, sortObject, populateSortObject, setUrlPageQueryParam, trTable, pagination, paginationInfo, goToPageUrl }) {
   const { pageIndex, setPageIndex, pageCount } = paginationInfo;
 
   let btnSortLogic = useCallback((btnSort, index) => {
@@ -68,7 +68,7 @@ function Table({ columns, sorting, btnSortRef, sortObject, populateSortObject, s
   return (
     <div className="container-list-table">
       <table className="list-table">
-        <thead>
+        <thead className={`${!sorting ? "thead-no-cursor" : ""} ${customTableClass?.customThead ? customTableClass?.customThead : ""}`}>
           <tr>
             {columns.map((column, index) => {
               if (column.id !== 'action' && sorting) {
@@ -133,6 +133,7 @@ function Table({ columns, sorting, btnSortRef, sortObject, populateSortObject, s
 
 Table.propTypes = {
   columns: PropTypes.array.isRequired,
+  customTableClass: PropTypes.object,
   sorting: PropTypes.bool,
   btnSortRef: PropTypes.object,
   sortObject: PropTypes.object,
