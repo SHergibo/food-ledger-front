@@ -1,17 +1,90 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useNotificationData } from '../../DataContext';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useUserData } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
+import Table from './../../UtilitiesComponent/Table';
+import { columnsNotifReceived, columnsNotifSended } from "./../../../../utils/localData";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 
 function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligible}) {
-  const { notificationReceived, notificationSended } = useNotificationData();
+  const { userData } = useUserData();
+  const [notificationReceived, setNotificationReceived] = useState([]);
+  const [notificationSended, setNotificationSended] = useState([]);
   const [notificationTable, setNotificationTable] = useState(true);
   const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
+  const [pageIndexReceived, setPageIndexReceived] = useState(1);
+  const [pageCountReceived, setPageCountReceived] = useState(0);
+  const [pageIndexSended, setPageIndexSended] = useState(1);
+  const [pageCountSended, setPageCountSended] = useState(0);
+  const [hasNotifReceived, setHasNotifReceived] = useState(false);
+  const [hasNotifSended, setHasNotifSended] = useState(false);
   const isMounted = useRef(true);
   const btnSwitchReceivedNotif = useRef(null);
   const btnSwitchSendedNotif = useRef(null);
+  const pageSize = 12;
+
+  const getNotificationReceived = useCallback(async () => {
+    // setErrorFetch(false);
+    // setLoading(true);
+    const getNotificationReceivedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-notification-received/${userData._id}?page=${pageIndexReceived - 1}`;
+    await axiosInstance.get(getNotificationReceivedEndPoint)
+      .then(async (response) => {
+        if(isMounted.current){
+          if(response.data.totalNotifReceived >= 1){
+            setNotificationReceived(response.data.arrayData);
+            setPageCountReceived(Math.ceil(response.data.totalNotifReceived / pageSize));
+            setHasNotifReceived(true);
+          }else{
+            setHasNotifReceived(false);
+          }
+          // setLoading(false);
+        }
+      })
+      .catch((error)=> {
+        let jsonError = JSON.parse(JSON.stringify(error));
+        if(isMounted.current){
+          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+            // setErrorFetch(true);
+          }
+        }
+      });
+  }, [userData, pageIndexReceived]);
+
+  const getNotificationSended = useCallback(async () => {
+    // setErrorFetch(false);
+    // setLoading(true);
+    const getNotificationSendedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-notification-sended/${userData._id}?page=${pageIndexSended - 1}`;
+    await axiosInstance.get(getNotificationSendedEndPoint)
+      .then(async (response) => {
+        if(isMounted.current){
+          if(response.data.totalNotifSended >=1){
+            setNotificationSended(response.data.arrayData);
+            setPageCountSended(Math.ceil(response.data.totalNotifSended / pageSize));
+            setHasNotifSended(true);
+          }else{
+            setHasNotifSended(false);
+          }
+          // setLoading(false);
+        }
+      })
+      .catch((error)=> {
+        let jsonError = JSON.parse(JSON.stringify(error));
+        if(isMounted.current){
+          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+            // setErrorFetch(true);
+          }
+        }
+      });
+  }, [userData, pageIndexSended]);
+
+  useEffect(() => {
+    if(userData){
+      getNotificationReceived();
+      getNotificationSended();
+    }
+  }, [userData, getNotificationReceived, getNotificationSended]);
+
 
   useEffect(() => {
     return () => {
@@ -20,20 +93,20 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
   }, []);
 
   useEffect(() => {
-    if(notificationReceived.length >= 1 && notificationSended.length === 0){
+    if(hasNotifReceived && !hasNotifSended){
       btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchReceivedNotif.current.classList.remove("btn-switch-notification-inactive");
-    }else if(notificationSended.length >= 1 && notificationReceived.length === 0){
+    }else if(hasNotifSended && !hasNotifReceived){
       btnSwitchSendedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchSendedNotif.current.classList.remove("btn-switch-notification-inactive");
-    }else if(notificationReceived.length >= 1 && notificationSended.length >= 1 && !btnSwitchSendedNotif.current.classList.contains("btn-switch-notification-active")){
+    }else if(hasNotifReceived && hasNotifSended && !btnSwitchSendedNotif.current.classList.contains("btn-switch-notification-active")){
       btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
-    }else if(notificationReceived.length >= 1 && notificationSended.length >= 1 && !btnSwitchReceivedNotif.current.classList.contains("btn-switch-notification-active")){
+    }else if(hasNotifReceived && hasNotifSended && !btnSwitchReceivedNotif.current.classList.contains("btn-switch-notification-active")){
       btnSwitchReceivedNotif.current.classList.add("btn-switch-notification-active");
       btnSwitchSendedNotif.current.classList.add("btn-switch-notification-inactive");
     }
-  }, [notificationReceived, notificationSended]);
+  }, [hasNotifReceived, hasNotifSended]);
 
   const notificationRequest = async (urlRequest, id, isAccepted) => {
     const requestNotificationEndpoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${isAccepted}`;
@@ -46,10 +119,10 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
   }
 
   useEffect(() => {
-    if(notificationSended.length === 0){
+    if(!hasNotifSended){
       setNotificationTable(true);
     }
-  }, [notificationSended, setNotificationTable]);
+  }, [hasNotifSended, setNotificationTable]);
 
   useEffect(() => {
     if(notificationReceived.length >= 1){
@@ -100,92 +173,60 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
     }
   }
 
-  let tableNotificationReceived = <>
-    <>
-      <div className="container-list-table list-table-profile">
-        <table className="list-table">
-          <thead className="thead-no-cursor">
-            <tr>
-              <th>Message</th>
-              <th>Type</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notificationReceived.map((notification) => {
-              return (
-                <tr key={`notification-${notification._id}`}>
-                  <td className="all-info">
-                    {notification.message}
-                  </td>
-                  <td className="td-align-center">
-                    {notificationReceivedTypes(notification.type)}
-                  </td>
-                  <td>
-                    <div className="div-list-table-action">
-                      {notification.type === "need-switch-admin" &&
-                        <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button>
-                      }
-                      {(notification.type === "invitation-household-to-user" || notification.type === "invitation-user-to-household") &&
-                        <button 
-                        title={notificationDelegateAdmin ? "Veuillez accepter ou non la délégation de droits administrateurs avant de pouvoir effectuer cette action !" : "Accepter"}
-                        type="button" 
-                        className={notificationDelegateAdmin ? "list-table-action-disabled" : "list-table-action"}
-                        disabled={notificationDelegateAdmin} 
-                        onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}>
-                          <FontAwesomeIcon icon="check"/>
-                        </button>
-                      }
-                      {(notification.type === "request-admin" || notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin")  &&
-                       <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
-                      }
-                      {(notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin") && otherMemberEligible ?
-                        <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
-                        notification.type === "information" ? <button title="Supprimer la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button> : <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
-                      }
-                    </div>
-                  </td>
-                </tr>  
-              )
-            })}
-          </tbody>
-        </table>
-      </div>     
-    </>
-  </>;
+  let trTableNotificationReceived = notificationReceived.map((notification) => {
+    return (
+      <tr key={`notification-${notification._id}`}>
+        <td className="all-info">
+          {notification.message}
+        </td>
+        <td className="td-align-center">
+          {notificationReceivedTypes(notification.type)}
+        </td>
+        <td>
+          <div className="div-list-table-action">
+            {notification.type === "need-switch-admin" &&
+              <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button>
+            }
+            {(notification.type === "invitation-household-to-user" || notification.type === "invitation-user-to-household") &&
+              <button 
+              title={notificationDelegateAdmin ? "Veuillez accepter ou non la délégation de droits administrateurs avant de pouvoir effectuer cette action !" : "Accepter"}
+              type="button" 
+              className={notificationDelegateAdmin ? "list-table-action-disabled" : "list-table-action"}
+              disabled={notificationDelegateAdmin} 
+              onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}>
+                <FontAwesomeIcon icon="check"/>
+              </button>
+            }
+            {(notification.type === "request-admin" || notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin")  &&
+            <button title="Accepter" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "yes")}><FontAwesomeIcon icon="check"/></button>
+            }
+            {(notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin") && otherMemberEligible ?
+              <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
+              notification.type === "information" ? <button title="Supprimer la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button> : <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
+            }
+          </div>
+        </td>
+      </tr>  
+    )
+  });
 
-  let tableNotificationSended = <>
-    <div className="container-list-table list-table-profile">
-      <table className="list-table">
-        <thead className="thead-no-cursor">
-          <tr>
-            <th>Type</th>
-            <th>Destinataire</th>
-            <th>Annuler la notification</th>
-          </tr>
-        </thead>
-        <tbody>
-          {notificationSended.map((notification, index) => {
-            return (
-              <tr key={`notificiation-${index}`}>
-                <td className="td-align-center">
-                  {notificationSendedTypes(notification.type)}
-                </td>
-                <td className="td-align-center">
-                  {notification.userId.firstname} {notification.userId.lastname}
-                </td>
-                <td>
-                  <div className="div-list-table-action">
-                    <button title="Annuler la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button>
-                  </div>
-                </td>
-              </tr>  
-            )
-          })}
-        </tbody>
-      </table>
-    </div>     
-  </>;
+  let trTableNotificationSended = notificationSended.map((notification, index) => {
+    return (
+      <tr key={`notificiation-${index}`}>
+        <td className="td-align-center">
+          {notificationSendedTypes(notification.type)}
+        </td>
+        <td className="td-align-center">
+          {notification.userId.firstname} {notification.userId.lastname}
+        </td>
+        <td>
+          <div className="div-list-table-action">
+            <button title="Annuler la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button>
+          </div>
+        </td>
+      </tr>  
+    )
+  });
 
   const switchTableNotification = (tableName) => {
     if(tableName === "received"){
@@ -208,17 +249,58 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
   }
 
   return (
-    <div className="option-component">
-      <div className="container-btn-switch-notification-table">
-        {notificationReceived.length >= 1 && <button ref={btnSwitchReceivedNotif} onClick={()=> switchTableNotification("received")}>Notif. reçues</button>}
-        {notificationSended.length >= 1 && <button ref={btnSwitchSendedNotif} onClick={()=> switchTableNotification("sended")}>Notif. envoyées</button>}
+    <div className="container-brand">
+      <div className="option-component">
+        <div className="container-btn-switch-notification-table">
+        {console.log(hasNotifReceived)}
+          {hasNotifReceived && <button ref={btnSwitchReceivedNotif} onClick={()=> switchTableNotification("received")}>Notif. reçues</button>}
+          {hasNotifSended && <button ref={btnSwitchSendedNotif} onClick={()=> switchTableNotification("sended")}>Notif. envoyées</button>}
+        </div>
+        {hasNotifReceived && !hasNotifSended &&
+          <Table 
+            columns={columnsNotifReceived}
+            customTableClass={{customThead: "centered-thead"}}
+            trTable={trTableNotificationReceived}
+            pagination={true}
+            paginationInfo={{pageIndex : pageIndexReceived, setPageIndex: setPageIndexReceived, pageCount : pageCountReceived}}
+          />
+        }
+        {hasNotifSended && !hasNotifReceived && 
+          <Table 
+            columns={columnsNotifSended}
+            customTableClass={{customThead: "centered-thead"}}
+            trTable={trTableNotificationSended}
+            pagination={true}
+            paginationInfo={{pageIndex : pageIndexSended, setPageIndex: setPageIndexSended, pageCount : pageCountSended}}
+          />
+        }
+        {hasNotifReceived && hasNotifSended && 
+          <>
+            {notificationTable ? 
+              <Table 
+                columns={columnsNotifReceived}
+                customTableClass={{customThead: "centered-thead"}}
+                trTable={trTableNotificationReceived}
+                pagination={true}
+                paginationInfo={{pageIndex : pageIndexReceived, setPageIndex: setPageIndexReceived, pageCount : pageCountReceived}}
+              />
+              : 
+              <Table 
+                columns={columnsNotifSended}
+                customTableClass={{customThead: "centered-thead"}}
+                trTable={trTableNotificationSended}
+                pagination={true}
+                paginationInfo={{pageIndex : pageIndexSended, setPageIndex: setPageIndexSended, pageCount : pageCountSended}}
+              />
+            }
+          </>
+        }
+        {!hasNotifReceived && !hasNotifSended && 
+          <div className="no-data-option">
+            <p>Pas de notification!</p>
+          </div>
+        }
       </div>
-      {notificationReceived.length >= 1 && notificationSended.length === 0 && <>{tableNotificationReceived}</>}
-      {notificationSended.length >= 1 && notificationReceived.length === 0 && <>{tableNotificationSended}</>}
-      {notificationReceived.length >= 1 && notificationSended.length >= 1 && <>{notificationTable ? <>{tableNotificationReceived}</> : <>{tableNotificationSended}</>}</>}
-      {notificationSended.length === 0 && notificationReceived.length === 0 && 
-        <p>Pas de notification!</p>
-      }
     </div>
   )
 }
