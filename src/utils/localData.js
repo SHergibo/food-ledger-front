@@ -333,6 +333,36 @@ export const columnsBrandOption = [
   }
 ];
 
+export const columnsNotifReceived = [
+  {
+    Header: 'Message',
+    id: 'message'
+  },
+  {
+    Header: 'Type',
+    id: 'type'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
+  }
+];
+
+export const columnsNotifSended = [
+  {
+    Header: 'Type',
+    id: 'type'
+  },
+  {
+    Header: 'Destinataire',
+    id: 'recipient'
+  },
+  {
+    Header: "Actions",
+    id: 'action'
+  }
+];
+
 export const productType = [
   { value: 'boisson', label: 'Boisson' },
   { value: 'produit-sucre', label: 'Produit sucré' },
