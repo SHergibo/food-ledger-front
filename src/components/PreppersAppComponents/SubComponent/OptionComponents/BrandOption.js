@@ -109,13 +109,15 @@ function BrandOption() {
     await axiosInstance.get(getBrandEndPoint)
       .then(async (response) => {
         if(isMounted.current){
-          setBrands(response.data.arrayData);
-          setPageCount(Math.ceil(response.data.totalBrand / pageSize));
-          setHasBrand(true);
-        }else{
-          setHasBrand(false);
+          if(response.data.totalBrand >=1){
+            setBrands(response.data.arrayData);
+            setPageCount(Math.ceil(response.data.totalBrand / pageSize));
+            setHasBrand(true);
+          }else{
+            setHasBrand(false);
+          }
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch((error)=> {
         let jsonError = JSON.parse(JSON.stringify(error));
