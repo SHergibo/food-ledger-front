@@ -113,9 +113,32 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
     await axiosInstance.get(requestNotificationEndpoint);
   };
 
-  const deleteNotification = async (notificationId) => {
-    const removeNotificationEndpoint = `${apiDomain}/api/${apiVersion}/notifications/${notificationId}`;
-    await axiosInstance.delete(removeNotificationEndpoint);
+  const deleteNotification = async (notificationId, notifType) => {
+    const removeNotificationEndpoint = `${apiDomain}/api/${apiVersion}/notifications/${notificationId}?type=${notifType}&page=${pageIndexSended - 1}`;
+    await axiosInstance.delete(removeNotificationEndpoint)
+    .then((response) => {
+      if(isMounted.current){
+        if(notifType === "received"){
+          if(response.data.totalNotifReceived >=1){
+            setNotificationReceived(response.data.arrayData);
+            setPageCountReceived(Math.ceil(response.data.totalNotifReceived / pageSize));
+            setHasNotifReceived(true);
+          }else{
+            setHasNotifReceived(false);
+          }
+        }
+        if(notifType === "sended"){
+          if(response.data.totalNotifSended >=1){
+            setNotificationSended(response.data.arrayData);
+            setPageCountSended(Math.ceil(response.data.totalNotifSended / pageSize));
+            setHasNotifSended(true);
+          }else{
+            setHasNotifSended(false);
+          }
+        }
+        // setLoading(false);
+      }
+    })
   }
 
   useEffect(() => {
@@ -202,7 +225,7 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
             }
             {(notification.type === "request-delegate-admin" || notification.type === "last-chance-request-delegate-admin") && otherMemberEligible ?
               <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button> :
-              notification.type === "information" ? <button title="Supprimer la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button> : <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
+              notification.type === "information" ? <button title="Supprimer la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id, "received")}}><FontAwesomeIcon icon="trash"/></button> : <button title="Refuser" type="button" className="list-table-action" onClick={() => notificationRequest(notification.urlRequest, notification._id, "no")}><FontAwesomeIcon icon="times"/></button>
             }
           </div>
         </td>
@@ -221,7 +244,7 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
         </td>
         <td>
           <div className="div-list-table-action">
-            <button title="Annuler la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button>
+            <button title="Annuler la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id, "sended")}}><FontAwesomeIcon icon="trash"/></button>
           </div>
         </td>
       </tr>  
@@ -249,10 +272,9 @@ function NotificationOptionProfile({switchToHouseholdOptions, otherMemberEligibl
   }
 
   return (
-    <div className="container-brand">
+    <div className="container-option-data">
       <div className="option-component">
         <div className="container-btn-switch-notification-table">
-        {console.log(hasNotifReceived)}
           {hasNotifReceived && <button ref={btnSwitchReceivedNotif} onClick={()=> switchTableNotification("received")}>Notif. reçues</button>}
           {hasNotifSended && <button ref={btnSwitchSendedNotif} onClick={()=> switchTableNotification("sended")}>Notif. envoyées</button>}
         </div>
