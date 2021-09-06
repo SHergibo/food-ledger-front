@@ -246,7 +246,7 @@ function BrandOption() {
         retryFetch={getBrand}
       />
 
-      <div className="container-brand">
+      <div className="container-option-data">
         <div className="option-component">
           {!hasBrand &&
             <div className="no-data-option">
