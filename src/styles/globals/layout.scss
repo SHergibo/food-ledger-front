@@ -13,7 +13,7 @@
   
 }
 
-.container-data, .container-brand{
+.container-data, .container-option-data{
   padding: 1rem;
   background-color: var(--white);
   border-radius: em(20px);
@@ -21,7 +21,7 @@
   overflow: hidden;
 }
 
-.container-brand{
+.container-option-data{
   padding: 0;
 }
 
