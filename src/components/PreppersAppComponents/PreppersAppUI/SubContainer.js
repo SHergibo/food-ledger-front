@@ -72,7 +72,7 @@ function SubContainer({history}) {
                             <button className="small-btn-purple" onClick={()=>interactionNotification(notif.urlRequest, notif._id, "no")}>Refuser</button>
                           }
                         </> :
-                        <button className="notif-one-interaction" onClick={()=>deleteNotification(notif._id)}>Supprimer</button>
+                        <button className="small-btn-purple" onClick={()=>deleteNotification(notif._id)}>Supprimer</button>
                       }
                     </div>
                   </div>
