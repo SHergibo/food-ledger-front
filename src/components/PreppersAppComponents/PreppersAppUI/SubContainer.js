@@ -37,7 +37,7 @@ function SubContainer({history}) {
     history.push({
       pathname: '/app/options',
       state: {
-        notification: true 
+        notificationReceived: true 
       }
     })
   };
