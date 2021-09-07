@@ -8,6 +8,10 @@
 .btn-option-active{
   background-color: var(--purple-light);
   color: var(--primary-color);
+  div{
+    background-color: var(--purple-light);
+    color: var(--primary-color);
+  }
 }
 
 .select-option{
