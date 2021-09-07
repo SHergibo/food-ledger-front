@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useLocation, useHistory } from "react-router-dom";
 import { useUserData, useUserHouseHoldData, useNotificationData, useWindowWidth } from '../DataContext';
 import UserOptionProfile from './OptionComponents/UserOptionProfile';
-import NotificationOptionProfile from './OptionComponents/NotificationOptionProfile';
+import NotificationReceivedOption from './OptionComponents/NotificationReceivedOption';
+import NotificationSendedOption from './OptionComponents/NotificationSendedOption';
 import HouseholdOptionProfile from './OptionComponents/HouseholdOptionProfile';
 import CreateHouseholdForm from './OptionComponents/CreateHouseholdForm';
 import EmailOptionProfile from './OptionComponents/EmailOptionProfile';
@@ -92,7 +93,8 @@ function Option({ setOptionSubTitle }) {
   let btnOptionMenu = useMemo(() => {
     return [
       {label : 'Profil', value: 'userOptions'},
-      {label : 'Notification', value: 'notification'},
+      {label : 'Notification reçue', value: 'notificationReceived'},
+      {label : 'Notification envoyée', value: 'notificationSended'},
       {label : 'Famille', value: 'householdOptions'},
       {label : 'E-mailing', value: 'emailingOptions'},
       {label : 'Produits', value: 'productOptions'},
@@ -114,7 +116,7 @@ function Option({ setOptionSubTitle }) {
   }, [setOptionSubTitle])
 
   useEffect(() => {
-    if(location?.state?.householdOptions || location?.state?.brandOptions || location?.state?.notification){
+    if(location?.state?.householdOptions || location?.state?.brandOptions || location?.state?.notificationReceived){
       switchMenu(Object.keys(location.state)[0], btnOptionMenu.find(option => option.value === Object.keys(location.state)[0]));
       setOptionSubTitle(btnOptionMenu.find(option => option.value === Object.keys(location.state)[0]).label);
     }
@@ -125,7 +127,8 @@ function Option({ setOptionSubTitle }) {
     if(userData){
       setObjectTitle({
         userOptions : `Profil de ${userData.firstname} ${userData.lastname}`,
-        notification: 'Listes des notifications reçues/envoyées',
+        notificationReceived: 'Listes des notifications reçue.s',
+        notificationSended: 'Listes des notifications envoyée.s',
         householdOptions : 'Gestion de votre Famille',
         emailingOptions : 'Options e-mailing',
         productOptions : 'Options produit',
@@ -291,16 +294,51 @@ function Option({ setOptionSubTitle }) {
                   </div> :
                   <>
                   {btnOptionMenu.map((btn, index) => {
-                    return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`btn-purple ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
-                      e.persist();
-                      let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
-                      if(oldActive) oldActive.classList.remove('btn-option-active');
-                      e.target.classList.add('btn-option-active');
-                      setOption(btn)
-                      setOptionSubTitle(btn.label)
-                      }}>
-                      {btn.label}
-                    </button>
+                    if(btn.value === "notificationReceived"){
+                      return <div ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`multiple-link-btn ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} 
+                        onClick={(e) => {
+                          e.persist();
+                          e.stopPropagation();
+                          let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
+                          if(oldActive) oldActive.classList.remove('btn-option-active');
+                          e.target.classList.add('btn-option-active');
+                          setOption(btn)
+                          setOptionSubTitle("Notification reçue")
+                        }}>
+                        Notification
+                        <div onClick={(e) => {e.stopPropagation()}}>
+
+                          <span onClick={(e) => {
+                            e.persist();
+                            setOption(btn)
+                            setOptionSubTitle("Notification reçue")
+                          }}>
+                            reçue
+                          </span>
+
+                          <span onClick={(e) => {
+                            e.persist();
+                            setOption({value: "notificationSended"})
+                            setOptionSubTitle("Notification envoyée")
+                          }}>
+                            envoyée
+                          </span>
+                        </div>
+                      </div>
+                    }else if (btn.value !== "notificationSended"){
+                      return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`btn-purple ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
+                        e.persist();
+                        let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
+                        if(oldActive) oldActive.classList.remove('btn-option-active');
+                        e.target.classList.add('btn-option-active');
+                        setOption(btn)
+                        setOptionSubTitle(btn.label)
+                        }}>
+                        {btn.label}
+                      </button>
+                    } else{
+                      return null;
+                    }
                   })}
                 </>
                 }
@@ -331,12 +369,13 @@ function Option({ setOptionSubTitle }) {
             >
               <div>
                 {option.value === 'userOptions' && <UserOptionProfile />}
-                {option.value === 'notification' && 
-                  <NotificationOptionProfile 
+                {option.value === 'notificationReceived' && 
+                  <NotificationReceivedOption 
                     otherMemberEligible={otherMemberEligible}
                     switchToHouseholdOptions={switchToHouseholdOptions}
                   />
                 }
+                {option.value === 'notificationSended' && <NotificationSendedOption />}
                 {option.value === 'householdOptions' && 
                   <>
                     {userData?.householdId ?
