@@ -222,9 +222,9 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     if(needSwitchAdminNotif.length === 1) notifId = needSwitchAdminNotif[0]._id;
     if(needSwitchAdminNotif.length >= 2) notifId = data.notifId.value;
 
-    let switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${notifId}?acceptedRequest=yes&otherMember=${data.delegateRadioInput}`;
+    let switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${notifId}?acceptedRequest=yes&type=received&otherMember=${data.delegateRadioInput}`;
     if(data.delegateRadioInput === ""){
-      switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${notifId}?acceptedRequest=yes`;
+      switchAdminRightsEndPoint = `${apiDomain}/api/${apiVersion}/requests/add-user-respond/${notifId}?acceptedRequest=yes&type=received`;
     }
     await axiosInstance.get(switchAdminRightsEndPoint)
       .then((response) => {
@@ -247,9 +247,9 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
   const didNotAcceptRequestDelegateAdmin = async (data) => {
     const requestDelegateAdminNotif = notificationReceived.find(notif => notif.type === "request-delegate-admin");
-    let requestDelegateAdminEndPoint = `${apiDomain}/api/${apiVersion}/requests/${requestDelegateAdminNotif.urlRequest}/${requestDelegateAdminNotif._id}?acceptedRequest=no`;
+    let requestDelegateAdminEndPoint = `${apiDomain}/api/${apiVersion}/requests/${requestDelegateAdminNotif.urlRequest}/${requestDelegateAdminNotif._id}?acceptedRequest=no&type=received`;
     if(data.otherUserIdDidNotAcceptDelegate){
-      requestDelegateAdminEndPoint = `${requestDelegateAdminEndPoint}&otherMember=${data.otherUserIdDidNotAcceptDelegate}`;
+      requestDelegateAdminEndPoint = `${requestDelegateAdminEndPoint}&otherMember=${data.otherUserIdDidNotAcceptDelegate}&type=received`;
     }
     await axiosInstance.get(requestDelegateAdminEndPoint)
       .then((response) => {
@@ -532,8 +532,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             {userData.role === 'user' && requestDelegateAdmin && 
               <form className="form-profile-list-table" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAcceptRequestDelegateAdmin)}>
                 {tableMemberFamilly}
-                <div className="default-action-form-container">
-                  <button className="default-btn-action-form" type="submit">
+                <div className="btn-action-container">
+                  <button className="btn-purple" type="submit">
                     {!otherMemberEligible ? "Refuser les droits administrateurs" : "Refuser et déléguer droits administrateurs"}
                   </button>
                   {!errorMessageDelegate && !otherMemberEligible &&
