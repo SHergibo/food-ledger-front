@@ -104,9 +104,15 @@ function Option({ setOptionSubTitle }) {
   }, []);
 
   const switchMenu = (menuId, optionObject) => {
-    let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
+    let oldActive = btnMenuRef.current.find((element) => {
+      if(element) return element.className.includes('btn-option-active') === true;
+      return null;
+    });
     if(oldActive) oldActive.classList.remove('btn-option-active');
-    let newActive = btnMenuRef.current.find((element) => element.attributes.id.value === menuId);
+    let newActive = btnMenuRef.current.find((element) => {
+      if(element) return element.attributes.id.value === menuId;
+      return null;
+    });
     if(newActive) newActive.classList.add('btn-option-active');
     setOption(optionObject);
   };
@@ -270,6 +276,17 @@ function Option({ setOptionSubTitle }) {
     switchMenu('householdOptions',{label : 'Famille', value: 'householdOptions'}); 
   }
 
+  let interactSubMenuBtn = (e, option, optionSubTitle) => {
+    e.persist();
+    let oldActive = btnMenuRef.current.find((element) => {
+      if(element) return element.className.includes('btn-option-active') === true;
+      return null;
+    });
+    if(oldActive) oldActive.classList.remove('btn-option-active');
+    setOption(option);
+    setOptionSubTitle(optionSubTitle);
+  }
+
   return (
     <>
       {userData && 
@@ -297,29 +314,23 @@ function Option({ setOptionSubTitle }) {
                     if(btn.value === "notificationReceived"){
                       return <div ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`multiple-link-btn ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} 
                         onClick={(e) => {
-                          e.persist();
                           e.stopPropagation();
-                          let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
-                          if(oldActive) oldActive.classList.remove('btn-option-active');
+                          interactSubMenuBtn(e, btn, "Notification reçue");
                           e.target.classList.add('btn-option-active');
-                          setOption(btn)
-                          setOptionSubTitle("Notification reçue")
                         }}>
                         Notification
                         <div onClick={(e) => {e.stopPropagation()}}>
 
                           <span onClick={(e) => {
-                            e.persist();
-                            setOption(btn)
-                            setOptionSubTitle("Notification reçue")
+                            interactSubMenuBtn(e, btn, "Notification reçue");
+                            e.target.offsetParent.offsetParent.classList.add('btn-option-active');
                           }}>
                             reçue
                           </span>
 
                           <span onClick={(e) => {
-                            e.persist();
-                            setOption({value: "notificationSended"})
-                            setOptionSubTitle("Notification envoyée")
+                            interactSubMenuBtn(e, {value: "notificationSended"}, "Notification envoyée");
+                            e.target.offsetParent.offsetParent.classList.add('btn-option-active');
                           }}>
                             envoyée
                           </span>
@@ -327,12 +338,8 @@ function Option({ setOptionSubTitle }) {
                       </div>
                     }else if (btn.value !== "notificationSended"){
                       return <button ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`btn-purple ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} onClick={(e) => {
-                        e.persist();
-                        let oldActive = btnMenuRef.current.find((element) => element.className.includes('btn-option-active') === true);
-                        if(oldActive) oldActive.classList.remove('btn-option-active');
+                        interactSubMenuBtn(e, btn, btn.label);
                         e.target.classList.add('btn-option-active');
-                        setOption(btn)
-                        setOptionSubTitle(btn.label)
                         }}>
                         {btn.label}
                       </button>
