@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useUserData } from '../../DataContext';
+import { useUserData, useSocket } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import Table from '../../UtilitiesComponent/Table';
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 
 function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligible}) {
   const { userData } = useUserData();
+  const { socketRef } = useSocket();
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
@@ -16,6 +17,62 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
   const [hasNotif, setHasNotif] = useState(false);
   const isMounted = useRef(true);
   const pageSize = 12;
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current && userData){
+      socket = socketRef.current;
+      socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex});
+
+      socket.on("connect", () => {
+        socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex});
+      });
+    }
+
+    return () => {
+      if(socket && userData) {
+        socket.emit('leaveNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex});
+        socket.off('connect');
+      }
+    };
+  }, [userData, socketRef, pageIndex]);
+
+  const updateNotifArray = useCallback((data) => {
+    if(data.totalNotifReceived >= 1){
+      setNotificationReceived(data.arrayData);
+      setPageCount(Math.ceil(data.totalNotifReceived / pageSize));
+      setHasNotif(true);
+    }else{
+      setHasNotif(false);
+    }
+  },[]);
+
+  const updatePageCount = useCallback((data) => {
+      setPageCount(data.totalNotifReceived / pageSize);
+  },[]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+      socket.on("updateNotifArray", (data) => {
+        updateNotifArray(data);
+      });
+
+      socket.on("updatePageCount", (data) => {
+        updatePageCount(data);
+      });
+    }
+
+    return () => {
+      if(socket) {
+        socket.off('updateNotifArray');
+        socket.off('updatePageCount');
+      }
+    }
+  }, [socketRef, updateNotifArray, updatePageCount]);
 
   const getNotificationReceived = useCallback(async () => {
     // setErrorFetch(false);
