@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useUserData } from '../../DataContext';
+import { useUserData, useSocket } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import Table from './../../UtilitiesComponent/Table';
@@ -8,12 +8,69 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function NotificationSendedOption() {
   const { userData } = useUserData();
+  const { socketRef } = useSocket();
   const [notificationSended, setNotificationSended] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [hasNotif, setHasNotif] = useState(false);
   const isMounted = useRef(true);
   const pageSize = 12;
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current && userData){
+      socket = socketRef.current;
+      socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationSended", pageIndex});
+
+      socket.on("connect", () => {
+        socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationSended", pageIndex});
+      });
+    }
+
+    return () => {
+      if(socket && userData) {
+        socket.emit('leaveNotificationRoom', {userId: userData._id, type: "notificationSended", pageIndex});
+        socket.off('connect');
+      }
+    };
+  }, [userData, socketRef, pageIndex]);
+
+  const updateNotifArray = useCallback((data) => {
+    if(data.totalNotifSended >= 1){
+      setNotificationSended(data.arrayData);
+      setPageCount(Math.ceil(data.totalNotifSended / pageSize));
+      setHasNotif(true);
+    }else{
+      setHasNotif(false);
+    }
+  },[]);
+
+  const updatePageCount = useCallback((data) => {
+      setPageCount(data.totalNotifSended / pageSize);
+  },[]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+      socket.on("updateNotifArray", (data) => {
+        updateNotifArray(data);
+      });
+
+      socket.on("updatePageCount", (data) => {
+        updatePageCount(data);
+      });
+    }
+
+    return () => {
+      if(socket) {
+        socket.off('updateNotifArray');
+        socket.off('updatePageCount');
+      }
+    }
+  }, [socketRef, updateNotifArray, updatePageCount]);
 
   const getNotificationSended = useCallback(async () => {
     // setErrorFetch(false);
