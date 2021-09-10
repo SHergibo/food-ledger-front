@@ -23,16 +23,16 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
 
     if(socketRef.current && userData){
       socket = socketRef.current;
-      socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex});
+      socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex: pageIndex - 1});
 
       socket.on("connect", () => {
-        socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex});
+        socket.emit('enterNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex: pageIndex - 1});
       });
     }
 
     return () => {
       if(socket && userData) {
-        socket.emit('leaveNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex});
+        socket.emit('leaveNotificationRoom', {userId: userData._id, type: "notificationReceived", pageIndex: pageIndex - 1});
         socket.off('connect');
       }
     };
@@ -49,7 +49,7 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
   },[]);
 
   const updatePageCount = useCallback((data) => {
-      setPageCount(data.totalNotifReceived / pageSize);
+      setPageCount(data.totalNotif / pageSize);
   },[]);
 
   useEffect(() => {
