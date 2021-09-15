@@ -42,6 +42,7 @@ export function DataProvider({children}) {
   const [userOptionData, setUserOptionData] = useState();
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationSended, setNotificationSended] = useState([]);
+  const [notificationType, setNotificationType] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isMounted = useRef(true);
   const socketRef = useRef();
@@ -179,7 +180,7 @@ export function DataProvider({children}) {
     <UserDataContext.Provider value={{ userData, setUserData }}>
       <UserHouseholdDataContext.Provider value={{ userHouseholdData, setUserHouseholdData }}>
         <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
-          <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationSended, setNotificationSended }}>
+          <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationSended, setNotificationSended, notificationType, setNotificationType }}>
             <SocketContext.Provider value={{socketRef}}>
               <WindowWidthContext.Provider value={{windowWidth}}>
                 {children}
