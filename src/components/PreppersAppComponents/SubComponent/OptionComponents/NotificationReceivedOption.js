@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useUserData, useSocket } from '../../DataContext';
+import { useUserData, useSocket, useNotificationData } from '../../DataContext';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import Table from '../../UtilitiesComponent/Table';
@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligible}) {
   const { userData } = useUserData();
   const { socketRef } = useSocket();
+  const { setNotificationType } = useNotificationData();
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
@@ -17,6 +18,13 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
   const [hasNotif, setHasNotif] = useState(false);
   const isMounted = useRef(true);
   const pageSize = 12;
+
+  useEffect(() => {
+    setNotificationType("received");
+    return () => {
+      setNotificationType('');
+    }
+  }, [setNotificationType]);
 
   useEffect(() => {
     let socket = null;
