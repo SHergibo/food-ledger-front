@@ -5,7 +5,7 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 
 function SubContainer({history}) {
-  const { notificationReceived } = useNotificationData();
+  const { notificationReceived, notificationType } = useNotificationData();
   const { windowWidth } = useWindowWidth();
 
   //TODO créer une route comme protected.route pour gérer la route notification hors responsive mobile
@@ -20,7 +20,11 @@ function SubContainer({history}) {
   }, [windowWidth, history]);
 
   const interactionNotification = async (urlRequest, id, accepted) => {
-    const requestNotificationEndPoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${accepted}`;
+    let requestNotificationEndPoint = `${apiDomain}/api/${apiVersion}/requests/${urlRequest}/${id}?acceptedRequest=${accepted}`;
+
+    if(notificationType === "received" || notificationType === "sended"){
+      requestNotificationEndPoint = `${requestNotificationEndPoint}&type=${notificationType}`;
+    }
     await axiosInstance.get(requestNotificationEndPoint);
   };
 
@@ -43,7 +47,13 @@ function SubContainer({history}) {
   };
 
   const deleteNotification = async (id) => {
-    const deleteNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${id}`;
+
+    let deleteNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${id}`;
+
+    if(notificationType === "received" || notificationType === "sended"){
+      deleteNotificationEndPoint = `${deleteNotificationEndPoint}?type=${notificationType}`;
+    }
+
     await axiosInstance.delete(deleteNotificationEndPoint);
   };
 
