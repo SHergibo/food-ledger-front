@@ -41,7 +41,6 @@ export function DataProvider({children}) {
   const [userHouseholdData, setUserHouseholdData] = useState();
   const [userOptionData, setUserOptionData] = useState();
   const [notificationReceived, setNotificationReceived] = useState([]);
-  const [notificationSended, setNotificationSended] = useState([]);
   const [notificationType, setNotificationType] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isMounted = useRef(true);
@@ -90,7 +89,6 @@ export function DataProvider({children}) {
         .then((response) => {
           if(isMounted.current){
             setNotificationReceived(response.data.notificationsReceived);
-            setNotificationSended(response.data.notificationsSended)
           }
         });
     };
@@ -114,21 +112,8 @@ export function DataProvider({children}) {
         setNotificationReceived(notificationReceived => [...notificationReceived, notif]);
       });
   
-      socketRef.current.on("updateNotificationSended", (notif) => {
-        setNotificationSended(notificationSended => [...notificationSended, notif]);
-      });
-  
-      socketRef.current.on("deleteNotificationSended", (notifId) => {
-        setNotificationSended(notificationSended => notificationSended.filter((notif) => notif._id !== notifId));
-      });
-  
       socketRef.current.on("deleteNotificationReceived", (notifId) => {
         setNotificationReceived(notificationReceived => notificationReceived.filter((notif) => notif._id !== notifId));
-      });
-  
-      socketRef.current.on("updateAllNotifications", (data) => {
-        setNotificationReceived(data.notificationsReceived);
-        setNotificationSended(data.notificationsSended);
       });
   
       socketRef.current.on("updateAllNotificationsReceived", (allNotifReceived) => {
@@ -180,7 +165,7 @@ export function DataProvider({children}) {
     <UserDataContext.Provider value={{ userData, setUserData }}>
       <UserHouseholdDataContext.Provider value={{ userHouseholdData, setUserHouseholdData }}>
         <UserOptionContext.Provider value={{ userOptionData, setUserOptionData }}>
-          <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationSended, setNotificationSended, notificationType, setNotificationType }}>
+          <NotificationContext.Provider value={{ notificationReceived, setNotificationReceived, notificationType, setNotificationType }}>
             <SocketContext.Provider value={{socketRef}}>
               <WindowWidthContext.Provider value={{windowWidth}}>
                 {children}
