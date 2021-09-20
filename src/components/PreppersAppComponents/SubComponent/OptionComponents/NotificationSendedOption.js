@@ -83,7 +83,7 @@ function NotificationSendedOption() {
   const getNotificationSended = useCallback(async () => {
     // setErrorFetch(false);
     // setLoading(true);
-    const getNotificationSendedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-notification-sended/${userData._id}?page=${pageIndex - 1}`;
+    const getNotificationSendedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-sended-notification/${userData._id}?page=${pageIndex - 1}`;
     await axiosInstance.get(getNotificationSendedEndPoint)
       .then(async (response) => {
         if(isMounted.current){
