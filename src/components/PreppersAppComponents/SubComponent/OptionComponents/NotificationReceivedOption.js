@@ -85,7 +85,7 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
   const getNotificationReceived = useCallback(async () => {
     // setErrorFetch(false);
     // setLoading(true);
-    const getNotificationReceivedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-notification-received/${userData._id}?page=${pageIndex - 1}`;
+    const getNotificationReceivedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-received-notification/${userData._id}?page=${pageIndex - 1}`;
     await axiosInstance.get(getNotificationReceivedEndPoint)
       .then(async (response) => {
         if(isMounted.current){
