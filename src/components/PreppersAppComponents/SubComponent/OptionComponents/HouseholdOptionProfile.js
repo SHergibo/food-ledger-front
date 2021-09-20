@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useUserData, useUserHouseHoldData, useNotificationData } from '../../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import ReactSelect from './../../UtilitiesComponent/ReactSelect';
@@ -12,7 +12,8 @@ import PropTypes from 'prop-types';
 function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const { userData } = useUserData();
   const { userHouseholdData, setUserHouseholdData } = useUserHouseHoldData();
-  const { notificationReceived, notificationSended } = useNotificationData();
+  const { notificationReceived } = useNotificationData();
+  const [ notificationSended, setNotificationSended ] = useState([]);
   const [ defaultCheckedAdmin, setDefaultCheckedAdmin ] = useState(true);
   const [ delegateAdminAndSwitch, setDelegateAdminAndSwitch ] = useState(false);
   const [ showSelectHousehold, setShowSelectHousehold ] = useState(false);
@@ -67,11 +68,23 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     if(needSwitchAdminNotif.length < 2)  setShowSelectHousehold(false);
   }, [notificationReceived]);
 
+  const getSendedNotification = useCallback(async (userId) => {
+    const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/sended-notification/${userId}`;
+    await axiosInstance.get(getNotificationEndPoint)
+      .then((response) => {
+        if(isMounted.current){
+          setNotificationSended(response.data);
+        }
+      });
+    }, []);
+
   useEffect(() => {
     if(userData){
       setDefaultCheckedAdmin(true);
+      getSendedNotification(userData._id);
     }
-  }, [userData]);
+  }, [userData, getSendedNotification]);
+
 
   useEffect(() => {
     const requestAdminNotif = notificationSended.find(notif => notif.type === "request-admin");
