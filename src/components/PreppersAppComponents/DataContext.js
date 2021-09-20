@@ -84,11 +84,11 @@ export function DataProvider({children}) {
     };
 
     const fetchNotification = async (userId) => {
-      const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/${userId}`;
+      const getNotificationEndPoint = `${apiDomain}/api/${apiVersion}/notifications/received-notification/${userId}`;
       await axiosInstance.get(getNotificationEndPoint)
         .then((response) => {
           if(isMounted.current){
-            setNotificationReceived(response.data.notificationsReceived);
+            setNotificationReceived(response.data);
           }
         });
     };
