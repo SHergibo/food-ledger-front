@@ -166,8 +166,7 @@
       transition: .2s ease-in-out;
       .all-info{
         height: auto;
-        max-width: 90%;
-        padding: 1rem 0;
+        padding: .5rem 1rem;
       }
       .ellipsis-info{
         max-width: 10rem;
@@ -343,8 +342,8 @@
     tbody{
       tr{
         height: 3rem;
-        .all-info{
-          max-width: 10rem;
+        .td-notif-action{
+          padding: 0 1rem;
         }
       }
       .td-align-center{
@@ -386,6 +385,9 @@
     tbody{
       tr{
         height: calc(calc(100vh - 18.875rem) / 14);
+        .all-info{
+          padding: 0 1rem;
+        }
       }
     }
   }
