@@ -49,13 +49,16 @@ function NotificationSendedOption() {
       setNotificationSended(data.arrayData);
       setPageCount(Math.ceil(data.totalNotifSended / pageSize));
       setHasNotif(true);
+      if(data.arrayData.length === 0){
+        setPageIndex(currPageIndex => currPageIndex - 1);
+      }
     }else{
       setHasNotif(false);
     }
   },[]);
 
   const updatePageCount = useCallback((data) => {
-      setPageCount(data.totalNotif / pageSize);
+      setPageCount(Math.ceil(data.totalNotif / pageSize));
   },[]);
 
   useEffect(() => {
@@ -162,7 +165,7 @@ function NotificationSendedOption() {
         <td className="td-align-center">
           {notification.userId.firstname} {notification.userId.lastname}
         </td>
-        <td>
+        <td className="td-notif-action">
           <div className="div-list-table-action">
             <button title="Annuler la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button>
           </div>
