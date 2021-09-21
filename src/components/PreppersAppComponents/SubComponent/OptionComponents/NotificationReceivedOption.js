@@ -51,13 +51,16 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
       setNotificationReceived(data.arrayData);
       setPageCount(Math.ceil(data.totalNotifReceived / pageSize));
       setHasNotif(true);
+      if(data.arrayData.length === 0){
+        setPageIndex(currPageIndex => currPageIndex - 1);
+      }
     }else{
       setHasNotif(false);
     }
   },[]);
 
   const updatePageCount = useCallback((data) => {
-      setPageCount(data.totalNotif / pageSize);
+      setPageCount(Math.ceil(data.totalNotif / pageSize));
   },[]);
 
   useEffect(() => {
@@ -131,6 +134,9 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
           setNotificationReceived(response.data.arrayData);
           setPageCount(Math.ceil(response.data.totalNotifReceived / pageSize));
           setHasNotif(true);
+          if(response.data.arrayData.length === 0){
+            setPageIndex(currPageIndex => currPageIndex - 1);
+          }
         }else{
           setHasNotif(false);
         }
@@ -198,7 +204,7 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
         <td className="td-align-center">
           {notificationReceivedTypes(notification.type)}
         </td>
-        <td>
+        <td className="td-notif-action">
           <div className="div-list-table-action">
             {notification.type === "need-switch-admin" &&
               <button title="Déléguer" type="button" className="list-table-action" onClick={switchToHouseholdOptions}><FontAwesomeIcon icon="random"/></button>
