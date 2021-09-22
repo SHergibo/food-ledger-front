@@ -5,12 +5,15 @@ import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import Table from '../../UtilitiesComponent/Table';
 import { columnsNotifReceived } from "../../../../utils/localData";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Loading from './../../UtilitiesComponent/Loading';
 import PropTypes from 'prop-types';
 
 function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligible}) {
   const { userData } = useUserData();
   const { socketRef } = useSocket();
   const { setNotificationType } = useNotificationData();
+  const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
   const [notificationReceived, setNotificationReceived] = useState([]);
   const [notificationDelegateAdmin, setNotificationDelegateAdmin] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
@@ -86,8 +89,8 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
   }, [socketRef, updateNotifArray, updatePageCount]);
 
   const getNotificationReceived = useCallback(async () => {
-    // setErrorFetch(false);
-    // setLoading(true);
+    setErrorFetch(false);
+    setLoading(true);
     const getNotificationReceivedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-received-notification/${userData._id}?page=${pageIndex - 1}`;
     await axiosInstance.get(getNotificationReceivedEndPoint)
       .then(async (response) => {
@@ -99,14 +102,14 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
           }else{
             setHasNotif(false);
           }
-          // setLoading(false);
+          setLoading(false);
         }
       })
       .catch((error)=> {
         let jsonError = JSON.parse(JSON.stringify(error));
         if(isMounted.current){
           if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
-            // setErrorFetch(true);
+            setErrorFetch(true);
           }
         }
       });
@@ -234,23 +237,31 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
 
 
   return (
-    <div className="container-option-data">
-      <div className="option-component">
-        {hasNotif &&
-          <Table 
-            columns={columnsNotifReceived}
-            customTableClass={{customThead: "centered-thead"}}
-            trTable={trTableNotification}
-            pagination={true}
-            paginationInfo={{pageIndex : pageIndex, setPageIndex: setPageIndex, pageCount : pageCount}}
-          />
-        }
+    <div className="container-loading">
+      <Loading
+        loading={loading}
+        errorFetch={errorFetch}
+        retryFetch={getNotificationReceived}
+      />
+      
+      <div className="container-option-data">
+        <div className="option-component">
+          {hasNotif &&
+            <Table 
+              columns={columnsNotifReceived}
+              customTableClass={{customThead: "centered-thead"}}
+              trTable={trTableNotification}
+              pagination={true}
+              paginationInfo={{pageIndex : pageIndex, setPageIndex: setPageIndex, pageCount : pageCount}}
+            />
+          }
 
-        {!hasNotif && 
-          <div className="no-data-option">
-            <p>Pas de notification!</p>
-          </div>
-        }
+          {!hasNotif && 
+            <div className="no-data-option">
+              <p>Pas de notification!</p>
+            </div>
+          }
+        </div>
       </div>
     </div>
   )
