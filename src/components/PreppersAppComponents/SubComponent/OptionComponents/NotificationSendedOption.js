@@ -5,11 +5,14 @@ import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import Table from './../../UtilitiesComponent/Table';
 import { columnsNotifSended } from "./../../../../utils/localData";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Loading from './../../UtilitiesComponent/Loading';
 
 function NotificationSendedOption() {
   const { userData } = useUserData();
   const { socketRef } = useSocket();
   const { setNotificationType } = useNotificationData();
+  const [loading, setLoading] = useState(true);
+  const [errorFetch, setErrorFetch] = useState(false);
   const [notificationSended, setNotificationSended] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
@@ -84,8 +87,8 @@ function NotificationSendedOption() {
   }, [socketRef, updateNotifArray, updatePageCount]);
 
   const getNotificationSended = useCallback(async () => {
-    // setErrorFetch(false);
-    // setLoading(true);
+    setErrorFetch(false);
+    setLoading(true);
     const getNotificationSendedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-sended-notification/${userData._id}?page=${pageIndex - 1}`;
     await axiosInstance.get(getNotificationSendedEndPoint)
       .then(async (response) => {
@@ -97,14 +100,14 @@ function NotificationSendedOption() {
           }else{
             setHasNotif(false);
           }
-          // setLoading(false);
+          setLoading(false);
         }
       })
       .catch((error)=> {
         let jsonError = JSON.parse(JSON.stringify(error));
         if(isMounted.current){
           if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
-            // setErrorFetch(true);
+            setErrorFetch(true);
           }
         }
       });
@@ -175,23 +178,31 @@ function NotificationSendedOption() {
   });
 
   return (
-    <div className="container-option-data">
-      <div className="option-component">
-        {hasNotif && 
-          <Table 
-            columns={columnsNotifSended}
-            customTableClass={{customThead: "centered-thead"}}
-            trTable={trTableNotification}
-            pagination={true}
-            paginationInfo={{pageIndex : pageIndex, setPageIndex: setPageIndex, pageCount : pageCount}}
-          />
-        }
-        
-        {!hasNotif && 
-          <div className="no-data-option">
-            <p>Pas de notification!</p>
-          </div>
-        }
+    <div className="container-loading">
+      <Loading
+        loading={loading}
+        errorFetch={errorFetch}
+        retryFetch={getNotificationSended}
+      />
+
+      <div className="container-option-data">
+        <div className="option-component">
+          {hasNotif && 
+            <Table 
+              columns={columnsNotifSended}
+              customTableClass={{customThead: "centered-thead"}}
+              trTable={trTableNotification}
+              pagination={true}
+              paginationInfo={{pageIndex : pageIndex, setPageIndex: setPageIndex, pageCount : pageCount}}
+            />
+          }
+          
+          {!hasNotif && 
+            <div className="no-data-option">
+              <p>Pas de notification!</p>
+            </div>
+          }
+        </div>
       </div>
     </div>
   )
