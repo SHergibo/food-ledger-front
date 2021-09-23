@@ -33,7 +33,7 @@ function EditBrand({ history }) {
     }, [brand])
   });
 
-  const brandName = register("brandName");
+  const { onChange, ...rest } = register("brandName");
 
   useEffect(() => {
     valueRef.current = {
@@ -245,9 +245,7 @@ function EditBrand({ history }) {
                 type="text"
                 id="brandName"
                 className={`form-input ${errors.brandName  ? "error-input" : ""}`}
-                defaultValue={brand?.brandName?.label}
                 onChange={(e) => {
-                    brandName.onChange(e);
                     let findOtherBrand = brands.find(brand => brand.brandName.value === slugUrl(e.target.value));
                     if(e.target.value.toLowerCase() !== brand.brandName.value && findOtherBrand){
                       setError('brandName', {
@@ -263,8 +261,10 @@ function EditBrand({ history }) {
                       });
                       setErrorMessage("Ce champs est requis");
                     }
+                    onChange(e);
                   }
                 }
+                {...rest}
               />
               <label htmlFor="brandName" className="form-label">Marque *</label>
               <div className="error-message-input">
