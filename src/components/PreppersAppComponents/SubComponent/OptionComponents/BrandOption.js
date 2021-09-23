@@ -26,20 +26,20 @@ function BrandOption() {
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand`});
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand-${pageIndex - 1}`});
 
       socket.on("connect", () => {
-        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand`});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand-${pageIndex - 1}`});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand`});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand-${pageIndex - 1}`});
         socket.off('connect');
       }
     };
-  }, [userHouseholdData, socketRef]);
+  }, [userHouseholdData, socketRef, pageIndex]);
 
   const findIndexData = (data, brandId) => {
     let arrayData = [...data];
@@ -61,14 +61,31 @@ function BrandOption() {
     setBrands(arrayData);
   }, [brands]);
 
-  const deletedBrand = useCallback((brandId) => {
-    let arrayData = brands.filter(brand => brand._id !== brandId);
-    setBrands(arrayData);
-  }, [brands]);
+  // const deletedBrand = useCallback((brandId) => {
+  //   let arrayData = brands.filter(brand => brand._id !== brandId);
+  //   setBrands(arrayData);
+  // }, [brands]);
 
-  const addedBrand = useCallback((brandData) => {;
-    setBrands([...brands, brandData]);
-  }, [brands]);
+  // const addedBrand = useCallback((brandData) => {;
+  //   setBrands([...brands, brandData]);
+  // }, [brands]);
+
+  // const updateBrandArray = useCallback((data) => {
+  //   if(data.totalBrand >= 1){
+  //     setBrands(data.arrayData);
+  //     setPageCount(Math.ceil(data.totalBrand/ pageSize));
+  //     setHasBrand(true);
+  //     if(data.arrayData.length === 0){
+  //       setPageIndex(currPageIndex => currPageIndex - 1);
+  //     }
+  //   }else{
+  //     setHasBrand(false);
+  //   }
+  // },[]);
+
+  const updatePageCount = useCallback((data) => {
+      setPageCount(Math.ceil(data.totalBrand / pageSize));
+  },[]);
 
   useEffect(() => {
     let socket = null;
@@ -76,6 +93,8 @@ function BrandOption() {
     if(socketRef.current){
       socket = socketRef.current;
       socket.on("brandIsEdited", ({brandId, isEdited}) => {
+        console.log(brandId)
+        console.log(isEdited)
         brandIsEdited(brandId, isEdited);
       });
 
@@ -83,24 +102,34 @@ function BrandOption() {
         updatedBrand(brandData);
       });
 
-      socket.on("deletedBrand", (brandId) => {
-        deletedBrand(brandId);
-      });
+      // socket.on("deletedBrand", (brandId) => {
+      //   deletedBrand(brandId);
+      // });
 
-      socket.on("addedBrand", (brandData) => {
-        addedBrand(brandData);
+      // socket.on("addedBrand", (brandData) => {
+      //   addedBrand(brandData);
+      // });
+
+      // socket.on("updateBrandArray", (data) => {
+      //   updateBrandArray(data);
+      // });
+
+      socket.on("updatePageCount", (data) => {
+        updatePageCount(data);
       });
     }
 
     return () => {
       if(socket) {
         socket.off('brandIsEdited');
+        // socket.off('updateBrandArray');
+        socket.off('updatePageCount');
         socket.off('updatedBrand');
-        socket.off('deletedBrand');
-        socket.off('addedBrand');
+        // socket.off('deletedBrand');
+        // socket.off('addedBrand');
       }
     }
-  }, [socketRef, brandIsEdited, updatedBrand, deletedBrand, addedBrand]);
+  }, [socketRef, brandIsEdited, updatedBrand, updatePageCount]);
 
   const getBrand = useCallback(async () => {
     setErrorFetch(false);
