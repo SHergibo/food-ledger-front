@@ -26,16 +26,16 @@ function BrandOption() {
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterEditedRoom', {householdId: userHouseholdData._id, type: "brand"});
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand`});
 
       socket.on("connect", () => {
-        socket.emit('enterEditedRoom', {householdId: userHouseholdData._id, type: "brand"});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand`});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveEditedRoom', {householdId: userHouseholdData._id, type: "brand"});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-brand`});
         socket.off('connect');
       }
     };
