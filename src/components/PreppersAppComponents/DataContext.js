@@ -96,7 +96,7 @@ export function DataProvider({children}) {
     const connectSocketIo = () => {
       socketRef.current = io(apiDomain);
       socketRef.current.on("connect", () => {
-        socketRef.current.emit('setUserRoom', {userId: localStorage.getItem('user_id')});
+        socketRef.current.emit('enterSocketRoom', {socketRoomName: localStorage.getItem('user_id')});
       });
 
       socketRef.current.on("refreshData", () => {
