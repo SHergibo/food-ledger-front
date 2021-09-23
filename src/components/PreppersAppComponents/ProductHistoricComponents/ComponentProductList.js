@@ -51,16 +51,16 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterEditedRoom', {householdId: userHouseholdData._id, type: urlTo});
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}`});
 
       socket.on("connect", () => {
-        socket.emit('enterEditedRoom', {householdId: userHouseholdData._id, type: urlTo});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}`});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveEditedRoom', {householdId: userHouseholdData._id, type: urlTo});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}`});
         socket.off('connect');
       }
     };
