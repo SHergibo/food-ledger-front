@@ -173,9 +173,12 @@ function EditBrand({ history }) {
 
     await axiosInstance.delete(deleteBrandEndPoint)
       .then((response) => {
-        if(response.status === 200){
+        if(response.status === 204){
           history.push({
             pathname: '/app/options',
+            state: {
+              brandOptions: true 
+            }
           })
         }
       });
