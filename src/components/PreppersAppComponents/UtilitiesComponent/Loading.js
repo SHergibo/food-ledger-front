@@ -45,7 +45,7 @@ function Loading({ loading, errorFetch, retryFetch }) {
           {errorFetch &&
             <div className="loader">
               <p>Une erreur est survenue !</p>
-              <button className="default-btn-action-form" onClick={retryFetch}><FontAwesomeIcon icon="undo" />Réessayer</button>
+              <button className="btn-purple" onClick={retryFetch}><FontAwesomeIcon icon="undo" className="btn-icon" />Réessayer</button>
             </div>
           }
         </div>
