@@ -55,33 +55,28 @@ function BrandOption() {
     }
   }, [brands]);
 
+  const addedBrand = useCallback((brandData) => {;
+    setBrands([brandData, ...brands ]);
+  }, [brands]);
+
   const updatedBrand = useCallback((brandData) => {
     let {arrayData, dataIndex} = findIndexData(brands, brandData._id);
     arrayData[dataIndex] = brandData;
     setBrands(arrayData);
   }, [brands]);
 
-  // const deletedBrand = useCallback((brandId) => {
-  //   let arrayData = brands.filter(brand => brand._id !== brandId);
-  //   setBrands(arrayData);
-  // }, [brands]);
-
-  // const addedBrand = useCallback((brandData) => {;
-  //   setBrands([...brands, brandData]);
-  // }, [brands]);
-
-  // const updateBrandArray = useCallback((data) => {
-  //   if(data.totalBrand >= 1){
-  //     setBrands(data.arrayData);
-  //     setPageCount(Math.ceil(data.totalBrand/ pageSize));
-  //     setHasBrand(true);
-  //     if(data.arrayData.length === 0){
-  //       setPageIndex(currPageIndex => currPageIndex - 1);
-  //     }
-  //   }else{
-  //     setHasBrand(false);
-  //   }
-  // },[]);
+  const updateBrandArray = useCallback((data) => {
+    if(data.totalBrand >= 1){
+      setBrands(data.arrayData);
+      setPageCount(Math.ceil(data.totalBrand/ pageSize));
+      setHasBrand(true);
+      if(data.arrayData.length === 0){
+        setPageIndex(currPageIndex => currPageIndex - 1);
+      }
+    }else{
+      setHasBrand(false);
+    }
+  },[]);
 
   const updatePageCount = useCallback((data) => {
       setPageCount(Math.ceil(data.totalBrand / pageSize));
@@ -93,26 +88,20 @@ function BrandOption() {
     if(socketRef.current){
       socket = socketRef.current;
       socket.on("brandIsEdited", ({brandId, isEdited}) => {
-        console.log(brandId)
-        console.log(isEdited)
         brandIsEdited(brandId, isEdited);
+      });
+      
+      socket.on("addedBrand", (brandData) => {
+        addedBrand(brandData);
       });
 
       socket.on("updatedBrand", (brandData) => {
         updatedBrand(brandData);
       });
 
-      // socket.on("deletedBrand", (brandId) => {
-      //   deletedBrand(brandId);
-      // });
-
-      // socket.on("addedBrand", (brandData) => {
-      //   addedBrand(brandData);
-      // });
-
-      // socket.on("updateBrandArray", (data) => {
-      //   updateBrandArray(data);
-      // });
+      socket.on("updateBrandArray", (data) => {
+        updateBrandArray(data);
+      });
 
       socket.on("updatePageCount", (data) => {
         updatePageCount(data);
@@ -122,14 +111,13 @@ function BrandOption() {
     return () => {
       if(socket) {
         socket.off('brandIsEdited');
-        // socket.off('updateBrandArray');
-        socket.off('updatePageCount');
+        socket.off('addedBrand');
         socket.off('updatedBrand');
-        // socket.off('deletedBrand');
-        // socket.off('addedBrand');
+        socket.off('updateBrandArray');
+        socket.off('updatePageCount');
       }
     }
-  }, [socketRef, brandIsEdited, updatedBrand, updatePageCount]);
+  }, [socketRef, brandIsEdited, addedBrand, updatedBrand, updateBrandArray, updatePageCount]);
 
   const getBrand = useCallback(async () => {
     setErrorFetch(false);
@@ -175,17 +163,8 @@ function BrandOption() {
       setPageIndex(currPageIndex => currPageIndex - 1);
     }
 
-    const removeBrandEndpoint = `${apiDomain}/api/${apiVersion}/brands/delete-pagination/${brandId}?page=${pageIndex - 1}`;
-    await axiosInstance.delete(removeBrandEndpoint)
-      .then((response)=> {
-        setBrands(response.data.arrayData);
-        setPageCount(Math.ceil(response.data.totalBrand / pageSize));
-        if(response.data.totalBrand >= 1){
-          setHasBrand(true);
-        }else{
-          setHasBrand(false);
-        }
-      });
+    const removeBrandEndpoint = `${apiDomain}/api/${apiVersion}/brands/${brandId}`;
+    await axiosInstance.delete(removeBrandEndpoint);
   };
 
   let trTable = brands.map((row, indexRow) => {
