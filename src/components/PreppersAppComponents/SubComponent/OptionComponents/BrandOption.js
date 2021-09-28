@@ -55,8 +55,10 @@ function BrandOption() {
     }
   }, [brands]);
 
-  const addedBrand = useCallback((brandData) => {;
-    setBrands([brandData, ...brands ]);
+  const addedBrand = useCallback((brandData) => {
+    let newBrandArray = [brandData, ...brands];
+    newBrandArray.pop();
+    setBrands(newBrandArray);
   }, [brands]);
 
   const updatedBrand = useCallback((brandData) => {
