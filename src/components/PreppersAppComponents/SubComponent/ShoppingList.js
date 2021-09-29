@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useUserData, useUserHouseHoldData, useWindowWidth } from './../DataContext';
+import { useUserData, useUserHouseHoldData, useWindowWidth, useSocket } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -19,13 +19,101 @@ function ShoppingList() {
   const { userData } = useUserData();
   const { userHouseholdData } = useUserHouseHoldData();
   const { windowWidth } = useWindowWidth();
+  const { socketRef } = useSocket();
   const [shoppingList, setShoppingList] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const pageSize = 12;
   const [hasProduct, setHasProduct] = useState(false);
-
   const [columns, setColumns] = useState([]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current && userHouseholdData){
+      socket = socketRef.current;
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-shoppingList-${pageIndex - 1}`});
+
+      socket.on("connect", () => {
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-shoppingList-${pageIndex - 1}`});
+      });
+    }
+
+    return () => {
+      if(socket && userHouseholdData) {
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-shoppingList-${pageIndex - 1}`});
+        socket.off('connect');
+      }
+    };
+  }, [userHouseholdData, socketRef, pageIndex]);
+
+  const findIndexData = (data, dataId) => {
+    let arrayData = [...data];
+    let dataIndex = arrayData.findIndex(data => data._id === dataId);
+    return {arrayData, dataIndex};
+  };
+
+  const addedData = useCallback((data) => {
+    let newDataArray = [data, ...shoppingList];
+    newDataArray.pop();
+    setShoppingList(newDataArray);
+  }, [shoppingList]);
+
+  const updatedData = useCallback((data) => {
+    let {arrayData, dataIndex} = findIndexData(shoppingList, data._id);
+    arrayData[dataIndex] = data;
+    setShoppingList(arrayData);
+  }, [shoppingList]);
+
+  const updateDataArray = useCallback((data) => {
+    if(data.totalShoppingList >= 1){
+      setShoppingList(data.arrayData);
+      setPageCount(Math.ceil(data.totalShoppingList/ pageSize));
+      setHasProduct(true);
+      if(data.arrayData.length === 0){
+        setPageIndex(currPageIndex => currPageIndex - 1);
+      }
+    }else{
+      setHasProduct(false);
+    }
+  },[]);
+
+  const updatePageCount = useCallback((data) => {
+      setPageCount(Math.ceil(data.totalData / pageSize));
+  },[]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+      
+      socket.on("addedData", (data) => {
+        addedData(data);
+      });
+
+      socket.on("updatedData", (data) => {
+        updatedData(data);
+      });
+
+      socket.on("updateDataArray", (data) => {
+        updateDataArray(data);
+      });
+
+      socket.on("updatePageCount", (data) => {
+        updatePageCount(data);
+      });
+    }
+
+    return () => {
+      if(socket) {
+        socket.off('addedData');
+        socket.off('updatedData');
+        socket.off('updateDataArray');
+        socket.off('updatePageCount');
+      }
+    }
+  }, [socketRef, addedData, updatedData, updateDataArray, updatePageCount]);
 
   useEffect(() => {
     setColumns(columnsShoppingListMobile);
@@ -104,7 +192,7 @@ function ShoppingList() {
   };
 
   const deleteAllShoppingList = async () => {
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/${userData.householdId}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/delete-all/${userData.householdId}`;
 
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
@@ -194,18 +282,9 @@ function ShoppingList() {
       setPageIndex(currPageIndex => currPageIndex - 1);
     }
 
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/delete-pagination/${rowId}?page=${pageIndex - 1}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/shopping-lists/${rowId}`;
 
-    await axiosInstance.delete(deleteDataEndPoint)
-      .then((response) => {
-        setShoppingList(response.data.arrayData);
-        setPageCount(Math.ceil(response.data.totalShoppingList / pageSize));
-        if(response.data.totalShoppingList >= 1){
-          setHasProduct(true);
-        }else{
-          setHasProduct(false);
-        }
-      });
+    await axiosInstance.delete(deleteDataEndPoint);
   };
 
   let trTable = shoppingList.map((row, indexRow) => {
