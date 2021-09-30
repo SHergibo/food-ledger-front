@@ -50,8 +50,8 @@ function NotificationReceivedOption({switchToHouseholdOptions, otherMemberEligib
   }, [userData, socketRef, pageIndex]);
 
   const updateNotifArray = useCallback((data) => {
+    setNotificationReceived(data.arrayData);
     if(data.totalNotifReceived >= 1){
-      setNotificationReceived(data.arrayData);
       setPageCount(Math.ceil(data.totalNotifReceived / pageSize));
       setHasNotif(true);
       if(data.arrayData.length === 0){

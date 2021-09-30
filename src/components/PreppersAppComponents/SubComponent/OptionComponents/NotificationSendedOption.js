@@ -48,8 +48,8 @@ function NotificationSendedOption() {
   }, [userData, socketRef, pageIndex]);
 
   const updateNotifArray = useCallback((data) => {
+    setNotificationSended(data.arrayData);
     if(data.totalNotifSended >= 1){
-      setNotificationSended(data.arrayData);
       setPageCount(Math.ceil(data.totalNotifSended / pageSize));
       setHasNotif(true);
       if(data.arrayData.length === 0){
