@@ -5,6 +5,7 @@ import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { useUserHouseHoldData, useSocket, useUserData } from '../../DataContext';
 import Table from './../../UtilitiesComponent/Table';
 import { columnsBrandOption } from "./../../../../utils/localData";
+import { pageSize } from "./../../../../utils/globalVariable";
 import Loading from './../../UtilitiesComponent/Loading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -19,7 +20,6 @@ function BrandOption() {
   const { userHouseholdData } = useUserHouseHoldData();
   const { userData } = useUserData();
   const { socketRef } = useSocket();
-  const pageSize = 12;
 
   useEffect(() => {
     let socket = null;
@@ -57,7 +57,11 @@ function BrandOption() {
 
   const addedBrand = useCallback((brandData) => {
     let newBrandArray = [brandData, ...brands];
-    newBrandArray.pop();
+    if(newBrandArray.length > pageSize) newBrandArray.pop();
+    if(newBrandArray.length === 1){
+      setHasBrand(true);
+      setPageCount(1);
+    } 
     setBrands(newBrandArray);
   }, [brands]);
 
@@ -68,8 +72,8 @@ function BrandOption() {
   }, [brands]);
 
   const updateBrandArray = useCallback((data) => {
+    setBrands(data.arrayData);
     if(data.totalBrand >= 1){
-      setBrands(data.arrayData);
       setPageCount(Math.ceil(data.totalBrand/ pageSize));
       setHasBrand(true);
       if(data.arrayData.length === 0){
