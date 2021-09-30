@@ -6,7 +6,8 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import exportFromJSON from 'export-from-json';
 import { transformDate } from '../../../helpers/transformDate.helper';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
-import {columnsShoppingListMobile, columnsShoppingListTablet, columnsShoppingListFullScreen} from "./../../../utils/localData";
+import { columnsShoppingListMobile, columnsShoppingListTablet, columnsShoppingListFullScreen } from "./../../../utils/localData";
+import { pageSize } from "./../../../utils/globalVariable";
 import Table from './../UtilitiesComponent/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -23,7 +24,6 @@ function ShoppingList() {
   const [shoppingList, setShoppingList] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 12;
   const [hasProduct, setHasProduct] = useState(false);
   const [columns, setColumns] = useState([]);
 
@@ -55,8 +55,12 @@ function ShoppingList() {
 
   const addedData = useCallback((data) => {
     let newDataArray = [data, ...shoppingList];
-    newDataArray.pop();
+    if(newDataArray.length > pageSize) newDataArray.pop();
     setShoppingList(newDataArray);
+    if(newDataArray.length === 1){
+      setHasProduct(true);
+      setPageCount(1);
+    } 
   }, [shoppingList]);
 
   const updatedData = useCallback((data) => {
@@ -66,8 +70,8 @@ function ShoppingList() {
   }, [shoppingList]);
 
   const updateDataArray = useCallback((data) => {
+    setShoppingList(data.arrayData);
     if(data.totalShoppingList >= 1){
-      setShoppingList(data.arrayData);
       setPageCount(Math.ceil(data.totalShoppingList/ pageSize));
       setHasProduct(true);
       if(data.arrayData.length === 0){
@@ -351,7 +355,7 @@ function ShoppingList() {
 
   return (
     <>
-      {(windowWidth < 992 || (windowWidth >= 992 && shoppingList.length >= 1)) &&
+      {(windowWidth < 992 || (windowWidth >= 992 && hasProduct)) &&
         <div className="sub-header only-option-interaction">
           <div className="sub-option">
             {shoppingList.length > 1 &&
@@ -360,7 +364,7 @@ function ShoppingList() {
             {shoppingList.length <= 1 &&
               <h1>Liste de course</h1>
             }
-            {shoppingList.length >= 1 &&
+            {hasProduct &&
               <>
                 {windowWidth >= 992 &&
                   <div className="multiple-button-option">
