@@ -55,7 +55,7 @@ function BrandOption() {
     }
   }, [brands]);
 
-  const addedBrand = useCallback((brandData) => {
+  const addedData = useCallback((brandData) => {
     let newBrandArray = [brandData, ...brands];
     if(newBrandArray.length > pageSize) newBrandArray.pop();
     if(newBrandArray.length === 1){
@@ -65,16 +65,16 @@ function BrandOption() {
     setBrands(newBrandArray);
   }, [brands]);
 
-  const updatedBrand = useCallback((brandData) => {
+  const updatedData = useCallback((brandData) => {
     let {arrayData, dataIndex} = findIndexData(brands, brandData._id);
     arrayData[dataIndex] = brandData;
     setBrands(arrayData);
   }, [brands]);
 
-  const updateBrandArray = useCallback((data) => {
+  const updateDataArray = useCallback((data) => {
     setBrands(data.arrayData);
-    if(data.totalBrand >= 1){
-      setPageCount(Math.ceil(data.totalBrand/ pageSize));
+    if(data.totalData >= 1){
+      setPageCount(Math.ceil(data.totalData/ pageSize));
       setHasBrand(true);
       if(data.arrayData.length === 0){
         setPageIndex(currPageIndex => currPageIndex - 1);
@@ -85,7 +85,7 @@ function BrandOption() {
   },[]);
 
   const updatePageCount = useCallback((data) => {
-      setPageCount(Math.ceil(data.totalBrand / pageSize));
+      setPageCount(Math.ceil(data.totalData / pageSize));
   },[]);
 
   useEffect(() => {
@@ -97,16 +97,16 @@ function BrandOption() {
         brandIsEdited(brandId, isEdited);
       });
       
-      socket.on("addedBrand", (brandData) => {
-        addedBrand(brandData);
+      socket.on("addedData", (brandData) => {
+        addedData(brandData);
       });
 
-      socket.on("updatedBrand", (brandData) => {
-        updatedBrand(brandData);
+      socket.on("updatedData", (brandData) => {
+        updatedData(brandData);
       });
 
-      socket.on("updateBrandArray", (data) => {
-        updateBrandArray(data);
+      socket.on("updateDataArray", (data) => {
+        updateDataArray(data);
       });
 
       socket.on("updatePageCount", (data) => {
@@ -117,13 +117,13 @@ function BrandOption() {
     return () => {
       if(socket) {
         socket.off('brandIsEdited');
-        socket.off('addedBrand');
-        socket.off('updatedBrand');
-        socket.off('updateBrandArray');
+        socket.off('addedData');
+        socket.off('updatedData');
+        socket.off('updateDataArray');
         socket.off('updatePageCount');
       }
     }
-  }, [socketRef, brandIsEdited, addedBrand, updatedBrand, updateBrandArray, updatePageCount]);
+  }, [socketRef, brandIsEdited, addedData, updatedData, updateDataArray, updatePageCount]);
 
   const getBrand = useCallback(async () => {
     setErrorFetch(false);
@@ -132,9 +132,9 @@ function BrandOption() {
     await axiosInstance.get(getBrandEndPoint)
       .then(async (response) => {
         if(isMounted.current){
-          if(response.data.totalBrand >=1){
+          if(response.data.totalData >=1){
             setBrands(response.data.arrayData);
-            setPageCount(Math.ceil(response.data.totalBrand / pageSize));
+            setPageCount(Math.ceil(response.data.totalData / pageSize));
             setHasBrand(true);
           }else{
             setHasBrand(false);
