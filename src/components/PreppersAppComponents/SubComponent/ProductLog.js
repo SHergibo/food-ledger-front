@@ -6,6 +6,7 @@ import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import TitleButtonInteraction from './../UtilitiesComponent/TitleButtonInteraction';
 import { transformDate } from '../../../helpers/transformDate.helper';
 import {columnsLogMobile, columnsLogTablet, columnsLogFullScreen} from "./../../../utils/localData";
+import { pageSize } from "./../../../utils/globalVariable";
 import Table from './../UtilitiesComponent/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -20,7 +21,6 @@ function ProductLog({ history }) {
   const [productLog, setProductLog] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 12;
   const [hasProduct, setHasProduct] = useState(false);
 
   useEffect(() => {
