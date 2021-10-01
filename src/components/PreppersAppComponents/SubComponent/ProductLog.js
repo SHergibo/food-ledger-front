@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useUserData, useWindowWidth } from './../DataContext';
+import { useUserData, useWindowWidth, useSocket,useUserHouseHoldData } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -18,10 +18,13 @@ function ProductLog({ history }) {
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const { userData } = useUserData();
   const { windowWidth } = useWindowWidth();
+  const { socketRef } = useSocket();
+  const { userHouseholdData } = useUserHouseHoldData();
   const [productLog, setProductLog] = useState([]);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(0);
   const [hasProduct, setHasProduct] = useState(false);
+  const [columns, setColumns] = useState([]); 
 
   useEffect(() => {
     if(userData && userData.role !== "admin"){
@@ -31,7 +34,97 @@ function ProductLog({ history }) {
     }
   }, [userData, history]);
 
-  const [columns, setColumns] = useState([]);
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current && userHouseholdData){
+      socket = socketRef.current;
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-productLog-${pageIndex - 1}`});
+
+      socket.on("connect", () => {
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-productLog-${pageIndex - 1}`});
+      });
+    }
+
+    return () => {
+      if(socket && userHouseholdData) {
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-productLog-${pageIndex - 1}`});
+        socket.off('connect');
+      }
+    };
+  }, [userHouseholdData, socketRef, pageIndex]);
+
+  const findIndexData = (data, dataId) => {
+    let arrayData = [...data];
+    let dataIndex = arrayData.findIndex(data => data._id === dataId);
+    return {arrayData, dataIndex};
+  };
+
+  const addedData = useCallback((data) => {
+    let newDataArray = [data, ...productLog];
+    if(newDataArray.length > pageSize) newDataArray.pop();
+    setProductLog(newDataArray);
+    if(newDataArray.length === 1){
+      setHasProduct(true);
+      setPageCount(1);
+    } 
+  }, [productLog]);
+
+  const updatedData = useCallback((data) => {
+    let {arrayData, dataIndex} = findIndexData(productLog, data._id);
+    arrayData[dataIndex] = data;
+    setProductLog(arrayData);
+  }, [productLog]);
+
+  const updateDataArray = useCallback((data) => {
+    setProductLog(data.arrayData);
+    if(data.totalData >= 1){
+      setPageCount(Math.ceil(data.totalData / pageSize));
+      setHasProduct(true);
+      if(data.arrayData.length === 0){
+        setPageIndex(currPageIndex => currPageIndex - 1);
+      }
+    }else{
+      setHasProduct(false);
+    }
+  },[]);
+
+  const updatePageCount = useCallback((data) => {
+      setPageCount(Math.ceil(data.totalData / pageSize));
+  },[]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+      
+      socket.on("addedData", (data) => {
+        addedData(data);
+      });
+
+      socket.on("updatedData", (data) => {
+        updatedData(data);
+      });
+
+      socket.on("updateDataArray", (data) => {
+        updateDataArray(data);
+      });
+
+      socket.on("updatePageCount", (data) => {
+        updatePageCount(data);
+      });
+    }
+
+    return () => {
+      if(socket) {
+        socket.off('addedData');
+        socket.off('updatedData');
+        socket.off('updateDataArray');
+        socket.off('updatePageCount');
+      }
+    }
+  }, [socketRef, addedData, updatedData, updateDataArray, updatePageCount]);
 
   useEffect(() => {
     setColumns(columnsLogMobile);
@@ -59,9 +152,9 @@ function ProductLog({ history }) {
       await axiosInstance.get(getProductLogEndPoint)
         .then((response) => {
           if(isMounted.current){
-            if(response.data.totalProductLog >= 1){
+            if(response.data.totalData >= 1){
               setProductLog(response.data.arrayData);
-              setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
+              setPageCount(Math.ceil(response.data.totalData / pageSize));
               setHasProduct(true);
             }else{
               setHasProduct(false);
@@ -87,7 +180,7 @@ function ProductLog({ history }) {
   }, [userData, loadProductLog]);
 
   const deleteAllProductLog = async () => {
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/${userData.householdId}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/delete-all/${userData.householdId}`;
 
     await axiosInstance.delete(deleteDataEndPoint)
       .then(() => {
@@ -122,18 +215,9 @@ function ProductLog({ history }) {
       setPageIndex(currPageIndex => currPageIndex - 1);
     }
 
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/delete-pagination/${rowId}?page=${pageIndex - 1}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/product-logs/${rowId}`;
 
-    await axiosInstance.delete(deleteDataEndPoint)
-      .then((response) => {
-        setProductLog(response.data.arrayData);
-        setPageCount(Math.ceil(response.data.totalProductLog / pageSize));
-        if(response.data.totalProductLog >= 1){
-          setHasProduct(true);
-        }else{
-          setHasProduct(false);
-        }
-      });
+    await axiosInstance.delete(deleteDataEndPoint);
   };
 
   let trTable = productLog.map((row, indexRow) => {
