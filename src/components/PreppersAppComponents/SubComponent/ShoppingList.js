@@ -71,8 +71,8 @@ function ShoppingList() {
 
   const updateDataArray = useCallback((data) => {
     setShoppingList(data.arrayData);
-    if(data.totalShoppingList >= 1){
-      setPageCount(Math.ceil(data.totalShoppingList/ pageSize));
+    if(data.totalData >= 1){
+      setPageCount(Math.ceil(data.totalData/ pageSize));
       setHasProduct(true);
       if(data.arrayData.length === 0){
         setPageIndex(currPageIndex => currPageIndex - 1);
@@ -145,9 +145,9 @@ function ShoppingList() {
       await axiosInstance.get(getShoppingListEndPoint)
         .then((response) => {
           if(isMounted.current){
-            if(response.data.totalShoppingList >= 1){
+            if(response.data.totalData >= 1){
               setShoppingList(response.data.arrayData);
-              setPageCount(Math.ceil(response.data.totalShoppingList / pageSize));
+              setPageCount(Math.ceil(response.data.totalData / pageSize));
               setHasProduct(true);
             }else{
               setHasProduct(false);
