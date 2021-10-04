@@ -17,6 +17,7 @@ import { parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import slugUrl from './../../../utils/slugify';
+import { pageSize } from "./../../../utils/globalVariable";
 import PropTypes from 'prop-types';
 registerLocale("fr", fr);
 
@@ -28,7 +29,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const { windowWidth } = useWindowWidth();
   const location = useLocation();
   const [openTitleMessage, setOpenTitleMessage] = useState(false);
-  const [data, setData] = useState([]);
+  const [product, setProduct] = useState([]);
   const isMounted = useRef(true);
   const [hasProduct, setHasProduct] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   let btnSortRef = useRef([]);
   const [pageIndex, setPageIndex] = useState(parseInt(queryParsed.page) || 1);
   const [pageCount, setPageCount] = useState(0);
-  const pageSize = 12;
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
 
@@ -51,20 +51,20 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}`});
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}-${pageIndex - 1}`});
 
       socket.on("connect", () => {
-        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}`});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}-${pageIndex - 1}`});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}`});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}-${pageIndex - 1}`});
         socket.off('connect');
       }
     };
-  }, [userHouseholdData, urlTo, socketRef]);
+  }, [userHouseholdData, urlTo, socketRef, pageIndex]);
 
   const findIndexData = (data, productId) => {
     let arrayData = [...data];
@@ -73,28 +73,61 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   };
 
   const productIsEdited = useCallback((productId, isEdited) => {
-    let {arrayData, dataIndex} = findIndexData(data, productId);
+    let {arrayData, dataIndex} = findIndexData(product, productId);
     if(dataIndex !== -1){
       arrayData[dataIndex].isBeingEdited = isEdited;
-      setData(arrayData);
+      setProduct(arrayData);
     }
-  }, [data]);
+  }, [product]);
 
-  const updatedProduct = useCallback((productData) => {
-    let {arrayData, dataIndex} = findIndexData(data, productData._id);
-    arrayData[dataIndex] = productData;
-    setData(arrayData);
-  }, [data]);
+  // const updatedProduct = useCallback((productData) => {
+  //   let {arrayData, dataIndex} = findIndexData(data, productData._id);
+  //   arrayData[dataIndex] = productData;
+  //   setProduct(arrayData);
+  // }, [data]);
 
-  const deletedProduct = useCallback((productId) => {
-    let arrayData = data.filter(data => data._id !== productId);
-    setData(arrayData);
-  }, [data]);
+  // const deletedProduct = useCallback((productId) => {
+  //   let arrayData = data.filter(data => data._id !== productId);
+  //   setProduct(arrayData);
+  // }, [data]);
 
-  const addedProduct = useCallback((productData) => {
-    if(data.length >= pageSize || Object.keys(searchObject).length > 0 || pageIndex !== pageCount) return;
-    setData([...data, productData]);
-  }, [data, pageSize, searchObject, pageIndex, pageCount]);
+  // const addedProduct = useCallback((productData) => {
+  //   if(data.length >= pageSize || Object.keys(searchObject).length > 0 || pageIndex !== pageCount) return;
+  //   setProduct([...data, productData]);
+  // }, [data, searchObject, pageIndex, pageCount]);
+
+  const addedData = useCallback((data) => {
+    let newDataArray = [data, ...product];
+    if(newDataArray.length > pageSize) newDataArray.pop();
+    setProduct(newDataArray);
+    if(newDataArray.length === 1){
+      setHasProduct(true);
+      setPageCount(1);
+    } 
+  }, [product]);
+
+  const updatedData = useCallback((data) => {
+    let {arrayData, dataIndex} = findIndexData(product, data._id);
+    arrayData[dataIndex] = data;
+    setProduct(arrayData);
+  }, [product]);
+
+  const updateDataArray = useCallback((data) => {
+    setProduct(data.arrayData);
+    if(data.totalData >= 1){
+      setPageCount(Math.ceil(data.totalData / pageSize));
+      setHasProduct(true);
+      if(data.arrayData.length === 0){
+        setPageIndex(currPageIndex => currPageIndex - 1);
+      }
+    }else{
+      setHasProduct(false);
+    }
+  },[]);
+
+  const updatePageCount = useCallback((data) => {
+      setPageCount(Math.ceil(data.totalData / pageSize));
+  },[]);
 
   useEffect(() => {
     let socket = null;
@@ -104,29 +137,34 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       socket.on("productIsEdited", ({productId, isEdited}) => {
         productIsEdited(productId, isEdited);
       });
-
-      socket.on("updatedProduct", (productData) => {
-        updatedProduct(productData);
+      
+      socket.on("addedData", (productData) => {
+        addedData(productData);
       });
 
-      socket.on("deletedProduct", (productId) => {
-        deletedProduct(productId);
+      socket.on("updatedData", (productData) => {
+        updatedData(productData);
       });
 
-      socket.on("addedProduct", (productData) => {
-        addedProduct(productData);
+      socket.on("updateDataArray", (productId) => {
+        updateDataArray(productId);
+      });
+
+      socket.on("updatePageCount", (productId) => {
+        updatePageCount(productId);
       });
     }
 
     return () => {
       if(socket) {
         socket.off('productIsEdited');
-        socket.off('updatedProduct');
-        socket.off('deletedProduct');
-        socket.off('addedProduct');
+        socket.off('addedData');
+        socket.off('updatedData');
+        socket.off('updateDataArray');
+        socket.off('updatePageCount');
       }
     }
-  }, [socketRef, productIsEdited, updatedProduct, deletedProduct, addedProduct]);
+  }, [socketRef, productIsEdited, addedData, updatedData, updateDataArray, updatePageCount]);
 
   useEffect(() => {
     if(userOptionData){
@@ -322,7 +360,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       await axiosInstance.get(endPoint)
         .then((response) => {
           if(isMounted.current){
-            setData(response.data.arrayData);
+            setProduct(response.data.arrayData);
             setPageCount(Math.ceil(response.data.totalProduct / pageSize));
             if(response.data.totalProduct >= 1){
               setHasProduct(true);
@@ -585,25 +623,15 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   const deleteData = async (rowId) => {
 
-    if(data.length === 1 && pageIndex > 1){
+    if(product.length === 1 && pageIndex > 1){
       setPageIndex(currPageIndex => currPageIndex - 1);
       setUrlPageQueryParam(pageIndex - 1);
     }
-    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/delete-pagination/${rowId}?page=${pageIndex - 1}`;
+    let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/${rowId}`;
 
     const endPoint = finalEndPoint(deleteDataEndPoint);
 
-    await axiosInstance.delete(endPoint)
-      .then((response) => {
-        setData(response.data.arrayData);
-        setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-        if(response.data.totalProduct >= 1){
-          setHasProduct(true);
-        }else{
-          setHasProduct(false);
-          setShowFilter(false);
-        }
-      });
+    await axiosInstance.delete(endPoint);
   };
 
   const udpateUserOptionDate = async (data) => {
@@ -655,7 +683,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
   </form>;
 
-  let trTable = data.map((row) => {
+  let trTable = product.map((row) => {
     return (
       <tr key={`${row._id}`}>
         {columns.map((column, index) => {
