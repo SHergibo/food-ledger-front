@@ -225,7 +225,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
 
     await axiosInstance.delete(deleteDataEndPoint)
       .then((response) => {
-        if(response.status === 200){
+        if(response.status === 204){
           if(requestUrl === "historics"){
             history.push({
               pathname: '/app/liste-historique',
