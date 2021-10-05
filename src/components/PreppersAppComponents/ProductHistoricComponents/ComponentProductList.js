@@ -361,8 +361,8 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
         .then((response) => {
           if(isMounted.current){
             setProduct(response.data.arrayData);
-            setPageCount(Math.ceil(response.data.totalProduct / pageSize));
-            if(response.data.totalProduct >= 1){
+            setPageCount(Math.ceil(response.data.totalData / pageSize));
+            if(response.data.totalData >= 1){
               setHasProduct(true);
             }else{
               setHasProduct(false);
