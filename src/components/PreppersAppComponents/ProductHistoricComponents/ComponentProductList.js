@@ -46,25 +46,59 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [hideColorCodeDate, setHideColorCodeDate] = useState("");
   const [hideColorCodeStock, setHideColorCodeStock] = useState("");
 
+  const finalEndPoint = useCallback((firstQueryParam) => {
+    let endPoint = "";
+    if (Object.keys(sortObject).length > 0) {
+      let urlQuery = "";
+      for (const key in sortObject) {
+        if (sortObject[key] !== "") {
+          urlQuery += `&${key}=${sortObject[key]}`
+        }
+      }
+      endPoint += urlQuery;
+    }
+
+    if (Object.keys(searchObject).length > 0) {
+      let urlQuery = "";
+      for (const key in searchObject) {
+        if (searchObject[key] !== "" && key !== "name"  && key !== "location") {
+          urlQuery += `&${key}=${searchObject[key]}`;
+        }else if(key === "name" || key === "location"){
+          urlQuery += `&${key}=${slugUrl(searchObject[key])}`;
+        }
+      }
+      endPoint += urlQuery;
+    }
+    if(firstQueryParam){
+      endPoint = endPoint.replace('&', '?');
+    }
+    return endPoint;
+  }, [sortObject, searchObject]);
+
   useEffect(() => {
     let socket = null;
+    let searchParams;
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}-${pageIndex - 1}`});
+      if(Object.keys(searchObject).length > 0 || Object.keys(sortObject).length > 0){
+        searchParams = `/${finalEndPoint()}`;
+      }
+
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}/${urlTo}/${pageIndex - 1}${searchParams ? searchParams : ""}`});
 
       socket.on("connect", () => {
-        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}-${pageIndex - 1}`});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}/${urlTo}/${pageIndex - 1}${searchParams ? searchParams : ""}`});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-${urlTo}-${pageIndex - 1}`});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}/${urlTo}/${pageIndex - 1}${searchParams ? searchParams : ""}`});
         socket.off('connect');
       }
     };
-  }, [userHouseholdData, urlTo, socketRef, pageIndex]);
+  }, [userHouseholdData, urlTo, socketRef, pageIndex, searchObject, sortObject, finalEndPoint]);
 
   const findIndexData = (data, productId) => {
     let arrayData = [...data];
@@ -79,22 +113,6 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
       setProduct(arrayData);
     }
   }, [product]);
-
-  // const updatedProduct = useCallback((productData) => {
-  //   let {arrayData, dataIndex} = findIndexData(data, productData._id);
-  //   arrayData[dataIndex] = productData;
-  //   setProduct(arrayData);
-  // }, [data]);
-
-  // const deletedProduct = useCallback((productId) => {
-  //   let arrayData = data.filter(data => data._id !== productId);
-  //   setProduct(arrayData);
-  // }, [data]);
-
-  // const addedProduct = useCallback((productData) => {
-  //   if(data.length >= pageSize || Object.keys(searchObject).length > 0 || pageIndex !== pageCount) return;
-  //   setProduct([...data, productData]);
-  // }, [data, searchObject, pageIndex, pageCount]);
 
   const addedData = useCallback((data) => {
     let newDataArray = [data, ...product];
@@ -325,39 +343,14 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     mode: "onChange"
   });
 
-  const finalEndPoint = useCallback((endPoint) => {
-    if (Object.keys(sortObject).length > 0) {
-      let urlQuery = "";
-      for (const key in sortObject) {
-        if (sortObject[key] !== "") {
-          urlQuery += `&${key}=${sortObject[key]}`
-        }
-      }
-      endPoint += urlQuery;
-    }
-
-    if (Object.keys(searchObject).length > 0) {
-      let urlQuery = "";
-      for (const key in searchObject) {
-        if (searchObject[key] !== "" && key !== "name"  && key !== "location") {
-          urlQuery += `&${key}=${searchObject[key]}`;
-        }else if(key === "name" || key === "location"){
-          urlQuery += `&${key}=${slugUrl(searchObject[key])}`;
-        }
-      }
-      endPoint += urlQuery;
-    }
-    return endPoint;
-  }, [sortObject, searchObject]);
-
   const getDataList = useCallback(async () => {
     setErrorFetch(false);
 
     if(pageIndex >= 1 && userData){
       setLoading(true);
       let getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/pagination/${userData.householdId}?page=${pageIndex - 1}`;
-      const endPoint = finalEndPoint(getDataEndPoint);
-      await axiosInstance.get(endPoint)
+      const endPoint = finalEndPoint();
+      await axiosInstance.get(`${getDataEndPoint}${endPoint}`)
         .then((response) => {
           if(isMounted.current){
             setProduct(response.data.arrayData);
@@ -629,9 +622,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
     }
     let deleteDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestTo}/${rowId}`;
 
-    const endPoint = finalEndPoint(deleteDataEndPoint);
+    const endPoint = finalEndPoint(true);
 
-    await axiosInstance.delete(endPoint);
+    await axiosInstance.delete(`${deleteDataEndPoint}${endPoint}`);
   };
 
   const udpateUserOptionDate = async (data) => {
