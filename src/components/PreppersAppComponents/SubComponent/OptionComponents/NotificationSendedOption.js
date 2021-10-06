@@ -32,16 +32,16 @@ function NotificationSendedOption() {
 
     if(socketRef.current && userData){
       socket = socketRef.current;
-      socket.emit('enterSocketRoom', {socketRoomName: `${userData._id}-notificationSended-${pageIndex - 1}`});
+      socket.emit('enterSocketRoom', {socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`});
 
       socket.on("connect", () => {
-        socket.emit('enterSocketRoom', {socketRoomName: `${userData._id}-notificationSended-${pageIndex - 1}`});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`});
       });
     }
 
     return () => {
       if(socket && userData) {
-        socket.emit('leaveSocketRoom', {socketRoomName: `${userData._id}-notificationSended-${pageIndex - 1}`});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`});
         socket.off('connect');
       }
     };
