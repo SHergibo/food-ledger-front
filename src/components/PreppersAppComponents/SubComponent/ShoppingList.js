@@ -32,16 +32,16 @@ function ShoppingList() {
 
     if(socketRef.current && userHouseholdData){
       socket = socketRef.current;
-      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-shoppingList-${pageIndex - 1}`});
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}/shoppingList/${pageIndex - 1}`});
 
       socket.on("connect", () => {
-        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}-shoppingList-${pageIndex - 1}`});
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}/shoppingList/${pageIndex - 1}`});
       });
     }
 
     return () => {
       if(socket && userHouseholdData) {
-        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}-shoppingList-${pageIndex - 1}`});
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}/shoppingList/${pageIndex - 1}`});
         socket.off('connect');
       }
     };
