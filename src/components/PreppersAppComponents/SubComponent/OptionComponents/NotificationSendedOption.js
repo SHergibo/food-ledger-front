@@ -4,6 +4,7 @@ import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import Table from './../../UtilitiesComponent/Table';
 import { columnsNotifSended } from "./../../../../utils/localData";
+import { pageSize } from "./../../../../utils/globalVariable";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Loading from './../../UtilitiesComponent/Loading';
 
@@ -18,7 +19,6 @@ function NotificationSendedOption() {
   const [pageCount, setPageCount] = useState(0);
   const [hasNotif, setHasNotif] = useState(false);
   const isMounted = useRef(true);
-  const pageSize = 12;
 
   useEffect(() => {
     setNotificationType("sended");
