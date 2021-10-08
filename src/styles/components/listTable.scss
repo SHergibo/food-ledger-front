@@ -69,7 +69,7 @@
   }
 }
 
-.no-data, .no-data-option{
+.no-data, .no-data-search, .no-data-option{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -90,6 +90,10 @@
 
 .no-data{
   min-height: calc(100vh - 9.4375rem);
+}
+
+.no-data-search{
+  min-height: calc(100vh - 18.875rem);
 }
 
 .no-data-option{
