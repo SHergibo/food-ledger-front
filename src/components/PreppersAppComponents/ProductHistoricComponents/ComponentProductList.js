@@ -804,7 +804,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   return (
     <>
-      {(windowWidth < 992 || (windowWidth >= 992 && hasProduct)) &&
+      {(windowWidth < 992 || (windowWidth >= 992 && (hasProduct || Object.keys(searchObject).length > 0))) &&
         <div className="sub-header">
           <div className="sub-interaction">
             {(hasProduct || Object.keys(searchObject).length > 0) && 
@@ -1003,7 +1003,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
           retryFetch={getDataList}
         />
         {!hasProduct &&
-          <div className="no-data">
+          <div className={(hasProduct || Object.keys(searchObject).length > 0) ? "no-data-search" : "no-data"}>
             <p>Pas de produit !</p>
             {Object.keys(searchObject).length === 0 &&
               <>
