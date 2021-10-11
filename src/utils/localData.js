@@ -333,6 +333,25 @@ export const columnsBrandOption = [
   }
 ];
 
+export const columnsHouseholdOption = [
+  {
+    Header: 'Nom',
+    id: 'fullname'
+  },
+  {
+    Header: 'Rôle',
+    id: 'role'
+  },
+  {
+    Header: "Droits administrateurs",
+    id: 'rights'
+  },
+  {
+    Header: "Retirer le membre",
+    id: 'action'
+  }
+];
+
 export const columnsNotifReceived = [
   {
     Header: 'Message',
