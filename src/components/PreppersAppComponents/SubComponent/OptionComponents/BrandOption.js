@@ -175,7 +175,7 @@ function BrandOption() {
 
   let trTable = brands.map((row, indexRow) => {
     return (
-      <tr key={`${row}-${indexRow}`}>
+      <tr key={`${row.brandName.label}-${indexRow}`}>
         {columnsBrandOption.map((column, index) => {
           if (column.id === 'action') {
             return (
