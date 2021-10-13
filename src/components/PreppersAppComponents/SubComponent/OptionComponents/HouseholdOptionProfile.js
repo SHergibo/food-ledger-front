@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SwitchFamillyForm from './../OptionComponents/SwitchHouseholdForm';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 import Table from './../../UtilitiesComponent/Table';
-import { columnsHouseholdOption } from "./../../../../utils/localData";
+import { columnsHouseholdOptionAdmin, columnsHouseholdOptionUser } from "./../../../../utils/localData";
 import PropTypes from 'prop-types';
 
 function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
@@ -241,13 +241,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const kickUser = useCallback(async (userId) => {
     const kicUserEndPoint = `${apiDomain}/api/${apiVersion}/households/kick-user/${userHouseholdData._id}`;
 
-    await axiosInstance.patch(kicUserEndPoint, {userId : userId})
-      .then((response) => {
-        if(response.status === 200){
-          setUserHouseholdData(response.data);
-        }
-      });
-  }, [setUserHouseholdData, userHouseholdData]);
+    await axiosInstance.patch(kicUserEndPoint, {userId : userId});
+  }, [userHouseholdData]);
 
   const delegateAdminRights = async (data) => {
     const switchAdminRightsData = {
@@ -441,6 +436,11 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
         {userHouseholdData && userData &&
           <>
             {userData.role === "admin" ?
+            <>
+              <div className="familly-name">
+                <h2>Nom de la famille : {userHouseholdData.householdName}</h2>
+                <p>Code famille : {userHouseholdData.householdCode}</p>
+              </div>
               <form className="form-inline" onSubmit={handleSubmitFormFamillyName(updateFamillyName)}>
                 <div className="input-group">
                   <input
@@ -465,15 +465,58 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                     />
                   }
                 </div>
-              </form> :
-              <p className="familly-name">Nom de la famille : {userHouseholdData.householdName}</p>
+              </form>
+            </> :
+              <div className="familly-name">
+                <h2>Nom de la famille : {userHouseholdData.householdName}</h2>
+                <p>Code famille : {userHouseholdData.householdCode}</p>
+              </div>
+            }
+
+            <SwitchFamillyForm 
+              requestDelegateAdmin={requestDelegateAdmin}
+            /> 
+
+            {userData.role === "admin" &&
+              <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
+                <div className="input-group">
+                  <input
+                    name="addUserCode"
+                    type="text"
+                    id="addUserCode"
+                    className={`form-input ${errorsFormAddUser.addUserCode  ? "error-input" : ""}`}
+                    onChange={clearErrorMessage}
+                    {...registerFormAddUser("addUserCode", { required: true })}
+                  />
+                  <label htmlFor="addUserCode" className="form-label">Ajouter un membre *</label>
+                  <div className="error-message-input">
+                    {errorsFormAddUser.addUserCode && <span >Ce champ est requis</span>}
+                  </div>
+                </div>
+                <div className="btn-action-container">
+                  <button className="btn-purple" type="submit"><FontAwesomeIcon className="btn-icon" icon="plus" /> Ajouter</button>
+                  {successFormAddUser && !errorMessageAddUser &&
+                    <InformationIcon 
+                      className="success-icon"
+                      icon={<FontAwesomeIcon icon="check" />}
+                    />
+                  }
+                  {errorMessageAddUser &&
+                    <InformationIcon 
+                      className="error-icon"
+                      icon={<FontAwesomeIcon icon="times" />}
+                      message={messageErrorAddUser}
+                    />
+                  }
+                </div>
+              </form>
             }
             
             {userData.role === 'user' && !requestDelegateAdmin && 
               <>
                 <h2>Membres de la famille</h2>
                 <Table 
-                  columns={columnsHouseholdOption}
+                  columns={columnsHouseholdOptionUser}
                   customTableClass={{customThead: "centered-thead"}}
                   trTable={trTable}
                   pagination={true}
@@ -483,104 +526,69 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             }
 
             {userData.role === "admin" &&
-              <>
-                <form className="table-familly-member" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
-                  <h2>Membres de la famille</h2>
-                  <Table 
-                    columns={columnsHouseholdOption}
-                    customTableClass={{customThead: "centered-thead"}}
-                    trTable={trTable}
-                    pagination={true}
-                    paginationInfo={{pageIndex, setPageIndex, pageCount}}
-                  />
-                  {showSelectHousehold &&
-                    <div className="input-group">
-                      <ReactSelect
-                        format="select"
-                        label="Choisir une famille *"
-                        Controller={Controller}
-                        name="notifId"
-                        inputId="householdName"
-                        isClearable={true}
-                        arrayOptions={arrayOptionSelectHousehold}
-                        control={control}
-                        defaultValue={""}
-                      />
-                      {errorsFormDelegateWhenSwitching.notifId && <span className="error-message-form">Ce champ est requis</span>}
-                    </div>
-                  }
-                  <div className="btn-action-container">
-                    <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="btn-disabled" type="submit">
-                      {delegateAdminAndSwitch ? 
-                        dontWantToDelegate ? "Ne pas déléguer et changer de famille" : "Déléguer droits administrateurs et changer de famille" :
-                      "Déléguer droits administrateurs"}
-                    </button>
-                    {successFormDelegate && 
-                      <InformationIcon 
-                        className="success-icon"
-                        icon={<FontAwesomeIcon icon="check" />}
-                      />
-                    }
-                    {warningMessageDelegate && successFormDelegate !== true &&
-                      <InformationIcon 
-                        className="warning-icon"
-                        icon={<FontAwesomeIcon icon="exclamation" />}
-                        message={delegateAdminAndSwitch ? 
-                          dontWantToDelegate ? "Vous êtes sur le point de changer de famille sans déléguer vos droits administrateurs à une autre personne, votre famille sera supprimée, cette action est irréversible ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
-                          "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
-                        }
-                      />
-                    }
-                    {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
-                      <InformationIcon 
-                        className="error-icon"
-                        icon={<FontAwesomeIcon icon="times" />}
-                        message={messageErrorDelegate}
-                      />
-                    }
-                  </div>
-                </form>
-
-                <form className="form-inline" onSubmit={handleSubmitFormAddUser(addUserToFamilly)}>
+              <form className="table-familly-member" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
+                <h2>Membres de la famille</h2>
+                <Table 
+                  columns={householdMembers.length > 1 ? columnsHouseholdOptionAdmin : columnsHouseholdOptionUser}
+                  customTableClass={{customThead: "centered-thead"}}
+                  trTable={trTable}
+                  pagination={true}
+                  paginationInfo={{pageIndex, setPageIndex, pageCount}}
+                />
+                {showSelectHousehold &&
                   <div className="input-group">
-                    <input
-                      name="addUserCode"
-                      type="text"
-                      id="addUserCode"
-                      className={`form-input ${errorsFormAddUser.addUserCode  ? "error-input" : ""}`}
-                      onChange={clearErrorMessage}
-                      {...registerFormAddUser("addUserCode", { required: true })}
+                    <ReactSelect
+                      format="select"
+                      label="Choisir une famille *"
+                      Controller={Controller}
+                      name="notifId"
+                      inputId="householdName"
+                      isClearable={true}
+                      arrayOptions={arrayOptionSelectHousehold}
+                      control={control}
+                      defaultValue={""}
                     />
-                    <label htmlFor="addUserCode" className="form-label">Ajouter un membre *</label>
-                    <div className="error-message-input">
-                      {errorsFormAddUser.addUserCode && <span >Ce champ est requis</span>}
-                    </div>
+                    {errorsFormDelegateWhenSwitching.notifId && <span className="error-message-form">Ce champ est requis</span>}
                   </div>
-                  <div className="btn-action-container">
-                    <button className="btn-purple" type="submit"><FontAwesomeIcon className="btn-icon" icon="plus" /> Ajouter</button>
-                    {successFormAddUser && !errorMessageAddUser &&
-                      <InformationIcon 
-                        className="success-icon"
-                        icon={<FontAwesomeIcon icon="check" />}
-                      />
-                    }
-                    {errorMessageAddUser &&
-                      <InformationIcon 
-                        className="error-icon"
-                        icon={<FontAwesomeIcon icon="times" />}
-                        message={messageErrorAddUser}
-                      />
-                    }
-                  </div>
-                </form>
-              </>
+                }
+                <div className="btn-action-container">
+                  <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="btn-disabled" type="submit">
+                    {delegateAdminAndSwitch ? 
+                      dontWantToDelegate ? "Ne pas déléguer et changer de famille" : "Déléguer droits administrateurs et changer de famille" :
+                    "Déléguer droits administrateurs"}
+                  </button>
+                  {successFormDelegate && 
+                    <InformationIcon 
+                      className="success-icon"
+                      icon={<FontAwesomeIcon icon="check" />}
+                    />
+                  }
+                  {warningMessageDelegate && successFormDelegate !== true &&
+                    <InformationIcon 
+                      className="warning-icon"
+                      icon={<FontAwesomeIcon icon="exclamation" />}
+                      message={delegateAdminAndSwitch ? 
+                        dontWantToDelegate ? "Vous êtes sur le point de changer de famille sans déléguer vos droits administrateurs à une autre personne, votre famille sera supprimée, cette action est irréversible ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
+                        "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                      }
+                    />
+                  }
+                  {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
+                    <InformationIcon 
+                      className="error-icon"
+                      icon={<FontAwesomeIcon icon="times" />}
+                      message={messageErrorDelegate}
+                    />
+                  }
+                </div>
+              </form>
             }
 
             {userData.role === 'user' && requestDelegateAdmin && 
-              <form className="form-profile-list-table" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAcceptRequestDelegateAdmin)}>
+              <form className="table-familly-member" onSubmit={handleSubmitFormRequestDelegateAdmin(didNotAcceptRequestDelegateAdmin)}>
                 <h2>Membres de la famille</h2>
                 <Table 
-                  columns={columnsHouseholdOption}
+                  columns={columnsHouseholdOptionUser}
                   customTableClass={{customThead: "centered-thead"}}
                   trTable={trTable}
                   pagination={true}
@@ -607,9 +615,6 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                 </div>
               </form>
             }
-            <SwitchFamillyForm 
-              requestDelegateAdmin={requestDelegateAdmin}
-            /> 
           </>
         }
       </div>
