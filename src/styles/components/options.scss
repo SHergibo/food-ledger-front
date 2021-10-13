@@ -69,15 +69,15 @@
 }
 
 .form-familly{
+  color: var(--primary-color);
   .familly-name{
     margin-bottom: 1rem;
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--primary-color);
+    h2{
+      margin: 0;
+    }
   }
   h2{
-    margin-bottom: 1rem;
-    color: var(--primary-color);
+     margin-bottom: 1rem;
   }
   .form-inline{
     margin-bottom: 1.5rem;
@@ -161,6 +161,12 @@
 
 /*Full-screen*/
 @media screen and (min-width: 992px) {
+  .form-familly{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: calc(100vh - 23.25rem);
+  }
   .form-profile, .form-email, .form-product, .form-table-product, .form-edit-brand{
     min-height: unset;
     height: 100%;
