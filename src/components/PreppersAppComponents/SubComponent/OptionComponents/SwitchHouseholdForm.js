@@ -61,7 +61,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   }
 
   return (
-    <div className="form-familly">
+    <>
       <form className="form-inline option-component" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
         <div className="input-group">
           <input
@@ -101,7 +101,7 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
           }
         </div>
       </form>
-    </div>
+    </>
   )
 }
 
