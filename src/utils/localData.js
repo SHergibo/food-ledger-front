@@ -333,7 +333,7 @@ export const columnsBrandOption = [
   }
 ];
 
-export const columnsHouseholdOption = [
+export const columnsHouseholdOptionAdmin = [
   {
     Header: 'Nom',
     id: 'fullname'
@@ -349,6 +349,17 @@ export const columnsHouseholdOption = [
   {
     Header: "Retirer le membre",
     id: 'action'
+  }
+];
+
+export const columnsHouseholdOptionUser = [
+  {
+    Header: 'Nom',
+    id: 'fullname'
+  },
+  {
+    Header: 'Rôle',
+    id: 'role'
   }
 ];
 
