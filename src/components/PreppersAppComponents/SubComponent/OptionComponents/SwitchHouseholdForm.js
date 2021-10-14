@@ -62,7 +62,7 @@ function SwitchHouseholdForm({requestDelegateAdmin}) {
 
   return (
     <>
-      <form className="form-inline option-component" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
+      <form className="form-inline" onSubmit={handleSubmitFormSwitchFamilly(switchFamilly)}>
         <div className="input-group">
           <input
             name="switchFamillyCode"

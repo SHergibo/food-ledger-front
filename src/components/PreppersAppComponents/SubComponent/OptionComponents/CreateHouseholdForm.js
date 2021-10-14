@@ -48,41 +48,43 @@ function CreateHouseholdForm({ requestDelegateAdmin }) {
 
 
   return (
-    <div className="container-data container-option form-familly">
-      <form className="form-inline option-component" onSubmit={handleSubmit(createdHousehold)}>
-        <div className="input-group">
-          <input
-            name="householdName"
-            type="text"
-            id="householdName"
-            className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-            onChange={clearErrorMessage}
-            {...register("householdName", { required: true })}
-          />
-          <label htmlFor="householdName" className="form-label">Créer une famille *</label>
-          <div className="error-message-input">
-            {errors.householdName && <span >Ce champ est requis</span>}
-          </div>
-        </div>
-
-        <div className="btn-action-container">
-          <button 
-          className="btn-purple"
-          type="submit">
-            <FontAwesomeIcon className="btn-icon" icon="plus" /> Créer
-          </button> 
-          {errorMessage &&
-            <InformationIcon 
-              className="error-icon"
-              icon={<FontAwesomeIcon icon="times" />}
-              message={messageError}
+    <div className="container-data container-option ">
+      <div className="option-component form-familly">
+        <form className="form-inline" onSubmit={handleSubmit(createdHousehold)}>
+          <div className="input-group">
+            <input
+              name="householdName"
+              type="text"
+              id="householdName"
+              className={`form-input ${errors.householdName  ? "error-input" : ""}`}
+              onChange={clearErrorMessage}
+              {...register("householdName", { required: true })}
             />
-          }
-        </div>
-      </form>
-      <SwitchHouseholdForm 
-        requestDelegateAdmin={requestDelegateAdmin}
-      />
+            <label htmlFor="householdName" className="form-label">Créer une famille *</label>
+            <div className="error-message-input">
+              {errors.householdName && <span >Ce champ est requis</span>}
+            </div>
+          </div>
+
+          <div className="btn-action-container">
+            <button 
+            className="btn-purple"
+            type="submit">
+              <FontAwesomeIcon className="btn-icon" icon="plus" /> Créer
+            </button> 
+            {errorMessage &&
+              <InformationIcon 
+                className="error-icon"
+                icon={<FontAwesomeIcon icon="times" />}
+                message={messageError}
+              />
+            }
+          </div>
+        </form>
+        <SwitchHouseholdForm 
+          requestDelegateAdmin={requestDelegateAdmin}
+        />
+      </div>
     </div>
   )
 }
