@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 import PropTypes from 'prop-types';
 
-function SwitchFamillyForm({requestDelegateAdmin}) {
+function SwitchHouseholdForm({requestDelegateAdmin}) {
   const { userData } = useUserData();
   const [ errorMessage, setErrorMessage ] = useState(false);
   const [ messageError, setMessageError ] = useState("");
@@ -105,8 +105,8 @@ function SwitchFamillyForm({requestDelegateAdmin}) {
   )
 }
 
-SwitchFamillyForm.propTypes = {
+SwitchHouseholdForm.propTypes = {
   requestDelegateAdmin: PropTypes.bool.isRequired
 }
 
-export default SwitchFamillyForm;
+export default SwitchHouseholdForm;

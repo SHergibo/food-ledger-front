@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SwitchFamillyForm from './../OptionComponents/SwitchHouseholdForm';
+import SwitchHouseholdForm from './../OptionComponents/SwitchHouseholdForm';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 import PropTypes from 'prop-types';
 
@@ -80,7 +80,7 @@ function CreateHouseholdForm({ requestDelegateAdmin }) {
           }
         </div>
       </form>
-      <SwitchFamillyForm 
+      <SwitchHouseholdForm 
         requestDelegateAdmin={requestDelegateAdmin}
       />
     </div>

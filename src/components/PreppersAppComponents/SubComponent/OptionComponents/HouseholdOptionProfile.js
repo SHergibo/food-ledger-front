@@ -5,7 +5,7 @@ import ReactSelect from './../../UtilitiesComponent/ReactSelect';
 import axiosInstance from '../../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SwitchFamillyForm from './../OptionComponents/SwitchHouseholdForm';
+import SwitchHouseholdForm from './../OptionComponents/SwitchHouseholdForm';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 import Table from './../../UtilitiesComponent/Table';
 import { columnsHouseholdOptionAdmin, columnsHouseholdOptionUser } from "./../../../../utils/localData";
@@ -473,7 +473,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               </div>
             }
 
-            <SwitchFamillyForm 
+            <SwitchHouseholdForm 
               requestDelegateAdmin={requestDelegateAdmin}
             /> 
 
