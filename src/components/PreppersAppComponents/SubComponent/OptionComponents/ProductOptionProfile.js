@@ -75,7 +75,7 @@ function ProductOptionProfile() {
               <div className="input-group">
                 <ReactSelect
                   format="select"
-                  label="Prévenir date de péremption proche"
+                  label="Prévenir date de péremption"
                   labelBackWhite={true}
                   respSelect={true}
                   Controller={Controller}
