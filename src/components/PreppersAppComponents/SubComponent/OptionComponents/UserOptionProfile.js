@@ -73,9 +73,13 @@ function UserOptionProfile() {
   return (
     <div className="container-data container-option">
       <div className="form-profile option-component">
-        <form>
-          {userData && 
-            <>
+        {userData && 
+          <>
+            <form>
+              <div className="profile-info">
+                <h2>Profil de {userData.firstname} {userData.lastname}</h2>
+                <p>Code utilisateur : {userData.usercode}</p>
+              </div>
               <div className="input-group">
                 <input
                   name="firstname"
@@ -125,7 +129,7 @@ function UserOptionProfile() {
               </label>
 
               {changePasswordInput &&
-                <div>
+                <div className="change-password">
                   <div className="input-group">
                     <input
                       name="actualPassword"
@@ -185,22 +189,23 @@ function UserOptionProfile() {
                   </div>
                 </div>
               }
-            </>
-          }
-        </form>
-        <div className="btn-action-container" >
-          <button className="btn-purple" onClick={() => {
-            handleSubmit(updateUserData)();
-          }}>
-          <FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer
-          </button>
-          {successFormUser && 
-            <InformationIcon 
-              className="success-icon"
-              icon={<FontAwesomeIcon icon="check" />}
-            />
-          }
-        </div>
+
+            </form>
+            <div className="btn-action-container" >
+              <button className="btn-purple" onClick={() => {
+                handleSubmit(updateUserData)();
+              }}>
+              <FontAwesomeIcon className="btn-icon" icon="pen" /> Éditer
+              </button>
+              {successFormUser && 
+                <InformationIcon 
+                  className="success-icon"
+                  icon={<FontAwesomeIcon icon="check" />}
+                />
+              }
+            </div>
+          </>
+        }
       </div>
     </div>
   )
