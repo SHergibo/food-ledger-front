@@ -82,7 +82,7 @@ function EmailOptionProfile() {
               <div className="input-group">
                 <ReactSelect
                   format="select"
-                  label="Interval d'envoi du mail d'information"
+                  label="Interval d'envoi du mail"
                   labelBackWhite={true}
                   respSelect={true}
                   Controller={Controller}
@@ -104,7 +104,7 @@ function EmailOptionProfile() {
               <div className="input-group">
                 <ReactSelect
                   format="select"
-                  label="Interval d'envoi du mail liste de course"
+                  label="Interval d'envoi du mail"
                   labelBackWhite={true}
                   respSelect={true}
                   Controller={Controller}
