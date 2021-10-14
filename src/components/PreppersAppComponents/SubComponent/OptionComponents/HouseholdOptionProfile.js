@@ -540,6 +540,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                     <ReactSelect
                       format="select"
                       label="Choisir une famille *"
+                      labelBackWhite={true}
+                      respSelect={true}
                       Controller={Controller}
                       name="notifId"
                       inputId="householdName"
@@ -551,36 +553,38 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                     {errorsFormDelegateWhenSwitching.notifId && <span className="error-message-form">Ce champ est requis</span>}
                   </div>
                 }
-                <div className="btn-action-container">
-                  <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="btn-disabled" type="submit">
-                    {delegateAdminAndSwitch ? 
-                      dontWantToDelegate ? "Ne pas déléguer et changer de famille" : "Déléguer droits administrateurs et changer de famille" :
-                    "Déléguer droits administrateurs"}
-                  </button>
-                  {successFormDelegate && 
-                    <InformationIcon 
-                      className="success-icon"
-                      icon={<FontAwesomeIcon icon="check" />}
-                    />
-                  }
-                  {warningMessageDelegate && successFormDelegate !== true &&
-                    <InformationIcon 
-                      className="warning-icon"
-                      icon={<FontAwesomeIcon icon="exclamation" />}
-                      message={delegateAdminAndSwitch ? 
-                        dontWantToDelegate ? "Vous êtes sur le point de changer de famille sans déléguer vos droits administrateurs à une autre personne, votre famille sera supprimée, cette action est irréversible ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
-                        "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
-                      }
-                    />
-                  }
-                  {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
-                    <InformationIcon 
-                      className="error-icon"
-                      icon={<FontAwesomeIcon icon="times" />}
-                      message={messageErrorDelegate}
-                    />
-                  }
-                </div>
+                {householdMembers.length > 1 &&
+                  <div className="btn-action-container">
+                    <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="btn-disabled" type="submit">
+                      {delegateAdminAndSwitch ? 
+                        dontWantToDelegate ? "Ne pas déléguer et changer de famille" : "Déléguer droits administrateurs et changer de famille" :
+                      "Déléguer droits administrateurs"}
+                    </button>
+                    {successFormDelegate && 
+                      <InformationIcon 
+                        className="success-icon"
+                        icon={<FontAwesomeIcon icon="check" />}
+                      />
+                    }
+                    {warningMessageDelegate && successFormDelegate !== true &&
+                      <InformationIcon 
+                        className="warning-icon"
+                        icon={<FontAwesomeIcon icon="exclamation" />}
+                        message={delegateAdminAndSwitch ? 
+                          dontWantToDelegate ? "Vous êtes sur le point de changer de famille sans déléguer vos droits administrateurs à une autre personne, votre famille sera supprimée, cette action est irréversible ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille ! Vous changerez tout de suite de famille après avoir cliqué sur ce bouton !" : 
+                          "Vous êtes sur le point de déléguer vos droits d'administrateurs à une autre personne de votre famille !"
+                        }
+                      />
+                    }
+                    {errorMessageDelegate && warningMessageDelegate!==true && successFormDelegate !== true &&
+                      <InformationIcon 
+                        className="error-icon"
+                        icon={<FontAwesomeIcon icon="times" />}
+                        message={messageErrorDelegate}
+                      />
+                    }
+                  </div>
+                }
               </form>
             }
 
