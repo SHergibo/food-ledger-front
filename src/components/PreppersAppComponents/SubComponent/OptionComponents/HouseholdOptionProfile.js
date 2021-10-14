@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useUserData, useUserHouseHoldData, useNotificationData } from '../../DataContext';
 import { useForm, Controller } from 'react-hook-form';
 import ReactSelect from './../../UtilitiesComponent/ReactSelect';
@@ -41,7 +41,9 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const pageSize = 5;
 
   const { register : registerFormFamillyName, handleSubmit : handleSubmitFormFamillyName, formState: { errors: errorsFormFamillyName } } = useForm({
-    mode: "onChange"
+    defaultValues: useMemo(() => {
+      return userHouseholdData
+    }, [userHouseholdData])
   });
 
   const { register : registerFormDelegateWhenSwitching, handleSubmit : handleSubmitFormDelegateWhenSwitching, formState: { errors: errorsFormDelegateWhenSwitching }, control } = useForm({
@@ -56,35 +58,13 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
     mode: "onChange"
   });
 
-  // useEffect(() => {
-  //   if(userHouseholdData){
-  //     setPageCount(Math.ceil(userHouseholdData.members.length / pageSize));
-  //   }
-  // }, [userHouseholdData]);
-
   const getUserList = useCallback(async () => {
-    //setErrorFetch(false);
-    //setLoading(true);
     const getUserListEndPoint = `${apiDomain}/api/${apiVersion}/users/pagination/${userHouseholdData._id}?page=${pageIndex - 1}`;
     await axiosInstance.get(getUserListEndPoint)
       .then(async (response) => {
         if(isMounted.current){
-          if(response.data.totalData >=1){
-            setHouseholdMembers(response.data.arrayData);
-            setPageCount(Math.ceil(response.data.totalData / pageSize));
-            //setHasBrand(true);
-          }else{
-            //setHasBrand(false);
-          }
-          //setLoading(false);
-        }
-      })
-      .catch((error)=> {
-        let jsonError = JSON.parse(JSON.stringify(error));
-        if(isMounted.current){
-          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
-            //setErrorFetch(true);
-          }
+          setHouseholdMembers(response.data.arrayData);
+          setPageCount(Math.ceil(response.data.totalData / pageSize));
         }
       });
   }, [userHouseholdData, pageIndex]);
