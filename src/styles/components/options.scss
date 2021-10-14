@@ -51,6 +51,13 @@
 }
 
 .form-profile{
+  .profile-info{
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    h2{
+      margin: 0;
+    }
+  }
   .container-checkbox{
     margin-bottom: 2rem;
   }
@@ -96,7 +103,10 @@
 
 .table-familly-member{
   .btn-action-container{
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+  }
+  .input-group{
+    margin-top: 1rem;
   }
 }
 
@@ -181,6 +191,11 @@
     }
     .input-group{
       width: em(340px);
+    }
+  }
+  .form-profile{
+    .change-password{
+      margin-top: rem(71px);
     }
   }
   .container-option{
