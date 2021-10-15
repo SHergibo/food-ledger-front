@@ -176,6 +176,9 @@
     flex-direction: column;
     flex-wrap: wrap;
     height: calc(100vh - 23.25rem);
+    .form-inline{
+      width: 50%;
+    }
   }
   .form-profile, .form-email, .form-product, .form-table-product, .form-edit-brand{
     min-height: unset;
@@ -200,5 +203,8 @@
   }
   .container-option{
     min-height: unset;
+  }
+  .table-familly-member{
+    min-width: 50%;
   }
 }
