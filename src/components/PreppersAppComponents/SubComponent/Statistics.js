@@ -81,8 +81,8 @@ function Statistics() {
       {
         label: 'N° de produit périmé',
         data: dataChartOne,
-        backgroundColor: 'rgba(3, 62, 129, 0.5)',
-        borderColor: 'rgba(3, 62, 129, 1)',
+        backgroundColor: 'hsla(257, 63%, 52%, 0.5)',
+        borderColor: 'hsl(257, 63%, 52%)',
         borderWidth: 1,
       },
     ],
@@ -94,7 +94,6 @@ function Statistics() {
       yAxes: [
         {
           ticks: {
-            max: 30,
             beginAtZero: true,
           },
         },
@@ -181,8 +180,8 @@ function Statistics() {
         label: 'N° de produit',
         data: dataChartFour,
         fill: false,
-        backgroundColor: 'rgba(3, 62, 129, 0.5)',
-        borderColor: 'rgba(3, 62, 129, 1)',
+        backgroundColor: 'hsla(257, 63%, 52%, 0.5)',
+        borderColor: 'hsl(257, 63%, 52%)',
       },
     ],
   };
@@ -237,7 +236,7 @@ function Statistics() {
 
   return (
     <>
-      {(windowWidth < 992 || (windowWidth >= 992 && hasStat)) &&
+      {windowWidth < 992 &&
         <div className="sub-header">
           <div className="sub-option">
             <h1>Statistiques des stocks</h1>
@@ -260,7 +259,7 @@ function Statistics() {
         }
 
         {hasStat &&
-          <div className="chart-container">
+          <div className="container-data chart-container">
             <div className="chart">
               <h4>Nombre de produit périmé par mois</h4>
               <ul className="chart-menu-interaction">
