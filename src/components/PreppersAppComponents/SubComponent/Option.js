@@ -302,7 +302,7 @@ function Option({ setOptionSubTitle }) {
                     <Select
                       inputId="menuOption"
                       styles={customStyles}
-                      defaultValue={option}
+                      value={option}
                       options={btnOptionMenu}
                       onChange={(selectedOption)=> {
                         setOption(selectedOption)
