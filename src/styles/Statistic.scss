@@ -6,7 +6,7 @@
       text-align: center;
       font-size: 1.2rem;
       margin: .5rem;
-      color: $primary-color;
+      color: var(--primary-color);
     }
     width: 100%;
   }
@@ -18,16 +18,16 @@
       margin: 0 .5rem;
       padding: .2rem 0;
       cursor: pointer;
-      color: $primary-color;
+      color: var(--primary-color);
       text-decoration: underline;
-      text-decoration-color: $white;
+      text-decoration-color: var(--white);
       transition: .2s ease-in-out;
       &:hover{
-        text-decoration-color: $primary-color;
+        text-decoration-color: var(--primary-color);
       }
     }
     .chart-menu-interaction-active{
-      text-decoration-color: $primary-color;
+      text-decoration-color: var(--primary-color);
     }
   }
 
@@ -49,7 +49,7 @@
 /*Full-screen*/
 @media screen and (min-width: 992px){
   .chart-container{
-    height: 100%;
+    height: calc(100vh - 13.875rem);
     flex-direction: row;
     flex-wrap: wrap;
     .chart{
@@ -58,7 +58,7 @@
         text-align: center;
         font-size: 1rem;
         margin: 0;
-        color: $primary-color;
+        color: var(--primary-color);
       }
     }
     .canvas-chart-container, .canvas-chart-container-pie{
