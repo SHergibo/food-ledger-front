@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { useUserData, useWindowWidth } from './../DataContext';
+import { useUserData, useWindowWidth, useSocket, useUserHouseHoldData } from './../DataContext';
 import Loading from '../UtilitiesComponent/Loading';
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 function Statistics() {
   const { userData } = useUserData();
   const { windowWidth } = useWindowWidth();
+  const { socketRef } = useSocket();
+  const { userHouseholdData } = useUserHouseHoldData();
   const isMounted = useRef(true);
   const [hasStat, setHasStat] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,63 @@ function Statistics() {
   const [dataChartFour, setDataChartFour] = useState([]);
   const linkChartOneData = useRef([]);
   const linkChartFourData = useRef([]);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current && userHouseholdData){
+      socket = socketRef.current;
+      socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}/statistics`});
+
+      socket.on("connect", () => {
+        socket.emit('enterSocketRoom', {socketRoomName: `${userHouseholdData._id}/statistics`});
+      });
+    }
+
+    return () => {
+      if(socket && userHouseholdData) {
+        socket.emit('leaveSocketRoom', {socketRoomName: `${userHouseholdData._id}/statistics`});
+        socket.off('connect');
+      }
+    };
+  }, [userHouseholdData, socketRef]);
+
+  const updatedData = useCallback((data) => {
+    console.log(data)
+    if(Object.keys(data.statistics).length === 4){
+      sessionStorage.setItem('allDataChart', JSON.stringify(data.statistics));
+      setDataChartOne(data.statistics.chartOne[new Date().getFullYear()]);
+      setDataChartTwo(data.statistics.chartTwo);
+      setDataChartThree(data.statistics.chartThree);
+      let arrayLabelChartFour = [];
+      data.statistics.chartFour[new Date().getFullYear()].forEach((data, index) => {
+        arrayLabelChartFour.push(`${index + 1}`);
+      });
+      setLabelChartFour(arrayLabelChartFour);
+      setDataChartFour(data.statistics.chartFour[new Date().getFullYear()]);
+      setHasStat(true);
+    }else{
+      setHasStat(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let socket = null;
+
+    if(socketRef.current){
+      socket = socketRef.current;
+
+      socket.on("updatedData", (data) => {
+        updatedData(data);
+      });
+    }
+
+    return () => {
+      if(socket) {
+        socket.off('updatedData');
+      }
+    }
+  }, [socketRef, updatedData]);
 
   const loadChartData = useCallback(async () => {
     if(userData){
