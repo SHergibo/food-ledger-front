@@ -46,8 +46,7 @@ function Statistics() {
     };
   }, [userHouseholdData, socketRef]);
 
-  const updatedData = useCallback((data) => {
-    console.log(data)
+  const setChartData = useCallback((data) => {
     if(Object.keys(data.statistics).length === 4){
       sessionStorage.setItem('allDataChart', JSON.stringify(data.statistics));
       setDataChartOne(data.statistics.chartOne[new Date().getFullYear()]);
@@ -72,7 +71,7 @@ function Statistics() {
       socket = socketRef.current;
 
       socket.on("updatedData", (data) => {
-        updatedData(data);
+        setChartData(data);
       });
     }
 
@@ -81,7 +80,7 @@ function Statistics() {
         socket.off('updatedData');
       }
     }
-  }, [socketRef, updatedData]);
+  }, [socketRef, setChartData]);
 
   const loadChartData = useCallback(async () => {
     if(userData){
@@ -91,21 +90,7 @@ function Statistics() {
       await axiosInstance.get(getChartOneDataEndPoint)
         .then((response) => {
           if(isMounted.current){
-            if(Object.keys(response.data.statistics).length === 4){
-              sessionStorage.setItem('allDataChart', JSON.stringify(response.data.statistics));
-              setDataChartOne(response.data.statistics.chartOne[new Date().getFullYear()]);
-              setDataChartTwo(response.data.statistics.chartTwo);
-              setDataChartThree(response.data.statistics.chartThree);
-              let arrayLabelChartFour = [];
-              response.data.statistics.chartFour[new Date().getFullYear()].forEach((data, index) => {
-                arrayLabelChartFour.push(`${index + 1}`);
-              });
-              setLabelChartFour(arrayLabelChartFour);
-              setDataChartFour(response.data.statistics.chartFour[new Date().getFullYear()]);
-              setHasStat(true);
-            }else{
-              setHasStat(false);
-            }
+            setChartData(response.data);
             setLoading(false);
           }
         })
@@ -118,7 +103,7 @@ function Statistics() {
           }
         });
     }
-  }, [userData]);
+  }, [userData, setChartData]);
 
   useEffect(() => {
     if (userData) {
