@@ -27,7 +27,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   const [ successFormFamillyName, setSuccessFormFamillyName ] = useState(false);
   const [ successFormAddUser, setSuccessFormAddUser ] = useState(false);
   const [ successFormDelegate, setSuccessFormDelegate ] = useState(false);
-  const [ btnDisabledFormDelegate, setBtnDisabledFormDelegate ] = useState(true);
+  const [ btnDisabledFormDelegate, setBtnDisabledFormDelegate ] = useState(false);
   const [ warningMessageDelegate, setWarningMessageDelegate ] = useState(false);
   const [ errorMessageDelegate, setErrorMessageDelegate ] = useState(false);
   const [ messageErrorDelegate, setMessageErrorDelegate ] = useState("");
@@ -102,7 +102,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           setNotificationSended(response.data);
         }
       });
-    }, []);
+  }, []);
 
   useEffect(() => {
     if(userData){
@@ -112,23 +112,26 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   }, [userData, getSendedNotification]);
 
 
+  const notificationSendedRef = useRef({});
   useEffect(() => {
-    const requestAdminNotif = notificationSended.find(notif => notif.type === "request-admin");
-    if(requestAdminNotif !== undefined && delegateAdminAndSwitch){
-      setDefaultCheckedAdmin(true);
-      setRequestAdminNotification(true);
-      setBtnDisabledFormDelegate(true);
-      setErrorMessageDelegate(true);
-      setMessageErrorDelegate("Veuillez supprimer la requête de délégation des droits administrateurs dans vos notifications envoyées avant de pouvoir faire cette action !");
-      btnDelegateForm.current.classList.remove('default-btn-action-form');
-      btnDelegateForm.current.classList.add('default-btn-disabled-form');
-    }else{
-      setRequestAdminNotification(false);
-      setBtnDisabledFormDelegate(false);
-      setErrorMessageDelegate(false);
-      setMessageErrorDelegate("");
-    }
-  }, [notificationSended, delegateAdminAndSwitch]);
+    notificationSendedRef.current = notificationSended.find(notif => notif.type === "request-admin");
+  }, [notificationSended]);
+
+  useEffect(() => {
+      if(notificationSendedRef.current !== undefined && delegateAdminAndSwitch){
+        setDefaultCheckedAdmin(true);
+        setRequestAdminNotification(true);
+        setBtnDisabledFormDelegate(true);
+        setWarningMessageDelegate(false);
+        setErrorMessageDelegate(true);
+        setMessageErrorDelegate("Veuillez supprimer la requête de délégation des droits administrateurs dans vos notifications envoyées avant de pouvoir faire cette action !");
+      }else{
+        setRequestAdminNotification(false);
+        setBtnDisabledFormDelegate(false);
+        setErrorMessageDelegate(false);
+        setMessageErrorDelegate("");
+      }
+  }, [delegateAdminAndSwitch]);
 
   useEffect(() => {
     if(userHouseholdData && requestDelegateAdmin){
@@ -195,15 +198,17 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
   };
 
   const enableSubmitBtn = useCallback((usercode) => {
+    const requestAdminNotif = notificationSended.find(notif => notif.type === "request-admin");
+    if(requestAdminNotif !== undefined && delegateAdminAndSwitch){
+      return;
+    }
     if(userData.role === "admin" && usercode === userData.usercode){
-      setBtnDisabledFormDelegate(true);
+      setBtnDisabledFormDelegate(false);
       setWarningMessageDelegate(false);
       setDefaultCheckedAdmin("admin");
       if(dontWantToDelegate){
         setDontWantToDelegate(false);
       }
-      btnDelegateForm.current.classList.remove('btn-purple');
-      btnDelegateForm.current.classList.add('btn-disabled');
     }else{
       if(usercode === undefined){
         setDontWantToDelegate(true);
@@ -211,17 +216,28 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
         setDontWantToDelegate(false);
       }
       setDefaultCheckedAdmin(false);
-      setBtnDisabledFormDelegate(false);
+      setBtnDisabledFormDelegate(true);
       setWarningMessageDelegate(true);
+    }
+  }, [dontWantToDelegate, userData, notificationSended, delegateAdminAndSwitch]);
+
+  useEffect(() => {
+    const requestAdminNotif = notificationSended.find(notif => notif.type === "request-admin");
+    if(btnDisabledFormDelegate && requestAdminNotif !== undefined && delegateAdminAndSwitch){
+      btnDelegateForm.current.classList.remove('btn-purple');
+      btnDelegateForm.current.classList.add('btn-disabled');
+      return;
+    }
+    if(btnDisabledFormDelegate){
       btnDelegateForm.current.classList.remove('btn-disabled');
       btnDelegateForm.current.classList.add('btn-purple');
     }
-  }, [dontWantToDelegate, userData]);
+  }, [btnDisabledFormDelegate, notificationSended, delegateAdminAndSwitch]);
   
   const kickUser = useCallback(async (userId) => {
-    const kicUserEndPoint = `${apiDomain}/api/${apiVersion}/households/kick-user/${userHouseholdData._id}`;
+    const kickUserEndPoint = `${apiDomain}/api/${apiVersion}/households/kick-user/${userHouseholdData._id}`;
 
-    await axiosInstance.patch(kicUserEndPoint, {userId : userId});
+    await axiosInstance.patch(kickUserEndPoint, {userId : userId});
   }, [userHouseholdData]);
 
   const delegateAdminRights = async (data) => {
@@ -233,7 +249,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
 
     await axiosInstance.post(switchAdminRightsEndPoint, switchAdminRightsData)
       .then((response) => {
-        if(response.status === 204){
+        if(response.status === 200){
+          setNotificationSended([...notificationSended, response.data]);
           setErrorMessageDelegate(false);
           setWarningMessageDelegate(false);
           if(isMounted.current){
@@ -315,10 +332,8 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
         }
       })
       .catch((error) => {
-        if(isMounted.current){
-          setErrorMessageAddUser(true);
-          setMessageErrorAddUser(error.response.data.output.payload.message);
-        }
+        setErrorMessageAddUser(true);
+        setMessageErrorAddUser(error.response.data.output.payload.message);
       });
   };
 
@@ -533,9 +548,9 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                     {errorsFormDelegateWhenSwitching.notifId && <span className="error-message-form">Ce champ est requis</span>}
                   </div>
                 }
-                {householdMembers.length > 1 &&
+                {householdMembers.length > 1 && btnDisabledFormDelegate &&
                   <div className="btn-action-container">
-                    <button ref={btnDelegateForm} disabled={btnDisabledFormDelegate} className="btn-disabled" type="submit">
+                    <button ref={btnDelegateForm} disabled={!btnDisabledFormDelegate} className="btn-disabled" type="submit">
                       {delegateAdminAndSwitch ? 
                         dontWantToDelegate ? "Ne pas déléguer et changer de famille" : "Déléguer droits administrateurs et changer de famille" :
                       "Déléguer droits administrateurs"}
