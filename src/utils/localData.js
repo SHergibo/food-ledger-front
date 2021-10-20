@@ -352,6 +352,17 @@ export const columnsHouseholdOptionAdmin = [
   }
 ];
 
+export const columnsHouseholdOptionAdminAlone = [
+  {
+    Header: 'Nom',
+    id: 'fullname'
+  },
+  {
+    Header: 'Rôle',
+    id: 'role'
+  }
+];
+
 export const columnsHouseholdOptionUser = [
   {
     Header: 'Nom',
@@ -360,6 +371,10 @@ export const columnsHouseholdOptionUser = [
   {
     Header: 'Rôle',
     id: 'role'
+  },
+  {
+    Header: "Quitter la famille",
+    id: 'action'
   }
 ];
 
