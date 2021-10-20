@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SwitchHouseholdForm from './../OptionComponents/SwitchHouseholdForm';
 import InformationIcon from '../../UtilitiesComponent/InformationIcons';
 import Table from './../../UtilitiesComponent/Table';
-import { columnsHouseholdOptionAdmin, columnsHouseholdOptionUser } from "./../../../../utils/localData";
+import { columnsHouseholdOptionAdmin, columnsHouseholdOptionAdminAlone, columnsHouseholdOptionUser } from "./../../../../utils/localData";
 import PropTypes from 'prop-types';
 
 function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
@@ -356,7 +356,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
           <td>
             {member.firstname} {member.lastname}
           </td>
-          <td>
+          <td className="tr-member-role">
             {member.role === "admin" ? " Administrateur.trice" : " Utilisateur.trice"}
           </td>
           {userData.role === "admin" && householdMembers.length > 1 &&
@@ -385,6 +385,21 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                 }
               </td>
             </>
+          }
+          {userData.role === "user" && member._id === userData._id ?
+            <td>
+              <div className="div-list-table-action">
+                <button 
+                title="Retirer le membre" 
+                type="button" 
+                className={(requestDelegateAdmin || notificationReceived.find(notif => notif.type === "request-admin")) ? "list-table-one-action-disabled" : "list-table-one-action"}
+                disabled={requestDelegateAdmin || notificationReceived.find(notif => notif.type === "request-admin")} 
+                onClick={() => kickUser(member._id)}>
+                  <FontAwesomeIcon icon="door-open"/>
+                </button>
+              </div>
+            </td> : 
+            <td></td>
           }
           {userHouseholdData.isWaiting && requestDelegateAdmin && otherMemberEligible &&
             <>
@@ -423,7 +438,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
       </tr>;
       setTrTable([...memberTable, actionNoDelegate]);
     }
-  }, [userData, householdMembers, userHouseholdData, delegateAdminAndSwitch, enableSubmitBtn, registerFormDelegateWhenSwitching, requestAdminNotification, defaultCheckedAdmin, firstMemberEligible, kickUser, otherMemberEligible, registerRequestDelegateAdmin, requestDelegateAdmin]);
+  }, [userData, householdMembers, userHouseholdData, delegateAdminAndSwitch, enableSubmitBtn, registerFormDelegateWhenSwitching, requestAdminNotification, defaultCheckedAdmin, firstMemberEligible, kickUser, otherMemberEligible, registerRequestDelegateAdmin, requestDelegateAdmin, notificationReceived]);
 
   return (
     <div className="container-data container-option ">
@@ -524,7 +539,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               <form className="table-familly-member" onSubmit={handleSubmitFormDelegateWhenSwitching(delegateAdminAndSwitch ? delegateAndSwitch : delegateAdminRights)}>
                 <h2>Membres de la famille</h2>
                 <Table 
-                  columns={householdMembers.length > 1 ? columnsHouseholdOptionAdmin : columnsHouseholdOptionUser}
+                  columns={householdMembers.length > 1 ? columnsHouseholdOptionAdmin : columnsHouseholdOptionAdminAlone}
                   customTableClass={{customThead: "centered-thead"}}
                   trTable={trTable}
                   pagination={true}
