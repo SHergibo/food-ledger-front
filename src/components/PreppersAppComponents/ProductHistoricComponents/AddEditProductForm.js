@@ -293,7 +293,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         formType={formType}
       />
       <div className="error-message-input">
-        {errors.brand && <span className="error-message-form">Ce champ est requis</span>}
+        {errors.brand && <span>Ce champ est requis</span>}
       </div>
     </div>
 
@@ -312,7 +312,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
         defaultValue={""}
       />
       <div className="error-message-input">
-        {errors.type && <span className="error-message-form">Ce champ est requis</span>}
+        {errors.type && <span>Ce champ est requis</span>}
       </div>
     </div>
 
