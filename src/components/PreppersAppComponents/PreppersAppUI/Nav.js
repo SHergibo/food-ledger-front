@@ -34,7 +34,7 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   useEffect(() => {
     if(userOptionData){
       setStateMainMenu(userOptionData.openMenu);
-      if(userOptionData.openMenu && windowWidth >= 992){
+      if(userOptionData.openMenu && windowWidth >= 1320){
         menu.current.classList.add('main-menu-open');
       }else{
         menu.current.classList.remove('main-menu-open');
@@ -183,7 +183,7 @@ function Nav({ history, logOut, showNotif, showNotification }) {
           </li>
         </ul>
       </nav>
-      {windowWidth < 992 &&
+      {windowWidth < 1320 &&
         <div className="svg-icon-responsive-container">
           <div className="svg-icon-responsive info-notification" onClick={windowWidth >= 768 ? interactNotif : goToNotification}>
             {hasNotif &&

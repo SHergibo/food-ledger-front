@@ -14,7 +14,7 @@ function HistoricList() {
       setColumns(columnsHistoricTablet)
     }
 
-    if(windowWidth >= 992){
+    if(windowWidth >= 1320){
       setColumns(columnsHistoricFullScreen)
     }
   }, [setColumns, windowWidth]);

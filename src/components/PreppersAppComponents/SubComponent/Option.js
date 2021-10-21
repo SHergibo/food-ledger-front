@@ -294,7 +294,7 @@ function Option({ setOptionSubTitle }) {
           <div className="sub-header">
             <div className="sub-interaction">
               <div className="btn-option-container">
-                {windowWidth <= 768 ?
+                {windowWidth < 1320 ?
                   <div className="input-group">
                     <label className="form-label-grey" htmlFor="menuOption">
                       Menu options

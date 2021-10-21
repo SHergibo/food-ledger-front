@@ -355,7 +355,7 @@ function ShoppingList() {
 
   return (
     <>
-      {(windowWidth < 992 || (windowWidth >= 992 && hasProduct)) &&
+      {(windowWidth < 1320 || (windowWidth >= 1320 && hasProduct)) &&
         <div className="sub-header only-option-interaction">
           <div className="sub-option">
             {shoppingList.length > 1 &&
@@ -366,7 +366,7 @@ function ShoppingList() {
             }
             {hasProduct &&
               <>
-                {windowWidth >= 992 &&
+                {windowWidth >= 1320 &&
                   <div className="multiple-button-option">
                     <button 
                       className="btn-action-title"
@@ -389,7 +389,7 @@ function ShoppingList() {
                     />
                   </div>
                 }
-                {windowWidth < 992 &&
+                {windowWidth < 1320 &&
                   <TitleButtonInteraction
                     title={"Actions liste de course"}
                     openTitleMessage={openTitleMessage}

@@ -12,10 +12,10 @@ function InformationIcons({className, icon, message}) {
   const [showCloseIcon, setShowCloseIcon] = useState(true);
 
   useEffect(() => {
-    if (windowWidth < 992) {
+    if (windowWidth < 1320) {
       setShowCloseIcon(true);
     }
-    if (windowWidth >= 992) {
+    if (windowWidth >= 1320) {
       setShowCloseIcon(false);
     }
   }, [windowWidth]);

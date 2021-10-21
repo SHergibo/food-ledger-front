@@ -804,7 +804,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
   return (
     <>
-      {(windowWidth < 992 || (windowWidth >= 992 && (hasProduct || Object.keys(searchObject).length > 0))) &&
+      {(windowWidth < 1320 || (windowWidth >= 1320 && (hasProduct || Object.keys(searchObject).length > 0))) &&
         <div className="sub-header">
           <div className="sub-interaction">
             {(hasProduct || Object.keys(searchObject).length > 0) && 

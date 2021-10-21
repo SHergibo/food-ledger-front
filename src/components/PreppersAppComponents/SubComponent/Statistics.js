@@ -280,7 +280,7 @@ function Statistics() {
 
   return (
     <>
-      {windowWidth < 992 &&
+      {windowWidth < 1320 &&
         <div className="sub-header">
           <div className="sub-option">
             <h1>Statistiques des stocks</h1>

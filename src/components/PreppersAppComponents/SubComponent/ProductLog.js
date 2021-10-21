@@ -301,36 +301,9 @@ function ProductLog({ history }) {
     )
   });
 
-  // const gotoPage = (page) => {
-  //   setPageIndex(page);
-  // };
-
-  // const previousPage = () => {
-  //   if (pageIndex > 1) {
-  //     setPageIndex(currPageIndex => currPageIndex - 1);
-  //   }
-  // };
-
-  // const nextPage = async () => {
-  //   if (pageIndex < pageCount) {
-  //     setPageIndex(currPageIndex => parseInt(currPageIndex) + 1);
-  //   }
-  // };
-
-  // let inputPagination = (e) => {
-  //   if(e.target.value > pageCount){
-  //     setPageIndex(pageCount);
-  //   } else if (e.target.value <= 0 || e.target.value === ""){
-  //     setPageIndex("");
-  //   } else {
-  //     setPageIndex(e.target.value);
-  //   }
-  // }
-
-  
   return (
     <>
-      {(windowWidth < 992 || (windowWidth >= 992 && productLog.length >= 1)) &&
+      {(windowWidth < 1320 || (windowWidth >= 1320 && productLog.length >= 1)) &&
         <div className="sub-header only-option-interaction">
           <div className="sub-option">
             <h1>Registre des produits</h1>
