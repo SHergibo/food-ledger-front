@@ -43,6 +43,14 @@
   min-height: calc(100vh - 13.813rem);
 }
 
+.container-radio-input + .container-radio-input{
+  margin-top: 1rem;
+}
+
+.container-radio-input{
+  @include container-radio();
+}
+
 .form-profile, .form-email, .form-product, .form-table-product{
   display: flex;
   flex-direction: column;
