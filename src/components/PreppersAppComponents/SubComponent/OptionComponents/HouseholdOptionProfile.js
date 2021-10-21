@@ -560,7 +560,9 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                       control={control}
                       defaultValue={""}
                     />
-                    {errorsFormDelegateWhenSwitching.notifId && <span className="error-message-form">Ce champ est requis</span>}
+                    <div className="error-message-input">
+                      {errorsFormDelegateWhenSwitching.notifId && <span>Ce champ est requis</span>}
+                    </div>
                   </div>
                 }
                 {householdMembers.length > 1 && btnDisabledFormDelegate &&
