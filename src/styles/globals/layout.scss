@@ -10,7 +10,7 @@
   width: 100%;
   height: 100%;
   min-height: calc(100vh - 5.375rem);
-  
+  margin-top: 3.75em;
 }
 
 .container-data, .container-option-data{
@@ -44,6 +44,7 @@
   .container{
     min-height: calc(100vh - 6rem);
     padding: 0 10px;
+    margin: 0;
   }
 
   .container-prepper-app{
