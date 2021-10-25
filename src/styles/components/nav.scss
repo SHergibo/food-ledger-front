@@ -97,6 +97,7 @@
       }
     }
     .div-logout{
+      width: 100%;
       cursor: pointer;
     }
   }
@@ -185,9 +186,11 @@
       flex-direction: column;
       padding: em(40px) 0;
       width: 100%;
+      a{
+        margin-left: em(11px);
+      }
       img{
         width: em(73px);
-        margin-left: em(11px);
       }
       .svg-icon{
         display: flex;
@@ -195,6 +198,7 @@
         border-radius: em(5px);
         order: 0;
         margin: 0 0 em(21px) em(29.5px);
+        background-color: var(--white);
         cursor: pointer;
         svg{
           height: 2rem;
@@ -232,6 +236,9 @@
       .svg-icon{
         margin: 0;
         order: 1;
+      }
+      a{
+        margin: 0;
       }
     }
     ul{
