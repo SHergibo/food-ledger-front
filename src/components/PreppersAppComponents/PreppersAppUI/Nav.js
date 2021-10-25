@@ -103,9 +103,9 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   return (
     <div ref={menu} className="main-menu">
       <div className="interact-menu">
-        <div className="svg-icon" onClick={interactMenu}>
+        <button className="svg-icon" onClick={interactMenu}>
           <FontAwesomeIcon icon={userOptionData?.openMenu ? "angle-left" : "angle-right"} />
-        </div>
+        </button>
         <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
           <img src={logo} alt="food ledger app logo"/>
         </Link>
@@ -163,13 +163,13 @@ function Nav({ history, logOut, showNotif, showNotification }) {
               <span>Options</span>
             </Link>
           </li>
-          <li onClick={logOut}>
-            <div className="div-logout">
+          <li onClick={(e) => logOut(e)} onKeyUp={(e) => logOut(e)}>
+            <button className="div-logout">
               <div className="svg-menu" >
                 <FontAwesomeIcon icon="sign-out-alt" />
               </div>
               <span>Déconnexion</span>
-            </div>
+            </button>
           </li>
         </ul>
       </nav>
