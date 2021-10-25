@@ -61,12 +61,12 @@ function SubNav({ showNotif, optionSubTitle }) {
       <h1>{subTitle}</h1> 
     }
       <div className="interaction-sub-menu">
-        <div className="svg-icon info-notification" onClick={interactNotif}>
+        <button className="svg-icon info-notification" onClick={interactNotif}>
           {hasNotif &&
             <div className="number-nofitication">{arrayNotifLength}</div>
           }
           <FontAwesomeIcon icon="bell" />
-        </div>
+        </button>
         <Link className="user-profile-link" to="/app/options">
           <span>{firstChar}</span>
         </Link>
