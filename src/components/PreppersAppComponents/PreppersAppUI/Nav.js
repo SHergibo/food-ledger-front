@@ -163,7 +163,7 @@ function Nav({ history, logOut, showNotif, showNotification }) {
               <span>Options</span>
             </Link>
           </li>
-          <li onClick={(e) => logOut(e)} onKeyUp={(e) => logOut(e)}>
+          <li onClick={logOut}>
             <button className="div-logout">
               <div className="svg-menu" >
                 <FontAwesomeIcon icon="sign-out-alt" />
