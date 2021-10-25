@@ -22,16 +22,6 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   const isMounted = useRef(true);
 
   useEffect(() => {
-    if(location.pathname.split("/")[2] === "notification"){
-      menu.current.classList.add('border-menu-open')
-    }else{
-      if(!menuResp.current.classList.contains('display-block')){
-        menu.current.classList.remove('border-menu-open')
-      }
-    }
-  }, [location])
-
-  useEffect(() => {
     if(userOptionData){
       setStateMainMenu(userOptionData.openMenu);
       if(userOptionData.openMenu && windowWidth >= 1320){
