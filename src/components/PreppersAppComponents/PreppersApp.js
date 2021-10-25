@@ -26,12 +26,9 @@ function PreppersApp({ history }) {
     setShowNotification(!showNotification);
   };
 
-  let logOut = async (e) => {
-    e.persist();
-    if(e.key === 'Enter' || e.type === 'click' ){
-      await logout();
-      history.push("/");
-    }
+  let logOut = async () => {
+    await logout();
+    history.push("/");
   };
 
   return (
