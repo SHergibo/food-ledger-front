@@ -2,9 +2,11 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useUserData, useNotificationData } from './../DataContext';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CSSTransition } from 'react-transition-group';
+import SubContainer from './SubContainer';
 import PropTypes from 'prop-types';
 
-function SubNav({ showNotif, optionSubTitle }) {
+function SubNav({ showNotifFullScreen, optionSubTitle, showNotificationFullScreen }) {
   const location = useLocation();
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
@@ -49,25 +51,32 @@ function SubNav({ showNotif, optionSubTitle }) {
     }
   }, [userData, notificationReceived]);
 
-  const interactNotif = () => {
-    showNotif();
-    subNavContainerRef.current.classList.toggle('border-menu-open-subnav');
-  }
+  const closeNotifOnTab = (e) => {
+    if(e.key === "Tab") showNotifFullScreen();
+  };
 
   return (
-    <div ref={subNavContainerRef} className="container-subnav">
+    <div ref={subNavContainerRef} className="container-subnav" style={{borderBottomRightRadius : showNotificationFullScreen ? 0 : "" }}>
     {location.pathname.split("/")[2] === "options" ?
       <h1>{subTitle}{optionSubTitle}</h1> : 
       <h1>{subTitle}</h1> 
     }
       <div className="interaction-sub-menu">
-        <button className="svg-icon info-notification" onClick={interactNotif}>
+        <button className="svg-icon info-notification" onClick={showNotifFullScreen}>
           {hasNotif &&
             <div className="number-nofitication">{arrayNotifLength}</div>
           }
           <FontAwesomeIcon icon="bell" />
         </button>
-        <Link className="user-profile-link" to="/app/options">
+        <CSSTransition
+            in={showNotificationFullScreen}
+            timeout={500}
+            classNames="anim-container-sub"
+            unmountOnExit
+          >
+            <SubContainer />
+          </CSSTransition>
+        <Link className="user-profile-link" to="/app/options" onKeyUp={(e) => closeNotifOnTab(e)}>
           <span>{firstChar}</span>
         </Link>
       </div>
@@ -76,7 +85,7 @@ function SubNav({ showNotif, optionSubTitle }) {
 }
 
 SubNav.propTypes = {
-  showNotif: PropTypes.func.isRequired,
+  showNotifFullScreen: PropTypes.func.isRequired,
   optionSubTitle: PropTypes.string.isRequired
 }
 
