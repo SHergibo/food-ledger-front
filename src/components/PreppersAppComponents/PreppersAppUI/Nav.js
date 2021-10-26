@@ -5,9 +5,11 @@ import { useUserData, useUserOptionData, useNotificationData, useWindowWidth } f
 import axiosInstance from '../../../utils/axiosInstance';
 import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CSSTransition } from 'react-transition-group';
+import SubContainer from './SubContainer';
 import PropTypes from 'prop-types';
 
-function Nav({ history, logOut, showNotif, showNotification }) {
+function Nav({ history, logOut, showNotifTablet, showNotificationTablet }) {
   const location = useLocation();
   const { userData } = useUserData();
   const { notificationReceived } = useNotificationData();
@@ -43,8 +45,8 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   }, [userData, notificationReceived]);
 
   const burgerMenu = () => {
-    if(showNotification && windowWidth >= 768){
-      showNotif();
+    if(showNotificationTablet && windowWidth >= 768){
+      showNotifTablet();
       menu.current.classList.toggle('border-menu-open');
     }
     menuResp.current.classList.toggle('display-block');
@@ -80,14 +82,9 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   };
 
   const interactNotif = () => {
-    showNotif();
+    showNotifTablet();
     if(menuResp.current.classList.contains('display-block')) menuResp.current.classList.remove('display-block');
     setClosedMenu(false);
-    if(showNotification){
-      if(menu.current.classList.contains('border-menu-open')) menu.current.classList.remove('border-menu-open');
-    }else{
-      if(!menu.current.classList.contains('border-menu-open')) menu.current.classList.add('border-menu-open');
-    }
   }
 
   const goToNotification = () => {
@@ -101,11 +98,19 @@ function Nav({ history, logOut, showNotif, showNotification }) {
   };
 
   return (
-    <div ref={menu} className="main-menu">
+    <div ref={menu} className="main-menu" style={{borderBottomRightRadius : showNotificationTablet ? 0 : "" }}>
       <div className="interact-menu">
         <button className="svg-icon" onClick={interactMenu}>
           <FontAwesomeIcon icon={userOptionData?.openMenu ? "angle-left" : "angle-right"} />
         </button>
+        <CSSTransition
+            in={showNotificationTablet}
+            timeout={500}
+            classNames="anim-container-sub"
+            unmountOnExit
+          >
+          <SubContainer />
+        </CSSTransition>
         <Link to={{ pathname: '/app/liste-produit', search: sessionStorage.getItem('productQueryParamsFilter') }}>
           <img src={logo} alt="food ledger app logo"/>
         </Link>
@@ -198,8 +203,8 @@ function Nav({ history, logOut, showNotif, showNotification }) {
 Nav.propTypes = {
   history: PropTypes.object.isRequired,
   logOut: PropTypes.func.isRequired,
-  showNotif: PropTypes.func.isRequired,
-  showNotification: PropTypes.bool.isRequired,
+  showNotifTablet: PropTypes.func.isRequired,
+  showNotificationTablet: PropTypes.bool.isRequired,
 }
 
 export default Nav;
