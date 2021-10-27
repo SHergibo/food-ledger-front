@@ -453,6 +453,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                         minDate={new Date()}
                         showDisabledMonthNavigation
                         selected={expDate}
+                        enableTabLoop={false}
                         onChange={val => {
                           setExpDate(val);
                         }}
