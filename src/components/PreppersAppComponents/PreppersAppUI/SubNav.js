@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useUserData, useNotificationData } from './../DataContext';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +14,6 @@ function SubNav({ showNotifFullScreen, optionSubTitle, showNotificationFullScree
   const [hasNotif, setHasNotif] = useState(false);
   const [subTitle, setSubTitle] = useState("");
   const [arrayNotifLength, setArrayNotifLength] = useState(0);
-  const subNavContainerRef = useRef(null);
 
   let pathNameArray = useMemo(() => {
     return {
@@ -56,7 +55,7 @@ function SubNav({ showNotifFullScreen, optionSubTitle, showNotificationFullScree
   };
 
   return (
-    <div ref={subNavContainerRef} className="container-subnav" style={{borderBottomRightRadius : showNotificationFullScreen ? 0 : "" }}>
+    <div className="container-subnav" style={{borderBottomRightRadius : showNotificationFullScreen ? 0 : "" }}>
     {location.pathname.split("/")[2] === "options" ?
       <h1>{subTitle}{optionSubTitle}</h1> : 
       <h1>{subTitle}</h1> 
