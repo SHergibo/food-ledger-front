@@ -8,7 +8,6 @@ function SubContainer({history}) {
   const { notificationReceived, notificationType } = useNotificationData();
   const { windowWidth } = useWindowWidth();
 
-  //TODO créer une route comme protected.route pour gérer la route notification hors responsive mobile
   useEffect(() => {
       if(windowWidth >= 768 && history.location.pathname === "/app/notification" && history.length <= 2){
         history.push({
