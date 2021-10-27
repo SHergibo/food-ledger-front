@@ -874,7 +874,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
       {showFilter &&
         <>
-          <form className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
+          <form tabIndex={1} className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
 
             <div className="input-group">
               <input
