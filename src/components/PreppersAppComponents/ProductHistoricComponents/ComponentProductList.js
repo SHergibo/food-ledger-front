@@ -874,7 +874,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
 
       {showFilter &&
         <>
-          <form tabIndex={1} className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
+          <form className="form-filter-table" onSubmit={handleSubmit(populateSearchObject)}>
 
             <div className="input-group">
               <input
@@ -956,6 +956,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                       autoComplete="off"
                       onChange={field.onChange}
                       selected={field.value}
+                      enableTabLoop={false}
                     />
                   )}
                 />
