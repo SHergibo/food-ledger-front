@@ -51,7 +51,7 @@ function SubNav({ showNotifFullScreen, optionSubTitle, showNotificationFullScree
   }, [userData, notificationReceived]);
 
   const closeNotifOnTab = (e) => {
-    if(e.key === "Tab") showNotifFullScreen();
+    if(e.key === "Tab" && showNotificationFullScreen) showNotifFullScreen();
   };
 
   return (
