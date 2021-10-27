@@ -14,11 +14,12 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    li{
+    button{
       margin: 0 .5rem;
       padding: .2rem 0;
       cursor: pointer;
       color: var(--primary-color);
+      background-color: var(--white);
       text-decoration: underline;
       text-decoration-color: var(--white);
       transition: .2s ease-in-out;
@@ -27,7 +28,9 @@
       }
     }
     .chart-menu-interaction-active{
-      text-decoration-color: var(--primary-color);
+      button{
+        text-decoration-color: var(--primary-color);
+      }
     }
   }
 
