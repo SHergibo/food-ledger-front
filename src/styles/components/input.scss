@@ -45,6 +45,12 @@
       display: block;
       border-color: var(--white);
     }
+    &:focus ~ .checkmark-checkbox{
+      outline: solid 1px black;
+    }
+    &:focus:not(:focus-visible) ~ .checkmark-checkbox{
+      outline: none;
+    }
   }
 }
 
