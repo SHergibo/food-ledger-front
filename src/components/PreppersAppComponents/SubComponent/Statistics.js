@@ -312,8 +312,8 @@ function Statistics() {
                   if(i === 0){
                     cssClass = "chart-menu-interaction-active";
                   }
-                  return <li ref={(el) => (linkChartOneData.current[i] = el)} className={cssClass} onClick={()=>switchDataChartOne(keyName, i)} key={i}>
-                            {keyName}
+                  return <li ref={(el) => (linkChartOneData.current[i] = el)} className={cssClass}  key={i}>
+                            <button onClick={()=>switchDataChartOne(keyName, i)}>{keyName}</button>
                         </li>
                 })}
               </ul>
@@ -348,8 +348,8 @@ function Statistics() {
                   if(i === 0){
                     cssClass = "chart-menu-interaction-active";
                   }
-                  return <li ref={(el) => (linkChartFourData.current[i] = el)} className={cssClass} onClick={()=>switchDataChartFour(keyName, i)} key={i}>
-                            {keyName}
+                  return <li ref={(el) => (linkChartFourData.current[i] = el)} className={cssClass} key={i}>
+                            <button onClick={()=>switchDataChartFour(keyName, i)}>{keyName}</button>
                         </li>
                 })}
                 </ul>
