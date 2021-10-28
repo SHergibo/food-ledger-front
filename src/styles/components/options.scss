@@ -53,6 +53,10 @@
   @include container-radio();
 }
 
+.container-radio-input-disabled{
+  @include container-radio($disabled: true);
+}
+
 .form-profile, .form-email, .form-product, .form-table-product{
   display: flex;
   flex-direction: column;
