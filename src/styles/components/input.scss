@@ -54,7 +54,7 @@
   }
 }
 
-@mixin container-radio(){
+@mixin container-radio($disabled : false){
   display: flex;
   align-items: center;
   position: relative;
@@ -90,7 +90,12 @@
     right: 0;
     height: em(26px);
     width: em(26px);
-    background-color: var(--primary-color);
+    @if $disabled {
+      background-color: var(--grey);
+      cursor: not-allowed;
+    } @else{
+      background-color: var(--primary-color);
+    }
     border-radius: 50%;
     transition: .2s ease-in-out;
     &:after{
