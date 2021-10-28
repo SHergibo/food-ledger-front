@@ -77,6 +77,12 @@
     &:checked ~ .radio-checkmark:after {
       display: block;
     }
+    &:focus ~ .radio-checkmark{
+      outline: solid 1px black;
+    }
+    &:focus:not(:focus-visible) ~ .radio-checkmark{
+      outline: none;
+    }
   }
   .radio-checkmark {
     position: absolute;
