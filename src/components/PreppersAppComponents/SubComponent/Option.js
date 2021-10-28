@@ -312,7 +312,19 @@ function Option({ setOptionSubTitle }) {
                   <>
                   {btnOptionMenu.map((btn, index) => {
                     if(btn.value === "notificationReceived"){
-                      return <div ref={(el) => (btnMenuRef.current[index] = el)} id={`${btn.value}`} key={`${btn.value}-${index}`} className={`multiple-link-btn ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`} 
+                      return <div 
+                        tabIndex={0} 
+                        ref={(el) => (btnMenuRef.current[index] = el)} 
+                        id={`${btn.value}`} 
+                        key={`${btn.value}-${index}`} 
+                        className={`multiple-link-btn ${btn.value === 'userOptions' ? 'btn-option-active' : ''}`}
+                        onKeyUp={(e)=> {
+                          e.stopPropagation();
+                          if(e.key === "Enter" && e.target.id === "notificationReceived"){
+                            interactSubMenuBtn(e, btn, "Notification reçue");
+                            e.target.classList.add('btn-option-active');
+                          }
+                        }}
                         onClick={(e) => {
                           e.stopPropagation();
                           interactSubMenuBtn(e, btn, "Notification reçue");
@@ -320,20 +332,19 @@ function Option({ setOptionSubTitle }) {
                         }}>
                         Notification
                         <div onClick={(e) => {e.stopPropagation()}}>
-
-                          <span onClick={(e) => {
+                          <button onClick={(e) => {
                             interactSubMenuBtn(e, btn, "Notification reçue");
                             e.target.offsetParent.offsetParent.classList.add('btn-option-active');
                           }}>
                             reçue
-                          </span>
+                          </button>
 
-                          <span onClick={(e) => {
+                          <button onClick={(e) => {
                             interactSubMenuBtn(e, {value: "notificationSended"}, "Notification envoyée");
                             e.target.offsetParent.offsetParent.classList.add('btn-option-active');
                           }}>
                             envoyée
-                          </span>
+                          </button>
                         </div>
                       </div>
                     }else if (btn.value !== "notificationSended"){
