@@ -363,7 +363,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             <>
               {member.role === "admin" &&
                 <td className="td-align-center"> 
-                  <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching-${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                  <label className="container-radio-input" key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching-${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
                     <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching-${index}`} value={member._id}  checked={defaultCheckedAdmin} {...registerFormDelegateWhenSwitching("delegateRadioInput")}/>
                     <span className="radio-checkmark"></span>
                   </label>
@@ -371,7 +371,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               }
               {member.role === "user" &&
                 <td className="td-align-center"> 
-                  <label key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching-${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                  <label className="container-radio-input" key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching-${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
                     <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching-${index}`} value={member._id}  disabled={requestAdminNotification} {...registerFormDelegateWhenSwitching("delegateRadioInput")} />
                     <span className="radio-checkmark"></span>
                   </label>
@@ -405,13 +405,13 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
             <>
               {member.usercode !== userData.usercode && !member.isFlagged ?
                 <td className="td-align-center"> 
-                  <label key={`delegateMember-${index}`} htmlFor={`delegateMember${index}`}> 
+                  <label className="container-radio-input" key={`delegateMember-${index}`} htmlFor={`delegateMember${index}`}> 
                     <input type="radio" name="otherUserIdDidNotAcceptDelegate" id={`delegateMember${index}`} value={member._id} defaultChecked={checkedRadioBtn} {...registerRequestDelegateAdmin("otherUserIdDidNotAcceptDelegate")}/>
                     <span className="radio-checkmark"></span>
                   </label>
                 </td> :
                 <td className="td-align-center"> 
-                  <label key={`delegateMember-${index}`}> 
+                  <label className="container-radio-input" key={`delegateMember-${index}`}> 
                     <input type="radio" name="otherUserIdDidNotAcceptDelegate" disabled />
                     <span className="radio-checkmark"></span>
                   </label>
@@ -429,7 +429,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
         <td>Ne pas déléguer / supprimer la famille</td>
         <td></td>
         <td className="td-align-center"> 
-          <label htmlFor={"no-delegate"} onClick={() => {enableSubmitBtn()}}> 
+          <label className="container-radio-input" htmlFor={"no-delegate"} onClick={() => {enableSubmitBtn()}}> 
             <input type="radio" name="delegateRadioInput" id={"no-delegate"} value={""} disabled={requestAdminNotification} {...registerFormDelegateWhenSwitching("delegateRadioInput")}/>
             <span className="radio-checkmark"></span>
           </label>
