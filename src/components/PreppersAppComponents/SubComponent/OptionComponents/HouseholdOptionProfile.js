@@ -371,7 +371,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
               }
               {member.role === "user" &&
                 <td className="td-align-center"> 
-                  <label className="container-radio-input" key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching-${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
+                  <label className={requestAdminNotification ? "container-radio-input-disabled" : "container-radio-input"} key={`switchingMember-${index}`} htmlFor={`delegateMemberSwitching-${index}`} onClick={() => {enableSubmitBtn(member.usercode)}}> 
                     <input type="radio" name="delegateRadioInput" id={`delegateMemberSwitching-${index}`} value={member._id}  disabled={requestAdminNotification} {...registerFormDelegateWhenSwitching("delegateRadioInput")} />
                     <span className="radio-checkmark"></span>
                   </label>
@@ -411,7 +411,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
                   </label>
                 </td> :
                 <td className="td-align-center"> 
-                  <label className="container-radio-input" key={`delegateMember-${index}`}> 
+                  <label className="container-radio-input-disabled" key={`delegateMember-${index}`}> 
                     <input type="radio" name="otherUserIdDidNotAcceptDelegate" disabled />
                     <span className="radio-checkmark"></span>
                   </label>
@@ -429,7 +429,7 @@ function HouseholdOptionProfile({ otherMemberEligible, requestDelegateAdmin }) {
         <td>Ne pas déléguer / supprimer la famille</td>
         <td></td>
         <td className="td-align-center"> 
-          <label className="container-radio-input" htmlFor={"no-delegate"} onClick={() => {enableSubmitBtn()}}> 
+          <label className={requestAdminNotification ? "container-radio-input-disabled" : "container-radio-input"} htmlFor={"no-delegate"} onClick={() => {enableSubmitBtn()}}> 
             <input type="radio" name="delegateRadioInput" id={"no-delegate"} value={""} disabled={requestAdminNotification} {...registerFormDelegateWhenSwitching("delegateRadioInput")}/>
             <span className="radio-checkmark"></span>
           </label>
