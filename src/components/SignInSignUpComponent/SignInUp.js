@@ -69,8 +69,7 @@ function SignInUp() {
                 <img src={logo} alt="food ledger app logo"/>
                 <div className="title-interaction">
                   {(form === "step2" || form === "confirm")  &&
-                    <div className="back-to-interaction">
-                      <FontAwesomeIcon className="btn-icon" icon="chevron-left" onClick={
+                    <button className="back-to-interaction" onClick={
                         () => {
                           if (form === "step2") {
                             setForm("step1");
@@ -84,9 +83,10 @@ function SignInUp() {
                             formRef.current.classList.remove('active-confirm-usercode');
                           }
                         }
-                      }/>
-                      <p>Étape précédente</p>
-                    </div>
+                      }>
+                      <FontAwesomeIcon className="btn-icon" icon="chevron-left" />
+                      Étape précédente
+                    </button>
                   }
                   <h1>{formTitle}</h1>
                 </div>
@@ -138,7 +138,7 @@ function SignInUp() {
           </div>
           
           <div className="switch-form-container">
-            {windowWidth < 1200 ?
+            {windowWidth < 1320 ?
               <>
                 {form === "login" &&
                   <div>
@@ -162,7 +162,7 @@ function SignInUp() {
               <>
                 <div>
                   <p>Déjà un compte ?</p>
-                  <button className="btn-white" onClick={() => returnToLogin()}>
+                  <button tabIndex={form !== "login" ? 0 : -1} className="btn-white" onClick={() => returnToLogin()}>
                     <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
                     Se connecter
                   </button>
@@ -170,7 +170,7 @@ function SignInUp() {
 
                 <div>
                   <p>Pas encore de compte ?</p>
-                  <button title="La création d'un compte n'est pas disponible pour le moment." className="btn-white" onClick={() => createUserForm()}>
+                  <button tabIndex={form !== "login" ? -1 : 0} title="La création d'un compte n'est pas disponible pour le moment." className="btn-white" onClick={() => createUserForm()}>
                     <FontAwesomeIcon className="btn-icon" icon="user-plus" />
                     Créer un compte
                   </button>
