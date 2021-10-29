@@ -32,6 +32,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
   const [ openTitleMessage, setOpenTitleMessage ] = useState(false);
   const isMounted = useRef(true);
   const valueRef = useRef({});
+  const datePickerRef = useRef();
 
   const { register, handleSubmit, formState: { errors }, control, reset } = useForm({
     defaultValues: useMemo(() => {
@@ -367,6 +368,9 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
             min={0}
             id="minimumInStock"
             className={`form-input ${errors.minimumInStock  ? "error-input" : ""}`}
+            onKeyUp={(e)=> {
+              if(e.key === "Tab") datePickerRef.current.setOpen(false);
+            }}
             {...register("minimumInStock")}
           />
           <label htmlFor="minimumInStock" className="form-label">Stock minimum {formType === "edit" && " *"}</label>
@@ -444,6 +448,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                     {formType === "edit" && <label className="form-label" htmlFor="expirationDate">Date d'expiration du produit</label>}
                     <div className="container-input-interaction">
                       <DatePicker
+                        ref={datePickerRef}
                         className={`form-input ${(errorExpDate || errorExpDateEmpty)  ? "error-input" : ""}`}
                         id="expirationDate"
                         isClearable
@@ -458,7 +463,15 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
                           setExpDate(val);
                         }}
                       />
-                      <button className="btn-input-interaction" type="button" onClick={addExpDate}><FontAwesomeIcon className="btn-icon" icon="plus" /></button>
+                      <button 
+                      className="btn-input-interaction" 
+                      type="button" 
+                      onClick={addExpDate}
+                      onKeyUp={(e)=> {
+                        if(e.key === "Tab") datePickerRef.current.setOpen(false);
+                      }}>
+                        <FontAwesomeIcon className="btn-icon" icon="plus" />
+                      </button>
                     </div>
                     <div className="error-message-input">
                       {errorExpDate && <span>Minimum une date d'expiration requise !</span>}
