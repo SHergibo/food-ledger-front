@@ -53,7 +53,6 @@
           margin-right: rem(12px);
         }
         button{
-          all: unset;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -102,14 +101,14 @@
       .back-to-interaction{
         display: flex;
         align-items: center;
-        height: em(30px);
+        height: rem(30px);
+        width: fit-content;
+        font-size: rem(20px);
+        font-weight: 600;
+        color: var(--primary-color);
+        background-color: var(--white);
         .btn-icon{
-          font-size: rem(20px);
           margin-right: rem(9px);
-        }
-        p{
-          font-size: rem(20px);
-          font-weight: 600;
         }
       }
       h1{
