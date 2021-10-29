@@ -44,6 +44,15 @@ input{
   outline: none;
 }
 
+button, a{
+  &:focus{
+    outline: solid 2px black;
+  }
+  &:focus:not(:focus-visible){
+    outline: none;
+  }
+}
+
 a{
   text-decoration: none;
 }
