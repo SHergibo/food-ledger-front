@@ -53,6 +53,7 @@
 
 .btn-white{
   @include primary-btn(var(--white), var(--primary-color));
+  cursor: not-allowed;
 }
 
 .btn-disabled{
