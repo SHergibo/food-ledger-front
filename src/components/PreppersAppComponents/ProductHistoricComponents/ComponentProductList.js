@@ -42,6 +42,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
   const [pageCount, setPageCount] = useState(0);
   const [searchObject, setSearchObject] = useState({});
   const [sortObject, setSortObject] = useState({});
+  const datePickerRef = useRef();
 
   const [hideColorCodeDate, setHideColorCodeDate] = useState("");
   const [hideColorCodeStock, setHideColorCodeStock] = useState("");
@@ -935,6 +936,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 id="product-kcal"
                 className="form-input"
                 defaultValue={searchObject.kcal}
+                onKeyUp={(e)=> {
+                  if(e.key === "Tab") datePickerRef.current.setOpen(false);
+                }}
                 {...register("kcal")}
               />
               <label htmlFor="product-kcal" className="form-label-grey">Valeur énergétique du produit (kcal)</label>
@@ -948,6 +952,7 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                   name="expirationDate"
                   render={({field}) => (
                     <DatePicker
+                      ref={datePickerRef}
                       className="form-input"
                       id="product-expirationDate"
                       dateFormat="dd/MM/yyyy"
@@ -971,6 +976,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title, history }) {
                 id="product-location"
                 className="form-input"
                 defaultValue={searchObject.location}
+                onKeyUp={(e)=> {
+                  if(e.key === "Tab") datePickerRef.current.setOpen(false);
+                }}
                 {...register("location")}
               />
               <label htmlFor="product-location" className="form-label-grey">Emplacement du produit</label>
