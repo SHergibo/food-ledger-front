@@ -410,6 +410,7 @@
   &:hover {
     border-radius: $datepicker__border-radius;
     background-color: $datepicker__background-color;
+    color: var(--white);
   }
 
   &--today {
