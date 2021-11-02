@@ -41,7 +41,8 @@ import {
   faExchangeAlt,
   faDoorOpen,
   faRandom,
-  faSearch
+  faSearch,
+  faChevronUp
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -78,7 +79,8 @@ library.add(
   faExchangeAlt,
   faDoorOpen,
   faRandom,
-  faSearch
+  faSearch,
+  faChevronUp
 );
 
 function App() {
