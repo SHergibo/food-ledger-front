@@ -4,6 +4,7 @@ import { logout, refreshToken } from './../../utils/Auth';
 import Nav from './PreppersAppUI/Nav';
 import SubNav from './PreppersAppUI/SubNav';
 import MainContainer from './PreppersAppUI/MainContainer';
+import BackToTop from './UtilitiesComponent/BackToTop';
 import PropTypes from 'prop-types';
 
 function PreppersApp({ history }) {
@@ -76,6 +77,7 @@ function PreppersApp({ history }) {
           <MainContainer
             setOptionSubTitle={setOptionSubTitle}
           />
+          <BackToTop />
         </div>
       </div>
     </DataProvider>
