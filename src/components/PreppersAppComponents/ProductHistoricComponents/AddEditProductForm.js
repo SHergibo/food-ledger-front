@@ -418,7 +418,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
           </button>
           <h1>{titleForm}</h1>
         </div>
-          
+        {formType === "edit" &&
           <TitleButtonInteraction
             title={"Supprimer le produit !"}
             openTitleMessage={openTitleMessage}
@@ -426,6 +426,7 @@ function AddEditProductForm({ history, handleFunction, formType, value, arrayExp
             icon={<FontAwesomeIcon icon="trash" />}
             contentDiv={contentTitleInteractionDeleteProductHistoric}
           />
+        }
         </div>
       </div>
       
