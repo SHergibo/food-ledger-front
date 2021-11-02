@@ -9,7 +9,7 @@
     "@hookform/error-message": "0.0.4",
     "@simbathesailor/use-what-changed": "^0.1.25",
     "@testing-library/jest-dom": "^5.15.0",
-    "@testing-library/react": "^9.3.2",
+    "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.21.4",
     "chart.js": "^2.9.4",
