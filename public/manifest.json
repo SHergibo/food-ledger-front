@@ -1,6 +1,6 @@
 {
-  "short_name": "Gestion de stock",
-  "name": "Gestion de stock",
+  "short_name": "Food Ledger",
+  "name": "Registre de vos sotcks de nourriture",
   "icons": [
     {
       "src": "favicon.ico",
