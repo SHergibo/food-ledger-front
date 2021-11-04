@@ -11,9 +11,6 @@
 # production
 /build
 
-# Api config
-src/apiConfig/ApiConfig.js
-
 # misc
 .DS_Store
 .env
