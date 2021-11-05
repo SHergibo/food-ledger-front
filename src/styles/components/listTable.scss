@@ -390,15 +390,39 @@
   .list-table{
     thead{
       tr{
+        height: calc(calc(var(--min-height) - 18.875rem) / 14);
+      }
+    }
+    tbody{
+      tr{
+        height: calc(calc(var(--min-height) - 18.875rem) / 14);
+        .all-info{
+          padding: 0 1rem;
+        }
+      }
+    }
+  }
+  .pagination{
+    height: calc(calc(var(--min-height) - 18.875rem) / 14);
+  }
+  .no-data{
+    min-height: calc(var(--min-height) - 13.75rem);
+  }
+  .no-data-option{
+    min-height: calc(var(--min-height) - 19rem);
+  }
+}
+
+@media screen and (min-height: 1000px){
+  .list-table{
+    thead{
+      tr{
         height: calc(calc(100vh - 18.875rem) / 14);
       }
     }
     tbody{
       tr{
         height: calc(calc(100vh - 18.875rem) / 14);
-        .all-info{
-          padding: 0 1rem;
-        }
       }
     }
   }
