@@ -8,7 +8,8 @@ function BackToTop() {
   const handleBackToTopScroll= () => {
     let scrollpage = Math.round(window.scrollY);
     let windowHeight = window.innerHeight;
-    if (scrollpage > windowHeight/3) {
+    let windowWidth = window.innerWidth;
+    if (scrollpage > windowHeight/3 && windowWidth < 1320) {
       setShow(true);
     } else {
       setShow(false);
