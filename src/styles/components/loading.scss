@@ -32,3 +32,11 @@
     }
   }
 }
+
+/*Full-screen*/
+@media screen and (min-width: 1320px){
+  .container-loading{
+    min-height: calc(var(--min-height) - 18.875rem);
+    height: 100%
+  }
+}
