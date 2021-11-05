@@ -52,6 +52,7 @@
 /*Full-screen*/
 @media screen and (min-width: 1320px){
   .chart-container{
+    min-height: calc(var(--min-height) - 13.875rem);
     height: calc(100vh - 13.875rem);
     flex-direction: row;
     flex-wrap: wrap;
