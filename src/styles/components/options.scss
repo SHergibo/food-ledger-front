@@ -219,7 +219,7 @@
     }
   }
   .container-option{
-    min-height: unset;
+    min-height: calc(var(--min-height) - 19rem);
   }
   .table-familly-member{
     min-width: 50%;
