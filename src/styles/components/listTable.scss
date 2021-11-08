@@ -408,6 +408,9 @@
   .no-data{
     min-height: calc(var(--min-height) - 13.75rem);
   }
+  .no-data-search{
+    min-height: calc(var(--min-height) - 18.875rem);
+  }
   .no-data-option{
     min-height: calc(var(--min-height) - 19rem);
   }
@@ -431,6 +434,9 @@
   }
   .no-data{
     min-height: calc(100vh - 13.75rem);
+  }
+  .no-data-search{
+    min-height: calc(100vh - 18.875rem);
   }
   .no-data-option{
     min-height: calc(100vh - 19rem);
