@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 function Table({ columns, customTableClass, sorting, btnSortRef, sortObject, populateSortObject, setUrlPageQueryParam, trTable, pagination, paginationInfo, goToPageUrl }) {
   const { pageIndex, setPageIndex, pageCount } = paginationInfo;
-  const [ paginationInput, setPaginationInput ] = useState(1);
+  const [ paginationInput, setPaginationInput ] = useState(null);
 
   useEffect(() => {
     if(pageIndex) {
@@ -67,8 +67,8 @@ function Table({ columns, customTableClass, sorting, btnSortRef, sortObject, pop
     } else if (e.target.value <= 0 || e.target.value === ""){
       setPaginationInput(null);
     } else {
-      setPageIndex(e.target.value);
-      if(setUrlPageQueryParam) setUrlPageQueryParam(e.target.value);
+      setPageIndex(parseInt(e.target.value));
+      if(setUrlPageQueryParam) setUrlPageQueryParam(parseInt(e.target.value));
     }
   }
 
@@ -119,7 +119,7 @@ function Table({ columns, customTableClass, sorting, btnSortRef, sortObject, pop
               <span>Page
                 <input 
                 type="number" 
-                value={paginationInput}
+                value={paginationInput || ''}
                 min={1}
                 max={paginationInfo.pageCount}
                 onChange={(e) => {inputPagination(e)}}/>
