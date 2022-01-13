@@ -64,9 +64,13 @@ function Table({ columns, customTableClass, sorting, btnSortRef, sortObject, pop
       setPageIndex(pageCount);
       setPaginationInput(pageCount);
       if(setUrlPageQueryParam) setUrlPageQueryParam(pageCount);
-    } else if (e.target.value <= 0 || e.target.value === ""){
+    } else if (e.target.value < 0 || e.target.value === ""){
       setPaginationInput(null);
+    } else if(e.target.value === "0"){  
+      setPaginationInput(1);
+      setPageIndex(1);
     } else {
+      setPaginationInput(e.target.value);
       setPageIndex(parseInt(e.target.value));
       if(setUrlPageQueryParam) setUrlPageQueryParam(parseInt(e.target.value));
     }
