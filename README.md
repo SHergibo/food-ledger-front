@@ -9,7 +9,7 @@ Food ledger is a project bootstrapped with [Create React App](https://github.com
 ## Features
 
 - Search fields that make it quick and easy to find your product
-- Statistics that help you show different data about your product
+- Statistics that help you show different data about your products
 - Automatically create a shopping list when you remove one or more of your products
 - A member manager system that allows you to invite or kick a member in your household
 - Different options to manage the sending of a warning email for products that are close to their expiration date or you shopping list
