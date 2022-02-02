@@ -1,12 +1,19 @@
-# Cv-2020 app
+# Food ledger app
 
-Cv-2020 is an application that helps you show your resume information online. With this application, you can display your contact information, work experience, education, skills and portfolio. A contact form is also provided which can help any recruiter to contact you easily.
+Food ledger is an application that helps you manage all your perishable and non-perishable food stocks in your home.
 
-An administration area located in the url `/login` is where you should go to add all your informations that will be displayed on your resume.
+To use this app, you need to use [food-ledger-api](https://github.com/SHergibo/food-ledger-api) REST api at the same time. Without it you will not be able to add, update, delete or view any data.
 
-To use this app, you need to use [cv-2020-back](https://github.com/SHergibo/cv-2020-back) REST api at the same time. Without it you will not be able to add, update or view your resume informations.
+Food ledger is a project bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Cv-2020 is a project bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Features
+
+- Search fields that make it quick and easy to find your product
+- Statistics that help you show different data about your product
+- Automatically create a shopping list when you remove one or more of your products
+- A member manager system that allows you to invite or kick a member in your household
+- Different options to manage the sending of a warning email for products that are close to their expiration date or you shopping list
+- A log system that help you see when and how many products you have added or removed from your database
 
 ## Requirements
 
@@ -17,8 +24,8 @@ Cv-2020 is a project bootstrapped with [Create React App](https://github.com/fac
 #### 1) Clone the repo
 
 ```bash
-git clone https://github.com/SHergibo/cv-2020.git
-cd cv-2020
+git clone https://github.com/SHergibo/food-ledger-front.git
+cd food-ledger-front
 rm -rf .git
 ```
 
