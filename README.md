@@ -1,6 +1,6 @@
 # Food ledger app
 
-Food ledger is an application that helps you manage all your perishable and non-perishable food stocks in your home.
+Food ledger is an application that helps you manage all your perishable and non-perishable food stocks in your household.
 
 To use this app, you need to use [food-ledger-api](https://github.com/SHergibo/food-ledger-api) REST api at the same time. Without it you will not be able to add, update, delete or view any data.
 
