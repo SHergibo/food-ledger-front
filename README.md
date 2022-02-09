@@ -29,13 +29,19 @@ cd food-ledger-front
 rm -rf .git
 ```
 
-#### 2) Install dependencies
+#### 2) Add your environments data
+
+Rename `.env.development-sample.local` and `.env.production-sample.local` to `.env.development.local` and `.env.production.local`.
+
+In these files, you need to add the `REACT_APP_API_DOMAIN` that you will use to call your API when using the app in development or production mode.
+
+#### 3) Install dependencies
 
 ```bash
 npm install
 ```
 
-#### 3) Running the app
+#### 4) Running the app
 
 - Locally
 
