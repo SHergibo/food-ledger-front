@@ -1,50 +1,50 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { DataProvider } from './DataContext';
-import { logout, refreshToken } from './../../utils/Auth';
-import Nav from './PreppersAppUI/Nav';
-import SubNav from './PreppersAppUI/SubNav';
-import MainContainer from './PreppersAppUI/MainContainer';
-import BackToTop from './UtilitiesComponent/BackToTop';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState, useCallback } from "react";
+import { DataProvider } from "./DataContext";
+import { logout, refreshToken } from "./../../utils/Auth";
+import Nav from "./PreppersAppUI/Nav";
+import SubNav from "./PreppersAppUI/SubNav";
+import MainContainer from "./PreppersAppUI/MainContainer";
+import BackToTop from "./UtilitiesComponent/BackToTop";
+import PropTypes from "prop-types";
 
 function PreppersApp({ history }) {
   const [showNotificationTablet, setShowNotificationTablet] = useState(false);
-  const [showNotificationFullScreen, setShowNotificationFullScreen] = useState(false);
+  const [showNotificationFullScreen, setShowNotificationFullScreen] =
+    useState(false);
   const [optionSubTitle, setOptionSubTitle] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const responsiveWidth = useCallback(() =>{
+  const responsiveWidth = useCallback(() => {
     setWindowWidth(window.innerWidth);
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', responsiveWidth);
-    return () =>{
-      window.removeEventListener('resize', responsiveWidth);
-    }
+    window.addEventListener("resize", responsiveWidth);
+    return () => {
+      window.removeEventListener("resize", responsiveWidth);
+    };
   }, [responsiveWidth]);
 
   useEffect(() => {
-    if(windowWidth >= 1320 && showNotificationTablet){
+    if (windowWidth >= 1320 && showNotificationTablet) {
       setShowNotificationTablet(false);
       setShowNotificationFullScreen(true);
     }
-    if(windowWidth < 1320 && showNotificationFullScreen){
+    if (windowWidth < 1320 && showNotificationFullScreen) {
       setShowNotificationTablet(true);
       setShowNotificationFullScreen(false);
     }
   }, [windowWidth, showNotificationTablet, showNotificationFullScreen]);
 
   useEffect(() => {
-    const refreshTokenInterval = setInterval(() => {
-      refreshToken();
+    const refreshTokenInterval = setInterval(async () => {
+      await refreshToken();
     }, 870000);
 
     return () => {
       clearInterval(refreshTokenInterval);
     };
   }, []);
-
 
   let showNotifTablet = () => {
     setShowNotificationTablet(!showNotificationTablet);
@@ -74,19 +74,16 @@ function PreppersApp({ history }) {
             showNotificationFullScreen={showNotificationFullScreen}
             optionSubTitle={optionSubTitle}
           />
-          <MainContainer
-            setOptionSubTitle={setOptionSubTitle}
-          />
+          <MainContainer setOptionSubTitle={setOptionSubTitle} />
           <BackToTop />
         </div>
       </div>
     </DataProvider>
-  )
+  );
 }
 
 PreppersApp.propTypes = {
   history: PropTypes.object.isRequired,
-}
+};
 
 export default PreppersApp;
-
