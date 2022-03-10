@@ -13,15 +13,15 @@ const loginIn = async (data) => {
         res.data.token.expiresIn
       ) {
         response = res.status;
-        let accessToken = res.data.token.accessToken;
-        let refresh_token = res.data.token.refreshToken.token;
-        let user_id = res.data.user._id;
-        let user_email = res.data.user.email;
 
-        localStorage.setItem("access_token", accessToken);
-        localStorage.setItem("refresh_token", refresh_token);
-        localStorage.setItem("user_id", user_id);
-        localStorage.setItem("user_email", user_email);
+        localStorage.setItem("access_token", res.data.token.accessToken);
+        localStorage.setItem(
+          "refresh_token",
+          res.data.token.refreshToken.token
+        );
+        localStorage.setItem("user_id", res.data.user._id);
+        localStorage.setItem("user_email", res.data.user.email);
+        localStorage.setItem("expiresIn", res.data.token.expiresIn);
       }
     })
     .catch(() => {
@@ -110,6 +110,7 @@ const refreshToken = async () => {
             "refresh_token",
             response.data.refreshToken.token
           );
+          localStorage.setItem("expiresIn", response.data.expiresIn);
         });
       return true;
     } catch (error) {
