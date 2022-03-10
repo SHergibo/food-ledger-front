@@ -13,6 +13,9 @@ function PreppersApp({ history }) {
     useState(false);
   const [optionSubTitle, setOptionSubTitle] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [expiresIn, setExpiresIn] = useState(
+    new Date(localStorage.getItem("expiresIn"))
+  );
 
   const responsiveWidth = useCallback(() => {
     setWindowWidth(window.innerWidth);
@@ -36,15 +39,46 @@ function PreppersApp({ history }) {
     }
   }, [windowWidth, showNotificationTablet, showNotificationFullScreen]);
 
+  const logOutCallBack = useCallback(async () => {
+    await logout();
+    history.push("/");
+  }, [history]);
+
   useEffect(() => {
+    let nowDate = new Date();
+    let timeInterval = 0;
+
+    if (expiresIn.getHours() > nowDate.getHours()) {
+      timeInterval = Math.floor(
+        (expiresIn.getMinutes() - nowDate.getMinutes() + 59) * 60 * 1000
+      );
+    }
+
+    if (
+      timeInterval === 0 &&
+      expiresIn.getMinutes() - nowDate.getMinutes() - 1 <= 1
+    ) {
+      timeInterval = 1000;
+    }
+
+    if (timeInterval === 0) {
+      timeInterval = Math.floor(
+        (expiresIn.getMinutes() - nowDate.getMinutes() - 1) * 60 * 1000
+      );
+    }
+
     const refreshTokenInterval = setInterval(async () => {
-      await refreshToken();
-    }, 870000);
+      const responseRefreshToken = await refreshToken();
+      if (!responseRefreshToken) {
+        logOutCallBack();
+      }
+      setExpiresIn(new Date(localStorage.getItem("expiresIn")));
+    }, timeInterval);
 
     return () => {
       clearInterval(refreshTokenInterval);
     };
-  }, []);
+  }, [expiresIn, logOutCallBack]);
 
   let showNotifTablet = () => {
     setShowNotificationTablet(!showNotificationTablet);
