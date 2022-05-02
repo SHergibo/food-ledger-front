@@ -130,6 +130,8 @@ const checkAuth = async () => {
       await checkAuth.get(`/api/${apiVersion}/auth/check-token`);
       return true;
     } catch (error) {
+      localStorage.clear();
+      sessionStorage.clear();
       return false;
     }
   } else {
