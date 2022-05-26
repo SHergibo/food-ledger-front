@@ -1,12 +1,12 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useUserData, useSocket, useNotificationData } from '../../DataContext';
-import axiosInstance from '../../../../utils/axiosInstance';
-import { apiDomain, apiVersion } from '../../../../apiConfig/ApiConfig';
-import Table from './../../UtilitiesComponent/Table';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { useUserData, useSocket, useNotificationData } from "../../DataContext";
+import axiosInstance from "../../../../utils/axiosInstance";
+import { apiDomain, apiVersion } from "../../../../apiConfig/ApiConfig";
+import Table from "./../../UtilitiesComponent/Table";
 import { columnsNotifSended } from "./../../../../utils/localData";
 import { pageSize } from "./../../../../utils/globalVariable";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Loading from './../../UtilitiesComponent/Loading';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loading from "./../../UtilitiesComponent/Loading";
 
 function NotificationSendedOption() {
   const { userData } = useUserData();
@@ -23,51 +23,57 @@ function NotificationSendedOption() {
   useEffect(() => {
     setNotificationType("sended");
     return () => {
-      setNotificationType('');
-    }
+      setNotificationType("");
+    };
   }, [setNotificationType]);
 
   useEffect(() => {
     let socket = null;
 
-    if(socketRef.current && userData){
+    if (socketRef.current && userData) {
       socket = socketRef.current;
-      socket.emit('enterSocketRoom', {socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`});
+      socket.emit("enterSocketRoom", {
+        socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`,
+      });
 
       socket.on("connect", () => {
-        socket.emit('enterSocketRoom', {socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`});
+        socket.emit("enterSocketRoom", {
+          socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`,
+        });
       });
     }
 
     return () => {
-      if(socket && userData) {
-        socket.emit('leaveSocketRoom', {socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`});
-        socket.off('connect');
+      if (socket && userData) {
+        socket.emit("leaveSocketRoom", {
+          socketRoomName: `${userData._id}/notificationSended/${pageIndex - 1}`,
+        });
+        socket.off("connect");
       }
     };
   }, [userData, socketRef, pageIndex]);
 
   const updateNotifArray = useCallback((data) => {
     setNotificationSended(data.arrayData);
-    if(data.totalNotifSended >= 1){
+    if (data.totalNotifSended >= 1) {
       setPageCount(Math.ceil(data.totalNotifSended / pageSize));
       setHasNotif(true);
-      if(data.arrayData.length === 0){
-        setPageIndex(currPageIndex => currPageIndex - 1);
+      if (data.arrayData.length === 0) {
+        setPageIndex((currPageIndex) => currPageIndex - 1);
       }
-    }else{
+    } else {
       setHasNotif(false);
     }
-  },[]);
+  }, []);
 
   const updatePageCount = useCallback((data) => {
-      setPageCount(Math.ceil(data.totalNotif / pageSize));
-  },[]);
+    setPageCount(Math.ceil(data.totalNotif / pageSize));
+  }, []);
 
   useEffect(() => {
     let socket = null;
 
-    if(socketRef.current){
+    if (socketRef.current) {
       socket = socketRef.current;
       socket.on("updateNotifArray", (data) => {
         updateNotifArray(data);
@@ -79,34 +85,37 @@ function NotificationSendedOption() {
     }
 
     return () => {
-      if(socket) {
-        socket.off('updateNotifArray');
-        socket.off('updatePageCount');
+      if (socket) {
+        socket.off("updateNotifArray");
+        socket.off("updatePageCount");
       }
-    }
+    };
   }, [socketRef, updateNotifArray, updatePageCount]);
 
   const getNotificationSended = useCallback(async () => {
     setErrorFetch(false);
     setLoading(true);
-    const getNotificationSendedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-sended-notification/${userData._id}?page=${pageIndex - 1}`;
-    await axiosInstance.get(getNotificationSendedEndPoint)
+    const getNotificationSendedEndPoint = `${apiDomain}/api/${apiVersion}/notifications/pagination-sended-notification/${
+      userData._id
+    }?page=${pageIndex - 1}`;
+    await axiosInstance
+      .get(getNotificationSendedEndPoint)
       .then(async (response) => {
-        if(isMounted.current){
-          if(response.data.totalNotifSended >=1){
+        if (isMounted.current) {
+          if (response.data.totalNotifSended >= 1) {
             setNotificationSended(response.data.arrayData);
             setPageCount(Math.ceil(response.data.totalNotifSended / pageSize));
             setHasNotif(true);
-          }else{
+          } else {
             setHasNotif(false);
           }
           setLoading(false);
         }
       })
-      .catch((error)=> {
+      .catch((error) => {
         let jsonError = JSON.parse(JSON.stringify(error));
-        if(isMounted.current){
-          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+        if (isMounted.current) {
+          if (error.code === "ECONNABORTED" || jsonError.name === "Error") {
             setErrorFetch(true);
           }
         }
@@ -114,50 +123,49 @@ function NotificationSendedOption() {
   }, [userData, pageIndex]);
 
   useEffect(() => {
-    if(userData){
+    if (userData) {
       getNotificationSended();
     }
   }, [userData, getNotificationSended]);
 
-
   useEffect(() => {
     return () => {
       isMounted.current = false;
-    }
+    };
   }, []);
 
   const deleteNotification = async (notificationId) => {
-    const removeNotificationEndpoint = `${apiDomain}/api/${apiVersion}/notifications/${notificationId}?type=sended&page=${pageIndex - 1}`;
-    await axiosInstance.delete(removeNotificationEndpoint)
-    .then((response) => {
-      if(isMounted.current){
-        if(response.data.totalNotif >=1){
+    const removeNotificationEndpoint = `${apiDomain}/api/${apiVersion}/notifications/${notificationId}?type=sended&page=${
+      pageIndex - 1
+    }`;
+    await axiosInstance.delete(removeNotificationEndpoint).then((response) => {
+      if (isMounted.current) {
+        if (response.data.totalNotif >= 1) {
           setNotificationSended(response.data.arrayData);
           setPageCount(Math.ceil(response.data.totalNotif / pageSize));
           setHasNotif(true);
-        }else{
+        } else {
           setHasNotif(false);
         }
-        // setLoading(false);
       }
-    })
-  }
+    });
+  };
 
   const notificationSendedTypes = (type) => {
     switch (type) {
-      case "need-switch-admin" :
+      case "need-switch-admin":
         return "Invitation nouveau membre";
-      case "request-admin" :
+      case "request-admin":
         return "Délégation droits administrateurs";
-      case "invitation-household-to-user" :
+      case "invitation-household-to-user":
         return "Invitation nouveau membre";
-      case "invitation-user-to-household" :
-          return "Invitation nouvelle famille";
-  
+      case "invitation-user-to-household":
+        return "Invitation nouvelle famille";
+
       default:
         break;
     }
-  }
+  };
 
   let trTableNotification = notificationSended.map((notification, index) => {
     return (
@@ -170,11 +178,20 @@ function NotificationSendedOption() {
         </td>
         <td className="td-notif-action">
           <div className="div-list-table-action">
-            <button title="Annuler la notification" type="button" className="list-table-one-action" onClick={()=>{deleteNotification(notification._id)}}><FontAwesomeIcon icon="trash"/></button>
+            <button
+              title="Annuler la notification"
+              type="button"
+              className="list-table-one-action"
+              onClick={() => {
+                deleteNotification(notification._id);
+              }}
+            >
+              <FontAwesomeIcon icon="trash" />
+            </button>
           </div>
         </td>
-      </tr>  
-    )
+      </tr>
+    );
   });
 
   return (
@@ -187,26 +204,29 @@ function NotificationSendedOption() {
 
       <div className="container-option-data">
         <div className="option-component">
-          {hasNotif && 
-            <Table 
+          {hasNotif && (
+            <Table
               columns={columnsNotifSended}
-              customTableClass={{customThead: "centered-thead"}}
+              customTableClass={{ customThead: "centered-thead" }}
               trTable={trTableNotification}
               pagination={true}
-              paginationInfo={{pageIndex : pageIndex, setPageIndex: setPageIndex, pageCount : pageCount}}
+              paginationInfo={{
+                pageIndex: pageIndex,
+                setPageIndex: setPageIndex,
+                pageCount: pageCount,
+              }}
             />
-          }
-          
-          {!hasNotif && 
+          )}
+
+          {!hasNotif && (
             <div className="no-data-option">
               <p>Pas de notification!</p>
             </div>
-          }
+          )}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default NotificationSendedOption
-
+export default NotificationSendedOption;
