@@ -1,29 +1,21 @@
-import React, { useEffect } from 'react';
-import { useHistory, Route } from 'react-router-dom';
-import { useUserData } from '../PreppersAppComponents/DataContext';
-import NoHousehold from './../PreppersAppComponents/UtilitiesComponent/NoHousehold';
+import React, { useEffect } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
+import { useUserData } from "../PreppersAppComponents/DataContext";
+import NoHousehold from "./../PreppersAppComponents/UtilitiesComponent/NoHousehold";
 
 const HasHousehold = ({ component: Component, ...rest }) => {
   const { userData } = useUserData();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if(userData?.householdId === null){
-      history.push('/app/liste-produit');
+    if (userData?.householdId === null) {
+      navigate("/app/liste-produit");
     }
-  }, [userData, history]);
+  }, [userData, navigate]);
 
-  return (
-    <>
-    {userData && userData.householdId ? 
-      <Route
-        {...rest}
-        render={props => <Component {...props} />}
-      /> : 
-      <Route {...rest} component={NoHousehold} />
-    }
-    </>
-  );
-}
+  if (userData === undefined) return null;
+
+  return userData && userData.householdId ? <Outlet /> : <NoHousehold />;
+};
 
 export default HasHousehold;
