@@ -1,10 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function Page404({ history }) {
+function Page404() {
+  const navigate = useNavigate();
 
   const returnHome = () => {
-    history.push("/");
+    navigate("/");
   };
 
   return (
@@ -12,15 +13,12 @@ function Page404({ history }) {
       <h1>Gestion de stock</h1>
       <div className="not-found-action">
         <p>404 page non trouvée !</p>
-        <button className="btn-purple" onClick={returnHome}>Retour</button>
+        <button className="btn-purple" onClick={returnHome}>
+          Retour
+        </button>
       </div>
     </div>
-  )
+  );
 }
 
-Page404.propTypes = {
-  history: PropTypes.object.isRequired,
-}
-
-export default Page404
-
+export default Page404;
