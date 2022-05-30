@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { DataProvider } from "./DataContext";
 import { logout, refreshToken } from "./../../utils/Auth";
 import Nav from "./PreppersAppUI/Nav";
 import SubNav from "./PreppersAppUI/SubNav";
 import MainContainer from "./PreppersAppUI/MainContainer";
 import BackToTop from "./UtilitiesComponent/BackToTop";
-import PropTypes from "prop-types";
 
-function PreppersApp({ history }) {
+function PreppersApp() {
+  const navigate = useNavigate();
   const [showNotificationTablet, setShowNotificationTablet] = useState(false);
   const [showNotificationFullScreen, setShowNotificationFullScreen] =
     useState(false);
@@ -41,8 +42,8 @@ function PreppersApp({ history }) {
 
   const logOutCallBack = useCallback(async () => {
     await logout();
-    history.push("/");
-  }, [history]);
+    navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     let nowDate = new Date();
@@ -90,14 +91,13 @@ function PreppersApp({ history }) {
 
   let logOut = async () => {
     await logout();
-    history.push("/");
+    navigate("/");
   };
 
   return (
     <DataProvider>
       <div className="container-prepper-app">
         <Nav
-          history={history}
           logOut={logOut}
           showNotificationTablet={showNotificationTablet}
           showNotifTablet={showNotifTablet}
@@ -115,9 +115,5 @@ function PreppersApp({ history }) {
     </DataProvider>
   );
 }
-
-PreppersApp.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default PreppersApp;
