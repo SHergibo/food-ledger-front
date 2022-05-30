@@ -1,16 +1,15 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
-import { useLocation, withRouter } from "react-router-dom";
-import { useUserHouseHoldData, useSocket } from './../DataContext';
-import axiosInstance from '../../../utils/axiosInstance';
-import { apiDomain, apiVersion } from '../../../apiConfig/ApiConfig';
-import slugUrl from './../../../utils/slugify';
-import AddEditProductForm from './AddEditProductForm';
-import PropTypes from 'prop-types';
+import React, { useEffect, useCallback, useState, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUserHouseHoldData, useSocket } from "./../DataContext";
+import axiosInstance from "../../../utils/axiosInstance";
+import { apiDomain, apiVersion } from "../../../apiConfig/ApiConfig";
+import slugUrl from "./../../../utils/slugify";
+import AddEditProductForm from "./AddEditProductForm";
 
-
-function EditProduct({ history }) {
+function EditProduct() {
   const isMounted = useRef(true);
   const location = useLocation();
+  const navigate = useNavigate();
   const { userHouseholdData } = useUserHouseHoldData();
   const { socketRef } = useSocket();
   const [product, setProduct] = useState();
@@ -18,26 +17,42 @@ function EditProduct({ history }) {
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
   const [success, setSuccess] = useState(false);
-  let productId = location.pathname.split('/')[3];
-  let requestUrl = location.pathname.split('/')[2].split('-')[1] === "produit" ? "products" : "historics";
+  let productId = location.pathname.split("/")[3];
+  let requestUrl =
+    location.pathname.split("/")[2].split("-")[1] === "produit"
+      ? "products"
+      : "historics";
 
   useEffect(() => {
-    if(userHouseholdData?.isWaiting){
-      let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
-      history.push(url);
+    if (userHouseholdData?.isWaiting) {
+      let url =
+        requestUrl === "historics"
+          ? "/app/liste-historique"
+          : "/app/liste-produit";
+      navigate(url);
     }
-  }, [userHouseholdData, requestUrl, history]);
+  }, [userHouseholdData, requestUrl, navigate]);
 
   useEffect(() => {
     let socket = null;
-    if(socketRef.current && userHouseholdData?._id && product?._id){
+    if (socketRef.current && userHouseholdData?._id && product?._id) {
       socket = socketRef.current;
-      socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: product._id, isEdited: true});
+      socket.emit("productIsEdited", {
+        householdId: userHouseholdData._id,
+        type: location.pathname.split("/")[2].split("-")[1],
+        productId: product._id,
+        isEdited: true,
+      });
     }
 
     return () => {
-      if(socket && userHouseholdData?._id && product?._id){
-        socket.emit('productIsEdited', {householdId: userHouseholdData._id, type: location.pathname.split('/')[2].split('-')[1], productId: product._id, isEdited: false});
+      if (socket && userHouseholdData?._id && product?._id) {
+        socket.emit("productIsEdited", {
+          householdId: userHouseholdData._id,
+          type: location.pathname.split("/")[2].split("-")[1],
+          productId: product._id,
+          isEdited: false,
+        });
       }
     };
   }, [location, product, userHouseholdData, socketRef]);
@@ -45,55 +60,59 @@ function EditProduct({ history }) {
   useEffect(() => {
     let socket = null;
 
-    if(socketRef.current){
+    if (socketRef.current) {
       socket = socketRef.current;
       socket.on("kickProductIsEdited", () => {
-        let url = requestUrl === "historics" ? "/app/liste-historique" : "/app/liste-produit";
-        history.push(url);
+        let url =
+          requestUrl === "historics"
+            ? "/app/liste-historique"
+            : "/app/liste-produit";
+        navigate(url);
       });
     }
 
     return () => {
-      if(socket) {
-        socket.off('kickProductIsEdited');
+      if (socket) {
+        socket.off("kickProductIsEdited");
       }
-    }
-  }, [socketRef, requestUrl, history]);
+    };
+  }, [socketRef, requestUrl, navigate]);
 
   const getProductData = useCallback(async () => {
     setErrorFetch(false);
     const getDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
-    await axiosInstance.get(getDataEndPoint)
+    await axiosInstance
+      .get(getDataEndPoint)
       .then((response) => {
-        if(isMounted.current){
+        if (isMounted.current) {
           setProduct(response.data);
           setArrayExpDate(response.data.expirationDate);
           setLoading(false);
         }
       })
-      .catch(error => {
-        if(isMounted.current){
+      .catch((error) => {
+        if (isMounted.current) {
           if (error.response.status === 404 || error.response.status === 500) {
-            history.goBack();
+            navigate(-1);
           }
           let jsonError = JSON.parse(JSON.stringify(error));
-          if(error.code === "ECONNABORTED" || jsonError.name === "Error"){
+          if (error.code === "ECONNABORTED" || jsonError.name === "Error") {
             setErrorFetch(true);
           }
         }
       });
-  }, [history, productId, requestUrl]);
+  }, [navigate, productId, requestUrl]);
 
   useEffect(() => {
     getProductData();
     return () => {
       isMounted.current = false;
-    }
+    };
   }, [getProductData]);
 
   useEffect(() => {
     let timerSuccess;
-    if(success){
+    if (success) {
       timerSuccess = setTimeout(() => {
         setSuccess(false);
       }, 3500);
@@ -101,15 +120,14 @@ function EditProduct({ history }) {
 
     return () => {
       clearTimeout(timerSuccess);
-    }
+    };
   }, [success]);
 
-
-
   const EditProduct = async (data) => {
-    if(data.brand?.brandName?.value) data.brand.value = slugUrl(data.brand.brandName.value);
-    if(data.brand?.value) data.brand.value = slugUrl(data.brand.value);
-   
+    if (data.brand?.brandName?.value)
+      data.brand.value = slugUrl(data.brand.brandName.value);
+    if (data.brand?.value) data.brand.value = slugUrl(data.brand.value);
+
     let newData = {
       kcal: data.kcal,
       location: data.location,
@@ -118,54 +136,59 @@ function EditProduct({ history }) {
       weight: data.weight,
       brand: data.brand,
       type: data.type,
-      householdId: userHouseholdData._id
-    }
+      householdId: userHouseholdData._id,
+    };
 
     let totalNumber = 0;
     let emptyProductLinkedToExpDate = false;
-    arrayExpDate.forEach(item => {
-      if(item.productLinkedToExpDate === ""){
+    arrayExpDate.forEach((item) => {
+      if (item.productLinkedToExpDate === "") {
         emptyProductLinkedToExpDate = true;
         return;
       }
       totalNumber = totalNumber + parseInt(item.productLinkedToExpDate);
     });
 
-    if(emptyProductLinkedToExpDate) return;
+    if (emptyProductLinkedToExpDate) return;
 
     newData.number = totalNumber;
 
-    if(data.minimumInStock === ""){
-      newData.minimumInStock = { minInStock : 0 };
-    }else{
-      newData.minimumInStock = { minInStock : parseInt(data.minimumInStock), updatedBy: "user" };
+    if (data.minimumInStock === "") {
+      newData.minimumInStock = { minInStock: 0 };
+    } else {
+      newData.minimumInStock = {
+        minInStock: parseInt(data.minimumInStock),
+        updatedBy: "user",
+      };
     }
 
     const patchDataEndPoint = `${apiDomain}/api/${apiVersion}/${requestUrl}/${productId}`;
-    await axiosInstance.patch(patchDataEndPoint, newData)
-      .then((response) => {
-        if (response.status === 200) {
-          if (productId === response.data._id) {
-            setSuccess(true);
-          }
-          if (parseInt(newData.number) === 0 && newData.expirationDate.length === 0 && requestUrl === "products") {
-            history.push({
-              pathname: `/app/edition-historique/${response.data._id}`,
-            })
-          }
-          if (newData.number >= 1 && newData.expirationDate.length >= 1 && requestUrl === "historics") {
-            history.push({
-              pathname: `/app/edition-produit/${response.data._id}`,
-            })
-          }
+    await axiosInstance.patch(patchDataEndPoint, newData).then((response) => {
+      if (response.status === 200) {
+        if (productId === response.data._id) {
+          setSuccess(true);
         }
-      });
-  }
+        if (
+          parseInt(newData.number) === 0 &&
+          newData.expirationDate.length === 0 &&
+          requestUrl === "products"
+        ) {
+          navigate(`/app/edition-historique/${response.data._id}`);
+        }
+        if (
+          newData.number >= 1 &&
+          newData.expirationDate.length >= 1 &&
+          requestUrl === "historics"
+        ) {
+          navigate(`/app/edition-produit/${response.data._id}`);
+        }
+      }
+    });
+  };
 
   return (
     <>
       <AddEditProductForm
-        history={history}
         handleFunction={EditProduct}
         formType="edit"
         value={product}
@@ -178,11 +201,7 @@ function EditProduct({ history }) {
         getProductData={getProductData}
       />
     </>
-  )
+  );
 }
 
-EditProduct.propTypes = {
-  history: PropTypes.object.isRequired
-}
-
-export default withRouter(EditProduct);
+export default EditProduct;
