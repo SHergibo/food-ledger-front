@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useUserData,
   useWindowWidth,
@@ -18,9 +19,9 @@ import {
 import { pageSize } from "./../../../utils/globalVariable";
 import Table from "./../UtilitiesComponent/Table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PropTypes from "prop-types";
 
-function ProductLog({ history }) {
+function ProductLog() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [errorFetch, setErrorFetch] = useState(false);
   const isMounted = useRef(true);
@@ -37,11 +38,9 @@ function ProductLog({ history }) {
 
   useEffect(() => {
     if (userData && userData.role !== "admin") {
-      history.push({
-        pathname: "/app/liste-produit",
-      });
+      navigate("/app/liste-produit");
     }
-  }, [userData, history]);
+  }, [userData, navigate]);
 
   useEffect(() => {
     let socket = null;
@@ -389,9 +388,5 @@ function ProductLog({ history }) {
     </>
   );
 }
-
-ProductLog.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default ProductLog;
