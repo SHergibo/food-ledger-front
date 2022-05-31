@@ -379,9 +379,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title }) {
         queryParsedDelete.forEach((element) => {
           delete queryParsed[element];
         });
-        navigate(`/app/liste-${urlTo}`, {
-          search: `${QueryString.stringify(queryParsed, { sort: false })}`,
-        });
+        navigate(
+          `/app/liste-${urlTo}?${QueryString.stringify(queryParsed, {
+            sort: false,
+          })}`
+        );
       }
     }
     if (Object.keys(sortObj).length > 0) {
@@ -561,9 +563,9 @@ function ComponentProductList({ requestTo, urlTo, columns, title }) {
       );
     }
 
-    navigate(`/app/liste-${urlTo}`, {
-      search: `${QueryString.stringify(queryObj, { sort: false })}`,
-    });
+    navigate(
+      `/app/liste-${urlTo}?${QueryString.stringify(queryObj, { sort: false })}`
+    );
 
     if (pageIndex > 1) {
       gotoPage(1);
@@ -603,9 +605,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title }) {
           );
         }
 
-        navigate(`/app/liste-${urlTo}`, {
-          search: `${QueryString.stringify(queryParsed, { sort: false })}`,
-        });
+        navigate(
+          `/app/liste-${urlTo}?${QueryString.stringify(queryParsed, {
+            sort: false,
+          })}`
+        );
       }
 
       if (pageIndex > 1) {
@@ -645,9 +649,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title }) {
           QueryString.stringify(queryObj)
         );
       }
-      navigate(`/app/liste-${urlTo}`, {
-        search: `${QueryString.stringify(queryObj, { sort: false })}`,
-      });
+      navigate(
+        `/app/liste-${urlTo}?${QueryString.stringify(queryObj, {
+          sort: false,
+        })}`
+      );
     }
   };
 
@@ -748,9 +754,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title }) {
         QueryString.stringify(queryParsed)
       );
     }
-    navigate(`/app/liste-${urlTo}`, {
-      search: `${QueryString.stringify(queryParsed, { sort: false })}`,
-    });
+    navigate(
+      `/app/liste-${urlTo}?${QueryString.stringify(queryParsed, {
+        sort: false,
+      })}`
+    );
   };
 
   const setUrlPageQueryParam = (page) => {
@@ -759,9 +767,11 @@ function ComponentProductList({ requestTo, urlTo, columns, title }) {
     } else {
       delete queryParsed["page"];
     }
-    navigate(`/app/liste-${urlTo}`, {
-      search: `${QueryString.stringify(queryParsed, { sort: false })}`,
-    });
+    navigate(
+      `/app/liste-${urlTo}?${QueryString.stringify(queryParsed, {
+        sort: false,
+      })}`
+    );
     setQueryParsed(queryParsed);
   };
 
