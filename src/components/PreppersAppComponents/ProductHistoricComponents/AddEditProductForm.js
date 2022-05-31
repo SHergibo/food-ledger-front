@@ -5,7 +5,7 @@ import React, {
   useRef,
   useMemo,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import { useUserData, useUserOptionData } from "./../DataContext";
 import { useForm, Controller } from "react-hook-form";
 import { productType } from "../../../utils/localData";
@@ -469,13 +469,21 @@ function AddEditProductForm({
               title="Retout à la page précédente."
               onClick={() => {
                 if (requestUrl === "products") {
-                  navigate("/app/liste-produit", {
-                    search: sessionStorage.getItem("productQueryParamsFilter"),
-                  });
+                  let url = "/app/liste-produit";
+                  if (sessionStorage.getItem("productQueryParamsFilter")) {
+                    url = `/app/liste-produit?${sessionStorage.getItem(
+                      "productQueryParamsFilter"
+                    )}`;
+                  }
+                  navigate(url);
                 } else if (requestUrl === "historics") {
-                  navigate("/app/liste-historique", {
-                    search: sessionStorage.getItem("historicQueryParamsFilter"),
-                  });
+                  let url = "/app/liste-historique";
+                  if (sessionStorage.getItem("historicQueryParamsFilter")) {
+                    url = `/app/liste-historique?${sessionStorage.getItem(
+                      "productQueryParamsFilter"
+                    )}`;
+                  }
+                  navigate(url);
                 } else {
                   navigate("/app/liste-produit");
                 }
