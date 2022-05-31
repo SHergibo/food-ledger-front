@@ -14,15 +14,15 @@ function SubContainer() {
     if (
       windowWidth >= 768 &&
       location.pathname === "/app/notification" &&
-      location.length <= 2
+      !location.state?.prevRoute
     ) {
       navigate("/app/liste-produit");
     } else if (
       windowWidth >= 768 &&
       location.pathname === "/app/notification" &&
-      location.length > 2
+      location.state.prevRoute
     ) {
-      navigate(-1);
+      navigate(location.state.prevRoute);
     }
   }, [windowWidth, navigate, location]);
 
