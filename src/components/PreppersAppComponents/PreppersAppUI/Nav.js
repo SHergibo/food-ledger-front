@@ -100,7 +100,11 @@ function Nav({ logOut, showNotifTablet, showNotificationTablet }) {
     if (location.pathname === "/app/notification") {
       navigate(-1);
     } else {
-      navigate("/app/notification");
+      navigate("/app/notification", {
+        state: {
+          prevRoute: location.pathname,
+        },
+      });
     }
   };
 
