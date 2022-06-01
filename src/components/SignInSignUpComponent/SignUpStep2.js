@@ -1,39 +1,90 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ErrorMessage } from '@hookform/error-message';
+import { ErrorMessage } from "@hookform/error-message";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from "prop-types";
 
 function SignUpStep2({ setForm, formRef }) {
-  const { state, action } = useStateMachine(updateAction);
+  const { actions, state } = useStateMachine({ updateAction });
   const [errorMessage, setErrorMessage] = useState(false);
   const [errorUsercode, setErrorUsercode] = useState(false);
   const [errorUsercodeMessage, setErrorUsercodeMessage] = useState("");
   const otherMemberInput = useRef(null);
-  const { handleSubmit, register, formState: { errors } } = useForm({
-    defaultValues: state.yourDetails
-  });
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm({});
 
   const pressHouseHoldCodeCheck = () => {
-    let householdCodeCheck = {householdCodeCheck: !state.yourDetails.householdCodeCheck};
-    action(householdCodeCheck);
+    let householdCodeCheck = {
+      householdCodeCheck: !state.yourDetails.householdCodeCheck,
+    };
+    actions.updateAction(householdCodeCheck);
   };
+
+  useEffect(() => {
+    if (state.yourDetails.householdCodeCheck === false) {
+      reset({ householdCode: null });
+      reset({ householdCodeCheck: false });
+      actions.updateAction({ householdCode: "" });
+    }
+  }, [
+    state.yourDetails.householdCodeCheck,
+    state.yourDetails.householdCode,
+    actions,
+    reset,
+  ]);
 
   const pressHouseHoldNameCheck = () => {
-    let householdNameCheck = {householdNameCheck: !state.yourDetails.householdNameCheck};
-    if(state.yourDetails.householdNameCheck && state.yourDetails.otherMemberCheck){
-      householdNameCheck= {...householdNameCheck, ...{otherMemberCheck: !state.yourDetails.otherMemberCheck}}
-    }
-    action(householdNameCheck);
+    let householdNameCheck = {
+      householdNameCheck: !state.yourDetails.householdNameCheck,
+    };
+    actions.updateAction(householdNameCheck);
   };
 
+  useEffect(() => {
+    if (state.yourDetails.householdNameCheck === false) {
+      reset({ householdName: null });
+      reset({ householdNameCheck: false });
+      actions.updateAction({
+        householdName: "",
+      });
+    }
+    if (
+      state.yourDetails.householdNameCheck === false &&
+      state.yourDetails.otherMemberCheck === true
+    ) {
+      actions.updateAction({
+        otherMemberArray: [],
+        otherMemberCheck: false,
+      });
+    }
+  }, [
+    state.yourDetails.householdNameCheck,
+    state.yourDetails.otherMemberCheck,
+    actions,
+    reset,
+  ]);
+
   const pressOtherMemberCodeCheck = () => {
-    let otherMemberCheck = {otherMemberCheck: !state.yourDetails.otherMemberCheck};
-    action(otherMemberCheck);
-    state.yourDetails.otherMemberCheck ? formRef.classList.remove('active-step2') : formRef.classList.add('active-step2');
+    let otherMemberCheck = {
+      otherMemberCheck: !state.yourDetails.otherMemberCheck,
+    };
+    actions.updateAction(otherMemberCheck);
+    state.yourDetails.otherMemberCheck
+      ? formRef.classList.remove("active-step2")
+      : formRef.classList.add("active-step2");
   };
+
+  useEffect(() => {
+    if (state.yourDetails.otherMemberCheck === false) {
+      actions.updateAction({ otherMemberArray: [] });
+    }
+  }, [state.yourDetails.otherMemberCheck, actions]);
 
   const addOtherMember = (e) => {
     e.preventDefault();
@@ -42,30 +93,35 @@ function SignUpStep2({ setForm, formRef }) {
     let inputOtherMember = otherMemberInput.current;
     let inputValue = inputOtherMember.value;
     inputOtherMember.value = "";
-    if(inputValue){
-      let alreadyExist = state.yourDetails.otherMemberArray.find(usercode => usercode === inputValue);
-      if(alreadyExist) {
+    if (inputValue) {
+      let alreadyExist = state.yourDetails.otherMemberArray.find(
+        (usercode) => usercode === inputValue
+      );
+      if (alreadyExist) {
         setErrorUsercode(true);
         setErrorUsercodeMessage("Ce code existe déjà!");
         return;
       }
-      if(state.yourDetails.otherMemberArray.length >= 6){
+      if (state.yourDetails.otherMemberArray.length >= 6) {
         setErrorUsercode(true);
-        setErrorUsercodeMessage("Vous ne pouvez pas ajouter plus de 6 codes utilisateur!");
+        setErrorUsercodeMessage(
+          "Vous ne pouvez pas ajouter plus de 6 codes utilisateur!"
+        );
         return;
       }
       state.yourDetails.otherMemberArray.push(inputValue);
-      action(state.yourDetails);
+      actions.updateAction(state.yourDetails);
     }
-  }
+  };
 
   const deleteOtherMember = (e, index) => {
     e.preventDefault();
     state.yourDetails.otherMemberArray.splice(index, 1);
-    action(state.yourDetails);
-  }
+    actions.updateAction(state.yourDetails);
+  };
 
   const onSubmit = (data) => {
+    delete data.otherMemberArray;
     if (data.householdCode || data.householdName) {
       setErrorMessage(false);
       let newData;
@@ -85,14 +141,14 @@ function SignUpStep2({ setForm, formRef }) {
         newData.householdNameCheck = true;
         newData.householdName = data.householdName;
       }
-      action(data);
-      setForm('confirm');
-      if(data.otherMemberCheck){
-        formRef.classList.add('active-confirm-usercode');
-      } else{
-        formRef.classList.add('active-confirm');
+      actions.updateAction(data);
+      setForm("confirm");
+      if (data.otherMemberCheck) {
+        formRef.classList.add("active-confirm-usercode");
+      } else {
+        formRef.classList.add("active-confirm");
       }
-      formRef.classList.remove('active-step2');
+      formRef.classList.remove("active-step2");
     } else {
       setErrorMessage(true);
     }
@@ -109,6 +165,7 @@ function SignUpStep2({ setForm, formRef }) {
               name="householdCodeCheck"
               type="checkbox"
               onClick={pressHouseHoldCodeCheck}
+              checked={state.yourDetails.householdCodeCheck}
               {...register("householdCodeCheck")}
             />
             <span className="checkmark-checkbox"></span>
@@ -120,10 +177,17 @@ function SignUpStep2({ setForm, formRef }) {
               name="householdCode"
               type="text"
               id="householdCode"
-              className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-              {...register("householdCode", { required: "Ce champ est requis!" })}
+              defaultValue={state.yourDetails.householdCode}
+              className={`form-input ${
+                errors.householdCode ? "error-input" : ""
+              }`}
+              {...register("householdCode", {
+                required: "Ce champ est requis!",
+              })}
             />
-            <label htmlFor="householdCode" className="form-label">Code famille *</label>
+            <label htmlFor="householdCode" className="form-label">
+              Code famille *
+            </label>
             <div className="error-message-input">
               <ErrorMessage errors={errors} name="householdCode" as="span" />
             </div>
@@ -135,6 +199,7 @@ function SignUpStep2({ setForm, formRef }) {
             <input
               name="householdNameCheck"
               type="checkbox"
+              checked={state.yourDetails.householdNameCheck}
               onClick={pressHouseHoldNameCheck}
               {...register("householdNameCheck")}
             />
@@ -148,19 +213,27 @@ function SignUpStep2({ setForm, formRef }) {
                 name="householdName"
                 type="text"
                 id="householdName"
-                className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                {...register("householdName", { required: "Ce champ est requis!" })}
+                defaultValue={state.yourDetails.householdName}
+                className={`form-input ${
+                  errors.householdName ? "error-input" : ""
+                }`}
+                {...register("householdName", {
+                  required: "Ce champ est requis!",
+                })}
               />
-              <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
+              <label htmlFor="householdName" className="form-label">
+                Nom de la famille *
+              </label>
               <div className="error-message-input">
                 <ErrorMessage errors={errors} name="householdName" as="span" />
               </div>
             </div>
             <label className="container-checkbox">
               Autre code utilisateur ?
-            <input
+              <input
                 name="otherMemberCheck"
                 type="checkbox"
+                checked={state.yourDetails.otherMemberCheck}
                 onClick={pressOtherMemberCodeCheck}
                 {...register("otherMemberCheck")}
               />
@@ -177,33 +250,39 @@ function SignUpStep2({ setForm, formRef }) {
                       id="otherMember"
                       className="form-input"
                     />
-                    <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
+                    <label htmlFor="otherMember" className="form-label">
+                      Code utilisateur
+                    </label>
                     <div className="error-message-input">
-                      {errorUsercode && 
+                      {errorUsercode && (
                         <div className="error-message-input">
                           <span>{errorUsercodeMessage}</span>
                         </div>
-                      }
+                      )}
                     </div>
                   </div>
-                  <button className="btn-input-interaction" onClick={addOtherMember}>
+                  <button
+                    className="btn-input-interaction"
+                    onClick={addOtherMember}
+                  >
                     <FontAwesomeIcon className="btn-icon" icon="plus" />
                   </button>
                 </div>
                 {state.yourDetails.otherMemberArray.length >= 1 && (
                   <ul className="list-usercode">
-                    {
-                      state.yourDetails.otherMemberArray.map((item, index) => {
-                        return (
+                    {state.yourDetails.otherMemberArray.map((item, index) => {
+                      return (
                         <li key={`userCode-${index}`}>
-                          <p>{item}</p> 
+                          <p>{item}</p>
                           <button onClick={(e) => deleteOtherMember(e, index)}>
-                            <FontAwesomeIcon className="btn-icon" icon="times" />
+                            <FontAwesomeIcon
+                              className="btn-icon"
+                              icon="times"
+                            />
                           </button>
                         </li>
-                        )
-                      })
-                    }
+                      );
+                    })}
                   </ul>
                 )}
               </>
@@ -211,21 +290,23 @@ function SignUpStep2({ setForm, formRef }) {
           </>
         )}
         {errorMessage === true && (
-          <p className="error-message">Vous devez répondre à une de ces deux questions et remplir le formulaire.</p>
+          <p className="error-message">
+            Vous devez répondre à une de ces deux questions et remplir le
+            formulaire.
+          </p>
         )}
         <button type="submit" className="btn-purple">
           <FontAwesomeIcon className="btn-icon" icon="angle-right" />
-          Étape suivante 
+          Étape suivante
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 SignUpStep2.propTypes = {
-  setForm : PropTypes.func.isRequired,
-  formRef : PropTypes.object.isRequired,
-}
+  setForm: PropTypes.func.isRequired,
+  formRef: PropTypes.object.isRequired,
+};
 
-export default SignUpStep2
-
+export default SignUpStep2;
