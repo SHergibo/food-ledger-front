@@ -1,15 +1,20 @@
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { ErrorMessage } from '@hookform/error-message';
+import { ErrorMessage } from "@hookform/error-message";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../../utils/updateAction";
-import axios from 'axios';
-import { apiDomain, apiVersion } from './../../apiConfig/ApiConfig';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
+import axios from "axios";
+import { apiDomain, apiVersion } from "./../../apiConfig/ApiConfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from "prop-types";
 
-function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef }) {
-  const { state, action } = useStateMachine(updateAction);
+function SingUpConfirm({
+  setForm,
+  setFormTitle,
+  setSuccessCreateAccount,
+  formRef,
+}) {
+  const { actions, state } = useStateMachine({ updateAction });
   const [errorMessage, setErrorMessage] = useState("");
   const [errorUsercode, setErrorUsercode] = useState(false);
   const [errorUsercodeMessage, setErrorUsercodeMessage] = useState("");
@@ -17,8 +22,14 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
   const [passwordChanged, setPasswordChanged] = useState(false);
   const otherMemberInput = useRef(null);
   const otherMemberList = useRef([]);
-  const { handleSubmit, formState: { errors }, register, getValues, setError } = useForm({
-    defaultValues: state.yourDetails
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    getValues,
+    setError,
+  } = useForm({
+    defaultValues: state.yourDetails,
   });
   const resetStore = () => {
     const data = {
@@ -34,13 +45,13 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
       otherMemberCheck: false,
       otherMemberArray: [],
     };
-    action(data);
+    actions.updateAction(data);
     setSuccessCreateAccount(true);
-    setForm('login');
-    setFormTitle('Connexion');
-    formRef.classList.remove('active');
-    formRef.classList.remove('active-confirm');
-    formRef.classList.remove('active-confirm-usercode');
+    setForm("login");
+    setFormTitle("Connexion");
+    formRef.classList.remove("active");
+    formRef.classList.remove("active-confirm");
+    formRef.classList.remove("active-confirm-usercode");
   };
 
   const changePassword = (e) => {
@@ -52,41 +63,46 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
   };
 
   const addOtherMember = (e) => {
+    console.log("ici");
     e.preventDefault();
     setErrorUsercode(false);
     setErrorUsercodeMessage("");
     let inputOtherMember = otherMemberInput.current;
     let inputValue = inputOtherMember.value;
     inputOtherMember.value = "";
-    if(inputValue){
-      let alreadyExist = state.yourDetails.otherMemberArray.find(usercode => usercode === inputValue);
-      if(alreadyExist) {
+    if (inputValue) {
+      let alreadyExist = state.yourDetails.otherMemberArray.find(
+        (usercode) => usercode === inputValue
+      );
+      if (alreadyExist) {
         setErrorUsercode(true);
         setErrorUsercodeMessage("Ce code existe déjà!");
         return;
       }
-      if(state.yourDetails.otherMemberArray.length >= 6){
+      if (state.yourDetails.otherMemberArray.length >= 6) {
         setErrorUsercode(true);
-        setErrorUsercodeMessage("Vous ne pouvez pas ajouter plus de 6 code utilisateur!");
+        setErrorUsercodeMessage(
+          "Vous ne pouvez pas ajouter plus de 6 code utilisateur!"
+        );
         return;
       }
       state.yourDetails.otherMemberArray.push(inputValue);
-      action(state.yourDetails);
+      actions.updateAction(state.yourDetails);
     }
-  }
+  };
 
   const deleteOtherMember = (e, index) => {
     e.preventDefault();
     state.yourDetails.otherMemberArray.splice(index, 1);
-    action(state.yourDetails);
-  }
+    actions.updateAction(state.yourDetails);
+  };
 
   const finalData = (data) => {
     const baseObject = {
       firstname: data.firstName,
       lastname: data.lastName,
       email: data.email,
-      password: data.password
+      password: data.password,
     };
 
     if (data.householdNameCheck && data.householdName) {
@@ -102,50 +118,62 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
 
   const onSubmit = async (data) => {
     resetStore();
-    action(data);
+    actions.updateAction(data);
     const finalState = updateAction(state, data);
-    
+
     const objectData = await finalData(finalState.yourDetails);
 
     let createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users`;
 
-    if (state.yourDetails.householdCodeCheck && state.yourDetails.householdCode) {
+    if (
+      state.yourDetails.householdCodeCheck &&
+      state.yourDetails.householdCode
+    ) {
       createAccountEndPoint = `${apiDomain}/api/${apiVersion}/users?householdCode=${state.yourDetails.householdCode}`;
     }
-    await axios.post(createAccountEndPoint, objectData, {
-      validateStatus: function (status) {
-        return status < 500;
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        resetStore();
-        setErrorBool(false);
-        setErrorMessage('');
-      } else if (response.status === 404 && response.data.data) {
-        let responseDataArray = response.data.data;
-        responseDataArray.forEach(dataBadUserCode => {
-          const errorUserCodes = otherMemberList.current.filter(usercode => usercode.innerHTML === dataBadUserCode.usercode);
-          errorUserCodes.forEach(errorUserCode => {
-            errorUserCode.classList.add('bad-user-code');
-            errorUserCode.title = dataBadUserCode.errorType === "userCodeNotFound" ? "Ce code utilisateur n'existe pas!" : "Cet.te utilisateur.trice ne pas pas rejoindre votre famille pour le moment !"
+    await axios
+      .post(createAccountEndPoint, objectData, {
+        validateStatus: function (status) {
+          return status < 500;
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          resetStore();
+          setErrorBool(false);
+          setErrorMessage("");
+        } else if (response.status === 404 && response.data.data) {
+          let responseDataArray = response.data.data;
+          responseDataArray.forEach((dataBadUserCode) => {
+            const errorUserCodes = otherMemberList.current.filter(
+              (usercode) => usercode.innerHTML === dataBadUserCode.usercode
+            );
+            errorUserCodes.forEach((errorUserCode) => {
+              errorUserCode.classList.add("bad-user-code");
+              errorUserCode.title =
+                dataBadUserCode.errorType === "userCodeNotFound"
+                  ? "Ce code utilisateur n'existe pas!"
+                  : "Cet.te utilisateur.trice ne pas pas rejoindre votre famille pour le moment !";
+            });
           });
-        });
-        setErrorBool(true);
-        if (response.data.data.length === 1) {
-          setErrorMessage('Il y a un problème avec un code utilisateur!');
-        } else {
-          setErrorMessage('Il y a un problème avec plusieurs codes utilisateur!');
+          setErrorBool(true);
+          if (response.data.data.length === 1) {
+            setErrorMessage("Il y a un problème avec un code utilisateur!");
+          } else {
+            setErrorMessage(
+              "Il y a un problème avec plusieurs codes utilisateur!"
+            );
+          }
+        } else if (response.status === 400) {
+          setErrorBool(true);
+          setErrorMessage("Code famille invalide!");
+        } else if (response.status === 409) {
+          setError("email", {
+            type: "manual",
+            message: "Cette adresse mail existe déjà!",
+          });
         }
-      } else if (response.status === 400) {
-        setErrorBool(true);
-        setErrorMessage('Code famille invalide!');
-      } else if (response.status === 409){
-        setError('email', {
-          type:"manual",
-          message: "Cette adresse mail existe déjà!"
-        });
-      }
-    });
+      });
   };
   return (
     <div className="form-sign-up-container">
@@ -158,10 +186,12 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
               name="firstName"
               type="text"
               id="fistName"
-              className={`form-input ${errors.firstName  ? "error-input" : ""}`}
+              className={`form-input ${errors.firstName ? "error-input" : ""}`}
               {...register("firstName", { required: "Ce champ est requis!" })}
             />
-            <label htmlFor="fistName" className="form-label">Prénom *</label>
+            <label htmlFor="fistName" className="form-label">
+              Prénom *
+            </label>
             <div className="error-message-input">
               <ErrorMessage errors={errors} name="firstName" as="span" />
             </div>
@@ -172,10 +202,12 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
               name="lastName"
               type="text"
               id="lastName"
-              className={`form-input ${errors.lastName  ? "error-input" : ""}`}
+              className={`form-input ${errors.lastName ? "error-input" : ""}`}
               {...register("lastName", { required: "Ce champ est requis!" })}
             />
-            <label htmlFor="lastName" className="form-label">Nom *</label>
+            <label htmlFor="lastName" className="form-label">
+              Nom *
+            </label>
             <div className="error-message-input">
               <ErrorMessage errors={errors} name="lastName" as="span" />
             </div>
@@ -188,10 +220,12 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
               name="email"
               type="email"
               id="email"
-              className={`form-input ${errors.email  ? "error-input" : ""}`}
+              className={`form-input ${errors.email ? "error-input" : ""}`}
               {...register("email", { required: "Ce champ est requis!" })}
             />
-            <label htmlFor="email" className="form-label">E-mail *</label>
+            <label htmlFor="email" className="form-label">
+              E-mail *
+            </label>
             <div className="error-message-input">
               <ErrorMessage errors={errors} name="email" as="span" />
             </div>
@@ -202,10 +236,16 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
                 name="householdCode"
                 type="text"
                 id="householdCode"
-                className={`form-input ${errors.householdCode  ? "error-input" : ""}`}
-                {...register("householdCode", { required: "Ce champ est requis!" })}
+                className={`form-input ${
+                  errors.householdCode ? "error-input" : ""
+                }`}
+                {...register("householdCode", {
+                  required: "Ce champ est requis!",
+                })}
               />
-              <label htmlFor="householdCode" className="form-label">Code famille *</label>
+              <label htmlFor="householdCode" className="form-label">
+                Code famille *
+              </label>
               <div className="error-message-input">
                 <ErrorMessage errors={errors} name="householdCode" as="span" />
               </div>
@@ -217,10 +257,16 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
                 name="householdName"
                 type="text"
                 id="householdName"
-                className={`form-input ${errors.householdName  ? "error-input" : ""}`}
-                {...register("householdName", { required: "Ce champ est requis!" })}
+                className={`form-input ${
+                  errors.householdName ? "error-input" : ""
+                }`}
+                {...register("householdName", {
+                  required: "Ce champ est requis!",
+                })}
               />
-              <label htmlFor="householdName" className="form-label">Nom de la famille *</label>
+              <label htmlFor="householdName" className="form-label">
+                Nom de la famille *
+              </label>
               <div className="error-message-input">
                 <ErrorMessage errors={errors} name="householdName" as="span" />
               </div>
@@ -229,19 +275,29 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
         </div>
 
         <div className="input-flex-group">
-          <div className={`input-group ${passwordChanged ? "input-siblings": ""}`}>
+          <div
+            className={`input-group ${passwordChanged ? "input-siblings" : ""}`}
+          >
             <input
               name="password"
               type="password"
               id="password"
-              className={`form-input ${errors.password  ? "error-input" : ""}`}
+              className={`form-input ${errors.password ? "error-input" : ""}`}
               {...register("password", { required: true, minLength: 7 })}
               onChange={changePassword}
             />
-            <label htmlFor="password" className="form-label">Mot de passe *</label>
+            <label htmlFor="password" className="form-label">
+              Mot de passe *
+            </label>
             <div className="error-message-input">
-              {errors.password?.type === "required" && <span>Ce champ est requis!</span>}
-              {errors.password?.type === "minLength" && <span>Le mot de passe doit contenir minimum 7 caractères !</span>}
+              {errors.password?.type === "required" && (
+                <span>Ce champ est requis!</span>
+              )}
+              {errors.password?.type === "minLength" && (
+                <span>
+                  Le mot de passe doit contenir minimum 7 caractères !
+                </span>
+              )}
             </div>
           </div>
 
@@ -251,15 +307,25 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
                 name="confirmPassword"
                 type="password"
                 id="confirmPassword"
-                className={`form-input ${errors.confirmPassword  ? "error-input" : ""}`}
+                className={`form-input ${
+                  errors.confirmPassword ? "error-input" : ""
+                }`}
                 {...register("confirmPassword", {
                   required: "Ce champ est requis!",
-                  validate: (value) => value === getValues('password') || "Le mot de passe ne correspond pas !"
+                  validate: (value) =>
+                    value === getValues("password") ||
+                    "Le mot de passe ne correspond pas !",
                 })}
               />
-              <label htmlFor="confirmPassword" className="form-label">Confirmez le mot de passe *</label>
+              <label htmlFor="confirmPassword" className="form-label">
+                Confirmez le mot de passe *
+              </label>
               <div className="error-message-input">
-                <ErrorMessage errors={errors} name="confirmPassword" as="span" />
+                <ErrorMessage
+                  errors={errors}
+                  name="confirmPassword"
+                  as="span"
+                />
               </div>
             </div>
           )}
@@ -278,36 +344,45 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
                       id="otherMember"
                       className="form-input"
                     />
-                    <label htmlFor="otherMember" className="form-label">Code utilisateur</label>
+                    <label htmlFor="otherMember" className="form-label">
+                      Code utilisateur
+                    </label>
                     <div className="error-message-input">
-                      {errorUsercode && 
+                      {errorUsercode && (
                         <div className="error-message-input">
                           <span>{errorUsercodeMessage}</span>
                         </div>
-                      }
+                      )}
                     </div>
                   </div>
-                  <button className="btn-input-interaction" onClick={addOtherMember}>
+                  <button
+                    className="btn-input-interaction"
+                    onClick={addOtherMember}
+                  >
                     <FontAwesomeIcon className="btn-icon" icon="plus" />
                   </button>
                 </div>
                 {state.yourDetails.otherMemberArray.length >= 1 && (
                   <ul className="list-usercode">
-                    {
-                      state.yourDetails.otherMemberArray.map((item, index) => {
-                        return (
-                          <li key={`userCode-${index}`}>
-                            <p ref={(el) => (otherMemberList.current[index] = el)}>{item}</p> 
-                            <button onClick={(e) => deleteOtherMember(e, index)}>
-                              <FontAwesomeIcon className="btn-icon" icon="times" />
-                            </button>
-                          </li>
-                        )
-                      })
-                    }
+                    {state.yourDetails.otherMemberArray.map((item, index) => {
+                      return (
+                        <li key={`userCode-${index}`}>
+                          <p
+                            ref={(el) => (otherMemberList.current[index] = el)}
+                          >
+                            {item}
+                          </p>
+                          <button onClick={(e) => deleteOtherMember(e, index)}>
+                            <FontAwesomeIcon
+                              className="btn-icon"
+                              icon="times"
+                            />
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
-
               </>
             )}
           </>
@@ -319,14 +394,14 @@ function SingUpConfirm({ setForm, setFormTitle, setSuccessCreateAccount, formRef
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 SingUpConfirm.propTypes = {
-  setForm : PropTypes.func.isRequired,
-  setFormTitle : PropTypes.func.isRequired,
-  setSuccessCreateAccount : PropTypes.func.isRequired,
-  formRef : PropTypes.object.isRequired,
-}
+  setForm: PropTypes.func.isRequired,
+  setFormTitle: PropTypes.func.isRequired,
+  setSuccessCreateAccount: PropTypes.func.isRequired,
+  formRef: PropTypes.object.isRequired,
+};
 
-export default SingUpConfirm
+export default SingUpConfirm;
