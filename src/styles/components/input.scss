@@ -1,4 +1,4 @@
-@mixin container-checkbox($color, $border-checkmark, $border-check){
+@mixin container-checkbox($color, $border-checkmark, $border-check) {
   display: flex;
   align-items: center;
   position: relative;
@@ -17,7 +17,7 @@
     border: 1px solid $border-checkmark;
     border-radius: em(5px);
     transition: 0.3s ease-in-out;
-    &:after{
+    &:after {
       content: "";
       position: absolute;
       display: none;
@@ -32,7 +32,7 @@
       transform: rotate(45deg);
     }
   }
-  input{
+  input {
     height: 0;
     width: 0;
     position: absolute;
@@ -45,16 +45,16 @@
       display: block;
       border-color: var(--white);
     }
-    &:focus ~ .checkmark-checkbox{
+    &:focus ~ .checkmark-checkbox {
       outline: solid 1px black;
     }
-    &:focus:not(:focus-visible) ~ .checkmark-checkbox{
+    &:focus:not(:focus-visible) ~ .checkmark-checkbox {
       outline: none;
     }
   }
 }
 
-@mixin container-radio($disabled : false){
+@mixin container-radio($disabled: false) {
   display: flex;
   align-items: center;
   position: relative;
@@ -65,7 +65,7 @@
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
-  input{
+  input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -77,10 +77,10 @@
     &:checked ~ .radio-checkmark:after {
       display: block;
     }
-    &:focus ~ .radio-checkmark{
+    &:focus ~ .radio-checkmark {
       outline: solid 1px black;
     }
-    &:focus:not(:focus-visible) ~ .radio-checkmark{
+    &:focus:not(:focus-visible) ~ .radio-checkmark {
       outline: none;
     }
   }
@@ -93,12 +93,12 @@
     @if $disabled {
       background-color: var(--grey);
       cursor: not-allowed;
-    } @else{
+    } @else {
       background-color: var(--primary-color);
     }
     border-radius: 50%;
-    transition: .2s ease-in-out;
-    &:after{
+    transition: 0.2s ease-in-out;
+    &:after {
       content: "";
       position: absolute;
       display: none;
@@ -129,74 +129,79 @@
   font-weight: 400;
   color: var(--grey);
   background: transparent;
-  transition: .25s ease-in-out;
+  transition: 0.25s ease-in-out;
 }
 
 .form-input:-webkit-autofill,
-.form-input:-webkit-autofill:hover, 
+.form-input:-webkit-autofill:hover,
 .form-input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--grey);
   transition: background-color 5000s ease-in-out 0s;
 }
 
-.form-label, .form-label-grey {
+.form-label,
+.form-label-grey {
   position: absolute;
   top: rem(-3px);
   left: rem(15px);
   display: block;
-  padding: 0 .3em;
+  padding: 0 0.3em;
   transition: 0.2s;
   font-weight: 600;
   color: var(--primary-color);
   z-index: 1;
 }
 
-.form-label{
+.form-label {
   background-color: var(--white);
 }
 
-.form-label-grey{
+.form-label-grey {
   background-color: var(--grey-background);
 }
 
-.container-input-interaction{
+.container-input-interaction {
   display: flex;
-  .form-input{
+  .form-input {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
   }
-  .btn-input-interaction{
+  .btn-input-interaction {
     width: rem(50px);
     height: rem(55px);
-    margin: 0.53em 0;
+    margin: 0.4375em 0;
     background-color: var(--primary-color);
     border: none;
     border-top-right-radius: rem(10px);
     border-bottom-right-radius: rem(10px);
     color: var(--white);
-    .btn-icon{
+    .btn-icon {
       font-size: rem(25px);
     }
   }
 }
 
 .container-checkbox {
-  @include container-checkbox(var(--primary-color), var(--primary-color), var(--primary-color));
+  @include container-checkbox(
+    var(--primary-color),
+    var(--primary-color),
+    var(--primary-color)
+  );
 }
 
-.container-checkbox + .container-checkbox{
+.container-checkbox + .container-checkbox {
   margin-top: 1rem;
 }
 
-.container-checkbox + .btn-purple{
+.container-checkbox + .btn-purple {
   margin-top: 1rem;
 }
 
-.container-checkbox + .input-group{
+.container-checkbox + .input-group {
   margin-top: 1rem;
 }
 
-.error-input{
+.error-input {
   border-color: var(--red);
 }
 
@@ -211,16 +216,16 @@
 
 .quick-search {
   position: relative;
-  span{
+  span {
     position: absolute;
     top: 0.02rem;
     left: em(18px);
   }
-  .input-icon{
+  .input-icon {
     font-size: rem(21px);
     color: var(--grey);
   }
-  input{
+  input {
     width: 100%;
     height: rem(37px);
     margin-bottom: rem(13px);
@@ -237,7 +242,7 @@
       color: var(--grey);
     }
     &:-webkit-autofill,
-    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:hover,
     &:-webkit-autofill:focus {
       -webkit-text-fill-color: var(--grey);
       transition: background-color 5000s ease-in-out 0s;
@@ -246,9 +251,9 @@
 }
 
 /*Full-screen*/
-@media screen and (min-width: 1320px){
+@media screen and (min-width: 1320px) {
   .quick-search {
-    input{
+    input {
       width: rem(240px);
       height: rem(53px);
       margin-right: rem(19px);
