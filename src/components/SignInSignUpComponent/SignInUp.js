@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { StateMachineProvider, createStore } from "little-state-machine";
 import logo from "./../../images/foodledger_logo.png";
 import Login from "./Login";
 import Step1 from "./SignUpStep1";
 import Step2 from "./SignUpStep2";
 import Result from "./SignUpConfirm.js";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SwitchTransition, CSSTransition } from 'react-transition-group';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
 
 createStore({
   yourDetails: {
@@ -20,82 +20,95 @@ createStore({
     householdName: "",
     otherMemberCheck: false,
     otherMemberArray: [],
-  }
+  },
 });
 
 function SignInUp() {
   const [formTitle, setFormTitle] = useState("Connexion");
   const formRef = useRef(null);
   const [successCreateAccount, setSuccessCreateAccount] = useState(false);
-  const [form, setForm] = useState('login');
+  const [form, setForm] = useState("login");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const responsiveWidth = useCallback(() =>{
+  const responsiveWidth = useCallback(() => {
     setWindowWidth(window.innerWidth);
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', responsiveWidth);
-    return () =>{
-      window.removeEventListener('resize', responsiveWidth);
-    }
+    window.addEventListener("resize", responsiveWidth);
+    return () => {
+      window.removeEventListener("resize", responsiveWidth);
+    };
   }, [responsiveWidth]);
 
   const createUserForm = () => {
-    // setForm('step1');
-    // setFormTitle('Créer un compte');
-    // formRef.current.classList.add('active');
-    // formRef.current.classList.add('active-step1');
-  }
+    // setForm("step1");
+    // setFormTitle("Créer un compte");
+    // formRef.current.classList.add("active");
+    // formRef.current.classList.add("active-step1");
+  };
 
   const returnToLogin = () => {
-    // setForm('login');
-    // setFormTitle('Connexion');
-    // formRef.current.classList.remove('active');
-    // formRef.current.classList.remove('active-step1');
-    // formRef.current.classList.remove('active-step2');
-    // formRef.current.classList.remove('active-confirm');
-    // formRef.current.classList.remove('active-confirm-usercode');
-  }
+    // setForm("login");
+    // setFormTitle("Connexion");
+    // formRef.current.classList.remove("active");
+    // formRef.current.classList.remove("active-step1");
+    // formRef.current.classList.remove("active-step2");
+    // formRef.current.classList.remove("active-confirm");
+    // formRef.current.classList.remove("active-confirm-usercode");
+  };
 
   return (
     <div className="wrapper-sign-in-up">
-
       <StateMachineProvider>
-        <div className={`${form === "login" ? "container-sign-in": "container-sign-up"}`}>
+        <div
+          className={`${
+            form === "login" ? "container-sign-in" : "container-sign-up"
+          }`}
+        >
           <div ref={formRef} className="interactive-container">
             <div className="title-container">
               <div className="logo-container">
-                <img src={logo} alt="food ledger app logo"/>
+                <img src={logo} alt="food ledger app logo" />
                 <div className="title-interaction">
-                  {(form === "step2" || form === "confirm")  &&
-                    <button className="back-to-interaction" onClick={
-                        () => {
-                          if (form === "step2") {
-                            setForm("step1");
-                            formRef.current.classList.add('active-step1');
-                            formRef.current.classList.remove('active-step2');
-                          }
-                          if (form === "confirm") {
-                            setForm("step2");
-                            if(JSON.parse(sessionStorage.getItem("__STATE_MACHINE__")).yourDetails.otherMemberCheck) formRef.current.classList.add('active-step2');
-                            formRef.current.classList.remove('active-confirm');
-                            formRef.current.classList.remove('active-confirm-usercode');
-                          }
+                  {(form === "step2" || form === "confirm") && (
+                    <button
+                      className="back-to-interaction"
+                      onClick={() => {
+                        if (form === "step2") {
+                          setForm("step1");
+                          formRef.current.classList.add("active-step1");
+                          formRef.current.classList.remove("active-step2");
                         }
-                      }>
-                      <FontAwesomeIcon className="btn-icon" icon="chevron-left" />
+                        if (form === "confirm") {
+                          setForm("step2");
+                          if (
+                            JSON.parse(sessionStorage.getItem("__LSM__"))
+                              .yourDetails.otherMemberCheck
+                          )
+                            formRef.current.classList.add("active-step2");
+                          formRef.current.classList.remove("active-confirm");
+                          formRef.current.classList.remove(
+                            "active-confirm-usercode"
+                          );
+                        }
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        className="btn-icon"
+                        icon="chevron-left"
+                      />
                       Étape précédente
                     </button>
-                  }
+                  )}
                   <h1>{formTitle}</h1>
                 </div>
               </div>
-              
+
               <h1>{formTitle}</h1>
             </div>
 
-            <SwitchTransition mode={'out-in'}>
+            <SwitchTransition mode={"out-in"}>
               <CSSTransition
                 key={form}
                 addEndListener={(node, done) => {
@@ -104,25 +117,19 @@ function SignInUp() {
                 classNames="fade"
               >
                 <div className="fade-container">
-                  {form === "login" &&
+                  {form === "login" && (
                     <Login
                       setSuccessCreateAccount={setSuccessCreateAccount}
                       successCreateAccount={successCreateAccount}
                     />
-                  }
-                  {form === "step1" &&
-                    <Step1
-                      setForm={setForm}
-                      formRef={formRef.current}
-                    />
-                  }
-                  {form === "step2" &&
-                    <Step2
-                      setForm={setForm}
-                      formRef={formRef.current}
-                    />
-                  }
-                  {form === "confirm" &&
+                  )}
+                  {form === "step1" && (
+                    <Step1 setForm={setForm} formRef={formRef.current} />
+                  )}
+                  {form === "step2" && (
+                    <Step2 setForm={setForm} formRef={formRef.current} />
+                  )}
+                  {form === "confirm" && (
                     <Result
                       setForm={setForm}
                       setFormTitle={setFormTitle}
@@ -130,39 +137,53 @@ function SignInUp() {
                       returnToLogin={returnToLogin}
                       formRef={formRef.current}
                     />
-                  }
+                  )}
                 </div>
               </CSSTransition>
             </SwitchTransition>
-            
           </div>
-          
+
           <div className="switch-form-container">
-            {windowWidth < 1320 ?
+            {windowWidth < 1320 ? (
               <>
-                {form === "login" &&
+                {form === "login" && (
                   <div>
                     <p>Pas encore de compte ?</p>
-                    <button className="btn-white" onClick={() => createUserForm()}>
+                    <button
+                      className="btn-white"
+                      onClick={() => createUserForm()}
+                    >
                       <FontAwesomeIcon className="btn-icon" icon="user-plus" />
                       Créer un compte
                     </button>
                   </div>
-                }
-                {form !== "login" &&
+                )}
+                {form !== "login" && (
                   <div>
                     <p>Déjà un compte ?</p>
-                    <button title="La création d'un compte n'est pas disponible pour le moment." className="btn-white" onClick={() => returnToLogin()}>
-                      <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+                    <button
+                      title="La création d'un compte n'est pas disponible pour le moment."
+                      className="btn-white"
+                      onClick={() => returnToLogin()}
+                    >
+                      <FontAwesomeIcon
+                        className="btn-icon"
+                        icon="sign-in-alt"
+                      />
                       Se connecter
                     </button>
                   </div>
-                }
-              </> : 
+                )}
+              </>
+            ) : (
               <>
                 <div>
                   <p>Déjà un compte ?</p>
-                  <button tabIndex={form !== "login" ? 0 : -1} className="btn-white" onClick={() => returnToLogin()}>
+                  <button
+                    tabIndex={form !== "login" ? 0 : -1}
+                    className="btn-white"
+                    onClick={() => returnToLogin()}
+                  >
                     <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
                     Se connecter
                   </button>
@@ -170,18 +191,23 @@ function SignInUp() {
 
                 <div>
                   <p>Pas encore de compte ?</p>
-                  <button tabIndex={form !== "login" ? -1 : 0} title="La création d'un compte n'est pas disponible pour le moment." className="btn-white" onClick={() => createUserForm()}>
+                  <button
+                    tabIndex={form !== "login" ? -1 : 0}
+                    title="La création d'un compte n'est pas disponible pour le moment."
+                    className="btn-white"
+                    onClick={() => createUserForm()}
+                  >
                     <FontAwesomeIcon className="btn-icon" icon="user-plus" />
                     Créer un compte
                   </button>
                 </div>
               </>
-            }
+            )}
           </div>
         </div>
       </StateMachineProvider>
     </div>
-  )
+  );
 }
 
 export default SignInUp;
