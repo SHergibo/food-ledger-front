@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useStateMachine } from "little-state-machine";
+import updateAction from "../../utils/updateAction";
 import { ErrorMessage } from "@hookform/error-message";
 import { loginIn, checkCredential } from "./../../utils/Auth";
 import AlreadyLogged from "./AlreadyLogged";
@@ -9,6 +11,7 @@ import PropTypes from "prop-types";
 
 function Login({ successCreateAccount, setSuccessCreateAccount }) {
   const navigate = useNavigate();
+  const { actions } = useStateMachine({ updateAction });
   const [errorMessage, setErrorMessage] = useState(false);
   const [alreadyLogged, setAlreadyLogged] = useState(false);
   const [loginData, setLoginData] = useState({});
@@ -20,6 +23,23 @@ function Login({ successCreateAccount, setSuccessCreateAccount }) {
   } = useForm({
     mode: "onChange",
   });
+
+  const resetStore = () => {
+    const data = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      householdCodeCheck: false,
+      householdCode: "",
+      householdNameCheck: false,
+      householdName: "",
+      otherMemberCheck: false,
+      otherMemberArray: [],
+    };
+    actions.updateAction(data);
+  };
 
   useEffect(() => {
     let timeOutStyle;
@@ -63,6 +83,7 @@ function Login({ successCreateAccount, setSuccessCreateAccount }) {
     }
     let responseLogin = await loginIn(data);
     if (responseLogin === 401) return setErrorMessage(true);
+    resetStore();
     navigate("/app/liste-produit");
   };
 
