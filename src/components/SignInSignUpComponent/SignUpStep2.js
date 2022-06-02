@@ -124,23 +124,6 @@ function SignUpStep2({ setForm, formRef }) {
     delete data.otherMemberArray;
     if (data.householdCode || data.householdName) {
       setErrorMessage(false);
-      let newData;
-      if (state.yourDetails.householdName.length >= 1 && data.householdCode) {
-        newData = state.yourDetails;
-        newData.householdCodeCheck = true;
-        newData.householdCode = data.householdCode;
-        newData.householdNameCheck = false;
-        newData.householdName = "";
-        newData.otherMemberCheck = false;
-        newData.otherMemberArray = [];
-      }
-      if (state.yourDetails.householdCode.length >= 1 && data.householdName) {
-        newData = state.yourDetails;
-        newData.householdCodeCheck = false;
-        newData.householdCode = "";
-        newData.householdNameCheck = true;
-        newData.householdName = data.householdName;
-      }
       actions.updateAction(data);
       setForm("confirm");
       if (data.otherMemberCheck) {
