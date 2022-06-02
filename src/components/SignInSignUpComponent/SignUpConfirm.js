@@ -63,7 +63,6 @@ function SingUpConfirm({
   };
 
   const addOtherMember = (e) => {
-    console.log("ici");
     e.preventDefault();
     setErrorUsercode(false);
     setErrorUsercodeMessage("");
