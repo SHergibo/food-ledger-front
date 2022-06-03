@@ -9,7 +9,7 @@ import AlreadyLogged from "./AlreadyLogged";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 
-function Login({ successCreateAccount, setSuccessCreateAccount }) {
+function Login({ successCreateAccount, setSuccessCreateAccount, setForm }) {
   const navigate = useNavigate();
   const { actions } = useStateMachine({ updateAction });
   const [errorMessage, setErrorMessage] = useState(false);
@@ -136,10 +136,21 @@ function Login({ successCreateAccount, setSuccessCreateAccount }) {
                 Votre compte a été créé avec succès!
               </p>
             )}
-            <button type="submit" className="btn-purple">
-              <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
-              Se connecter
-            </button>
+            <div className="login-submit-container">
+              <button type="submit" className="btn-purple">
+                <FontAwesomeIcon className="btn-icon" icon="sign-in-alt" />
+                Se connecter
+              </button>
+              <button
+                type="button"
+                className="btn-forgot-pwd"
+                onClick={() => {
+                  setForm("request-reset-password");
+                }}
+              >
+                Mot de passe oublié ?
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -150,6 +161,7 @@ function Login({ successCreateAccount, setSuccessCreateAccount }) {
 Login.propTypes = {
   successCreateAccount: PropTypes.bool.isRequired,
   setSuccessCreateAccount: PropTypes.func.isRequired,
+  setForm: PropTypes.func.isRequired,
 };
 
 export default Login;
