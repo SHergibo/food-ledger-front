@@ -1,58 +1,74 @@
-.wrapper-sign-in-up{
+.wrapper-sign-in-up {
   display: flex;
   justify-content: center;
   height: 100vh;
 }
 
-.container-sign-in, .container-sign-up{
+.container-sign-in,
+.container-sign-up {
   display: flex;
   flex-direction: column;
   width: 100%;
-  .interactive-container, .switch-form-container{
+  .interactive-container,
+  .switch-form-container {
     display: flex;
     flex-direction: column;
     padding: em(24px);
   }
 
-  .active{
+  .active {
     order: 1;
   }
 
-  .interactive-container{
+  .interactive-container {
     background-color: var(--white);
     flex: auto;
   }
 
-  .sign-up-subtitle{
+  .sign-up-subtitle {
     font-size: rem(20px);
     font-weight: 600;
     color: var(--primary-color);
     margin-bottom: rem(20px);
   }
 
-  .form-sign-in{
+  .form-sign-in-container {
+    .login-submit-container {
+      display: flex;
+      flex-direction: column;
+      .btn-forgot-pwd {
+        margin-top: 1rem;
+        margin-left: 1rem;
+        font-size: 0.9rem;
+        background-color: transparent;
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .form-sign-in {
     position: relative;
   }
 
-  .form-sign-up{
-    .container-checkbox + .container-input-interaction{
+  .form-sign-up {
+    .container-checkbox + .container-input-interaction {
       margin-top: 1rem;
     }
-    .list-usercode{
+    .list-usercode {
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       color: var(--primary-color);
       margin-bottom: 1rem;
-      li{
+      li {
         display: flex;
         align-items: center;
         margin-bottom: 1rem;
-        p{
+        p {
           font-size: rem(18px);
           margin-right: rem(12px);
         }
-        button{
+        button {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -61,7 +77,7 @@
           background-color: var(--primary-color);
           color: var(--white);
           border-radius: rem(5px);
-          .btn-icon{
+          .btn-icon {
             font-size: rem(20px);
           }
         }
@@ -69,36 +85,36 @@
     }
   }
 
-  .switch-form-container{
+  .switch-form-container {
     justify-content: center;
     align-items: center;
     background-color: var(--primary-color);
     min-height: em(250px);
-    div{
-      p{
+    div {
+      p {
         color: var(--white);
         font-size: rem(20px);
         font-weight: 600;
         text-align: center;
         margin-bottom: rem(22px);
       }
-      button{
+      button {
         margin: 0 auto;
       }
     }
   }
-  .title-container{
+  .title-container {
     margin-bottom: em(20px);
-    .logo-container{
+    .logo-container {
       display: flex;
       margin-bottom: em(16px);
       height: em(73px);
     }
-    .title-interaction{
+    .title-interaction {
       padding-left: em(18px);
       width: 100%;
       color: var(--primary-color);
-      .back-to-interaction{
+      .back-to-interaction {
         display: flex;
         align-items: center;
         height: rem(30px);
@@ -107,60 +123,66 @@
         font-weight: 600;
         color: var(--primary-color);
         background-color: var(--white);
-        .btn-icon{
+        .btn-icon {
           margin-right: rem(9px);
         }
       }
-      h1{
+      h1 {
         display: none;
       }
     }
-    h1{
+    h1 {
       color: var(--primary-color);
       font-weight: 600;
     }
   }
-  .success-message{
+  .success-message {
     position: absolute;
     top: em(-27px);
     color: var(--green);
-    transition: .5s ease-in-out;
+    transition: 0.5s ease-in-out;
   }
-  .error-message{
+  .error-message {
     margin-bottom: 1rem;
     color: var(--red);
   }
 
-  .fade-container{
+  .fade-container {
     height: 100%;
   }
 
-  .fade-enter{
-    .form-sign-in-container, .form-sign-up-container{
+  .fade-enter {
+    .form-sign-in-container,
+    .form-sign-up-container {
       opacity: 0;
       transform: translateX(-100%);
     }
   }
-  .fade-enter-active{
-    .form-sign-in-container, .form-sign-up-container{
+  .fade-enter-active {
+    .form-sign-in-container,
+    .form-sign-up-container {
       opacity: 1;
       transform: translateX(0%);
     }
   }
-  .fade-exit{
-    .form-sign-in-container, .form-sign-up-container{
+  .fade-exit {
+    .form-sign-in-container,
+    .form-sign-up-container {
       opacity: 1;
       transform: translateX(0%);
     }
   }
-  .fade-exit-active{
-    .form-sign-in-container, .form-sign-up-container{
+  .fade-exit-active {
+    .form-sign-in-container,
+    .form-sign-up-container {
       opacity: 0;
       transform: translateX(100%);
     }
   }
-  .fade-enter-active, .fade-exit-active{
-    .form-sign-in-container, .form-sign-up-container{
+  .fade-enter-active,
+  .fade-exit-active {
+    .form-sign-in-container,
+    .form-sign-up-container {
       transition: opacity 500ms, transform 500ms;
     }
   }
@@ -168,8 +190,10 @@
 
 /*Media queries*/
 @media screen and (min-width: 340px) {
-  .container-sign-in, .container-sign-up{
-    .interactive-container, .switch-form-container{
+  .container-sign-in,
+  .container-sign-up {
+    .interactive-container,
+    .switch-form-container {
       padding: em(34px);
     }
   }
@@ -177,53 +201,61 @@
 
 /*Tablet*/
 @media screen and (min-width: 768px) {
-  .container-sign-in, .container-sign-up{
-    .title-container{
+  .container-sign-in,
+  .container-sign-up {
+    .title-container {
       display: flex;
-      .logo-container{
+      .logo-container {
         margin-bottom: 0;
       }
-      .title-interaction{
+      .title-interaction {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        h1{
+        h1 {
           display: block;
         }
       }
-      h1{
+      h1 {
         display: none;
       }
     }
-    .form-sign-in-container{
+    .form-sign-in-container {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100%;
+      .login-submit-container {
+        flex-direction: row;
+        .btn-forgot-pwd {
+          margin-top: 0;
+        }
+      }
     }
-    .input-flex-group, .input-flex-group-password{
+    .input-flex-group,
+    .input-flex-group-password {
       display: flex;
-      .input-group{
+      .input-group {
         width: 100%;
       }
-      .input-group + .input-group{
+      .input-group + .input-group {
         margin-left: 2em;
       }
     }
-    .container-input-interaction{
-      .input-group{
+    .container-input-interaction {
+      .input-group {
         width: 100%;
       }
     }
-    .form-sign-up{
-      .list-usercode{
+    .form-sign-up {
+      .list-usercode {
         justify-content: flex-start;
-        li{
+        li {
           padding-right: 1.5rem;
         }
       }
     }
-    .success-message{
+    .success-message {
       top: em(-45px);
     }
   }
@@ -231,16 +263,17 @@
 
 /*Desktop*/
 @media (min-width: 1200px) {
-  .wrapper-sign-in-up{
+  .wrapper-sign-in-up {
     align-items: center;
   }
-  .container-sign-in, .container-sign-up{
+  .container-sign-in,
+  .container-sign-up {
     position: relative;
     flex-direction: row;
     align-items: center;
     min-height: em(500px);
     width: em(1000px);
-    .interactive-container{
+    .interactive-container {
       position: absolute;
       left: 0;
       height: 100%;
@@ -248,39 +281,39 @@
       background-color: var(--white);
       border-radius: em(20px);
       box-shadow: 0px 1px 4px var(--drop-shadow);
-      transition: .5s ease-in-out;
+      transition: 0.5s ease-in-out;
       overflow: hidden;
     }
-    .active{
+    .active {
       left: 30%;
     }
-    .active-step1{
+    .active-step1 {
       height: em(559px);
     }
-    .active-step2{
+    .active-step2 {
       height: em(634px);
     }
-    .active-confirm{
+    .active-confirm {
       height: em(559px);
     }
-    .active-confirm-usercode{
+    .active-confirm-usercode {
       height: em(715px);
     }
-    .form-sign-up-container{
+    .form-sign-up-container {
       display: flex;
       align-items: center;
-      .form-sign-up{
+      .form-sign-up {
         width: 100%;
       }
     }
-    .switch-form-container{
+    .switch-form-container {
       flex-direction: row;
       justify-content: space-between;
       width: 100%;
       height: em(420px);
       border-radius: em(20px);
       box-shadow: 0px 1px 4px var(--drop-shadow);
-      div{
+      div {
         width: em(243px);
       }
     }
